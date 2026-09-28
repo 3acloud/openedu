@@ -1,0 +1,3564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>个性化学习计划</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --nav: #1b2444;
+    --nav-text: #f7f1e6;
+    --bg: #f3eee4;
+    --paper: #fffdf8;
+    --ink: #2a261f;
+    --muted: #6f675c;
+    --line: #e5d9c6;
+    --amber: #b7832f;
+    --amber-strong: #8d6418;
+    --amber-soft: #f6e7cb;
+    --danger: #c46a55;
+    --danger-strong: #8d4030;
+    --danger-soft: #f8e6e1;
+    --shadow: 0 10px 28px rgba(60, 42, 16, 0.08);
+    --shadow-lift: 0 16px 34px rgba(60, 42, 16, 0.14);
+    --sage: #4f6e49;
+    --sage-bg: #e5f0e2;
+    --sky: #246f88;
+    --sky-bg: #e1f3f8;
+    --indigo: #334484;
+    --indigo-bg: #e6e9f6;
+    --manuscript-line: rgba(176, 142, 82, 0.22);
+    --overlay: rgba(28, 24, 18, 0.46);
+    --keyboard-inset: 0px;
+  }
+  body[data-theme="dark"] {
+    --nav: #0e1428;
+    --nav-text: #f6efe4;
+    --bg: #14110e;
+    --paper: #241f19;
+    --ink: #f4ecdf;
+    --muted: #b7ab9a;
+    --line: #3c3329;
+    --amber: #e0b15a;
+    --amber-strong: #f0d7a2;
+    --amber-soft: #3a2e18;
+    --danger: #e08a76;
+    --danger-strong: #ffd0c6;
+    --danger-soft: #3a2420;
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    --shadow-lift: 0 18px 40px rgba(0, 0, 0, 0.48);
+    --sage: #b7d0ae;
+    --sage-bg: #243024;
+    --sky: #8fd0e4;
+    --sky-bg: #1a3038;
+    --indigo: #c3cdf5;
+    --indigo-bg: #242a44;
+    --manuscript-line: rgba(224, 177, 90, 0.14);
+    --overlay: rgba(0, 0, 0, 0.62);
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; max-width: 100%; }
+  html { overflow-x: hidden; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(980px 420px at 8% -10%, rgba(224, 177, 90, 0.18), transparent 55%),
+      var(--bg);
+    line-height: 1.6;
+    font-size: 16px;
+    min-height: 100vh;
+  }
+  body[data-theme="light"] { color-scheme: light; }
+  body[data-theme="dark"] { color-scheme: dark; }
+  button, input, select, textarea { font-family: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3, p { overflow-wrap: anywhere; }
+  #navShell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    padding-top: env(safe-area-inset-top);
+  }
+  #topNav {
+    background: var(--nav);
+    color: var(--nav-text);
+    box-shadow: 0 10px 28px rgba(8, 10, 24, 0.22);
+  }
+  #navRow {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    min-height: 64px;
+    padding: 0 16px;
+    overflow: hidden;
+  }
+  .nav-spacer { flex: 1 1 auto; min-width: 0; height: 1px; }
+  #navBrand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 0 1 auto;
+    max-width: calc(100% - 56px);
+    background: transparent;
+    color: var(--nav-text);
+    border: 0;
+    padding: 8px 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  #navBrand i { color: var(--amber); font-size: 20px; flex: 0 0 auto; }
+  #navAppName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  #navTabs {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 2px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    min-width: max-content;
+  }
+  #navTabs button {
+    background: transparent;
+    color: var(--nav-text);
+    border: 0;
+    padding: 18px 14px 16px;
+    font-size: 15px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+  #navTabs button.is-active {
+    color: #f3ddb0;
+    border-bottom-color: var(--amber);
+  }
+  #langToggle {
+    flex: 0 0 auto;
+    background: transparent;
+    color: var(--nav-text);
+    border: 1px solid rgba(243, 221, 176, 0.45);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  #navBurger {
+    flex: 0 0 auto;
+    margin-left: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid rgba(247, 241, 230, 0.2);
+    background: transparent;
+    color: var(--nav-text);
+    font-size: 18px;
+  }
+  #mobileMenu {
+    display: flex;
+    flex-direction: column;
+    background: #151c36;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  body[data-theme="dark"] #mobileMenu { background: #0b1020; }
+  #mobileMenu button {
+    text-align: left;
+    background: transparent;
+    color: var(--nav-text);
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 14px 18px;
+    font-size: 16px;
+  }
+  #mobileMenu button.is-active { color: #f3ddb0; box-shadow: inset 3px 0 0 var(--amber); }
+  #mobileLangRow {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 16px;
+  }
+  #mobileLangRow button {
+    border: 1px solid rgba(243, 221, 176, 0.35);
+    border-radius: 999px;
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(243, 221, 176, 0.35);
+  }
+  #mobileLangRow button.is-active { background: var(--amber); color: #1b2444; }
+  .page[hidden], #mobileMenu[hidden], #langToggle[hidden], #navBurger[hidden], #navTabs[hidden],
+  .overlay[hidden], [hidden] { display: none !important; }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .page { padding: 28px 18px 72px; }
+  .page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .page-head h1 { margin: 0; font-size: 32px; line-height: 1.25; font-weight: 700; }
+  .page-head p { margin: 8px 0 0; color: var(--muted); max-width: 740px; }
+  .head-action { margin-left: auto; }
+  .btn {
+    border: 0;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--amber); color: #1d160c; }
+  .btn-danger { background: var(--danger); color: #fffaf7; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-danger-ghost {
+    background: var(--danger-soft);
+    color: var(--danger-strong);
+    border: 1px solid transparent;
+  }
+  .btn-small { padding: 8px 12px; font-size: 13px; border-radius: 10px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 26px; }
+  .stat-card {
+    flex: 1 1 180px;
+    text-align: left;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 16px 16px 14px;
+    min-height: 112px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .stat-card i { color: var(--amber); font-size: 16px; }
+  .stat-label { display: block; margin-top: 8px; color: var(--muted); font-size: 14px; }
+  .stat-count { display: block; margin-top: 4px; font-size: 32px; line-height: 1.1; font-weight: 700; }
+  .section-title { margin: 0 0 12px; font-size: 22px; }
+  .card-wall { display: flex; flex-wrap: wrap; gap: 16px; }
+  .note-card {
+    position: relative;
+    flex: 1 1 280px;
+    max-width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 16px 16px 14px 20px;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .note-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, var(--amber), rgba(183, 131, 47, 0.25));
+  }
+  @media (min-width: 980px) {
+    .note-card { flex-basis: calc(33.333% - 16px); max-width: calc(33.333% - 11px); }
+  }
+  .note-card.is-clickable { cursor: pointer; }
+  .stage-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .tag-sage { background: var(--sage-bg); color: var(--sage); }
+  .tag-sky { background: var(--sky-bg); color: var(--sky); }
+  .tag-indigo { background: var(--indigo-bg); color: var(--indigo); }
+  .tag-muted { background: var(--line); color: var(--muted); }
+  .goal-title { margin: 10px 0 6px; font-size: 18px; line-height: 1.4; font-weight: 700; }
+  .card-weak { margin: 0 0 10px; color: var(--ink); }
+  .meta-list { list-style: none; margin: 0; padding: 0; color: var(--muted); font-size: 14px; }
+  .meta-list li { margin: 4px 0; }
+  .meta-list i { width: 18px; color: var(--amber-strong); }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .empty-card, .status-line, .paper-card, .manuscript {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .empty-card { padding: 28px 22px; text-align: center; }
+  .empty-card i { font-size: 28px; color: var(--amber); }
+  .empty-card p { margin: 10px 0 16px; }
+  .empty-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .status-line { padding: 16px 18px; color: var(--muted); }
+  .form-error { color: var(--danger-strong); margin: 8px 0; }
+  .plan-layout { display: flex; flex-wrap: wrap; gap: 18px; align-items: stretch; }
+  .plan-layout > * { flex: 1 1 340px; min-width: 0; }
+  .paper-card { padding: 18px 18px 20px; }
+  .paper-card h2, .manuscript-head h2 { margin: 0; font-size: 20px; }
+  #formPlanFields { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .field { margin-top: 14px; }
+  .field label, .filter-field span, .search-field span {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--muted);
+  }
+  .req::after { content: " *"; color: var(--danger); }
+  .stage-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stage-option {
+    flex: 1 1 140px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: var(--bg);
+    cursor: pointer;
+  }
+  .stage-option.is-selected {
+    border-color: var(--amber);
+    background: var(--amber-soft);
+    box-shadow: inset 0 0 0 1px var(--amber);
+  }
+  textarea, input[type="text"], input[type="number"], input[type="date"], input[type="search"], select {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 16px;
+    outline: none;
+  }
+  textarea { min-height: 92px; resize: vertical; }
+  textarea:focus, input:focus, select:focus { border-color: var(--amber); }
+  .hint { margin: 8px 0 0; color: var(--amber-strong); font-size: 14px; }
+  .save-note {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--amber-soft);
+    color: var(--ink);
+  }
+  .form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .manuscript { padding: 0; overflow: hidden; min-height: 420px; display: flex; flex-direction: column; }
+  .manuscript-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .manuscript-body {
+    padding: 22px 18px 28px 46px;
+    min-height: 360px;
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(to right, transparent 28px, rgba(196, 106, 85, 0.55) 28px, rgba(196, 106, 85, 0.55) 30px, transparent 30px),
+      repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--manuscript-line) 32px);
+    background-attachment: local;
+  }
+  .wait-box { text-align: center; padding: 48px 12px; }
+  .wait-lamp { font-size: 28px; color: var(--amber); animation: lamp 1.6s ease-in-out infinite; }
+  @keyframes lamp { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-end;
+  }
+  .search-field { flex: 1 1 240px; }
+  .filter-field { flex: 1 1 140px; }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: var(--overlay);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 18px;
+  }
+  #confirmOverlay { z-index: 2300; }
+  #htmlOverlay { z-index: 2200; }
+  .dialog {
+    width: min(860px, 100%);
+    max-height: calc(100vh - 56px);
+    overflow: auto;
+    background: #fffdf8;
+    color: #2a261f;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  }
+  body[data-theme="dark"] .dialog { background: #241f19; color: #f4ecdf; }
+  #confirmDialog { width: min(440px, 100%); background: #fffdf8; }
+  body[data-theme="dark"] #confirmDialog { background: #241f19; }
+  .dialog-head, .dialog-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 16px;
+  }
+  .dialog-head { border-bottom: 1px solid var(--line); }
+  .dialog-foot { border-top: 1px solid var(--line); flex-wrap: wrap; justify-content: flex-end; }
+  .dialog-head h2 { margin: 0; font-size: 20px; }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .dialog-body { padding: 16px 18px 20px; }
+  .detail-dl { margin: 0; }
+  .detail-dl div { margin-bottom: 12px; }
+  .detail-dl dt { font-size: 12px; font-weight: 700; color: var(--muted); }
+  .detail-dl dd { margin: 2px 0 0; }
+  .markdown-body { line-height: 1.7; overflow-wrap: anywhere; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3,
+  .markdown-body h4, .markdown-body h5, .markdown-body h6 { line-height: 1.35; margin: 1.1em 0 0.45em; }
+  .markdown-body h1 { font-size: 1.7em; }
+  .markdown-body h2 { font-size: 1.4em; }
+  .markdown-body h3 { font-size: 1.2em; }
+  .markdown-body p { margin: 0.6em 0; }
+  .markdown-body ul, .markdown-body ol { margin: 0.4em 0 0.4em 1.2em; padding: 0; }
+  .markdown-body blockquote {
+    margin: 0.8em 0;
+    padding: 0.2em 0 0.2em 12px;
+    border-left: 3px solid var(--amber);
+    color: var(--muted);
+  }
+  .markdown-body code {
+    font-family: Consolas, "Courier New", monospace;
+    background: var(--amber-soft);
+    padding: 0.1em 0.35em;
+    border-radius: 6px;
+    font-size: 0.92em;
+  }
+  .markdown-body pre {
+    overflow: auto;
+    padding: 12px;
+    border-radius: 12px;
+    background: #1b2444;
+    color: #f7f1e6;
+  }
+  .markdown-body pre code { background: transparent; color: inherit; padding: 0; }
+  .md-table-wrap { overflow-x: auto; max-width: 100%; margin: 0.8em 0; }
+  .markdown-body table { border-collapse: collapse; min-width: 420px; }
+  .markdown-body th, .markdown-body td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+  .markdown-body th { background: var(--amber-soft); }
+  .markdown-body img { max-width: 100%; height: auto; border-radius: 8px; }
+  .markdown-body hr { border: 0; border-top: 1px solid var(--line); margin: 1.2em 0; }
+  .markdown-body a { color: var(--amber-strong); }
+  .md-task { display: flex; gap: 8px; align-items: flex-start; }
+  #htmlFrame { width: 100%; height: min(70vh, 720px); border: 0; background: white; }
+  .toast {
+    position: fixed;
+    z-index: 3000;
+    left: 50%;
+    bottom: calc(24px + var(--keyboard-inset, 0px));
+    transform: translateX(-50%);
+    background: #1b2444;
+    color: #f7f1e6;
+    padding: 10px 14px;
+    border-radius: 999px;
+    box-shadow: var(--shadow-lift);
+    max-width: calc(100% - 32px);
+  }
+  body.modal-open { overflow: hidden; }
+  @media (hover: hover) {
+    .stat-card:hover, .note-card.is-clickable:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+  @media (max-width: 768px) {
+    .page { padding-bottom: calc(140px + env(safe-area-inset-bottom)); }
+    .dialog-body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+    .overlay.edge-to-edge { padding: 0; align-items: stretch; }
+    .overlay.edge-to-edge .dialog {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      border-radius: 0;
+      margin: 0;
+    }
+    .overlay.edge-to-edge #htmlFrame { height: calc(100vh - 64px); }
+    body.keyboard-open .page,
+    body.keyboard-open .form-panel,
+    body.keyboard-open .dialog-body {
+      padding-bottom: calc(48px + var(--keyboard-inset) + 32px + env(safe-area-inset-bottom));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body data-theme="light">
+<div id="navShell">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div id="navRow">
+      <button type="button" id="navBrand">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span id="navAppName" data-i18n="appName">个性化学习计划</span>
+      </button>
+      <div class="nav-spacer"></div>
+      <div id="navTabs">
+        <button type="button" id="navTabHome" data-page="home" data-i18n="tabHome">首页</button>
+        <button type="button" id="navTabPlan" data-page="plan" data-i18n="tabPlan">制定计划</button>
+        <button type="button" id="navTabShelf" data-page="shelf" data-i18n="tabShelf">计划书架</button>
+      </div>
+      <button type="button" id="langToggle">EN</button>
+      <button type="button" id="navBurger" hidden aria-expanded="false" aria-controls="mobileMenu" data-i18n-aria="menuLabel" aria-label="打开菜单">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="mobileMenu" hidden>
+      <button type="button" id="mobileTabHome" data-page="home" data-i18n="tabHome">首页</button>
+      <button type="button" id="mobileTabPlan" data-page="plan" data-i18n="tabPlan">制定计划</button>
+      <button type="button" id="mobileTabShelf" data-page="shelf" data-i18n="tabShelf">计划书架</button>
+      <div id="mobileLangRow">
+        <button type="button" id="mobileLangZh" data-i18n="langZh">中文</button>
+        <button type="button" id="mobileLangEn" data-i18n="langEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<main>
+  <section class="page" id="pageHome">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="homeTitle" data-i18n="homeTitle">个性化学习计划</h1>
+          <p id="homeIntro" data-i18n="homeIntro">按学段、目标、薄弱点和可用时间，生成可执行的一周或三十天计划</p>
+        </div>
+        <button type="button" class="btn btn-primary head-action" id="btnHomeNew" data-i18n="newPlan">+ 制定新计划</button>
+      </div>
+      <div class="stats" id="statRow">
+        <button type="button" class="stat-card" id="statAll">
+          <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+          <span class="stat-label" data-i18n="statAll">全部计划</span>
+          <strong class="stat-count" id="statAllCount">…</strong>
+        </button>
+        <button type="button" class="stat-card" id="statPrimary">
+          <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+          <span class="stat-label" data-i18n="statPrimary">小学高段</span>
+          <strong class="stat-count" id="statPrimaryCount">…</strong>
+        </button>
+        <button type="button" class="stat-card" id="statJunior">
+          <i class="fa-solid fa-cloud-sun" aria-hidden="true"></i>
+          <span class="stat-label" data-i18n="statJunior">初中</span>
+          <strong class="stat-count" id="statJuniorCount">…</strong>
+        </button>
+        <button type="button" class="stat-card" id="statSenior">
+          <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+          <span class="stat-label" data-i18n="statSenior">高中</span>
+          <strong class="stat-count" id="statSeniorCount">…</strong>
+        </button>
+      </div>
+      <p id="homeStatus" class="status-line" hidden></p>
+      <h2 class="section-title" id="recentTitle" data-i18n="recentTitle">最近写下的计划</h2>
+      <div id="recentList" class="card-wall"></div>
+      <div id="homeEmpty" class="empty-card" hidden>
+        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+        <p id="homeEmptyText" data-i18n="homeEmpty">灯还没照到计划。先制定第一份吧。</p>
+        <button type="button" class="btn btn-primary" id="btnHomeFirst" data-i18n="firstPlan">制定第一份计划</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="pagePlan" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="planTitle">制定计划</h1>
+          <p id="planIntro"></p>
+        </div>
+        <button type="button" class="btn btn-ghost head-action" id="btnViewShelf" data-i18n="viewShelf">查看计划书架</button>
+      </div>
+      <div class="plan-layout">
+        <form id="formPlan" class="paper-card form-panel" novalidate autocomplete="off">
+          <h2 data-i18n="formTitle">学习计划</h2>
+          <fieldset id="formPlanFields">
+            <div class="field">
+              <span class="req" id="labelStage" data-i18n="fieldStage">学段</span>
+              <div class="stage-options" role="radiogroup" aria-labelledby="labelStage">
+                <label class="stage-option" for="formPlan_stage_primary">
+                  <input type="radio" id="formPlan_stage_primary" name="学段" value="小学高段">
+                  <span data-i18n="stagePrimary">小学高段</span>
+                </label>
+                <label class="stage-option" for="formPlan_stage_junior">
+                  <input type="radio" id="formPlan_stage_junior" name="学段" value="初中">
+                  <span data-i18n="stageJunior">初中</span>
+                </label>
+                <label class="stage-option" for="formPlan_stage_senior">
+                  <input type="radio" id="formPlan_stage_senior" name="学段" value="高中">
+                  <span data-i18n="stageSenior">高中</span>
+                </label>
+              </div>
+              <p id="stageHint" class="hint" hidden data-i18n="stageHint">小学高段为一周计划，初中和高中为三十天计划。</p>
+            </div>
+            <div class="field">
+              <label class="req" for="formPlan_goal" data-i18n="fieldGoal">学习目标</label>
+              <textarea id="formPlan_goal" name="学习目标" data-i18n-ph="goalPlaceholder" placeholder="想在这一阶段达成什么"></textarea>
+            </div>
+            <div class="field">
+              <label for="formPlan_weak" data-i18n="fieldWeak">薄弱点</label>
+              <textarea id="formPlan_weak" name="薄弱点" data-i18n-ph="weakPlaceholder" placeholder="可以留空"></textarea>
+            </div>
+            <div class="field">
+              <label class="req" for="formPlan_weekday" data-i18n="fieldWeekday">平日每天可用分钟</label>
+              <input type="number" id="formPlan_weekday" name="平日每天可用分钟" min="1" step="1" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label class="req" for="formPlan_weekend" data-i18n="fieldWeekend">周末每天可用分钟</label>
+              <input type="number" id="formPlan_weekend" name="周末每天可用分钟" min="1" step="1" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="formPlan_slot" data-i18n="fieldSlot">高效学习时段</label>
+              <textarea id="formPlan_slot" name="高效学习时段" data-i18n-ph="slotPlaceholder" placeholder="例如晚饭后或早晨，可以留空"></textarea>
+            </div>
+            <div class="field">
+              <label for="formPlan_exam" data-i18n="fieldExam">考试日期</label>
+              <input type="date" id="formPlan_exam" name="考试日期">
+            </div>
+          </fieldset>
+          <p id="planError" class="form-error" hidden></p>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="btnSubmitPlan" disabled>生成计划</button>
+            <button type="button" class="btn btn-ghost" id="btnClearPlan" data-i18n="clearRewrite">清空重写</button>
+            <button type="button" class="btn btn-ghost" id="btnSaveAsNew" data-i18n="saveAsNew" hidden>另存为新计划</button>
+            <button type="button" class="btn btn-ghost" id="btnCancelEdit" data-i18n="cancelEdit" hidden>取消编辑</button>
+          </div>
+          <p id="saveNote" class="save-note" hidden data-i18n="savedNote">已生成的计划正文不会因改字段而自动重写；若要全新计划，使用「另存为新计划」。</p>
+        </form>
+        <section class="manuscript" id="manuscriptCard" aria-live="polite">
+          <div class="manuscript-head">
+            <h2 id="manuscriptTitle" data-i18n="manuscript">计划手稿</h2>
+            <button type="button" class="btn btn-ghost btn-small" id="btnCopyManuscript" data-i18n="copy" disabled>复制正文</button>
+          </div>
+          <div class="manuscript-body" id="manuscriptBody"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="pageShelf" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="shelfTitle" data-i18n="shelfTitle">计划书架</h1>
+          <p id="shelfIntro" data-i18n="shelfIntro">回看已经生成的计划，按学段翻找，或打开一份继续改条件</p>
+        </div>
+        <button type="button" class="btn btn-primary head-action" id="btnShelfNew" data-i18n="newPlan">+ 制定新计划</button>
+      </div>
+      <div class="toolbar">
+        <label class="search-field">
+          <span data-i18n="searchLabel">搜索</span>
+          <input type="search" id="shelfSearch" data-i18n-ph="searchPlaceholder" placeholder="搜索学习目标、薄弱点或高效学习时段">
+        </label>
+        <label class="filter-field">
+          <span data-i18n="filterStage">学段</span>
+          <select id="shelfStageFilter">
+            <option value="" data-i18n="filterAll">全部</option>
+            <option value="小学高段" data-i18n="stagePrimary">小学高段</option>
+            <option value="初中" data-i18n="stageJunior">初中</option>
+            <option value="高中" data-i18n="stageSenior">高中</option>
+          </select>
+        </label>
+        <label class="filter-field">
+          <span data-i18n="filterExam">考试日期</span>
+          <select id="shelfExamFilter">
+            <option value="all" data-i18n="filterAll">全部</option>
+            <option value="filled" data-i18n="examFilled">已填写</option>
+            <option value="empty" data-i18n="examBlank">未填写</option>
+          </select>
+        </label>
+      </div>
+      <p id="shelfStatus" class="status-line" hidden></p>
+      <div id="shelfList" class="card-wall"></div>
+      <div id="shelfEmpty" class="empty-card" hidden>
+        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+        <p id="shelfEmptyText" data-i18n="noMatch">这盏灯下还没有对应的计划</p>
+        <div class="empty-actions">
+          <button type="button" class="btn btn-ghost" id="btnClearFilters" data-i18n="clearFilters">清除筛选</button>
+          <button type="button" class="btn btn-primary" id="btnShelfEmptyNew" data-i18n="newPlan">+ 制定新计划</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="detailOverlay" class="overlay edge-to-edge" hidden>
+  <div class="dialog" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-head">
+      <h2 id="detailTitle" data-i18n="detailTitle">计划详情</h2>
+      <button type="button" class="icon-btn" id="btnDetailCloseX" data-i18n-aria="close" aria-label="关闭"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="dialog-body" id="detailBody"></div>
+    <div class="dialog-foot" id="detailActions">
+      <button type="button" class="btn btn-primary btn-small" id="btnDetailEdit" data-i18n="goEdit">去编辑</button>
+      <button type="button" class="btn btn-ghost btn-small" id="btnDetailCopy" data-i18n="copy" hidden>复制正文</button>
+      <button type="button" class="btn btn-danger-ghost btn-small" id="btnDetailDelete" data-i18n="delete">删除</button>
+      <button type="button" class="btn btn-ghost btn-small" id="btnDetailClose" data-i18n="close" hidden>关闭</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmOverlay" class="overlay" hidden>
+  <div class="dialog" id="confirmDialog" role="dialog" aria-modal="true" aria-labelledby="confirmMessage">
+    <div class="dialog-body">
+      <p id="confirmMessage">删除后不能恢复</p>
+      <div class="form-actions">
+        <button type="button" class="btn btn-danger" id="btnConfirmOk" data-i18n="confirmDelete">删除</button>
+        <button type="button" class="btn btn-ghost" id="btnConfirmCancel" data-i18n="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="htmlOverlay" class="overlay edge-to-edge" hidden>
+  <div class="dialog" id="htmlDialog" role="dialog" aria-modal="true" aria-labelledby="htmlTitle">
+    <div class="dialog-head">
+      <h2 id="htmlTitle" data-i18n="htmlView">浏览页面</h2>
+      <button type="button" class="icon-btn" id="btnHtmlClose" data-i18n-aria="close" aria-label="关闭"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <iframe id="htmlFrame" title="HTML"></iframe>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("e0c7c2f5efedc94f_个性化学习计划")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+var SOURCE = "学习计划/默认表格";
+var TABLE_NAME = "学习计划";
+var CSV_FIELDS = "学段,学习目标,薄弱点,平日每天可用分钟,周末每天可用分钟,高效学习时段,考试日期";
+var POLL_INTERVAL_MS = 2000;
+var POLL_TIMEOUT_MS = 1800 * 1000;
+var EDIT_FIELDS = ["学段", "学习目标", "薄弱点", "平日每天可用分钟", "周末每天可用分钟", "高效学习时段", "考试日期"];
+var DETAIL_FIELDS = ["学段", "学习目标", "薄弱点", "平日每天可用分钟", "周末每天可用分钟", "高效学习时段", "考试日期", "学习计划内容"];
+
+var I18N = {
+  zh: {
+    appName: "个性化学习计划",
+    tabHome: "首页",
+    tabPlan: "制定计划",
+    tabShelf: "计划书架",
+    langZh: "中文",
+    langEn: "English",
+    homeTitle: "个性化学习计划",
+    homeIntro: "按学段、目标、薄弱点和可用时间，生成可执行的一周或三十天计划",
+    newPlan: "+ 制定新计划",
+    statAll: "全部计划",
+    statPrimary: "小学高段",
+    statJunior: "初中",
+    statSenior: "高中",
+    recentTitle: "最近写下的计划",
+    weakEmpty: "未填写薄弱点",
+    examEmpty: "未定考试日",
+    examPast: "已过考试日",
+    examLeft: "还剩 {n} 天",
+    homeEmpty: "灯还没照到计划。先制定第一份吧。",
+    firstPlan: "制定第一份计划",
+    planTitle: "制定计划",
+    planIntro: "告诉系统学段、目标和时间，后台会写成每天可打卡的计划。小学高段生成一周计划，初中和高中生成三十天计划；填写考试日期会按考前阶段调整。",
+    editTitle: "调整这份计划",
+    editIntro: "可以修改学段、目标和时间。已经生成的计划正文不会因为改了这些字段而自动重写。",
+    viewShelf: "查看计划书架",
+    formTitle: "学习计划",
+    fieldStage: "学段",
+    fieldGoal: "学习目标",
+    fieldWeak: "薄弱点",
+    fieldWeekday: "平日每天可用分钟",
+    fieldWeekend: "周末每天可用分钟",
+    fieldSlot: "高效学习时段",
+    fieldExam: "考试日期",
+    fieldContent: "学习计划内容",
+    stageHint: "小学高段为一周计划，初中和高中为三十天计划。",
+    goalPlaceholder: "想在这一阶段达成什么",
+    weakPlaceholder: "可以留空",
+    slotPlaceholder: "例如晚饭后或早晨，可以留空",
+    generate: "生成计划",
+    saveChanges: "保存修改",
+    clearRewrite: "清空重写",
+    saveAsNew: "另存为新计划",
+    cancelEdit: "取消编辑",
+    saved: "已保存修改",
+    savedNote: "已生成的计划正文不会因改字段而自动重写；若要全新计划，使用「另存为新计划」。",
+    waitMsg: "灯还亮着，正在按学段、目标和可用时间编排每天的任务…",
+    manuscript: "计划手稿",
+    copy: "复制正文",
+    copied: "已复制",
+    copyFail: "没能写入剪贴板",
+    manuscriptEmpty: "生成之后，每天的任务会写在这页纸上。",
+    manuscriptNotReady: "计划正文尚未生成。",
+    timeoutMsg: "等了太久，这一次编排停住了。可以再试一次。",
+    shelfTitle: "计划书架",
+    shelfIntro: "回看已经生成的计划，按学段翻找，或打开一份继续改条件",
+    searchLabel: "搜索",
+    searchPlaceholder: "搜索学习目标、薄弱点或高效学习时段",
+    filterStage: "学段",
+    filterExam: "考试日期",
+    filterAll: "全部",
+    examFilled: "已填写",
+    examBlank: "未填写",
+    viewPlan: "查看计划",
+    edit: "编辑",
+    delete: "删除",
+    deleteConfirm: "删除后不能恢复",
+    confirmDelete: "删除",
+    cancel: "取消",
+    goEdit: "去编辑",
+    close: "关闭",
+    noMatch: "这盏灯下还没有对应的计划",
+    clearFilters: "清除筛选",
+    weekdayShort: "平日每天",
+    weekendShort: "周末每天",
+    minutesUnit: "分钟",
+    detailTitle: "计划详情",
+    loading: "正在翻开这一页…",
+    shelfLoading: "正在把书架上的计划取下来…",
+    loadFail: "没有取到数据，请稍后再试。",
+    submitFail: "没有提交成功，请稍后再试。",
+    saveFail: "没有保存成功，请稍后再试。",
+    deleteFail: "没有删除成功，请稍后再试。",
+    menuLabel: "打开菜单",
+    closeMenu: "关闭菜单",
+    goalEmpty: "（未填写学习目标）",
+    slotEmpty: "未填写时段",
+    contentEmpty: "计划正文还是空的。",
+    htmlView: "浏览页面",
+    stagePrimary: "小学高段",
+    stageJunior: "初中",
+    stageSenior: "高中",
+    slotLabel: "高效学习时段"
+  },
+  en: {
+    appName: "Personalized Study Plan",
+    tabHome: "Home",
+    tabPlan: "Make a Plan",
+    tabShelf: "Plan Shelf",
+    langZh: "中文",
+    langEn: "English",
+    homeTitle: "Personalized Study Plan",
+    homeIntro: "Build a one-week or thirty-day plan from grade band, goals, weak spots, and the time you have.",
+    newPlan: "+ Make a new plan",
+    statAll: "All plans",
+    statPrimary: "Upper elementary",
+    statJunior: "Junior high",
+    statSenior: "Senior high",
+    recentTitle: "Recently written plans",
+    weakEmpty: "No weak spot noted",
+    examEmpty: "No exam date set",
+    examPast: "Exam date has passed",
+    examLeft: "{n} days left",
+    homeEmpty: "The lamp has not found a plan yet. Write the first one.",
+    firstPlan: "Write the first plan",
+    planTitle: "Make a plan",
+    planIntro: "Tell the system the grade band, the goal, and the time you have. It will write a plan you can check off each day. Upper elementary gets a one-week plan; junior and senior high get a thirty-day plan. An exam date shifts the work toward the exam.",
+    editTitle: "Adjust this plan",
+    editIntro: "You can change the grade band, goal, and time. The plan text already written will not be rewritten just because these fields change.",
+    viewShelf: "View plan shelf",
+    formTitle: "Study plan",
+    fieldStage: "Grade band",
+    fieldGoal: "Learning goal",
+    fieldWeak: "Weak spots",
+    fieldWeekday: "Weekday minutes per day",
+    fieldWeekend: "Weekend minutes per day",
+    fieldSlot: "Best study time",
+    fieldExam: "Exam date",
+    fieldContent: "Plan text",
+    stageHint: "Upper elementary is a one-week plan. Junior and senior high are a thirty-day plan.",
+    goalPlaceholder: "What should this stretch of study achieve?",
+    weakPlaceholder: "Optional",
+    slotPlaceholder: "For example, after dinner or early morning. Optional.",
+    generate: "Generate plan",
+    saveChanges: "Save changes",
+    clearRewrite: "Clear and rewrite",
+    saveAsNew: "Save as new plan",
+    cancelEdit: "Cancel editing",
+    saved: "Changes saved",
+    savedNote: "The plan text already written will not be rewritten automatically. For a brand-new plan, use “Save as new plan”.",
+    waitMsg: "The lamp is still on. Arranging each day's tasks from the grade band, goal, and available time…",
+    manuscript: "Plan draft",
+    copy: "Copy text",
+    copied: "Copied",
+    copyFail: "Could not copy to the clipboard",
+    manuscriptEmpty: "After you generate a plan, each day's tasks will be written on this page.",
+    manuscriptNotReady: "The plan text has not been written yet.",
+    timeoutMsg: "This took too long, so the arranging stopped. You can try again.",
+    shelfTitle: "Plan shelf",
+    shelfIntro: "Look back at plans already written, browse by grade band, or open one and change the conditions.",
+    searchLabel: "Search",
+    searchPlaceholder: "Search goals, weak spots, or best study time",
+    filterStage: "Grade band",
+    filterExam: "Exam date",
+    filterAll: "All",
+    examFilled: "Filled in",
+    examBlank: "Not filled in",
+    viewPlan: "View plan",
+    edit: "Edit",
+    delete: "Delete",
+    deleteConfirm: "This cannot be undone",
+    confirmDelete: "Delete",
+    cancel: "Cancel",
+    goEdit: "Edit this plan",
+    close: "Close",
+    noMatch: "No plan under this lamp matches.",
+    clearFilters: "Clear filters",
+    weekdayShort: "Weekdays",
+    weekendShort: "Weekends",
+    minutesUnit: "min",
+    detailTitle: "Plan details",
+    loading: "Opening this page…",
+    shelfLoading: "Taking the plans down from the shelf…",
+    loadFail: "The data did not come back. Please try again.",
+    submitFail: "The plan was not submitted. Please try again.",
+    saveFail: "The changes were not saved. Please try again.",
+    deleteFail: "The plan was not deleted. Please try again.",
+    menuLabel: "Open menu",
+    closeMenu: "Close menu",
+    goalEmpty: "(No learning goal yet)",
+    slotEmpty: "No study time noted",
+    contentEmpty: "The plan text is still empty.",
+    htmlView: "View page",
+    stagePrimary: "Upper elementary",
+    stageJunior: "Junior high",
+    stageSenior: "Senior high",
+    slotLabel: "Best study time"
+  }
+};
+
+var uiLang = "zh";
+var currentPage = "home";
+var historyStack = [];
+var popupStack = [];
+var currentRow = 0;
+var editMode = false;
+var submitting = false;
+var eventsBound = false;
+var homeLoadToken = 0;
+var shelfLoadToken = 0;
+var editLoadToken = 0;
+var detailLoadToken = 0;
+var manuscriptPollToken = 0;
+var detailPollToken = 0;
+var homeRecords = [];
+var homeCount = null;
+var homeState = "loading";
+var homeErrorText = "";
+var shelfRecords = [];
+var shelfState = "loading";
+var shelfErrorText = "";
+var manuscriptSource = "";
+var manuscriptMode = "empty";
+var detailRow = 0;
+var detailSource = "home";
+var detailValues = null;
+var detailState = "loading";
+var detailErrorText = "";
+var confirmResolver = null;
+var toastTimer = 0;
+var formActionToken = 0;
+
+function t(key) {
+  var pack = I18N[uiLang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  return I18N.zh[key] != null ? I18N.zh[key] : key;
+}
+
+function tf(key, vars) {
+  var text = t(key);
+  var names = Object.keys(vars || {});
+  for (var i = 0; i < names.length; i++) {
+    text = text.split("{" + names[i] + "}").join(String(vars[names[i]]));
+  }
+  return text;
+}
+
+function el(id) { return document.getElementById(id); }
+
+function pad2(n) {
+  var s = String(n);
+  return s.length < 2 ? "0" + s : s;
+}
+
+function stripBom(s) {
+  s = String(s == null ? "" : s);
+  if (s.charCodeAt(0) === 0xFEFF) return s.substring(1);
+  return s;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeAttr(s) { return escapeHtml(s); }
+
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function getScrollY() {
+  if (document.scrollingElement) return document.scrollingElement.scrollTop || 0;
+  return window.scrollY || 0;
+}
+
+function setScrollY(y) {
+  window.scrollTo(0, y || 0);
+}
+
+function getQueryParam(name) {
+  var search = window.location && window.location.search ? window.location.search : "";
+  if (search.charAt(0) === "?") search = search.substring(1);
+  if (!search) return "";
+  var parts = search.split("&");
+  for (var i = 0; i < parts.length; i++) {
+    var kv = parts[i].split("=");
+    var key = "";
+    try { key = decodeURIComponent(kv[0] || ""); } catch (e) { key = kv[0] || ""; }
+    if (key === name) {
+      try { return decodeURIComponent(kv.slice(1).join("=") || ""); } catch (e2) { return kv.slice(1).join("=") || ""; }
+    }
+  }
+  return "";
+}
+
+function detectLanguage() {
+  var langParam = getQueryParam("lang");
+  if (langParam === "cn") return "zh";
+  if (langParam === "en") return "en";
+  try {
+    var stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored != null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (e) {}
+  try {
+    var list = navigator.languages;
+    if (list == null || typeof list.length !== "number") return "zh";
+    if (list.length === 0) {
+      var one = navigator.language || navigator.userLanguage || "";
+      if (!one) return "zh";
+      return /^zh/i.test(String(one)) ? "zh" : "en";
+    }
+    for (var i = 0; i < list.length; i++) {
+      if (/^zh/i.test(String(list[i] || ""))) return "zh";
+    }
+    return "en";
+  } catch (err) {
+    return "zh";
+  }
+}
+
+function stageLabel(value) {
+  if (value === "小学高段") return t("stagePrimary");
+  if (value === "初中") return t("stageJunior");
+  if (value === "高中") return t("stageSenior");
+  return value || "";
+}
+
+function stageClass(value) {
+  if (value === "小学高段") return "tag-sage";
+  if (value === "初中") return "tag-sky";
+  if (value === "高中") return "tag-indigo";
+  return "tag-muted";
+}
+
+function isPositiveInt(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (!/^[1-9]\d*$/.test(s)) return false;
+  var n = Number(s);
+  return isFinite(n) && Math.floor(n) === n && n > 0;
+}
+
+function normalizeIntInput(raw) {
+  var s = String(raw == null ? "" : raw).trim();
+  if (/^[1-9]\d*$/.test(s)) return s;
+  if (/^[1-9]\d*\.0+$/.test(s)) return s.replace(/\.0+$/, "");
+  return s;
+}
+
+function normalizeDateInput(raw) {
+  var s = String(raw == null ? "" : raw).trim();
+  var m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+  if (!m) return "";
+  return m[1] + "-" + pad2(m[2]) + "-" + pad2(m[3]);
+}
+
+function examStatus(raw) {
+  var s = String(raw == null ? "" : raw).trim();
+  if (!s) return { kind: "empty" };
+  var m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+  if (!m) return { kind: "raw", raw: s };
+  var exam = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var diff = Math.round((Date.UTC(exam.getFullYear(), exam.getMonth(), exam.getDate()) - Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
+  var dateText = m[1] + "-" + pad2(m[2]) + "-" + pad2(m[3]);
+  if (diff < 0) return { kind: "past", date: dateText, days: diff };
+  return { kind: "left", date: dateText, days: diff };
+}
+
+function examLine(raw) {
+  var status = examStatus(raw);
+  if (status.kind === "empty") return t("examEmpty");
+  if (status.kind === "raw") return status.raw;
+  if (status.kind === "past") return status.date + " · " + t("examPast");
+  return status.date + " · " + tf("examLeft", { n: status.days });
+}
+
+function summarizeWeak(text) {
+  var s = String(text || "").trim();
+  if (!s) return t("weakEmpty");
+  var chars = Array.from(s);
+  if (chars.length <= 40) return s;
+  return chars.slice(0, 40).join("") + "…";
+}
+
+function minutesLine(labelKey, value) {
+  var v = String(value == null ? "" : value).trim();
+  if (!v) return t(labelKey) + " · —";
+  return t(labelKey) + " " + v + " " + t("minutesUnit");
+}
+
+function fileUrl(name, kind) {
+  var raw = String(name || "").trim();
+  if (/^https?:\/\//i.test(raw) || raw.indexOf("data:") === 0) return raw;
+  var base = kind === "private"
+    ? "https://www.ithinkair.com:3031/private/"
+    : "https://www.ithinkair.com:3031/download/";
+  return base + encodeURIComponent(raw);
+}
+
+function showToast(message) {
+  var node = el("toast");
+  node.textContent = message;
+  node.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { node.hidden = true; }, 2400);
+}
+
+function applyTheme(mode) {
+  var text = String(mode == null ? "" : mode).replace(/^\uFEFF/, "").trim();
+  document.body.setAttribute("data-theme", text === "暗色" ? "dark" : "light");
+}
+
+function updateLangButtons() {
+  var toggle = el("langToggle");
+  toggle.textContent = uiLang === "en" ? "中文" : "EN";
+  el("mobileLangZh").classList.toggle("is-active", uiLang !== "en");
+  el("mobileLangEn").classList.toggle("is-active", uiLang === "en");
+}
+
+function updatePlanModeUI() {
+  el("planTitle").textContent = editMode ? t("editTitle") : t("planTitle");
+  el("planIntro").textContent = editMode ? t("editIntro") : t("planIntro");
+  el("btnSubmitPlan").textContent = editMode ? t("saveChanges") : t("generate");
+  el("btnClearPlan").hidden = !!editMode;
+  el("btnSaveAsNew").hidden = !editMode;
+  el("btnCancelEdit").hidden = !editMode;
+  updateSubmitState();
+}
+
+function applyLanguage() {
+  document.documentElement.lang = uiLang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  var nodes = document.querySelectorAll("[data-i18n]");
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  var placeholders = document.querySelectorAll("[data-i18n-ph]");
+  for (var p = 0; p < placeholders.length; p++) placeholders[p].setAttribute("placeholder", t(placeholders[p].getAttribute("data-i18n-ph")));
+  var arias = document.querySelectorAll("[data-i18n-aria]");
+  for (var a = 0; a < arias.length; a++) arias[a].setAttribute("aria-label", t(arias[a].getAttribute("data-i18n-aria")));
+  updateLangButtons();
+  updatePlanModeUI();
+  updateNavActive();
+  renderManuscript();
+  renderHome();
+  renderShelf();
+  if (!el("detailOverlay").hidden) renderDetail();
+  var burger = el("navBurger");
+  if (burger.getAttribute("aria-expanded") === "true") burger.setAttribute("aria-label", t("closeMenu"));
+}
+
+function setLanguage(lang) {
+  uiLang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", uiLang === "en" ? "en" : "cn"); } catch (e) {}
+  applyLanguage();
+  updateNavMode();
+  syncNavSpacer();
+}
+
+function syncNavSpacer() {
+  var shell = el("navShell");
+  var height = shell.offsetHeight || 64;
+  document.body.style.paddingTop = height + "px";
+  document.documentElement.style.setProperty("--nav-offset", height + "px");
+}
+
+function closeMobileMenu() {
+  el("mobileMenu").hidden = true;
+  el("navBurger").setAttribute("aria-expanded", "false");
+  el("navBurger").setAttribute("aria-label", t("menuLabel"));
+  syncNavSpacer();
+}
+
+function toggleMobileMenu() {
+  var menu = el("mobileMenu");
+  var burger = el("navBurger");
+  var willOpen = menu.hidden;
+  menu.hidden = !willOpen;
+  burger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  burger.setAttribute("aria-label", willOpen ? t("closeMenu") : t("menuLabel"));
+  syncNavSpacer();
+}
+
+function naturalWidth(node) {
+  var kind = node.id;
+  var clone = node.cloneNode(true);
+  if (clone.removeAttribute) clone.removeAttribute("id");
+  var named = clone.querySelectorAll ? clone.querySelectorAll("[id]") : [];
+  for (var i = 0; i < named.length; i++) named[i].removeAttribute("id");
+  clone.hidden = false;
+  clone.style.position = "absolute";
+  clone.style.left = "-10000px";
+  clone.style.top = "0";
+  clone.style.visibility = "hidden";
+  clone.style.width = "max-content";
+  clone.style.display = "flex";
+  clone.style.flex = "0 0 auto";
+  clone.style.whiteSpace = "nowrap";
+  if (kind === "navBrand") {
+    clone.style.fontSize = "18px";
+    clone.style.fontWeight = "700";
+    clone.style.gap = "10px";
+  }
+  if (kind === "langToggle") {
+    clone.style.fontSize = "13px";
+    clone.style.padding = "6px 12px";
+  }
+  var buttons = clone.querySelectorAll ? clone.querySelectorAll("button") : [];
+  for (var b = 0; b < buttons.length; b++) {
+    buttons[b].style.whiteSpace = "nowrap";
+    buttons[b].style.padding = "18px 14px";
+    buttons[b].style.fontSize = "15px";
+  }
+  document.body.appendChild(clone);
+  var width = clone.scrollWidth || clone.offsetWidth;
+  document.body.removeChild(clone);
+  return width;
+}
+
+function updateNavMode() {
+  var row = el("navRow");
+  var tabs = el("navTabs");
+  var lang = el("langToggle");
+  var burger = el("navBurger");
+  var brand = el("navBrand");
+  tabs.hidden = false;
+  lang.hidden = false;
+  burger.hidden = true;
+  var need = naturalWidth(brand) + naturalWidth(tabs) + naturalWidth(lang) + 36;
+  var overflows = need > row.clientWidth + 1;
+  if (overflows) {
+    tabs.hidden = true;
+    lang.hidden = true;
+    burger.hidden = false;
+  } else {
+    closeMobileMenu();
+  }
+}
+
+function updateNavActive() {
+  var ids = [["navTabHome", "home"], ["navTabPlan", "plan"], ["navTabShelf", "shelf"], ["mobileTabHome", "home"], ["mobileTabPlan", "plan"], ["mobileTabShelf", "shelf"]];
+  for (var i = 0; i < ids.length; i++) {
+    var node = el(ids[i][0]);
+    if (node) node.classList.toggle("is-active", currentPage === ids[i][1]);
+  }
+}
+
+function openPopup(id) {
+  var node = el(id);
+  node.hidden = false;
+  document.body.classList.add("modal-open");
+  var idx = popupStack.indexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  popupStack.push(id);
+}
+
+function closePopup(id) {
+  var node = el(id);
+  if (node) node.hidden = true;
+  var idx = popupStack.lastIndexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  if (!popupStack.length) document.body.classList.remove("modal-open");
+  if (id === "detailOverlay") detailPollToken++;
+  if (id === "htmlOverlay") {
+    var frame = el("htmlFrame");
+    if (frame) frame.src = "about:blank";
+  }
+  if (id === "confirmOverlay" && confirmResolver) {
+    var resolve = confirmResolver;
+    confirmResolver = null;
+    resolve(false);
+  }
+}
+
+function askConfirm(message) {
+  return new Promise(function (resolve) {
+    confirmResolver = resolve;
+    el("confirmMessage").textContent = message;
+    openPopup("confirmOverlay");
+  });
+}
+
+function settleConfirm(result) {
+  var resolve = confirmResolver;
+  confirmResolver = null;
+  closePopup("confirmOverlay");
+  if (resolve) resolve(result);
+}
+
+function airBack() {
+  if (popupStack.length) {
+    var topId = popupStack[popupStack.length - 1];
+    if (topId === "confirmOverlay") settleConfirm(false);
+    else closePopup(topId);
+    return "false";
+  }
+  if (historyStack.length) {
+    var prev = historyStack.pop();
+    showPage(prev.page, { record: false, scroll: prev.scroll });
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+async function showPage(page, options) {
+  var opt = options || {};
+  var same = page === currentPage;
+  if (!same && opt.record !== false) {
+    historyStack.push({ page: currentPage, scroll: getScrollY() });
+  }
+  currentPage = page;
+  el("pageHome").hidden = page !== "home";
+  el("pagePlan").hidden = page !== "plan";
+  el("pageShelf").hidden = page !== "shelf";
+  updateNavActive();
+  closeMobileMenu();
+  if (page === "home") await loadHome();
+  else if (page === "shelf") await loadShelf();
+  if (typeof opt.scroll === "number") setScrollY(opt.scroll);
+  else if (!same) setScrollY(0);
+  syncNavSpacer();
+}
+
+function csvToRecords(csvText) {
+  var text = stripBom(csvText);
+  if (!String(text).trim()) return [];
+  var table = parseCSV(text);
+  var records = [];
+  for (var i = 0; i < table.length; i++) {
+    var cols = table[i] || [];
+    records.push({
+      row: i + 1,
+      stage: cols[0] || "",
+      goal: cols[1] || "",
+      weak: cols[2] || "",
+      weekday: cols[3] || "",
+      weekend: cols[4] || "",
+      slot: cols[5] || "",
+      exam: cols[6] || ""
+    });
+  }
+  return records;
+}
+
+function parseCount(text) {
+  var m = String(text == null ? "" : text).trim().match(/-?\d+/);
+  if (!m) return null;
+  return parseInt(m[0], 10);
+}
+
+function countStages(records) {
+  var primary = 0;
+  var junior = 0;
+  var senior = 0;
+  for (var i = 0; i < records.length; i++) {
+    if (records[i].stage === "小学高段") primary++;
+    else if (records[i].stage === "初中") junior++;
+    else if (records[i].stage === "高中") senior++;
+  }
+  return { primary: primary, junior: junior, senior: senior };
+}
+
+async function loadHome() {
+  var token = ++homeLoadToken;
+  homeState = "loading";
+  homeErrorText = "";
+  renderHome();
+  var countText = null;
+  var csvText = null;
+  var countErr = null;
+  var csvErr = null;
+  try {
+    countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+  } catch (err) { countErr = err; }
+  if (token !== homeLoadToken) return;
+  try {
+    csvText = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: CSV_FIELDS });
+  } catch (err2) { csvErr = err2; }
+  if (token !== homeLoadToken) return;
+  if (csvErr) {
+    homeRecords = [];
+    homeCount = countErr ? null : parseCount(countText);
+    homeState = "error";
+    homeErrorText = errorText("loadFail", csvErr);
+  } else if (countErr) {
+    homeRecords = csvToRecords(csvText);
+    homeCount = null;
+    homeState = "error";
+    homeErrorText = errorText("loadFail", countErr);
+  } else {
+    homeRecords = csvToRecords(csvText);
+    homeCount = parseCount(countText);
+    homeState = "ready";
+    homeErrorText = "";
+  }
+  renderHome();
+}
+
+function renderHome() {
+  var status = el("homeStatus");
+  var list = el("recentList");
+  var empty = el("homeEmpty");
+  var title = el("recentTitle");
+  list.innerHTML = "";
+  if (homeState === "loading") {
+    status.hidden = false;
+    status.textContent = t("loading");
+    title.hidden = true;
+    empty.hidden = true;
+    el("statAllCount").textContent = "…";
+    el("statPrimaryCount").textContent = "…";
+    el("statJuniorCount").textContent = "…";
+    el("statSeniorCount").textContent = "…";
+    return;
+  }
+  var stages = countStages(homeRecords);
+  el("statAllCount").textContent = homeCount == null ? "—" : String(homeCount);
+  el("statPrimaryCount").textContent = homeState === "error" && !homeRecords.length ? "—" : String(stages.primary);
+  el("statJuniorCount").textContent = homeState === "error" && !homeRecords.length ? "—" : String(stages.junior);
+  el("statSeniorCount").textContent = homeState === "error" && !homeRecords.length ? "—" : String(stages.senior);
+  if (homeState === "error") {
+    status.hidden = false;
+    status.textContent = homeErrorText || t("loadFail");
+  } else {
+    status.hidden = true;
+  }
+  var total = homeCount == null ? homeRecords.length : homeCount;
+  if (homeState !== "error" && total === 0) {
+    title.hidden = true;
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+  title.hidden = false;
+  var recent = homeRecords.slice(0, 5);
+  for (var i = 0; i < recent.length; i++) list.appendChild(buildRecentCard(recent[i]));
+}
+
+function buildRecentCard(rec) {
+  var card = document.createElement("article");
+  card.className = "note-card is-clickable";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.appendChild(stageTag(rec.stage));
+  var goal = document.createElement("h3");
+  goal.className = "goal-title";
+  goal.textContent = String(rec.goal || "").trim() ? rec.goal : t("goalEmpty");
+  card.appendChild(goal);
+  var weak = document.createElement("p");
+  weak.className = "card-weak";
+  weak.textContent = summarizeWeak(rec.weak);
+  card.appendChild(weak);
+  card.appendChild(metaList(rec));
+  function open() { openDetail(rec.row, "home"); }
+  card.addEventListener("click", open);
+  card.addEventListener("keydown", function (e) {
+    if (e.target !== card) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+  });
+  return card;
+}
+
+function stageTag(stage) {
+  var tag = document.createElement("span");
+  tag.className = "stage-tag " + stageClass(stage);
+  tag.textContent = stageLabel(stage) || "—";
+  return tag;
+}
+
+function metaList(rec) {
+  var ul = document.createElement("ul");
+  ul.className = "meta-list";
+  ul.appendChild(metaItem("fa-sun", minutesLine("weekdayShort", rec.weekday)));
+  ul.appendChild(metaItem("fa-cloud-moon", minutesLine("weekendShort", rec.weekend)));
+  var slot = String(rec.slot || "").trim();
+  ul.appendChild(metaItem("fa-clock", slot ? (t("slotLabel") + " · " + slot) : t("slotEmpty")));
+  ul.appendChild(metaItem("fa-calendar-day", examLine(rec.exam)));
+  return ul;
+}
+
+function metaItem(icon, text) {
+  var li = document.createElement("li");
+  var i = document.createElement("i");
+  i.className = "fa-solid " + icon;
+  i.setAttribute("aria-hidden", "true");
+  li.appendChild(i);
+  li.appendChild(document.createTextNode(" " + text));
+  return li;
+}
+
+async function loadShelf() {
+  var token = ++shelfLoadToken;
+  shelfState = "loading";
+  shelfErrorText = "";
+  renderShelf();
+  try {
+    await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+  } catch (ignoreCount) {}
+  if (token !== shelfLoadToken) return;
+  try {
+    var csvText = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: CSV_FIELDS });
+    if (token !== shelfLoadToken) return;
+    shelfRecords = csvToRecords(csvText);
+    shelfState = "ready";
+  } catch (err) {
+    if (token !== shelfLoadToken) return;
+    shelfRecords = [];
+    shelfState = "error";
+    shelfErrorText = errorText("loadFail", err);
+  }
+  renderShelf();
+}
+
+function shelfFiltersActive() {
+  return el("shelfSearch").value.trim() !== "" || el("shelfStageFilter").value !== "" || el("shelfExamFilter").value !== "all";
+}
+
+function filteredShelfRecords() {
+  var q = el("shelfSearch").value.trim().toLowerCase();
+  var stage = el("shelfStageFilter").value;
+  var exam = el("shelfExamFilter").value;
+  var out = [];
+  for (var i = 0; i < shelfRecords.length; i++) {
+    var rec = shelfRecords[i];
+    if (stage && rec.stage !== stage) continue;
+    var hasExam = String(rec.exam || "").trim() !== "";
+    if (exam === "filled" && !hasExam) continue;
+    if (exam === "empty" && hasExam) continue;
+    if (q) {
+      var blob = (String(rec.goal) + "\n" + String(rec.weak) + "\n" + String(rec.slot)).toLowerCase();
+      if (blob.indexOf(q) === -1) continue;
+    }
+    out.push(rec);
+  }
+  return out;
+}
+
+function renderShelf() {
+  var status = el("shelfStatus");
+  var list = el("shelfList");
+  var empty = el("shelfEmpty");
+  list.innerHTML = "";
+  if (shelfState === "loading") {
+    status.hidden = false;
+    status.textContent = t("shelfLoading");
+    empty.hidden = true;
+    return;
+  }
+  if (shelfState === "error") {
+    status.hidden = false;
+    status.textContent = shelfErrorText || t("loadFail");
+    empty.hidden = true;
+    return;
+  }
+  status.hidden = true;
+  var rows = filteredShelfRecords();
+  if (!rows.length) {
+    empty.hidden = false;
+    el("shelfEmptyText").textContent = t("noMatch");
+    el("btnClearFilters").hidden = !shelfFiltersActive();
+    el("btnShelfEmptyNew").hidden = shelfRecords.length !== 0;
+    return;
+  }
+  empty.hidden = true;
+  for (var i = 0; i < rows.length; i++) list.appendChild(buildShelfCard(rows[i]));
+}
+
+function buildShelfCard(rec) {
+  var card = document.createElement("article");
+  card.className = "note-card is-clickable";
+  card.tabIndex = 0;
+  card.appendChild(stageTag(rec.stage));
+  var goal = document.createElement("h3");
+  goal.className = "goal-title";
+  goal.textContent = String(rec.goal || "").trim() ? rec.goal : t("goalEmpty");
+  card.appendChild(goal);
+  var weak = document.createElement("p");
+  weak.className = "card-weak";
+  weak.textContent = String(rec.weak || "").trim() ? rec.weak : t("weakEmpty");
+  card.appendChild(weak);
+  card.appendChild(metaList(rec));
+  var actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(actionButton("viewPlan", "btn btn-ghost btn-small", function (e) {
+    e.stopPropagation();
+    openDetail(rec.row, "shelf");
+  }));
+  actions.appendChild(actionButton("edit", "btn btn-ghost btn-small", function (e) {
+    e.stopPropagation();
+    openEdit(rec.row);
+  }));
+  actions.appendChild(actionButton("delete", "btn btn-danger-ghost btn-small", function (e) {
+    e.stopPropagation();
+    performDelete(rec.row);
+  }));
+  card.appendChild(actions);
+  card.addEventListener("click", function () { openEdit(rec.row); });
+  card.addEventListener("keydown", function (e) {
+    if (e.target !== card) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openEdit(rec.row);
+    }
+  });
+  return card;
+}
+
+function actionButton(key, className, handler) {
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = className;
+  btn.textContent = t(key);
+  btn.addEventListener("click", handler);
+  return btn;
+}
+
+function clearShelfFilters() {
+  el("shelfSearch").value = "";
+  el("shelfStageFilter").value = "";
+  el("shelfExamFilter").value = "all";
+  renderShelf();
+}
+
+function openShelfWithStage(stage) {
+  el("shelfSearch").value = "";
+  el("shelfStageFilter").value = stage || "";
+  el("shelfExamFilter").value = "all";
+  showPage("shelf");
+}
+
+function selectedStage() {
+  var radios = document.querySelectorAll('#formPlan input[name="学段"]');
+  for (var i = 0; i < radios.length; i++) if (radios[i].checked) return radios[i].value;
+  return "";
+}
+
+function setStage(value) {
+  var radios = document.querySelectorAll('#formPlan input[name="学段"]');
+  for (var i = 0; i < radios.length; i++) radios[i].checked = radios[i].value === value;
+  updateStageHint();
+}
+
+function updateStageHint() {
+  var labels = document.querySelectorAll(".stage-option");
+  for (var i = 0; i < labels.length; i++) {
+    var input = labels[i].querySelector("input");
+    labels[i].classList.toggle("is-selected", !!(input && input.checked));
+  }
+  el("stageHint").hidden = !selectedStage();
+}
+
+function formValid() {
+  return !!selectedStage()
+    && el("formPlan_goal").value.trim() !== ""
+    && isPositiveInt(el("formPlan_weekday").value)
+    && isPositiveInt(el("formPlan_weekend").value);
+}
+
+function updateSubmitState() {
+  var ok = formValid() && !submitting;
+  el("btnSubmitPlan").disabled = !ok;
+  el("btnSaveAsNew").disabled = !ok;
+}
+
+function collectForm() {
+  return {
+    "学段": selectedStage(),
+    "学习目标": el("formPlan_goal").value.trim(),
+    "薄弱点": el("formPlan_weak").value.trim(),
+    "平日每天可用分钟": el("formPlan_weekday").value.trim(),
+    "周末每天可用分钟": el("formPlan_weekend").value.trim(),
+    "高效学习时段": el("formPlan_slot").value.trim(),
+    "考试日期": el("formPlan_exam").value.trim()
+  };
+}
+
+function clearFormFields() {
+  var radios = document.querySelectorAll('#formPlan input[name="学段"]');
+  for (var i = 0; i < radios.length; i++) radios[i].checked = false;
+  el("formPlan_goal").value = "";
+  el("formPlan_weak").value = "";
+  el("formPlan_weekday").value = "";
+  el("formPlan_weekend").value = "";
+  el("formPlan_slot").value = "";
+  el("formPlan_exam").value = "";
+  el("planError").hidden = true;
+  el("saveNote").hidden = true;
+  updateStageHint();
+  updateSubmitState();
+}
+
+function clearManuscript() {
+  manuscriptSource = "";
+  manuscriptMode = "empty";
+  renderManuscript();
+}
+
+function stopManuscriptPoll() {
+  manuscriptPollToken++;
+  submitting = false;
+  el("formPlanFields").disabled = false;
+  updateSubmitState();
+}
+
+function resetToNew() {
+  formActionToken++;
+  stopManuscriptPoll();
+  editLoadToken++;
+  editMode = false;
+  currentRow = 0;
+  clearFormFields();
+  clearManuscript();
+  updatePlanModeUI();
+}
+
+function fillForm(values) {
+  setStage(values["学段"] || "");
+  el("formPlan_goal").value = values["学习目标"] || "";
+  el("formPlan_weak").value = values["薄弱点"] || "";
+  el("formPlan_weekday").value = normalizeIntInput(values["平日每天可用分钟"] || "");
+  el("formPlan_weekend").value = normalizeIntInput(values["周末每天可用分钟"] || "");
+  el("formPlan_slot").value = values["高效学习时段"] || "";
+  el("formPlan_exam").value = normalizeDateInput(values["考试日期"] || "");
+  updateStageHint();
+  updateSubmitState();
+}
+
+function renderManuscript() {
+  var body = el("manuscriptBody");
+  var copyBtn = el("btnCopyManuscript");
+  body.className = "manuscript-body";
+  body.innerHTML = "";
+  if (manuscriptMode === "loading") {
+    copyBtn.disabled = true;
+    var loading = document.createElement("p");
+    loading.className = "wait-box";
+    loading.textContent = t("loading");
+    body.appendChild(loading);
+    return;
+  }
+  if (manuscriptMode === "wait") {
+    copyBtn.disabled = true;
+    body.appendChild(waitBlock(t("waitMsg")));
+    return;
+  }
+  if (manuscriptMode === "timeout") {
+    copyBtn.disabled = true;
+    var timeout = document.createElement("p");
+    timeout.className = "wait-box";
+    timeout.textContent = t("timeoutMsg");
+    body.appendChild(timeout);
+    return;
+  }
+  if (!String(manuscriptSource || "").trim()) {
+    copyBtn.disabled = true;
+    var empty = document.createElement("p");
+    empty.className = "wait-box";
+    empty.textContent = editMode ? t("manuscriptNotReady") : t("manuscriptEmpty");
+    body.appendChild(empty);
+    return;
+  }
+  copyBtn.disabled = false;
+  body.classList.add("markdown-body");
+  body.innerHTML = renderMarkdown(manuscriptSource);
+}
+
+function waitBlock(message) {
+  var wrap = document.createElement("div");
+  wrap.className = "wait-box";
+  var icon = document.createElement("div");
+  icon.className = "wait-lamp";
+  icon.innerHTML = '<i class="fa-solid fa-lightbulb" aria-hidden="true"></i>';
+  var title = document.createElement("h3");
+  title.textContent = t("appName");
+  var p = document.createElement("p");
+  p.textContent = message;
+  wrap.appendChild(icon);
+  wrap.appendChild(title);
+  wrap.appendChild(p);
+  return wrap;
+}
+
+async function pollManuscript(row) {
+  var token = ++manuscriptPollToken;
+  var started = Date.now();
+  submitting = true;
+  el("formPlanFields").disabled = true;
+  updateSubmitState();
+  manuscriptMode = "wait";
+  manuscriptSource = "";
+  renderManuscript();
+  try { el("manuscriptCard").scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+  while (token === manuscriptPollToken) {
+    if (Date.now() - started >= POLL_TIMEOUT_MS) {
+      manuscriptMode = "timeout";
+      renderManuscript();
+      submitting = false;
+      el("formPlanFields").disabled = false;
+      updateSubmitState();
+      return;
+    }
+    try {
+      var text = await withTimeout(callAppBridge({
+        type: "GetCellValue",
+        data: SOURCE,
+        payload: "学习计划内容/" + row
+      }), 15000);
+      if (token !== manuscriptPollToken) return;
+      if (text != null && String(text).trim() !== "") {
+        manuscriptSource = String(text);
+        manuscriptMode = "ready";
+        renderManuscript();
+        submitting = false;
+        el("formPlanFields").disabled = false;
+        updateSubmitState();
+        return;
+      }
+    } catch (err) {
+      if (token !== manuscriptPollToken) return;
+    }
+    await sleep(POLL_INTERVAL_MS);
+    if (token !== manuscriptPollToken) return;
+  }
+}
+
+function withTimeout(promise, ms) {
+  return new Promise(function (resolve, reject) {
+    var done = false;
+    var timer = setTimeout(function () {
+      if (done) return;
+      done = true;
+      reject(new Error("timeout"));
+    }, ms);
+    promise.then(function (value) {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      resolve(value);
+    }, function (err) {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      reject(err);
+    });
+  });
+}
+
+async function submitNewPlan() {
+  if (!formValid() || submitting) return;
+  var token = ++formActionToken;
+  var data = collectForm();
+  el("planError").hidden = true;
+  el("saveNote").hidden = true;
+  submitting = true;
+  updateSubmitState();
+  try {
+    await callAppBridge({ type: "SubmitRecord", data: TABLE_NAME, payload: JSON.stringify(data) });
+  } catch (err) {
+    if (token !== formActionToken) return;
+    submitting = false;
+    updateSubmitState();
+    el("planError").hidden = false;
+    el("planError").textContent = errorText("submitFail", err);
+    return;
+  }
+  if (token !== formActionToken) return;
+  currentRow = 1;
+  editMode = false;
+  updatePlanModeUI();
+  pollManuscript(1);
+}
+
+async function saveEdits() {
+  if (!editMode || !formValid() || submitting || !(currentRow > 0)) return;
+  var token = ++formActionToken;
+  var row = currentRow;
+  var data = collectForm();
+  el("planError").hidden = true;
+  submitting = true;
+  updateSubmitState();
+  try {
+    for (var i = 0; i < EDIT_FIELDS.length; i++) {
+      if (token !== formActionToken) return;
+      var name = EDIT_FIELDS[i];
+      await callAppBridge({
+        type: "SetCellValue",
+        data: SOURCE,
+        payload: name + "/" + row + "/" + data[name]
+      });
+    }
+  } catch (err) {
+    if (token !== formActionToken) return;
+    submitting = false;
+    updateSubmitState();
+    el("planError").hidden = false;
+    el("planError").textContent = errorText("saveFail", err);
+    return;
+  }
+  if (token !== formActionToken) return;
+  submitting = false;
+  updateSubmitState();
+  el("saveNote").hidden = false;
+  showToast(t("saved"));
+}
+
+async function saveAsNew() {
+  if (!formValid() || submitting) return;
+  var token = ++formActionToken;
+  var data = collectForm();
+  el("planError").hidden = true;
+  el("saveNote").hidden = true;
+  submitting = true;
+  updateSubmitState();
+  try {
+    await callAppBridge({ type: "SubmitRecord", data: TABLE_NAME, payload: JSON.stringify(data) });
+  } catch (err) {
+    if (token !== formActionToken) return;
+    submitting = false;
+    updateSubmitState();
+    el("planError").hidden = false;
+    el("planError").textContent = errorText("submitFail", err);
+    return;
+  }
+  if (token !== formActionToken) return;
+  currentRow = 1;
+  editMode = false;
+  updatePlanModeUI();
+  pollManuscript(1);
+}
+
+async function loadEdit(row) {
+  var token = ++editLoadToken;
+  formActionToken++;
+  stopManuscriptPoll();
+  editMode = true;
+  currentRow = row;
+  updatePlanModeUI();
+  clearFormFields();
+  manuscriptSource = "";
+  manuscriptMode = "loading";
+  renderManuscript();
+  el("formPlanFields").disabled = true;
+  var values = {};
+  try {
+    for (var i = 0; i < DETAIL_FIELDS.length; i++) {
+      if (token !== editLoadToken) return;
+      var name = DETAIL_FIELDS[i];
+      var value = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: name + "/" + row });
+      if (token !== editLoadToken) return;
+      values[name] = value == null ? "" : String(value);
+    }
+  } catch (err) {
+    if (token !== editLoadToken) return;
+    el("formPlanFields").disabled = false;
+    el("planError").hidden = false;
+    el("planError").textContent = errorText("loadFail", err);
+    updateSubmitState();
+    return;
+  }
+  if (token !== editLoadToken) return;
+  fillForm(values);
+  manuscriptSource = values["学习计划内容"] || "";
+  manuscriptMode = String(manuscriptSource).trim() ? "ready" : "empty";
+  renderManuscript();
+  el("formPlanFields").disabled = false;
+  updateSubmitState();
+}
+
+async function openEdit(row) {
+  closePopup("detailOverlay");
+  await showPage("plan");
+  await loadEdit(row);
+}
+
+async function openNewPlan() {
+  resetToNew();
+  await showPage("plan");
+}
+
+async function openDetail(row, source) {
+  var token = ++detailLoadToken;
+  detailPollToken++;
+  detailRow = row;
+  detailSource = source;
+  detailValues = null;
+  detailState = "loading";
+  detailErrorText = "";
+  renderDetail();
+  openPopup("detailOverlay");
+  var values = {};
+  try {
+    for (var i = 0; i < DETAIL_FIELDS.length; i++) {
+      if (token !== detailLoadToken) return;
+      var name = DETAIL_FIELDS[i];
+      var value = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: name + "/" + row });
+      if (token !== detailLoadToken) return;
+      values[name] = value == null ? "" : String(value);
+    }
+  } catch (err) {
+    if (token !== detailLoadToken) return;
+    detailState = "error";
+    detailErrorText = errorText("loadFail", err);
+    renderDetail();
+    return;
+  }
+  if (token !== detailLoadToken || el("detailOverlay").hidden) return;
+  detailValues = values;
+  if (!String(values["学习计划内容"] || "").trim()) {
+    detailState = "waiting";
+    renderDetail();
+    pollDetailContent(row, token);
+  } else {
+    detailState = "ready";
+    renderDetail();
+  }
+}
+
+async function pollDetailContent(row, loadToken) {
+  var token = ++detailPollToken;
+  var started = Date.now();
+  while (token === detailPollToken && loadToken === detailLoadToken) {
+    if (el("detailOverlay").hidden) return;
+    if (Date.now() - started >= POLL_TIMEOUT_MS) {
+      if (token !== detailPollToken) return;
+      detailState = "timeout";
+      renderDetail();
+      return;
+    }
+    try {
+      var text = await withTimeout(callAppBridge({
+        type: "GetCellValue",
+        data: SOURCE,
+        payload: "学习计划内容/" + row
+      }), 15000);
+      if (token !== detailPollToken || loadToken !== detailLoadToken) return;
+      if (text != null && String(text).trim() !== "") {
+        if (!detailValues) detailValues = {};
+        detailValues["学习计划内容"] = String(text);
+        detailState = "ready";
+        renderDetail();
+        return;
+      }
+    } catch (err) {
+      if (token !== detailPollToken) return;
+    }
+    await sleep(POLL_INTERVAL_MS);
+  }
+}
+
+function renderDetail() {
+  el("btnDetailCopy").hidden = detailSource !== "shelf";
+  el("btnDetailClose").hidden = detailSource !== "shelf";
+  var copyBtn = el("btnDetailCopy");
+  var content = detailValues ? String(detailValues["学习计划内容"] || "") : "";
+  copyBtn.disabled = !content.trim();
+  var body = el("detailBody");
+  body.innerHTML = "";
+  if (detailState === "loading") {
+    var loading = document.createElement("p");
+    loading.textContent = t("loading");
+    body.appendChild(loading);
+    return;
+  }
+  if (detailState === "error" && !detailValues) {
+    var err = document.createElement("p");
+    err.textContent = detailErrorText || t("loadFail");
+    body.appendChild(err);
+    return;
+  }
+  var dl = document.createElement("dl");
+  dl.className = "detail-dl";
+  appendDetail(dl, "fieldStage", detailValues ? stageLabel(detailValues["学段"]) : "");
+  appendDetail(dl, "fieldGoal", detailValues && String(detailValues["学习目标"] || "").trim() ? detailValues["学习目标"] : t("goalEmpty"));
+  appendDetail(dl, "fieldWeak", detailValues && String(detailValues["薄弱点"] || "").trim() ? detailValues["薄弱点"] : t("weakEmpty"));
+  appendDetail(dl, "fieldWeekday", detailValues ? minutesLine("weekdayShort", detailValues["平日每天可用分钟"]) : "");
+  appendDetail(dl, "fieldWeekend", detailValues ? minutesLine("weekendShort", detailValues["周末每天可用分钟"]) : "");
+  var slotRaw = detailValues ? String(detailValues["高效学习时段"] || "").trim() : "";
+  appendDetail(dl, "fieldSlot", slotRaw || t("slotEmpty"));
+  appendDetail(dl, "fieldExam", detailValues ? examLine(detailValues["考试日期"]) : t("examEmpty"));
+  body.appendChild(dl);
+  var contentTitle = document.createElement("h3");
+  contentTitle.textContent = t("fieldContent");
+  body.appendChild(contentTitle);
+  var md = document.createElement("div");
+  md.className = "markdown-body";
+  if (detailState === "waiting") md.appendChild(waitBlock(t("waitMsg")));
+  else if (detailState === "timeout") md.textContent = t("timeoutMsg");
+  else if (!content.trim()) md.textContent = t("contentEmpty");
+  else md.innerHTML = renderMarkdown(content);
+  body.appendChild(md);
+}
+
+function appendDetail(dl, labelKey, value) {
+  var wrap = document.createElement("div");
+  var dt = document.createElement("dt");
+  dt.textContent = t(labelKey);
+  var dd = document.createElement("dd");
+  dd.textContent = value == null ? "" : String(value);
+  wrap.appendChild(dt);
+  wrap.appendChild(dd);
+  dl.appendChild(wrap);
+}
+
+async function performDelete(row) {
+  if (confirmResolver) return;
+  var ok = await askConfirm(t("deleteConfirm"));
+  if (!ok) return;
+  try {
+    await callAppBridge({ type: "DeleteRecord", data: SOURCE, payload: Number(row).toString() });
+  } catch (err) {
+    showToast(errorText("deleteFail", err));
+    return;
+  }
+  if (currentRow > 0) {
+    if (Number(currentRow) === Number(row)) {
+      formActionToken++;
+      editLoadToken++;
+      stopManuscriptPoll();
+      editMode = false;
+      currentRow = 0;
+      clearFormFields();
+      clearManuscript();
+      updatePlanModeUI();
+    } else if (Number(row) < Number(currentRow)) {
+      currentRow = Number(currentRow) - 1;
+    }
+  }
+  closePopup("detailOverlay");
+  if (currentPage === "home") await loadHome();
+  else if (currentPage === "shelf") await loadShelf();
+}
+
+function errorText(key, err) {
+  var extra = "";
+  if (err && err.message) extra = String(err.message);
+  else if (typeof err === "string") extra = err;
+  if (extra && extra.length < 180) return t(key) + " " + extra;
+  return t(key);
+}
+
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) {}
+  var area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "readonly");
+  area.style.position = "fixed";
+  area.style.left = "-9999px";
+  document.body.appendChild(area);
+  area.select();
+  var ok = false;
+  try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+  document.body.removeChild(area);
+  return ok;
+}
+
+function flashCopied(btn) {
+  var key = btn.getAttribute("data-i18n") || "copy";
+  btn.textContent = t("copied");
+  if (btn._copyTimer) clearTimeout(btn._copyTimer);
+  btn._copyTimer = setTimeout(function () { btn.textContent = t(key); }, 1600);
+}
+
+async function copyManuscript() {
+  if (!String(manuscriptSource || "").trim()) return;
+  var ok = await copyText(manuscriptSource);
+  if (ok) flashCopied(el("btnCopyManuscript"));
+  else showToast(t("copyFail"));
+}
+
+async function copyDetail() {
+  var text = detailValues ? String(detailValues["学习计划内容"] || "") : "";
+  if (!text.trim()) return;
+  var ok = await copyText(text);
+  if (ok) flashCopied(el("btnDetailCopy"));
+  else showToast(t("copyFail"));
+}
+
+function openHtmlViewer(url) {
+  el("htmlFrame").src = url;
+  el("htmlTitle").textContent = t("htmlView");
+  openPopup("htmlOverlay");
+}
+
+function imageTag(alt, url) {
+  var href = fileUrl(url, "download");
+  return '<a class="md-img-link" href="' + escapeAttr(href) + '" target="_blank" rel="noopener"><img src="' + escapeAttr(href) + '" alt="' + escapeAttr(alt) + '"></a>';
+}
+
+function linkTag(text, url) {
+  var raw = String(url || "").trim();
+  var href = raw;
+  if (!/^https?:\/\//i.test(raw) && !/^mailto:/i.test(raw) && raw.charAt(0) !== "#") {
+    href = /\.html?$/i.test(raw) ? fileUrl(raw, "private") : fileUrl(raw, "download");
+  }
+  return '<a href="' + escapeAttr(href) + '" target="_blank" rel="noopener">' + escapeHtml(text) + "</a>";
+}
+
+function renderInline(src) {
+  var s = String(src || "");
+  var tokens = [];
+  function hold(html) {
+    var id = tokens.length;
+    tokens.push(html);
+    return "\u0000T" + id + "\u0000";
+  }
+  s = s.replace(/\\([\\`*_{}\[\]()#+\-.!|>~])/g, function (_, ch) { return hold(escapeHtml(ch)); });
+  s = s.replace(/`([^`\n]+)`/g, function (_, code) { return hold("<code>" + escapeHtml(code) + "</code>"); });
+  s = s.replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?(?:\s+["'][^"']*["'])?\s*\)/g, function (_, alt, url) {
+    return hold(imageTag(alt, url));
+  });
+  s = s.replace(/\[([^\]]+)\]\(\s*<?([^)\s>]+)>?(?:\s+["'][^"']*["'])?\s*\)/g, function (_, text, url) {
+    return hold(linkTag(text, url));
+  });
+  s = s.replace(/<(https?:\/\/[^>\s]+)>/g, function (_, url) { return hold(linkTag(url, url)); });
+  s = escapeHtml(s);
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=$|[\s).,;:!?])/g, "$1<em>$2</em>");
+  s = s.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+  s = s.replace(/(^|[\s(])_([^_\n]+)_(?=$|[\s).,;:!?])/g, "$1<em>$2</em>");
+  s = s.replace(/\u0000T(\d+)\u0000/g, function (_, id) { return tokens[Number(id)] || ""; });
+  s = s.replace(/\n/g, "<br>");
+  return s;
+}
+
+function splitTableRow(line) {
+  var s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.substring(1);
+  if (s.charAt(s.length - 1) === "|") s = s.substring(0, s.length - 1);
+  var cells = [];
+  var cur = "";
+  for (var i = 0; i < s.length; i++) {
+    var ch = s.charAt(i);
+    if (ch === "\\" && i + 1 < s.length) { cur += s.charAt(i + 1); i++; continue; }
+    if (ch === "|") { cells.push(cur.trim()); cur = ""; continue; }
+    cur += ch;
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+function isTableSeparator(line) {
+  if (line.indexOf("-") === -1) return false;
+  var cells = splitTableRow(line);
+  if (!cells.length) return false;
+  for (var i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i].replace(/\s/g, ""))) return false;
+  }
+  return true;
+}
+
+function alignmentOf(cell) {
+  var c = cell.replace(/\s/g, "");
+  var left = c.charAt(0) === ":";
+  var right = c.charAt(c.length - 1) === ":";
+  if (left && right) return "center";
+  if (right) return "right";
+  return "left";
+}
+
+function readTable(lines, index) {
+  var header = splitTableRow(lines[index]);
+  var aligns = splitTableRow(lines[index + 1]);
+  var html = '<div class="md-table-wrap"><table><thead><tr>';
+  for (var h = 0; h < header.length; h++) {
+    var align = alignmentOf(aligns[h] || "");
+    html += '<th style="text-align:' + align + '">' + renderInline(header[h]) + "</th>";
+  }
+  html += "</tr></thead><tbody>";
+  var i = index + 2;
+  while (i < lines.length && /\|/.test(lines[i]) && String(lines[i]).trim() !== "") {
+    var cells = splitTableRow(lines[i]);
+    html += "<tr>";
+    for (var c = 0; c < header.length; c++) {
+      var alignCell = alignmentOf(aligns[c] || "");
+      html += '<td style="text-align:' + alignCell + '">' + renderInline(cells[c] || "") + "</td>";
+    }
+    html += "</tr>";
+    i++;
+  }
+  html += "</tbody></table></div>";
+  return { html: html, next: i };
+}
+
+function unindent(blockLines) {
+  var min = 999;
+  for (var i = 0; i < blockLines.length; i++) {
+    if (!String(blockLines[i]).trim()) continue;
+    var m = /^(\s*)/.exec(blockLines[i]);
+    if (m && m[1].length < min) min = m[1].length;
+  }
+  if (min === 999 || min === 0) return blockLines.join("\n");
+  var out = [];
+  for (var j = 0; j < blockLines.length; j++) {
+    if (!String(blockLines[j]).trim()) out.push("");
+    else out.push(blockLines[j].substring(min));
+  }
+  return out.join("\n");
+}
+
+function readList(lines, index) {
+  var first = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/.exec(lines[index] || "");
+  if (!first) return null;
+  var baseIndent = first[1].length;
+  var ordered = /^\d/.test(first[2]);
+  var items = [];
+  while (index < lines.length) {
+    if (/^\s*$/.test(lines[index])) {
+      var nxt = lines[index + 1] || "";
+      var blankItem = /^(\s*)([-*+]|\d+[.)])\s+/.exec(nxt);
+      if (blankItem && blankItem[1].length === baseIndent && ((/^\d/.test(blankItem[2])) === ordered)) {
+        index++;
+        continue;
+      }
+      break;
+    }
+    var m = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/.exec(lines[index]);
+    if (!m || m[1].length !== baseIndent || ((/^\d/.test(m[2])) !== ordered)) break;
+    var task = /^\[([ xX])\]\s+([\s\S]*)$/.exec(m[3]);
+    var textLines = [task ? task[2] : m[3]];
+    var childLines = [];
+    index++;
+    while (index < lines.length) {
+      if (/^\s*$/.test(lines[index])) {
+        var look = lines[index + 1] || "";
+        var lead = /^(\s*)/.exec(look);
+        var leadLen = lead ? lead[1].length : 0;
+        var lookItem = /^(\s*)([-*+]|\d+[.)])\s+/.exec(look);
+        if ((lookItem && lookItem[1].length > baseIndent) || (!lookItem && look.trim() && leadLen > baseIndent)) {
+          childLines.push(lines[index]);
+          index++;
+          continue;
+        }
+        break;
+      }
+      var m2 = /^(\s*)([-*+]|\d+[.)])\s+/.exec(lines[index]);
+      if (m2 && m2[1].length <= baseIndent) break;
+      if (m2 && m2[1].length > baseIndent) {
+        childLines.push(lines[index]);
+        index++;
+        continue;
+      }
+      var lead2 = /^(\s*)/.exec(lines[index]);
+      if (lines[index].trim() && lead2 && lead2[1].length > baseIndent) {
+        childLines.push(lines[index]);
+        index++;
+        continue;
+      }
+      if (lines[index].trim()) {
+        textLines.push(lines[index].trim());
+        index++;
+        continue;
+      }
+      break;
+    }
+    var inner = "";
+    if (task) {
+      var checked = task[1].toLowerCase() === "x" ? " checked" : "";
+      inner = '<label class="md-task"><input type="checkbox" disabled' + checked + "> <span>" + renderInline(textLines.join(" ")) + "</span></label>";
+    } else {
+      inner = "<p>" + renderInline(textLines.join(" ")) + "</p>";
+    }
+    if (childLines.length) inner += renderMarkdown(unindent(childLines));
+    items.push("<li>" + inner + "</li>");
+  }
+  var tag = ordered ? "ol" : "ul";
+  return { html: "<" + tag + ">" + items.join("") + "</" + tag + ">", next: index };
+}
+
+function isBlockStart(lines, index) {
+  var line = lines[index] || "";
+  if (/^\s*$/.test(line)) return true;
+  if (/^(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) return true;
+  if (/^(#{1,6})\s+/.test(line)) return true;
+  if (/^>\s?/.test(line)) return true;
+  if (/^(\s*)([-*+]|\d+[.)])\s+/.test(line)) return true;
+  if (/^(?: {4}|\t)\S/.test(line)) return true;
+  if (/^\u0000F(\d+)\u0000$/.test(line.trim())) return true;
+  if (index + 1 < lines.length && /^(?:=+|-+)\s*$/.test(lines[index + 1]) && line.trim()) return true;
+  if (/\|/.test(line) && index + 1 < lines.length && isTableSeparator(lines[index + 1])) return true;
+  return false;
+}
+
+function renderMarkdown(src) {
+  var text = String(src || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  var fences = [];
+  text = text.replace(/```([^\n`]*)\n([\s\S]*?)```/g, function (_, lang, code) {
+    var id = fences.length;
+    fences.push(code.replace(/\n$/, ""));
+    return "\n\u0000F" + id + "\u0000\n";
+  });
+  var lines = text.split("\n");
+  var html = [];
+  var i = 0;
+  while (i < lines.length) {
+    var line = lines[i];
+    var fence = /^\u0000F(\d+)\u0000$/.exec(String(line).trim());
+    if (fence) {
+      html.push('<pre class="md-pre"><code>' + escapeHtml(fences[Number(fence[1])] || "") + "</code></pre>");
+      i++;
+      continue;
+    }
+    if (/^\s*$/.test(line)) { i++; continue; }
+    if (/^(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) { html.push("<hr>"); i++; continue; }
+    var heading = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
+    if (heading) {
+      var level = heading[1].length;
+      html.push("<h" + level + ">" + renderInline(heading[2]) + "</h" + level + ">");
+      i++;
+      continue;
+    }
+    if (i + 1 < lines.length && /^=+\s*$/.test(lines[i + 1]) && line.trim()) {
+      html.push("<h1>" + renderInline(line.trim()) + "</h1>");
+      i += 2;
+      continue;
+    }
+    if (i + 1 < lines.length && /^-{3,}\s*$/.test(lines[i + 1]) && line.trim() && !/\|/.test(line)) {
+      html.push("<h2>" + renderInline(line.trim()) + "</h2>");
+      i += 2;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      var quoted = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        quoted.push(lines[i].replace(/^>\s?/, ""));
+        i++;
+      }
+      html.push("<blockquote>" + renderMarkdown(quoted.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (/\|/.test(line) && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+      var table = readTable(lines, i);
+      html.push(table.html);
+      i = table.next;
+      continue;
+    }
+    if (/^(\s*)([-*+]|\d+[.)])\s+/.test(line)) {
+      var list = readList(lines, i);
+      if (list) {
+        html.push(list.html);
+        i = list.next;
+        continue;
+      }
+    }
+    if (/^(?: {4}|\t)/.test(line)) {
+      var codeLines = [];
+      while (i < lines.length && (/^(?: {4}|\t)/.test(lines[i]) || (/^\s*$/.test(lines[i]) && /^(?: {4}|\t)/.test(lines[i + 1] || "")))) {
+        codeLines.push(lines[i].replace(/^(?: {4}|\t)/, ""));
+        i++;
+      }
+      html.push("<pre class=\"md-pre\"><code>" + escapeHtml(codeLines.join("\n").replace(/\n$/, "")) + "</code></pre>");
+      continue;
+    }
+    var para = [];
+    while (i < lines.length && String(lines[i]).trim() !== "" && !isBlockStart(lines, i)) {
+      para.push(lines[i]);
+      i++;
+    }
+    if (!para.length && i < lines.length) {
+      para.push(lines[i]);
+      i++;
+    }
+    var joined = "";
+    for (var p = 0; p < para.length; p++) {
+      if (p > 0) joined += /  $/.test(para[p - 1]) ? "\n" : " ";
+      joined += String(para[p]).replace(/  $/, "");
+    }
+    html.push("<p>" + renderInline(joined) + "</p>");
+  }
+  return html.join("\n");
+}
+
+function bindKeyboard() {
+  function updateInset() {
+    var inset = 0;
+    if (window.visualViewport) {
+      inset = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+    }
+    document.documentElement.style.setProperty("--keyboard-inset", inset + "px");
+    document.body.classList.toggle("keyboard-open", inset > 80);
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateInset);
+    window.visualViewport.addEventListener("scroll", updateInset);
+  }
+  document.addEventListener("focusin", function (e) {
+    var target = e.target;
+    if (!target || !target.tagName) return;
+    var tag = target.tagName;
+    if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", behavior: "smooth" }); }
+      catch (err) { target.scrollIntoView(); }
+    }, 320);
+  });
+}
+
+function bindEvents() {
+  if (eventsBound) return;
+  eventsBound = true;
+  el("navBrand").addEventListener("click", function () {
+    closeMobileMenu();
+    if (window.parent && typeof window.parent.closeFullHtml === "function") window.parent.closeFullHtml(false);
+  });
+  var tabButtons = document.querySelectorAll("#navTabs button, #mobileMenu > button");
+  for (var i = 0; i < tabButtons.length; i++) {
+    tabButtons[i].addEventListener("click", function (e) {
+      var page = e.currentTarget.getAttribute("data-page");
+      if (page) showPage(page);
+    });
+  }
+  el("langToggle").addEventListener("click", function () { setLanguage(uiLang === "en" ? "zh" : "en"); });
+  el("mobileLangZh").addEventListener("click", function () { setLanguage("zh"); closeMobileMenu(); });
+  el("mobileLangEn").addEventListener("click", function () { setLanguage("en"); closeMobileMenu(); });
+  el("navBurger").addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+  document.addEventListener("pointerdown", function (e) {
+    var menu = el("mobileMenu");
+    if (!menu || menu.hidden) return;
+    var nav = el("topNav");
+    if (nav && !nav.contains(e.target)) closeMobileMenu();
+  });
+  el("btnHomeNew").addEventListener("click", function () { openNewPlan(); });
+  el("btnHomeFirst").addEventListener("click", function () { openNewPlan(); });
+  el("statAll").addEventListener("click", function () { openShelfWithStage(""); });
+  el("statPrimary").addEventListener("click", function () { openShelfWithStage("小学高段"); });
+  el("statJunior").addEventListener("click", function () { openShelfWithStage("初中"); });
+  el("statSenior").addEventListener("click", function () { openShelfWithStage("高中"); });
+  el("btnViewShelf").addEventListener("click", function () { showPage("shelf"); });
+  el("btnShelfNew").addEventListener("click", function () { openNewPlan(); });
+  el("btnShelfEmptyNew").addEventListener("click", function () { openNewPlan(); });
+  el("btnClearFilters").addEventListener("click", clearShelfFilters);
+  el("shelfSearch").addEventListener("input", renderShelf);
+  el("shelfStageFilter").addEventListener("change", renderShelf);
+  el("shelfExamFilter").addEventListener("change", renderShelf);
+  var form = el("formPlan");
+  form.addEventListener("submit", function (e) { e.preventDefault(); });
+  form.addEventListener("input", function () { updateStageHint(); updateSubmitState(); el("saveNote").hidden = true; });
+  form.addEventListener("change", function () { updateStageHint(); updateSubmitState(); });
+  el("btnSubmitPlan").addEventListener("click", function () {
+    if (editMode) saveEdits();
+    else submitNewPlan();
+  });
+  el("btnClearPlan").addEventListener("click", resetToNew);
+  el("btnCancelEdit").addEventListener("click", resetToNew);
+  el("btnSaveAsNew").addEventListener("click", saveAsNew);
+  el("btnCopyManuscript").addEventListener("click", copyManuscript);
+  el("btnDetailEdit").addEventListener("click", function () { if (detailRow) openEdit(detailRow); });
+  el("btnDetailDelete").addEventListener("click", function () { if (detailRow) performDelete(detailRow); });
+  el("btnDetailCopy").addEventListener("click", copyDetail);
+  el("btnDetailClose").addEventListener("click", function () { closePopup("detailOverlay"); });
+  el("btnDetailCloseX").addEventListener("click", function () { closePopup("detailOverlay"); });
+  el("detailOverlay").addEventListener("click", function (e) { if (e.target === el("detailOverlay")) closePopup("detailOverlay"); });
+  el("detailDialog").addEventListener("click", function (e) { e.stopPropagation(); });
+  el("btnConfirmOk").addEventListener("click", function () { settleConfirm(true); });
+  el("btnConfirmCancel").addEventListener("click", function () { settleConfirm(false); });
+  el("btnHtmlClose").addEventListener("click", function () { closePopup("htmlOverlay"); });
+  el("htmlOverlay").addEventListener("click", function (e) { if (e.target === el("htmlOverlay")) closePopup("htmlOverlay"); });
+  el("htmlDialog").addEventListener("click", function (e) { e.stopPropagation(); });
+  document.addEventListener("click", function (e) {
+    var node = e.target;
+    while (node && node !== document) {
+      if (node.tagName === "A") {
+        var inMd = false;
+        var parent = node;
+        while (parent) {
+          if (parent.classList && parent.classList.contains("markdown-body")) { inMd = true; break; }
+          parent = parent.parentNode;
+        }
+        if (inMd) {
+          var href = node.getAttribute("href") || "";
+          var isImg = node.classList && node.classList.contains("md-img-link");
+          if (!isImg && /\.html?($|\?)/i.test(href)) {
+            e.preventDefault();
+            openHtmlViewer(href);
+          }
+        }
+        return;
+      }
+      node = node.parentNode;
+    }
+  });
+  window.addEventListener("resize", function () {
+    updateNavMode();
+    syncNavSpacer();
+  });
+  bindKeyboard();
+}
+
+async function initialize() {
+  uiLang = detectLanguage();
+  bindEvents();
+  applyLanguage();
+  updateNavMode();
+  syncNavSpacer();
+  renderManuscript();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      updateNavMode();
+      syncNavSpacer();
+    });
+  }
+  try {
+    var mode = await callAppBridge({ type: "模式" });
+    applyTheme(mode);
+  } catch (err) {
+    applyTheme("亮色");
+  }
+  await showPage("home", { record: false });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", function () {
+    (async () => {    await initialize();  })();
+  });
+} else {
+  (async () => {    await initialize();  })();
+}
+</script>
+</body>
+</html>

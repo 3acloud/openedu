@@ -1,0 +1,3416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>试听学员诊断</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --bg: #F6F0E6;
+    --ink: #1E3A4C;
+    --amber: #C4A35A;
+    --card: #FFFCF7;
+    --warn: #A15C4A;
+    --muted: #6E6256;
+    --line: rgba(30, 58, 76, 0.1);
+    --shadow: 0 8px 22px rgba(30, 58, 76, 0.08);
+    --shadow-hover: 0 14px 28px rgba(30, 58, 76, 0.14);
+    --nav: #1E3A4C;
+    --nav-text: #F6F0E6;
+    --field: #FFFCF7;
+    --serif: "Palatino Linotype", Palatino, "Book Antiqua", "Songti SC", "STSong", "PMingLiU", "SimSun", serif;
+    --sans: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    --nav-h: 64px;
+    --prep: #1E3A4C;
+    --review: #C4A35A;
+    --convert: #3E7C6F;
+    --renew: #6E5A86;
+    --leave: #8A8178;
+  }
+  html.theme-dark {
+    --bg: #16130F;
+    --ink: #F3EBDD;
+    --amber: #D4B56A;
+    --card: #2A241C;
+    --warn: #C48474;
+    --muted: #C4B6A4;
+    --line: rgba(243, 235, 221, 0.12);
+    --shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    --shadow-hover: 0 16px 30px rgba(0, 0, 0, 0.45);
+    --nav: #101C24;
+    --nav-text: #F6F0E6;
+    --field: #1C1814;
+    --prep: #8FB4C9;
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background-color: var(--bg);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 27px,
+      rgba(30, 58, 76, 0.045) 28px
+    );
+    background-attachment: fixed;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  html.theme-dark body {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 27px,
+      rgba(243, 235, 221, 0.04) 28px
+    );
+  }
+  button, input, select, textarea { font-family: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3, .serif { font-family: var(--serif); font-weight: 600; letter-spacing: 0.01em; }
+  h1 { font-size: 32px; line-height: 1.25; margin: 0 0 6px; }
+  h2 { font-size: 22px; margin: 0 0 6px; }
+  h3 { font-size: 18px; margin: 0 0 8px; }
+  p { margin: 0; }
+  #topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    background: var(--nav);
+    color: var(--nav-text);
+    border-top: 3px solid var(--amber);
+    box-shadow: 0 8px 18px rgba(16, 28, 36, 0.18);
+  }
+  #navRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 58px;
+    padding: 0 16px;
+  }
+  #brandBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--nav-text);
+    padding: 8px 4px;
+    margin-right: auto;
+    font-family: var(--serif);
+    font-size: 18px;
+    letter-spacing: 0.02em;
+  }
+  #brandBtn i { color: var(--amber); font-size: 18px; }
+  #navTabs { display: flex; flex-wrap: nowrap; align-items: stretch; gap: 2px; margin-left: auto; flex: 0 0 auto; }
+  .nav-tab {
+    position: relative;
+    border: 0;
+    background: transparent;
+    color: rgba(246, 240, 230, 0.78);
+    padding: 18px 14px 16px;
+    font-size: 15px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  .nav-tab.active { color: #FFFCF7; }
+  .nav-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--amber);
+  }
+  #langBtn, #hamburgerBtn {
+    margin-left: 8px;
+    border: 1px solid rgba(246, 240, 230, 0.35);
+    background: transparent;
+    color: var(--nav-text);
+    border-radius: 999px;
+    min-width: 44px;
+    height: 36px;
+    padding: 0 12px;
+  }
+  #hamburgerBtn { margin-left: auto; width: 42px; padding: 0; border-radius: 10px; }
+  #mobileMenu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 10px 12px;
+    background: var(--nav);
+  }
+  #mobileMenu.open { display: flex; }
+  .menu-tab {
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: rgba(246, 240, 230, 0.86);
+    border-radius: 10px;
+    padding: 12px 12px;
+    font-size: 16px;
+  }
+  .menu-tab.active {
+    color: #FFFCF7;
+    box-shadow: inset 0 -2px 0 var(--amber);
+  }
+  .menu-lang { display: flex; gap: 8px; padding: 6px 4px 2px; }
+  .menu-lang button {
+    flex: 1;
+    border-radius: 999px;
+    border: 1px solid rgba(246, 240, 230, 0.35);
+    background: transparent;
+    color: var(--nav-text);
+    padding: 8px 10px;
+  }
+  .menu-lang button.active { background: var(--amber); color: #1E3A4C; border-color: var(--amber); }
+  main { padding: calc(var(--nav-h) + 18px) 18px 28px; max-width: 1180px; margin: 0 auto; }
+  .page-head, .section-head, .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .lead { color: var(--muted); max-width: 46em; }
+  .btn {
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 10px 16px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .btn.primary { background: var(--ink); color: #FFFCF7; }
+  html.theme-dark .btn.primary { background: var(--amber); color: #1E3A4C; }
+  .btn.ghost { border-color: var(--line); background: var(--card); }
+  .btn.text { border: 0; padding: 8px 4px; text-decoration: underline; text-underline-offset: 3px; background: transparent; }
+  .btn.warn { background: var(--warn); color: #FFFCF7; }
+  .btn.small { padding: 6px 10px; font-size: 12px; border-radius: 999px; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn:focus-visible, .nav-tab:focus-visible, .card:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  #appNotice {
+    background: rgba(161, 92, 74, 0.12);
+    border: 1px solid rgba(161, 92, 74, 0.35);
+    color: var(--ink);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .stat-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px 2px 10px;
+    margin-bottom: 16px;
+    max-width: 100%;
+  }
+  .stat-card {
+    flex: 1 0 138px;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px 18px 14px 12px;
+    box-shadow: var(--shadow);
+    padding: 12px 12px 12px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--tone, var(--ink));
+  }
+  .stat-num { display: block; font-family: var(--serif); font-size: 28px; line-height: 1.1; }
+  .stat-label { display: block; color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .split { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; margin-bottom: 16px; }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px 22px 16px 14px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    min-width: 0;
+  }
+  .panel .hint { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .card {
+    width: 100%;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px 16px 13px 12px;
+    box-shadow: 0 1px 0 rgba(30, 58, 76, 0.04);
+    padding: 12px 12px 12px 14px;
+    position: relative;
+    color: inherit;
+  }
+  button.card { display: block; }
+  .card.lift { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  @media (hover: hover) {
+    .card.lift:hover, .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+  }
+  .card-top, .row-line { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .card-title { font-family: var(--serif); font-size: 18px; }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .excerpt { margin-top: 8px; font-size: 14px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .empty {
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    padding: 18px 12px;
+    text-align: center;
+    color: var(--muted);
+    background: rgba(255, 252, 247, 0.35);
+  }
+  html.theme-dark .empty { background: rgba(255, 252, 247, 0.03); }
+  .mix-bar { display: flex; height: 18px; border-radius: 999px; overflow: hidden; background: rgba(30, 58, 76, 0.06); }
+  .mix-seg { border: 0; padding: 0; min-width: 8px; height: 18px; }
+  .mix-legend { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .mix-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 6px 2px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .toolbar input, .toolbar select { flex: 1 1 180px; min-width: 0; }
+  .archive-card { padding-bottom: 10px; }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .phone-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; font-size: 13px; }
+  .entry-layout { display: grid; grid-template-columns: minmax(300px, 1.05fr) minmax(280px, 0.95fr); gap: 16px; align-items: start; }
+  #formArchiveFields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field.wide { grid-column: 1 / -1; }
+  .field label { font-size: 13px; color: var(--muted); }
+  .req::after { content: " *"; color: var(--warn); }
+  .field-hint { font-size: 12px; color: var(--muted); }
+  input[type="text"], input[type="date"], input[type="number"], select, textarea {
+    width: 100%;
+    background: var(--field);
+    border: 1px solid rgba(30, 58, 76, 0.18);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  html.theme-dark input[type="text"], html.theme-dark input[type="date"], html.theme-dark input[type="number"], html.theme-dark select, html.theme-dark textarea {
+    border-color: rgba(243, 235, 221, 0.2);
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  .invalid { border-color: var(--warn) !important; }
+  .form-error { color: var(--warn); font-size: 13px; margin: 8px 0; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg-btn {
+    flex: 1 1 90px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    padding: 8px 8px;
+    font-size: 13px;
+  }
+  .seg-btn.on { border-color: transparent; }
+  .form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .paper {
+    background:
+      linear-gradient(90deg, rgba(161, 92, 74, 0.55), rgba(161, 92, 74, 0.55)) 18px 0 / 1px 100% no-repeat,
+      var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px 22px 16px 14px;
+    box-shadow: var(--shadow);
+    padding: 16px 16px 16px 32px;
+    min-height: 280px;
+  }
+  .paper-tools { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; margin-bottom: 8px; }
+  .wait-box { display: flex; gap: 8px; align-items: center; color: var(--muted); padding: 12px 0; }
+  .board {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    max-width: 100%;
+    padding-bottom: 8px;
+    align-items: flex-start;
+  }
+  .board-col {
+    flex: 0 0 250px;
+    background: rgba(255, 252, 247, 0.45);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 10px;
+    min-height: 180px;
+  }
+  html.theme-dark .board-col { background: rgba(255, 252, 247, 0.03); }
+  .col-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--serif);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--tone, var(--ink));
+  }
+  .mask {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(30, 58, 76, 0.48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  html.theme-dark .mask { background: rgba(0, 0, 0, 0.62); }
+  .sheet {
+    width: min(640px, 100%);
+    max-height: 100%;
+    overflow: auto;
+    background: #FFFCF7;
+    color: #1E3A4C;
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(30, 58, 76, 0.28);
+    padding: 18px 18px 12px;
+  }
+  html.theme-dark .sheet { background: #2A241C; color: #F3EBDD; }
+  #detailSheet { width: min(760px, 100%); }
+  #stageSheet, #confirmSheet { width: min(440px, 100%); }
+  .sheet-actions, .stage-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .detail-sub { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .kv { display: grid; grid-template-columns: 128px 1fr; gap: 6px 10px; margin: 14px 0; font-size: 14px; }
+  .kv b { font-weight: 600; color: var(--muted); }
+  .kv span { white-space: pre-wrap; word-break: break-word; }
+  .fine-print { color: var(--muted); font-size: 12px; margin-top: 12px; }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  .markdown-body { font-size: 15px; line-height: 1.7; word-break: break-word; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { font-family: var(--serif); line-height: 1.35; margin: 0.8em 0 0.35em; }
+  .markdown-body h1 { font-size: 1.5em; }
+  .markdown-body h2 { font-size: 1.3em; }
+  .markdown-body p { margin: 0.45em 0; }
+  .markdown-body ul, .markdown-body ol { margin: 0.4em 0; padding-left: 1.3em; }
+  .markdown-body blockquote { margin: 0.6em 0; padding: 4px 0 4px 12px; border-left: 3px solid var(--amber); color: var(--muted); }
+  .markdown-body code { font-family: Consolas, "Courier New", monospace; background: rgba(30, 58, 76, 0.06); padding: 0 4px; border-radius: 4px; }
+  .markdown-body pre { background: rgba(30, 58, 76, 0.06); padding: 10px; border-radius: 10px; overflow: auto; }
+  .markdown-body pre code { background: transparent; padding: 0; }
+  .markdown-body table { border-collapse: collapse; min-width: 420px; }
+  .markdown-body th, .markdown-body td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  .markdown-body img { max-width: 100%; height: auto; border-radius: 8px; }
+  .markdown-body hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
+  .markdown-body a { color: #3E7C6F; }
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 4000;
+    max-width: min(560px, calc(100% - 28px));
+    background: var(--ink);
+    color: #FFFCF7;
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-hover);
+  }
+  .page-tail { height: 20px; }
+  .popup-tail { height: 12px; }
+  @media (max-width: 900px) {
+    .split, .entry-layout { grid-template-columns: 1fr; }
+    h1 { font-size: 28px; }
+  }
+  @media (max-width: 760px) {
+    main { padding-left: 12px; padding-right: 12px; }
+    .page-head, .entry-head { flex-direction: column; align-items: stretch; }
+    #formArchiveFields { grid-template-columns: 1fr; }
+    .entry-form-wrap { padding-bottom: 52vh; }
+    .page-tail { height: 112px; }
+    .popup-tail { height: 40vh; }
+    input, select, textarea { font-size: 16px; }
+    #detailMask { padding: 0; background: var(--bg); }
+    #detailSheet {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .kv { grid-template-columns: 1fr; gap: 2px; margin-bottom: 10px; }
+  }
+  @media (min-width: 901px) {
+    .paper { position: sticky; top: calc(var(--nav-h) + 12px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div id="navRow">
+      <button type="button" id="brandBtn">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span id="brandName" data-i18n="appName">试听学员诊断</span>
+      </button>
+      <div id="navTabs">
+        <button type="button" class="nav-tab" id="tabDesk" data-page="desk" data-i18n="navDesk">诊断台</button>
+        <button type="button" class="nav-tab" id="tabArchive" data-page="archive" data-i18n="navArchive">学员档案</button>
+        <button type="button" class="nav-tab" id="tabEntry" data-page="entry" data-i18n="navEntry">录入诊断</button>
+        <button type="button" class="nav-tab" id="tabBoard" data-page="board" data-i18n="navBoard">阶段看板</button>
+      </div>
+      <button type="button" id="langBtn">EN</button>
+      <button type="button" id="hamburgerBtn" hidden aria-label="menu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="menu-tab" id="mTabDesk" data-page="desk" data-i18n="navDesk">诊断台</button>
+      <button type="button" class="menu-tab" id="mTabArchive" data-page="archive" data-i18n="navArchive">学员档案</button>
+      <button type="button" class="menu-tab" id="mTabEntry" data-page="entry" data-i18n="navEntry">录入诊断</button>
+      <button type="button" class="menu-tab" id="mTabBoard" data-page="board" data-i18n="navBoard">阶段看板</button>
+      <div class="menu-lang">
+        <button type="button" id="mLangZh">中文</button>
+        <button type="button" id="mLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main id="mainContent">
+  <div id="appNotice" hidden></div>
+
+  <section id="pageDesk" class="page">
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="appName">试听学员诊断</h1>
+        <p class="lead" data-i18n="deskLead">记下试听前的诉求与前测，看清起点，再决定怎么讲、怎么跟</p>
+      </div>
+      <button type="button" class="btn primary" id="btnNewFromDesk" data-i18n="newDiag">+ 新建诊断</button>
+    </div>
+    <div class="stat-row" id="statRow">
+      <button type="button" class="stat-card" data-stage="" style="--tone:#1E3A4C">
+        <span class="stat-num" id="statCountTotal">–</span>
+        <span class="stat-label" data-i18n="statTotal">档案总数</span>
+      </button>
+      <button type="button" class="stat-card" data-stage="试听准备" style="--tone:#1E3A4C">
+        <span class="stat-num" id="statCount试听准备">–</span>
+        <span class="stat-label" data-stage-label="试听准备">试听准备</span>
+      </button>
+      <button type="button" class="stat-card" data-stage="试听复盘" style="--tone:#C4A35A">
+        <span class="stat-num" id="statCount试听复盘">–</span>
+        <span class="stat-label" data-stage-label="试听复盘">试听复盘</span>
+      </button>
+      <button type="button" class="stat-card" data-stage="转化" style="--tone:#3E7C6F">
+        <span class="stat-num" id="statCount转化">–</span>
+        <span class="stat-label" data-stage-label="转化">转化</span>
+      </button>
+      <button type="button" class="stat-card" data-stage="续费" style="--tone:#6E5A86">
+        <span class="stat-num" id="statCount续费">–</span>
+        <span class="stat-label" data-stage-label="续费">续费</span>
+      </button>
+      <button type="button" class="stat-card" data-stage="流失" style="--tone:#8A8178">
+        <span class="stat-num" id="statCount流失">–</span>
+        <span class="stat-label" data-stage-label="流失">流失</span>
+      </button>
+    </div>
+    <div class="split">
+      <section class="panel">
+        <h2 data-i18n="upcomingTitle">近期试听</h2>
+        <p class="hint" data-i18n="upcomingLead">按试听日期看最近要上课的档案</p>
+        <div id="upcomingList" class="stack"></div>
+      </section>
+      <section class="panel">
+        <h2 data-i18n="distTitle">阶段分布</h2>
+        <div id="stageBars"></div>
+      </section>
+    </div>
+    <section class="panel">
+      <h2 data-i18n="recentTitle">最近建档</h2>
+      <div id="recentList" class="stack"></div>
+    </section>
+  </section>
+
+  <section id="pageArchive" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="archiveTitle">学员档案</h1>
+        <p class="lead" data-i18n="archiveLead">一份档案对应一次试听建档，阶段变更留在原记录，新话术另建一条</p>
+      </div>
+      <button type="button" class="btn primary" id="btnAddArchive" data-i18n="addArchive">+ 添加档案</button>
+    </div>
+    <div class="toolbar">
+      <input type="text" id="archiveSearch" data-i18n-ph="searchPh" placeholder="搜索学员化名、年级、学科、家长称呼">
+      <select id="archiveStage"></select>
+      <select id="archiveSubject"></select>
+      <button type="button" class="btn ghost" id="archiveSortBtn">试听日期</button>
+    </div>
+    <div id="archiveList" class="stack"></div>
+  </section>
+
+  <section id="pageEntry" class="page" hidden>
+    <div class="entry-head">
+      <div>
+        <h1 data-i18n="entryTitle">录入诊断</h1>
+        <p class="lead" data-i18n="entryLead">缺的信息留空即可，不要为了填满而猜测测评结果</p>
+      </div>
+      <button type="button" class="btn text" id="btnBackArchive" data-i18n="backArchive">返回档案</button>
+    </div>
+    <div class="entry-layout">
+      <div class="entry-form-wrap panel">
+        <form id="formArchive" autocomplete="off" novalidate>
+          <div id="formArchiveFields"></div>
+          <p id="formArchiveError" class="form-error" hidden></p>
+          <div class="form-actions">
+            <button type="button" class="btn primary" id="btnSubmitEntry">提交并生成诊断</button>
+            <button type="button" class="btn ghost" id="btnAltGenerate" hidden>按最新信息另行生成</button>
+            <button type="button" class="btn ghost" id="btnClearEntry">清空</button>
+          </div>
+        </form>
+      </div>
+      <aside class="paper" id="diagPaper">
+        <div class="paper-tools">
+          <button type="button" class="btn small ghost" id="btnPrevRow" data-i18n="prevRow">上一条</button>
+          <button type="button" class="btn small ghost" id="btnNextRow" data-i18n="nextRow">下一条</button>
+          <button type="button" class="btn small ghost" id="btnCopyScript" data-i18n="copyScript">复制话术</button>
+        </div>
+        <h2 id="diagHeading" data-i18n="diagTitle">诊断与跟进建议</h2>
+        <div id="diagBody"></div>
+        <button type="button" class="btn ghost" id="btnContinueWait" hidden data-i18n="continueWait">继续等待</button>
+      </aside>
+    </div>
+  </section>
+
+  <section id="pageBoard" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="boardTitle">阶段看板</h1>
+        <p class="lead" data-i18n="boardLead">按跟进阶段看档案走到哪一步。拖不动也没关系，用卡片上的阶段按钮移动</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input type="text" id="boardSearch" data-i18n-ph="searchPh" placeholder="搜索学员化名、年级、学科、家长称呼">
+    </div>
+    <div class="board" id="boardColumns"></div>
+  </section>
+  <div class="page-tail"></div>
+</main>
+
+<div id="detailMask" class="mask" hidden>
+  <div id="detailSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="page-head">
+      <div>
+        <h2 id="detailTitle"></h2>
+        <div id="detailSub" class="detail-sub"></div>
+      </div>
+      <button type="button" class="btn ghost" id="btnDetailClose" data-i18n="close">关闭</button>
+    </div>
+    <div id="detailFields"></div>
+    <h3 data-i18n="diagTitle">诊断与跟进建议</h3>
+    <div id="detailDiag"></div>
+    <button type="button" class="btn ghost" id="btnDetailContinue" hidden data-i18n="continueWait">继续等待</button>
+    <div class="sheet-actions">
+      <button type="button" class="btn primary" id="btnDetailEdit" data-i18n="editThis">编辑这条</button>
+    </div>
+    <p class="fine-print" data-i18n="finePrint">话术仅供教师参考，不会自动发给家长；诊断不构成提分承诺</p>
+    <div class="popup-tail"></div>
+  </div>
+</div>
+
+<div id="stageMask" class="mask" hidden>
+  <div id="stageSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="stageTitle">
+    <h2 id="stageTitle" data-i18n="advanceTitle">推进阶段</h2>
+    <p class="hint" id="stageHint" data-i18n="advancePick">选择要改到的阶段。当前阶段不可选。</p>
+    <div id="stageChoices" class="stage-list"></div>
+    <div class="sheet-actions">
+      <button type="button" class="btn ghost" id="btnStageCancel" data-i18n="cancel">取消</button>
+    </div>
+    <div class="popup-tail"></div>
+  </div>
+</div>
+
+<div id="confirmMask" class="mask" hidden>
+  <div id="confirmSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle" data-i18n="deleteTitle">删除档案</h2>
+    <p id="confirmText" data-i18n="deleteText">确定删除这条学员档案吗？删除后不可恢复。</p>
+    <div class="sheet-actions">
+      <button type="button" class="btn warn" id="btnConfirmOk" data-i18n="delete">删除</button>
+      <button type="button" class="btn ghost" id="btnConfirmCancel" data-i18n="cancel">取消</button>
+    </div>
+    <div class="popup-tail"></div>
+  </div>
+</div>
+<div id="toast" hidden role="status"></div>
+
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("17fb79b81c6eb1e9_试听学员诊断")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const SOURCE = "学员试听档案/默认表格";
+const TABLE_NAME = "学员试听档案";
+const FIELDS = ["学员化名", "年级", "学科", "家长称呼", "家长联系方式", "每周课时", "上课时间偏好", "需求与目标", "学情与前测表现", "试听日期", "试听观察", "跟进阶段", "课时包情况"];
+const FIELD_CSV = FIELDS.join(",");
+const STAGES = ["试听准备", "试听复盘", "转化", "续费", "流失"];
+const STAGE_COLOR = {
+  "试听准备": "#1E3A4C",
+  "试听复盘": "#C4A35A",
+  "转化": "#3E7C6F",
+  "续费": "#6E5A86",
+  "流失": "#8A8178"
+};
+const SCHEMA = [
+  { name: "学员化名", type: "text", required: true },
+  { name: "年级", type: "text", required: true },
+  { name: "学科", type: "text", required: true },
+  { name: "家长称呼", type: "text" },
+  { name: "家长联系方式", type: "text", hint: "contactHint" },
+  { name: "每周课时", type: "number" },
+  { name: "上课时间偏好", type: "text" },
+  { name: "需求与目标", type: "textarea", wide: true },
+  { name: "学情与前测表现", type: "textarea", wide: true },
+  { name: "试听日期", type: "date" },
+  { name: "试听观察", type: "textarea", wide: true },
+  { name: "跟进阶段", type: "stages", required: true, wide: true },
+  { name: "课时包情况", type: "text", wide: true }
+];
+const I18N = {
+  zh: {
+    appName: "试听学员诊断",
+    navDesk: "诊断台",
+    navArchive: "学员档案",
+    navEntry: "录入诊断",
+    navBoard: "阶段看板",
+    deskLead: "记下试听前的诉求与前测，看清起点，再决定怎么讲、怎么跟",
+    newDiag: "+ 新建诊断",
+    statTotal: "档案总数",
+    upcomingTitle: "近期试听",
+    upcomingLead: "按试听日期看最近要上课的档案",
+    upcomingEmpty: "这7天还没有试听安排",
+    distTitle: "阶段分布",
+    recentTitle: "最近建档",
+    recentEmpty: "还没有学员档案",
+    needEmpty: "待补充",
+    archiveTitle: "学员档案",
+    archiveLead: "一份档案对应一次试听建档，阶段变更留在原记录，新话术另建一条",
+    addArchive: "+ 添加档案",
+    searchPh: "搜索学员化名、年级、学科、家长称呼",
+    allStages: "全部阶段",
+    allSubjects: "全部学科",
+    sortTable: "默认顺序",
+    sortAsc: "试听日期升序",
+    sortDesc: "试听日期降序",
+    hoursEmpty: "课时待补充",
+    hoursFmt: "{n}课时/周",
+    contactEmpty: "联系方式待补充",
+    showContact: "显示联系方式",
+    hideContact: "隐藏联系方式",
+    viewDiag: "查看诊断",
+    edit: "编辑",
+    advance: "推进阶段",
+    remove: "删除",
+    archiveEmpty: "还没有符合条件的档案",
+    entryTitle: "录入诊断",
+    entryLead: "缺的信息留空即可，不要为了填满而猜测测评结果",
+    backArchive: "返回档案",
+    contactHint: "仅教师自己查看，不会写入诊断正文",
+    submitNew: "提交并生成诊断",
+    saveEdit: "保存修改",
+    altGenerate: "按最新信息另行生成",
+    clearForm: "清空",
+    discard: "放弃修改",
+    prevRow: "上一条",
+    nextRow: "下一条",
+    copyScript: "复制话术",
+    diagTitle: "诊断与跟进建议",
+    diagWillShow: "提交之后，诊断与跟进建议会显示在这里。",
+    diagEmpty: "这条档案还没有诊断正文",
+    diagWait: "正在整理学情与跟进建议，请稍候",
+    diagTimeout: "还没有生成内容。可以稍后再打开本条查看。",
+    continueWait: "继续等待",
+    copied: "已复制",
+    copiedNumber: "号码已复制",
+    saved: "已写回这条档案。",
+    altDone: "已另建一条档案并生成新诊断，原记录仍在。",
+    stageSaved: "阶段已改在原档案上。诊断与跟进建议不会因此重写；若要新的话术，请到录入诊断另行提交",
+    requiredMsg: "请填写学员化名、年级、学科，并选择跟进阶段。",
+    hoursInvalid: "每周课时只能填写数字，也可以留空。",
+    actionFail: "操作没有完成，已填写的内容还在。",
+    loadFail: "档案没有读出来。已填写的内容还在。",
+    loading: "正在读取档案…",
+    boardTitle: "阶段看板",
+    boardLead: "按跟进阶段看档案走到哪一步。拖不动也没关系，用卡片上的阶段按钮移动",
+    colEmpty: "这一阶段还没有档案",
+    moveStage: "改阶段",
+    close: "关闭",
+    editThis: "编辑这条",
+    copyNumber: "复制号码",
+    finePrint: "话术仅供教师参考，不会自动发给家长；诊断不构成提分承诺",
+    advanceTitle: "推进阶段",
+    advancePick: "选择要改到的阶段。当前阶段不可选。",
+    cancel: "取消",
+    deleteTitle: "删除档案",
+    deleteText: "确定删除这条学员档案吗？删除后不可恢复。",
+    delete: "删除",
+    deleted: "这条档案已删除。",
+    countSuffix: "条",
+    menu: "菜单"
+  },
+  en: {
+    appName: "Trial Lesson Diagnosis",
+    navDesk: "Desk",
+    navArchive: "Archives",
+    navEntry: "Enter diagnosis",
+    navBoard: "Stage board",
+    deskLead: "Note the request and the pre-check before the trial, see the starting point, then decide how to teach and how to follow up.",
+    newDiag: "+ New diagnosis",
+    statTotal: "All archives",
+    upcomingTitle: "Upcoming trials",
+    upcomingLead: "Archives with a trial date in the next 7 days",
+    upcomingEmpty: "No trial scheduled in these 7 days",
+    distTitle: "Stage mix",
+    recentTitle: "Recently filed",
+    recentEmpty: "No student archives yet",
+    needEmpty: "To be added",
+    archiveTitle: "Student archives",
+    archiveLead: "One archive is one trial filing. A stage change stays on the original record. A new script needs a new entry.",
+    addArchive: "+ Add archive",
+    searchPh: "Search alias, grade, subject, parent name",
+    allStages: "All stages",
+    allSubjects: "All subjects",
+    sortTable: "Table order",
+    sortAsc: "Trial date ascending",
+    sortDesc: "Trial date descending",
+    hoursEmpty: "Hours to be added",
+    hoursFmt: "{n} lessons/week",
+    contactEmpty: "Contact to be added",
+    showContact: "Show contact",
+    hideContact: "Hide contact",
+    viewDiag: "View diagnosis",
+    edit: "Edit",
+    advance: "Move stage",
+    remove: "Delete",
+    archiveEmpty: "No archive matches",
+    entryTitle: "Enter diagnosis",
+    entryLead: "Leave a blank empty. Do not guess an assessment result just to fill the form.",
+    backArchive: "Back to archives",
+    contactHint: "Visible only to you. It is not written into the diagnosis.",
+    submitNew: "Submit and generate",
+    saveEdit: "Save changes",
+    altGenerate: "Generate another from this",
+    clearForm: "Clear",
+    discard: "Discard changes",
+    prevRow: "Previous",
+    nextRow: "Next",
+    copyScript: "Copy script",
+    diagTitle: "Diagnosis and follow-up",
+    diagWillShow: "After you submit, the diagnosis and follow-up note will appear here.",
+    diagEmpty: "This archive has no diagnosis text yet",
+    diagWait: "Sorting the learning notes and follow-up suggestions. Please wait.",
+    diagTimeout: "Nothing has been generated yet. Open this record again later.",
+    continueWait: "Keep waiting",
+    copied: "Copied",
+    copiedNumber: "Number copied",
+    saved: "Written back to this archive.",
+    altDone: "A new archive was created and a new diagnosis is being generated. The original record remains.",
+    stageSaved: "The stage was changed on the original archive. The diagnosis and follow-up note are not rewritten. For a new script, submit another entry.",
+    requiredMsg: "Alias, grade, subject, and stage are required.",
+    hoursInvalid: "Lessons per week must be a number, or left empty.",
+    actionFail: "The action did not finish. What you typed is still here.",
+    loadFail: "The archives could not be read. What you typed is still here.",
+    loading: "Reading archives…",
+    boardTitle: "Stage board",
+    boardLead: "See which step each archive is on. Use the stage button on a card to move it.",
+    colEmpty: "No archive in this stage yet",
+    moveStage: "Move stage",
+    close: "Close",
+    editThis: "Edit this",
+    copyNumber: "Copy number",
+    finePrint: "The script is for the teacher to read. It is not sent to the parent automatically. The diagnosis is not a promise about scores.",
+    advanceTitle: "Move stage",
+    advancePick: "Choose another stage. The current stage stays disabled.",
+    cancel: "Cancel",
+    deleteTitle: "Delete archive",
+    deleteText: "Delete this student archive? This cannot be undone.",
+    delete: "Delete",
+    deleted: "This archive was deleted.",
+    countSuffix: "",
+    menu: "Menu"
+  }
+};
+const STAGE_TEXT = {
+  "试听准备": { zh: "试听准备", en: "Trial prep" },
+  "试听复盘": { zh: "试听复盘", en: "Trial review" },
+  "转化": { zh: "转化", en: "Enroll" },
+  "续费": { zh: "续费", en: "Renew" },
+  "流失": { zh: "流失", en: "Left" }
+};
+const FIELD_TEXT = {
+  "学员化名": { zh: "学员化名", en: "Student alias" },
+  "年级": { zh: "年级", en: "Grade" },
+  "学科": { zh: "学科", en: "Subject" },
+  "家长称呼": { zh: "家长称呼", en: "Parent name" },
+  "家长联系方式": { zh: "家长联系方式", en: "Parent contact" },
+  "每周课时": { zh: "每周课时", en: "Lessons per week" },
+  "上课时间偏好": { zh: "上课时间偏好", en: "Time preference" },
+  "需求与目标": { zh: "需求与目标", en: "Needs and goals" },
+  "学情与前测表现": { zh: "学情与前测表现", en: "Learning notes and pre-check" },
+  "试听日期": { zh: "试听日期", en: "Trial date" },
+  "试听观察": { zh: "试听观察", en: "Trial notes" },
+  "跟进阶段": { zh: "跟进阶段", en: "Follow-up stage" },
+  "课时包情况": { zh: "课时包情况", en: "Lesson package" }
+};
+
+let uiLang = "zh";
+let currentPage = "";
+let currentRow = 0;
+let recordCount = 0;
+let records = [];
+let stageCounts = { "试听准备": 0, "试听复盘": 0, "转化": 0, "续费": 0, "流失": 0 };
+let historyStack = [];
+let popupStack = [];
+let popupZ = 2000;
+let revealedPhones = {};
+let archiveState = { q: "", stage: "", subject: "", sort: "table" };
+let boardQuery = "";
+let polling = false;
+let pollGen = 0;
+let pollOwner = "";
+let actionBusy = false;
+let diagnosisText = "";
+let pendingStageRow = 0;
+let pendingDeleteRow = 0;
+let detailRow = 0;
+let toastTimer = 0;
+
+function t(key) {
+  const pack = I18N[uiLang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  return I18N.zh[key] != null ? I18N.zh[key] : key;
+}
+function stageLabel(stage) {
+  const item = STAGE_TEXT[stage];
+  if (!item) return stage || t("needEmpty");
+  return uiLang === "en" ? item.en : item.zh;
+}
+function fieldLabel(name) {
+  const item = FIELD_TEXT[name];
+  if (!item) return name;
+  return uiLang === "en" ? item.en : item.zh;
+}
+function pad2(n) {
+  return (n < 10 ? "0" : "") + n;
+}
+function formatDate(d) {
+  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+}
+function todayString() {
+  return formatDate(new Date());
+}
+function parseYMD(s) {
+  const m = String(s || "").trim().match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const da = Number(m[3]);
+  const d = new Date(y, mo - 1, da);
+  if (d.getFullYear() !== y || d.getMonth() !== mo - 1 || d.getDate() !== da) return null;
+  return d;
+}
+function inNext7Days(dateStr) {
+  const d = parseYMD(dateStr);
+  if (!d) return false;
+  const start = parseYMD(todayString());
+  const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7);
+  return d.getTime() >= start.getTime() && d.getTime() <= end.getTime();
+}
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function imageDownloadUrl(src) {
+  const s = String(src || "").trim();
+  if (/^https?:\/\//i.test(s)) return s;
+  if (s.indexOf("data:") === 0) return s;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+}
+function safeLink(url) {
+  const u = String(url || "").trim();
+  if (/^https?:\/\//i.test(u)) return u;
+  if (/^mailto:/i.test(u)) return u;
+  return "";
+}
+function renderInline(raw) {
+  const s = String(raw);
+  let i = 0;
+  let html = "";
+  while (i < s.length) {
+    if (s.startsWith("**", i) || s.startsWith("__", i)) {
+      const mark = s.substr(i, 2);
+      const end = s.indexOf(mark, i + 2);
+      if (end > i + 2) {
+        html += "<strong>" + renderInline(s.slice(i + 2, end)) + "</strong>";
+        i = end + 2;
+        continue;
+      }
+    }
+    if (s.startsWith("~~", i)) {
+      const end = s.indexOf("~~", i + 2);
+      if (end > i + 2) {
+        html += "<del>" + renderInline(s.slice(i + 2, end)) + "</del>";
+        i = end + 2;
+        continue;
+      }
+    }
+    if (s[i] === "`") {
+      const end = s.indexOf("`", i + 1);
+      if (end > i) {
+        html += "<code>" + escapeHtml(s.slice(i + 1, end)) + "</code>";
+        i = end + 1;
+        continue;
+      }
+    }
+    if (s[i] === "!" && s[i + 1] === "[") {
+      const mid = s.indexOf("](", i + 2);
+      const end = mid >= 0 ? s.indexOf(")", mid + 2) : -1;
+      if (mid > 0 && end > mid) {
+        const alt = s.slice(i + 2, mid);
+        let src = s.slice(mid + 2, end).trim();
+        const titled = src.match(/^(\S+)\s+"[^"]*"$/);
+        if (titled) src = titled[1];
+        const href = imageDownloadUrl(src);
+        html += '<a class="md-img-link" href="' + escapeHtml(href) + '" download target="_blank" rel="noopener"><img alt="' + escapeHtml(alt) + '" src="' + escapeHtml(href) + '"></a>';
+        i = end + 1;
+        continue;
+      }
+    }
+    if (s[i] === "[") {
+      const mid = s.indexOf("](", i + 1);
+      const end = mid >= 0 ? s.indexOf(")", mid + 2) : -1;
+      if (mid > 0 && end > mid) {
+        const text = s.slice(i + 1, mid);
+        const href = safeLink(s.slice(mid + 2, end).trim().replace(/^<(.+)>$/, "$1"));
+        if (href) {
+          html += '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' + renderInline(text) + "</a>";
+        } else {
+          html += renderInline(text);
+        }
+        i = end + 1;
+        continue;
+      }
+    }
+    if (s[i] === "*" || (s[i] === "_" && (i === 0 || /\s/.test(s[i - 1])))) {
+      const mark = s[i];
+      const end = s.indexOf(mark, i + 1);
+      if (end > i + 1 && s[end - 1] !== " ") {
+        html += "<em>" + renderInline(s.slice(i + 1, end)) + "</em>";
+        i = end + 1;
+        continue;
+      }
+    }
+    if (s.startsWith("http://", i) || s.startsWith("https://", i)) {
+      const m = s.slice(i).match(/^https?:\/\/[^\s<]+/);
+      if (m) {
+        let url = m[0].replace(/[),.;!?]+$/, "");
+        html += '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' + escapeHtml(url) + "</a>";
+        i += url.length;
+        continue;
+      }
+    }
+    html += escapeHtml(s[i]);
+    i += 1;
+  }
+  return html;
+}
+function isTableSep(line) {
+  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+}
+function splitTableRow(line) {
+  let text = line.trim();
+  if (text.charAt(0) === "|") text = text.slice(1);
+  if (text.charAt(text.length - 1) === "|") text = text.slice(0, -1);
+  const cells = text.split("|");
+  const out = [];
+  for (let i = 0; i < cells.length; i++) out.push(cells[i].trim());
+  return out;
+}
+function renderMarkdown(src) {
+  const text = String(src || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const lines = text.split("\n");
+  let i = 0;
+  const blocks = [];
+  function isList(line) { return /^\s*([-*+])\s+/.test(line) || /^\s*\d+[.)]\s+/.test(line); }
+  function isBlock(line) {
+    return /^```/.test(line) || /^#{1,6}\s+/.test(line) || /^>\s?/.test(line) || isList(line) || /^(-{3,}|\*{3,}|_{3,})\s*$/.test(line) || /^\s*\|/.test(line);
+  }
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^\s*$/.test(line)) { i += 1; continue; }
+    if (/^```/.test(line)) {
+      i += 1;
+      const buf = [];
+      while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i += 1; }
+      if (i < lines.length) i += 1;
+      blocks.push("<pre><code>" + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) { blocks.push("<hr>"); i += 1; continue; }
+    if (/^#{1,6}\s+/.test(line)) {
+      const level = line.match(/^#+/)[0].length;
+      blocks.push("<h" + level + ">" + renderInline(line.replace(/^#{1,6}\s+/, "")) + "</h" + level + ">");
+      i += 1;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        buf.push(lines[i].replace(/^>\s?/, ""));
+        i += 1;
+      }
+      blocks.push("<blockquote>" + renderMarkdown(buf.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (/^\s*\|/.test(line) && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+      const head = splitTableRow(line);
+      i += 2;
+      const body = [];
+      while (i < lines.length && /^\s*\|/.test(lines[i])) {
+        body.push(splitTableRow(lines[i]));
+        i += 1;
+      }
+      let table = "<div class=\"table-scroll\"><table><thead><tr>";
+      for (let c = 0; c < head.length; c++) table += "<th>" + renderInline(head[c]) + "</th>";
+      table += "</tr></thead><tbody>";
+      for (let r = 0; r < body.length; r++) {
+        table += "<tr>";
+        for (let c = 0; c < head.length; c++) table += "<td>" + renderInline(body[r][c] || "") + "</td>";
+        table += "</tr>";
+      }
+      table += "</tbody></table></div>";
+      blocks.push(table);
+      continue;
+    }
+    if (/^\s*([-*+])\s+/.test(line)) {
+      const items = [];
+      while (i < lines.length && /^\s*([-*+])\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*([-*+])\s+/, ""));
+        i += 1;
+      }
+      let ul = "<ul>";
+      for (let k = 0; k < items.length; k++) {
+        const item = items[k];
+        const task = item.match(/^\[( |x|X)\]\s+(.*)$/);
+        if (task) {
+          const checked = task[1].toLowerCase() === "x" ? " checked" : "";
+          ul += "<li><input type=\"checkbox\" disabled" + checked + "> " + renderInline(task[2]) + "</li>";
+        } else {
+          ul += "<li>" + renderInline(item) + "</li>";
+        }
+      }
+      ul += "</ul>";
+      blocks.push(ul);
+      continue;
+    }
+    if (/^\s*\d+[.)]\s+/.test(line)) {
+      const items = [];
+      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
+        items.push(lines[i].replace(/^\s*\d+[.)]\s+/, ""));
+        i += 1;
+      }
+      let ol = "<ol>";
+      for (let k = 0; k < items.length; k++) ol += "<li>" + renderInline(items[k]) + "</li>";
+      ol += "</ol>";
+      blocks.push(ol);
+      continue;
+    }
+    const buf = [line];
+    i += 1;
+    while (i < lines.length && lines[i].trim() !== "" && !isBlock(lines[i])) {
+      buf.push(lines[i]);
+      i += 1;
+    }
+    const parts = [];
+    for (let k = 0; k < buf.length; k++) parts.push(renderInline(buf[k]));
+    blocks.push("<p>" + parts.join("<br>") + "</p>");
+  }
+  return "<div class=\"markdown-body\">" + blocks.join("") + "</div>";
+}
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+function badge(stage) {
+  const span = el("span", "badge", stage ? stageLabel(stage) : t("needEmpty"));
+  const color = STAGE_COLOR[stage] || "#8A8178";
+  span.style.background = color;
+  span.style.color = stage === "试听复盘" ? "#1E3A4C" : "#FFFCF7";
+  return span;
+}
+function maskPhone(raw) {
+  const s = String(raw || "");
+  if (!s) return "";
+  if (s.length <= 5) {
+    if (s.length <= 2) return "*".repeat(s.length);
+    return s.slice(0, 1) + "*".repeat(Math.max(1, s.length - 2)) + s.slice(-1);
+  }
+  return s.slice(0, 3) + "*".repeat(s.length - 5) + s.slice(-2);
+}
+function hoursText(value) {
+  const s = String(value || "").trim();
+  if (!s) return t("hoursEmpty");
+  return t("hoursFmt").replace("{n}", s);
+}
+function excerpt(value, n) {
+  const s = String(value || "").trim();
+  if (!s) return t("needEmpty");
+  const arr = Array.from(s);
+  if (arr.length <= n) return s;
+  return arr.slice(0, n).join("") + "…";
+}
+function filled(value) {
+  const s = String(value || "").trim();
+  return s ? s : t("needEmpty");
+}
+function showNotice(message) {
+  const node = document.getElementById("appNotice");
+  node.hidden = false;
+  node.textContent = message;
+}
+function clearNotice() {
+  const node = document.getElementById("appNotice");
+  node.hidden = true;
+  node.textContent = "";
+}
+function toast(message) {
+  const node = document.getElementById("toast");
+  node.hidden = false;
+  node.textContent = message;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { node.hidden = true; }, 4600);
+}
+function detectLang() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const q = String(params.get("lang") || "").toLowerCase();
+    if (q === "en") return "en";
+    if (q === "cn" || q === "zh") return "zh";
+  } catch (e) {}
+  try {
+    const stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored !== null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (e) {}
+  try {
+    const list = navigator.languages;
+    if (!list || !list.length) return "zh";
+    for (let i = 0; i < list.length; i++) {
+      const item = String(list[i] || "").toLowerCase();
+      if (item.indexOf("zh") === 0) return "zh";
+    }
+    return "en";
+  } catch (e2) {
+    return "zh";
+  }
+}
+function applyI18n(doRender) {
+  document.documentElement.lang = uiLang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) {
+    nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  }
+  const ph = document.querySelectorAll("[data-i18n-ph]");
+  for (let i = 0; i < ph.length; i++) {
+    ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-ph")));
+  }
+  const stageNodes = document.querySelectorAll("[data-stage-label]");
+  for (let i = 0; i < stageNodes.length; i++) {
+    stageNodes[i].textContent = stageLabel(stageNodes[i].getAttribute("data-stage-label"));
+  }
+  const labels = document.querySelectorAll("[data-field-label]");
+  for (let i = 0; i < labels.length; i++) {
+    labels[i].textContent = fieldLabel(labels[i].getAttribute("data-field-label"));
+  }
+  const hints = document.querySelectorAll("[data-hint-key]");
+  for (let i = 0; i < hints.length; i++) hints[i].textContent = t(hints[i].getAttribute("data-hint-key"));
+  document.getElementById("langBtn").textContent = uiLang === "en" ? "中文" : "EN";
+  document.getElementById("hamburgerBtn").setAttribute("aria-label", t("menu"));
+  document.getElementById("mLangZh").classList.toggle("active", uiLang !== "en");
+  document.getElementById("mLangEn").classList.toggle("active", uiLang === "en");
+  fillStageFilter();
+  syncSortButton();
+  updateEntryButtons();
+  if (doRender && currentPage) renderCurrent();
+}
+function setLang(lang) {
+  uiLang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", uiLang === "en" ? "en" : "cn"); } catch (e) {}
+  applyI18n(true);
+  closeMobileMenu();
+}
+function fieldId(name) {
+  return "formArchive_" + name;
+}
+function buildForm() {
+  const host = document.getElementById("formArchiveFields");
+  host.textContent = "";
+  for (let i = 0; i < SCHEMA.length; i++) {
+    const spec = SCHEMA[i];
+    const wrap = el("div", "field" + (spec.wide ? " wide" : ""));
+    const label = document.createElement("label");
+    label.setAttribute("for", fieldId(spec.name));
+    label.setAttribute("data-field-label", spec.name);
+    if (spec.required) label.classList.add("req");
+    label.textContent = fieldLabel(spec.name);
+    wrap.appendChild(label);
+    if (spec.type === "textarea") {
+      const area = document.createElement("textarea");
+      area.id = fieldId(spec.name);
+      area.name = spec.name;
+      area.rows = 4;
+      wrap.appendChild(area);
+    } else if (spec.type === "stages") {
+      const hidden = document.createElement("input");
+      hidden.type = "hidden";
+      hidden.id = fieldId(spec.name);
+      hidden.name = spec.name;
+      wrap.appendChild(hidden);
+      const seg = el("div", "seg");
+      seg.id = "formArchive_stageSeg";
+      for (let s = 0; s < STAGES.length; s++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "seg-btn";
+        btn.setAttribute("data-stage-label", STAGES[s]);
+        btn.setAttribute("data-pick-stage", STAGES[s]);
+        btn.textContent = stageLabel(STAGES[s]);
+        seg.appendChild(btn);
+      }
+      wrap.appendChild(seg);
+    } else if (spec.type === "date") {
+      const input = document.createElement("input");
+      input.type = "date";
+      input.id = fieldId(spec.name);
+      input.name = spec.name;
+      wrap.appendChild(input);
+    } else if (spec.type === "number") {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.inputMode = "decimal";
+      input.id = fieldId(spec.name);
+      input.name = spec.name;
+      wrap.appendChild(input);
+    } else {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.id = fieldId(spec.name);
+      input.name = spec.name;
+      wrap.appendChild(input);
+    }
+    if (spec.hint) {
+      const hint = el("div", "field-hint", t(spec.hint));
+      hint.setAttribute("data-hint-key", spec.hint);
+      wrap.appendChild(hint);
+    }
+    host.appendChild(wrap);
+  }
+}
+function setStageButtons(value) {
+  const hidden = document.getElementById(fieldId("跟进阶段"));
+  if (hidden) hidden.value = value || "";
+  const buttons = document.querySelectorAll("#formArchive_stageSeg .seg-btn");
+  for (let i = 0; i < buttons.length; i++) {
+    const stage = buttons[i].getAttribute("data-pick-stage");
+    const on = stage === value;
+    buttons[i].classList.toggle("on", on);
+    if (on) {
+      buttons[i].style.background = STAGE_COLOR[stage];
+      buttons[i].style.color = stage === "试听复盘" ? "#1E3A4C" : "#FFFCF7";
+    } else {
+      buttons[i].style.background = "";
+      buttons[i].style.color = "";
+    }
+  }
+}
+function setField(name, value) {
+  const node = document.getElementById(fieldId(name));
+  if (!node) return;
+  if (name === "跟进阶段") {
+    setStageButtons(String(value || "").trim());
+    return;
+  }
+  if (name === "试听日期") {
+    const d = parseYMD(value);
+    node.value = d ? formatDate(d) : "";
+    return;
+  }
+  node.value = value == null ? "" : String(value);
+}
+function readForm() {
+  const data = {};
+  for (let i = 0; i < FIELDS.length; i++) {
+    const name = FIELDS[i];
+    const node = document.getElementById(fieldId(name));
+    data[name] = node ? String(node.value || "").trim() : "";
+  }
+  return data;
+}
+function clearInvalid() {
+  const nodes = document.querySelectorAll("#formArchive .invalid");
+  for (let i = 0; i < nodes.length; i++) nodes[i].classList.remove("invalid");
+  const seg = document.getElementById("formArchive_stageSeg");
+  if (seg) seg.classList.remove("invalid");
+}
+function validateForm() {
+  clearInvalid();
+  const data = readForm();
+  const missing = [];
+  if (!data["学员化名"]) missing.push(fieldLabel("学员化名"));
+  if (!data["年级"]) missing.push(fieldLabel("年级"));
+  if (!data["学科"]) missing.push(fieldLabel("学科"));
+  if (!data["跟进阶段"]) missing.push(fieldLabel("跟进阶段"));
+  const hours = data["每周课时"];
+  const hoursOk = hours === "" || /^(?:\d+|\d+\.\d+|\.\d+)$/.test(hours);
+  const error = document.getElementById("formArchiveError");
+  if (missing.length || !hoursOk) {
+    if (!data["学员化名"]) document.getElementById(fieldId("学员化名")).classList.add("invalid");
+    if (!data["年级"]) document.getElementById(fieldId("年级")).classList.add("invalid");
+    if (!data["学科"]) document.getElementById(fieldId("学科")).classList.add("invalid");
+    if (!data["跟进阶段"]) document.getElementById("formArchive_stageSeg").classList.add("invalid");
+    if (!hoursOk) document.getElementById(fieldId("每周课时")).classList.add("invalid");
+    error.hidden = false;
+    error.textContent = !hoursOk ? t("hoursInvalid") : t("requiredMsg");
+    return null;
+  }
+  error.hidden = true;
+  error.textContent = "";
+  return data;
+}
+function clearForm() {
+  for (let i = 0; i < FIELDS.length; i++) setField(FIELDS[i], "");
+  setField("试听日期", todayString());
+  clearInvalid();
+  const error = document.getElementById("formArchiveError");
+  error.hidden = true;
+  diagnosisText = "";
+}
+function updateEntryButtons() {
+  const submit = document.getElementById("btnSubmitEntry");
+  const alt = document.getElementById("btnAltGenerate");
+  const clearBtn = document.getElementById("btnClearEntry");
+  const prev = document.getElementById("btnPrevRow");
+  const next = document.getElementById("btnNextRow");
+  const copyBtn = document.getElementById("btnCopyScript");
+  if (!submit) return;
+  const editing = currentRow > 0;
+  submit.textContent = editing ? t("saveEdit") : t("submitNew");
+  alt.hidden = !editing;
+  alt.textContent = t("altGenerate");
+  clearBtn.textContent = editing ? t("discard") : t("clearForm");
+  const locked = polling || actionBusy;
+  submit.disabled = locked;
+  alt.disabled = locked;
+  clearBtn.disabled = locked;
+  prev.disabled = locked || !(currentRow > 1);
+  next.disabled = locked || !(currentRow > 0 && currentRow < recordCount);
+  copyBtn.disabled = !diagnosisText;
+}
+function showDiagMessage(message, spinning) {
+  const body = document.getElementById("diagBody");
+  body.textContent = "";
+  const box = el("div", "wait-box");
+  if (spinning) {
+    const icon = el("i", "fa-solid fa-spinner fa-spin");
+    icon.setAttribute("aria-hidden", "true");
+    box.appendChild(icon);
+  }
+  box.appendChild(el("span", "", message));
+  body.appendChild(box);
+  document.getElementById("btnContinueWait").hidden = true;
+}
+function showDiagMarkdown(text) {
+  diagnosisText = String(text || "");
+  const body = document.getElementById("diagBody");
+  body.innerHTML = renderMarkdown(diagnosisText);
+  document.getElementById("btnContinueWait").hidden = true;
+  updateEntryButtons();
+}
+function showDiagEmpty() {
+  diagnosisText = "";
+  showDiagMessage(t("diagEmpty"), false);
+  document.getElementById("btnContinueWait").hidden = true;
+  updateEntryButtons();
+}
+function showDiagPlaceholder() {
+  diagnosisText = "";
+  showDiagMessage(t("diagWillShow"), false);
+  document.getElementById("btnContinueWait").hidden = true;
+  updateEntryButtons();
+}
+function showDiagTimeout() {
+  diagnosisText = "";
+  showDiagMessage(t("diagTimeout"), false);
+  document.getElementById("btnContinueWait").hidden = false;
+  updateEntryButtons();
+}
+function parseCount(text) {
+  const m = String(text == null ? "" : text).match(/\d+/);
+  if (!m) return 0;
+  return parseInt(m[0], 10);
+}
+function stripBom(s) {
+  const text = String(s || "");
+  if (text.charCodeAt(0) === 0xFEFF) return text.slice(1);
+  return text;
+}
+function tallyStages(rows) {
+  const map = { "试听准备": 0, "试听复盘": 0, "转化": 0, "续费": 0, "流失": 0 };
+  for (let i = 0; i < rows.length; i++) {
+    const name = String((rows[i] && rows[i][0]) || "").trim();
+    if (Object.prototype.hasOwnProperty.call(map, name)) map[name] += 1;
+  }
+  return map;
+}
+async function loadData() {
+  const countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+  const stageCsv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "跟进阶段" });
+  const fullCsv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: FIELD_CSV });
+  const stageRows = parseCSV(stripBom(stageCsv || "").trim());
+  stageCounts = tallyStages(stageRows);
+  const fullRows = parseCSV(stripBom(fullCsv || "").trim());
+  const next = [];
+  for (let i = 0; i < fullRows.length; i++) {
+    const rec = { __row: i + 1 };
+    for (let c = 0; c < FIELDS.length; c++) {
+      rec[FIELDS[c]] = fullRows[i][c] != null ? String(fullRows[i][c]) : "";
+    }
+    next.push(rec);
+  }
+  records = next;
+  if (String(countText || "").trim() === "") recordCount = records.length;
+  else recordCount = parseCount(countText);
+}
+async function getCell(field, row) {
+  const value = await callAppBridge({
+    type: "GetCellValue",
+    data: SOURCE,
+    payload: field + "/" + String(row)
+  });
+  return value == null ? "" : String(value);
+}
+function findRecord(row) {
+  for (let i = 0; i < records.length; i++) {
+    if (records[i].__row === row) return records[i];
+  }
+  return null;
+}
+function stopPoll() {
+  pollGen += 1;
+  polling = false;
+  pollOwner = "";
+  updateEntryButtons();
+}
+async function pollDiagnosis(row, owner) {
+  const gen = ++pollGen;
+  polling = true;
+  pollOwner = owner;
+  updateEntryButtons();
+  if (owner === "entry") showDiagMessage(t("diagWait"), true);
+  if (owner === "detail") showDetailWait();
+  for (let i = 0; i < 30; i++) {
+    if (gen !== pollGen) return;
+    let text = "";
+    try {
+      text = await getCell("诊断与跟进建议", row);
+    } catch (e) {
+      text = "";
+    }
+    if (gen !== pollGen) return;
+    if (text && String(text).trim() !== "") {
+      polling = false;
+      pollOwner = "";
+      if (owner === "entry") showDiagMarkdown(text);
+      if (owner === "detail") showDetailMarkdown(text);
+      updateEntryButtons();
+      return;
+    }
+    if (i < 29) await sleep(2000);
+  }
+  if (gen !== pollGen) return;
+  polling = false;
+  pollOwner = "";
+  if (owner === "entry") showDiagTimeout();
+  if (owner === "detail") showDetailTimeout();
+  updateEntryButtons();
+}
+async function loadRowIntoForm(row) {
+  stopPoll();
+  const backupRow = currentRow;
+  const backup = readForm();
+  const backupDiag = diagnosisText;
+  currentRow = row;
+  clearInvalid();
+  showDiagMessage(t("loading"), true);
+  updateEntryButtons();
+  try {
+    const values = {};
+    for (let i = 0; i < FIELDS.length; i++) values[FIELDS[i]] = await getCell(FIELDS[i], row);
+    const diag = await getCell("诊断与跟进建议", row);
+    for (let i = 0; i < FIELDS.length; i++) setField(FIELDS[i], values[FIELDS[i]]);
+    if (String(diag || "").trim()) showDiagMarkdown(diag);
+    else showDiagEmpty();
+    updateEntryButtons();
+  } catch (e) {
+    currentRow = backupRow;
+    for (let i = 0; i < FIELDS.length; i++) setField(FIELDS[i], backup[FIELDS[i]] || "");
+    if (backupDiag) showDiagMarkdown(backupDiag);
+    else if (backupRow > 0) showDiagEmpty();
+    else showDiagPlaceholder();
+    updateEntryButtons();
+    throw e;
+  }
+}
+async function submitNewFromForm(asNewCopy) {
+  if (polling || actionBusy) return;
+  const data = validateForm();
+  if (!data) return;
+  actionBusy = true;
+  updateEntryButtons();
+  const payload = {};
+  for (let i = 0; i < FIELDS.length; i++) payload[FIELDS[i]] = data[FIELDS[i]];
+  try {
+    await callAppBridge({
+      type: "SubmitRecord",
+      data: TABLE_NAME,
+      payload: JSON.stringify(payload)
+    });
+    currentRow = 1;
+    if (asNewCopy) toast(t("altDone"));
+    clearNotice();
+    try { await loadData(); } catch (e2) {}
+    actionBusy = false;
+    await pollDiagnosis(1, "entry");
+  } catch (e) {
+    actionBusy = false;
+    updateEntryButtons();
+    showNotice(t("actionFail"));
+  }
+}
+async function saveEdit() {
+  if (polling || actionBusy || !(currentRow > 0)) return;
+  const data = validateForm();
+  if (!data) return;
+  actionBusy = true;
+  updateEntryButtons();
+  try {
+    for (let i = 0; i < FIELDS.length; i++) {
+      const name = FIELDS[i];
+      await callAppBridge({
+        type: "SetCellValue",
+        data: SOURCE,
+        payload: name + "/" + String(currentRow) + "/" + data[name]
+      });
+    }
+    toast(t("saved"));
+    clearNotice();
+    try { await loadData(); } catch (e2) {}
+    actionBusy = false;
+    updateEntryButtons();
+  } catch (e) {
+    actionBusy = false;
+    updateEntryButtons();
+    showNotice(t("actionFail"));
+  }
+}
+async function discardOrClear() {
+  if (polling || actionBusy) return;
+  if (!(currentRow > 0)) {
+    clearForm();
+    showDiagPlaceholder();
+    updateEntryButtons();
+    return;
+  }
+  try {
+    await loadRowIntoForm(currentRow);
+    clearNotice();
+  } catch (e) {
+    showNotice(t("actionFail"));
+  }
+}
+function pushHistory() {
+  if (!currentPage) return;
+  const item = {
+    page: currentPage,
+    scroll: window.scrollY || document.documentElement.scrollTop || 0,
+    archiveState: {
+      q: archiveState.q,
+      stage: archiveState.stage,
+      subject: archiveState.subject,
+      sort: archiveState.sort
+    },
+    boardQuery: boardQuery,
+    entryRow: currentRow,
+    entryData: null,
+    entryDiag: ""
+  };
+  if (currentPage === "entry") {
+    item.entryData = readForm();
+    item.entryDiag = diagnosisText;
+  }
+  historyStack.push(item);
+}
+function applyPageVisibility() {
+  document.getElementById("pageDesk").hidden = currentPage !== "desk";
+  document.getElementById("pageArchive").hidden = currentPage !== "archive";
+  document.getElementById("pageEntry").hidden = currentPage !== "entry";
+  document.getElementById("pageBoard").hidden = currentPage !== "board";
+  const tabs = document.querySelectorAll("[data-page]");
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].classList.toggle("active", tabs[i].getAttribute("data-page") === currentPage);
+  }
+}
+async function showPage(page, options) {
+  options = options || {};
+  if (page === currentPage && !options.force) {
+    closeMobileMenu();
+    return;
+  }
+  if (options.recordHistory !== false) pushHistory();
+  currentPage = page;
+  applyPageVisibility();
+  closeMobileMenu();
+  if (!options.keepScroll) window.scrollTo(0, 0);
+  try {
+    await loadData();
+    clearNotice();
+  } catch (e) {
+    showNotice(t("loadFail"));
+  }
+  if (!options.skipRender) renderCurrent();
+  if (options.scroll != null) window.scrollTo(0, options.scroll);
+}
+async function restoreHistory(prev) {
+  currentPage = prev.page;
+  archiveState = prev.archiveState || archiveState;
+  boardQuery = prev.boardQuery || "";
+  applyPageVisibility();
+  try {
+    await loadData();
+  } catch (e) {
+    showNotice(t("loadFail"));
+  }
+  if (currentPage === "entry") {
+    currentRow = prev.entryRow || 0;
+    if (prev.entryData) {
+      for (let i = 0; i < FIELDS.length; i++) setField(FIELDS[i], prev.entryData[FIELDS[i]] || "");
+    }
+    if (prev.entryDiag) showDiagMarkdown(prev.entryDiag);
+    else if (currentRow > 0) showDiagEmpty();
+    else showDiagPlaceholder();
+    updateEntryButtons();
+  }
+  renderCurrent();
+  window.scrollTo(0, prev.scroll || 0);
+}
+function openPopup(id) {
+  const node = document.getElementById(id);
+  if (!node) return;
+  if (popupStack.indexOf(id) < 0) {
+    popupZ += 2;
+    node.style.zIndex = String(popupZ);
+    popupStack.push(id);
+  }
+  node.hidden = false;
+}
+function closePopup(id) {
+  const node = document.getElementById(id);
+  if (node) node.hidden = true;
+  const next = [];
+  for (let i = 0; i < popupStack.length; i++) {
+    if (popupStack[i] !== id) next.push(popupStack[i]);
+  }
+  popupStack = next;
+  if (id === "detailMask" && pollOwner === "detail") stopPoll();
+}
+function closeTopPopup() {
+  if (!popupStack.length) return false;
+  closePopup(popupStack[popupStack.length - 1]);
+  return true;
+}
+function airBack() {
+  const menu = document.getElementById("mobileMenu");
+  if (menu.classList.contains("open")) {
+    closeMobileMenu();
+    return "false";
+  }
+  if (closeTopPopup()) return "false";
+  if (!historyStack.length) return "true";
+  const prev = historyStack.pop();
+  restoreHistory(prev);
+  return "false";
+}
+function syncNavHeight() {
+  const h = document.getElementById("topbar").offsetHeight;
+  document.documentElement.style.setProperty("--nav-h", h + "px");
+}
+function closeMobileMenu() {
+  document.getElementById("mobileMenu").classList.remove("open");
+  document.getElementById("hamburgerBtn").setAttribute("aria-expanded", "false");
+  syncNavHeight();
+}
+function toggleMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  menu.classList.toggle("open");
+  document.getElementById("hamburgerBtn").setAttribute("aria-expanded", menu.classList.contains("open") ? "true" : "false");
+  syncNavHeight();
+}
+function tabsNeedMenu() {
+  const tabs = document.getElementById("navTabs");
+  const lang = document.getElementById("langBtn");
+  const brand = document.getElementById("brandBtn");
+  const row = document.getElementById("navRow");
+  const wasTabsHidden = tabs.hidden;
+  let tabsWidth = 0;
+  let langWidth = 0;
+  if (wasTabsHidden) {
+    tabs.hidden = false;
+    lang.hidden = false;
+    tabs.style.position = "absolute";
+    lang.style.position = "absolute";
+    tabs.style.visibility = "hidden";
+    lang.style.visibility = "hidden";
+    tabsWidth = tabs.scrollWidth;
+    langWidth = lang.offsetWidth;
+    tabs.style.position = "";
+    lang.style.position = "";
+    tabs.style.visibility = "";
+    lang.style.visibility = "";
+    tabs.hidden = true;
+    lang.hidden = true;
+  } else {
+    tabsWidth = tabs.scrollWidth;
+    langWidth = lang.offsetWidth;
+  }
+  if (!wasTabsHidden && row.scrollWidth > row.clientWidth + 1) return true;
+  const available = row.clientWidth - brand.offsetWidth - 28;
+  return tabsWidth + langWidth > available;
+}
+function updateNavMode() {
+  const need = tabsNeedMenu();
+  const nav = document.getElementById("topNav");
+  const tabs = document.getElementById("navTabs");
+  const lang = document.getElementById("langBtn");
+  const ham = document.getElementById("hamburgerBtn");
+  if (need) {
+    nav.classList.add("is-compact");
+    tabs.hidden = true;
+    lang.hidden = true;
+    ham.hidden = false;
+  } else {
+    nav.classList.remove("is-compact");
+    tabs.hidden = false;
+    lang.hidden = false;
+    ham.hidden = true;
+    closeMobileMenu();
+  }
+  syncNavHeight();
+}
+function emptyBox(message) {
+  const box = el("div", "empty");
+  const icon = el("i", "fa-regular fa-note-sticky");
+  icon.setAttribute("aria-hidden", "true");
+  icon.style.display = "block";
+  icon.style.marginBottom = "6px";
+  box.appendChild(icon);
+  box.appendChild(el("div", "", message));
+  return box;
+}
+function renderDesk() {
+  document.getElementById("statCountTotal").textContent = String(recordCount);
+  for (let i = 0; i < STAGES.length; i++) {
+    const node = document.getElementById("statCount" + STAGES[i]);
+    if (node) node.textContent = String(stageCounts[STAGES[i]] || 0);
+  }
+  const upcomingHost = document.getElementById("upcomingList");
+  upcomingHost.textContent = "";
+  const upcoming = [];
+  for (let i = 0; i < records.length; i++) {
+    if (inNext7Days(records[i]["试听日期"])) upcoming.push(records[i]);
+  }
+  upcoming.sort(function (a, b) {
+    return parseYMD(a["试听日期"]).getTime() - parseYMD(b["试听日期"]).getTime();
+  });
+  const upcomingSlice = upcoming.slice(0, 5);
+  if (!upcomingSlice.length) upcomingHost.appendChild(emptyBox(t("upcomingEmpty")));
+  for (let i = 0; i < upcomingSlice.length; i++) upcomingHost.appendChild(miniCard(upcomingSlice[i], false));
+  const bars = document.getElementById("stageBars");
+  bars.textContent = "";
+  let total = 0;
+  for (let i = 0; i < STAGES.length; i++) total += stageCounts[STAGES[i]] || 0;
+  const bar = el("div", "mix-bar");
+  for (let i = 0; i < STAGES.length; i++) {
+    const stage = STAGES[i];
+    const count = stageCounts[stage] || 0;
+    const seg = document.createElement("button");
+    seg.type = "button";
+    seg.className = "mix-seg";
+    seg.style.background = STAGE_COLOR[stage];
+    seg.style.flex = total === 0 ? "1 1 0" : (count > 0 ? String(count) + " 1 0" : "0 0 8px");
+    seg.setAttribute("aria-label", stageLabel(stage) + " " + count);
+    seg.addEventListener("click", function () { goArchive(stage); });
+    bar.appendChild(seg);
+  }
+  bars.appendChild(bar);
+  const legend = el("div", "mix-legend");
+  for (let i = 0; i < STAGES.length; i++) {
+    const stage = STAGES[i];
+    const count = stageCounts[stage] || 0;
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "mix-row";
+    const left = el("span", "");
+    const dot = el("span", "dot");
+    dot.style.background = STAGE_COLOR[stage];
+    left.appendChild(dot);
+    left.appendChild(document.createTextNode(stageLabel(stage)));
+    row.appendChild(left);
+    row.appendChild(el("span", "", String(count)));
+    row.addEventListener("click", function () { goArchive(stage); });
+    legend.appendChild(row);
+  }
+  bars.appendChild(legend);
+  const recentHost = document.getElementById("recentList");
+  recentHost.textContent = "";
+  const recent = records.slice(0, 5);
+  if (!recent.length) recentHost.appendChild(emptyBox(t("recentEmpty")));
+  for (let i = 0; i < recent.length; i++) recentHost.appendChild(miniCard(recent[i], true));
+}
+function miniCard(rec, withNeed) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "card lift";
+  const top = el("div", "card-top");
+  top.appendChild(el("div", "card-title", filled(rec["学员化名"])));
+  top.appendChild(badge(String(rec["跟进阶段"] || "").trim()));
+  btn.appendChild(top);
+  const gradeSubject = [String(rec["年级"] || "").trim(), String(rec["学科"] || "").trim()].filter(Boolean).join(" · ");
+  btn.appendChild(el("div", "meta", gradeSubject || t("needEmpty")));
+  if (withNeed) {
+    btn.appendChild(el("div", "meta", filled(rec["试听日期"])));
+    btn.appendChild(el("div", "excerpt", excerpt(rec["需求与目标"], 40)));
+  } else {
+    const line = [String(rec["试听日期"] || "").trim(), String(rec["上课时间偏好"] || "").trim()].filter(Boolean).join(" · ");
+    btn.appendChild(el("div", "meta", line || t("needEmpty")));
+  }
+  btn.addEventListener("click", function () { openDetail(rec.__row); });
+  return btn;
+}
+function goArchive(stage) {
+  archiveState.stage = stage || "";
+  archiveState.q = "";
+  archiveState.subject = "";
+  showPage("archive");
+}
+function fillStageFilter() {
+  const select = document.getElementById("archiveStage");
+  if (!select) return;
+  const current = archiveState.stage;
+  select.textContent = "";
+  const all = document.createElement("option");
+  all.value = "";
+  all.textContent = t("allStages");
+  select.appendChild(all);
+  for (let i = 0; i < STAGES.length; i++) {
+    const opt = document.createElement("option");
+    opt.value = STAGES[i];
+    opt.textContent = stageLabel(STAGES[i]);
+    select.appendChild(opt);
+  }
+  select.value = current;
+  if (select.value !== current) select.value = "";
+}
+function fillSubjectOptions() {
+  const select = document.getElementById("archiveSubject");
+  const current = archiveState.subject;
+  select.textContent = "";
+  const all = document.createElement("option");
+  all.value = "";
+  all.textContent = t("allSubjects");
+  select.appendChild(all);
+  const seen = {};
+  for (let i = 0; i < records.length; i++) {
+    const subject = String(records[i]["学科"] || "").trim();
+    if (!subject || seen[subject]) continue;
+    seen[subject] = true;
+    const opt = document.createElement("option");
+    opt.value = subject;
+    opt.textContent = subject;
+    select.appendChild(opt);
+  }
+  select.value = current;
+  if (select.value !== current) {
+    archiveState.subject = "";
+    select.value = "";
+  }
+}
+function syncSortButton() {
+  const btn = document.getElementById("archiveSortBtn");
+  if (!btn) return;
+  if (archiveState.sort === "dateAsc") btn.textContent = t("sortAsc");
+  else if (archiveState.sort === "dateDesc") btn.textContent = t("sortDesc");
+  else btn.textContent = t("sortTable");
+}
+function syncArchiveControls() {
+  document.getElementById("archiveSearch").value = archiveState.q;
+  fillStageFilter();
+  document.getElementById("archiveStage").value = archiveState.stage || "";
+  fillSubjectOptions();
+  syncSortButton();
+}
+function matchQuery(rec, q) {
+  const query = String(q || "").trim().toLowerCase();
+  if (!query) return true;
+  const blob = [rec["学员化名"], rec["年级"], rec["学科"], rec["家长称呼"]].join("\n").toLowerCase();
+  return blob.indexOf(query) >= 0;
+}
+function filteredArchive() {
+  const list = [];
+  for (let i = 0; i < records.length; i++) {
+    const rec = records[i];
+    if (archiveState.stage && String(rec["跟进阶段"] || "").trim() !== archiveState.stage) continue;
+    if (archiveState.subject && String(rec["学科"] || "").trim() !== archiveState.subject) continue;
+    if (!matchQuery(rec, archiveState.q)) continue;
+    list.push(rec);
+  }
+  if (archiveState.sort === "dateAsc" || archiveState.sort === "dateDesc") {
+    list.sort(function (a, b) {
+      const da = parseYMD(a["试听日期"]);
+      const db = parseYMD(b["试听日期"]);
+      if (!da && !db) return a.__row - b.__row;
+      if (!da) return 1;
+      if (!db) return -1;
+      const diff = da.getTime() - db.getTime();
+      return archiveState.sort === "dateAsc" ? diff : -diff;
+    });
+  }
+  return list;
+}
+function renderArchiveList() {
+  const host = document.getElementById("archiveList");
+  host.textContent = "";
+  const list = filteredArchive();
+  if (!list.length) {
+    host.appendChild(emptyBox(t("archiveEmpty")));
+    return;
+  }
+  for (let i = 0; i < list.length; i++) host.appendChild(archiveCard(list[i]));
+}
+function archiveCard(rec) {
+  const card = el("article", "card archive-card");
+  card.setAttribute("data-row", String(rec.__row));
+  const top = el("div", "card-top");
+  top.appendChild(el("div", "card-title", filled(rec["学员化名"])));
+  top.appendChild(badge(String(rec["跟进阶段"] || "").trim()));
+  card.appendChild(top);
+  const hours = hoursText(rec["每周课时"]);
+  const pref = String(rec["上课时间偏好"] || "").trim();
+  const line2 = [String(rec["年级"] || "").trim(), String(rec["学科"] || "").trim(), hours, pref].filter(Boolean).join(" · ");
+  card.appendChild(el("div", "meta", line2));
+  const line3 = [filled(rec["试听日期"]), filled(rec["家长称呼"])].join(" · ");
+  card.appendChild(el("div", "meta", line3));
+  const phone = el("div", "phone-line");
+  const raw = String(rec["家长联系方式"] || "").trim();
+  const shown = !raw ? t("contactEmpty") : (revealedPhones[rec.__row] ? raw : maskPhone(raw));
+  phone.appendChild(el("span", "phone-text", shown));
+  if (raw) {
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "btn small ghost";
+    toggle.setAttribute("data-act", "toggle-phone");
+    toggle.textContent = revealedPhones[rec.__row] ? t("hideContact") : t("showContact");
+    phone.appendChild(toggle);
+  }
+  card.appendChild(phone);
+  const actions = el("div", "card-actions");
+  actions.appendChild(actionButton("view", t("viewDiag"), "fa-book-open"));
+  actions.appendChild(actionButton("edit", t("edit"), "fa-pen"));
+  actions.appendChild(actionButton("stage", t("advance"), "fa-arrow-right"));
+  actions.appendChild(actionButton("delete", t("remove"), "fa-trash-can"));
+  card.appendChild(actions);
+  return card;
+}
+function actionButton(act, label, icon) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn small ghost";
+  btn.setAttribute("data-act", act);
+  const i = el("i", "fa-solid " + icon);
+  i.setAttribute("aria-hidden", "true");
+  i.style.marginRight = "4px";
+  btn.appendChild(i);
+  btn.appendChild(document.createTextNode(label));
+  return btn;
+}
+function syncBoardControl() {
+  document.getElementById("boardSearch").value = boardQuery;
+}
+function renderBoard() {
+  const host = document.getElementById("boardColumns");
+  host.textContent = "";
+  for (let s = 0; s < STAGES.length; s++) {
+    const stage = STAGES[s];
+    const col = el("section", "board-col");
+    const head = el("div", "col-head");
+    head.style.borderBottomColor = STAGE_COLOR[stage];
+    head.appendChild(el("span", "", stageLabel(stage)));
+    const items = [];
+    for (let i = 0; i < records.length; i++) {
+      if (String(records[i]["跟进阶段"] || "").trim() !== stage) continue;
+      if (!matchQuery(records[i], boardQuery)) continue;
+      items.push(records[i]);
+    }
+    head.appendChild(el("span", "", String(items.length)));
+    col.appendChild(head);
+    if (!items.length) col.appendChild(emptyBox(t("colEmpty")));
+    for (let i = 0; i < items.length; i++) col.appendChild(boardCard(items[i]));
+    host.appendChild(col);
+  }
+}
+function boardCard(rec) {
+  const card = el("article", "card");
+  card.setAttribute("data-row", String(rec.__row));
+  card.appendChild(el("div", "card-title", filled(rec["学员化名"])));
+  const gradeSubject = [String(rec["年级"] || "").trim(), String(rec["学科"] || "").trim()].filter(Boolean).join(" · ");
+  card.appendChild(el("div", "meta", gradeSubject || t("needEmpty")));
+  const when = [String(rec["试听日期"] || "").trim(), String(rec["上课时间偏好"] || "").trim()].filter(Boolean).join(" · ");
+  card.appendChild(el("div", "meta", when || t("needEmpty")));
+  const actions = el("div", "card-actions");
+  actions.appendChild(actionButton("view", t("viewDiag"), "fa-book-open"));
+  actions.appendChild(actionButton("stage", t("moveStage"), "fa-arrow-right"));
+  actions.appendChild(actionButton("edit", t("edit"), "fa-pen"));
+  card.appendChild(actions);
+  return card;
+}
+function renderEntry() {
+  updateEntryButtons();
+  if (!document.getElementById("diagBody").childNodes.length) {
+    if (currentRow > 0) showDiagEmpty();
+    else showDiagPlaceholder();
+  }
+}
+function renderCurrent() {
+  if (currentPage === "desk") renderDesk();
+  else if (currentPage === "archive") {
+    syncArchiveControls();
+    renderArchiveList();
+  } else if (currentPage === "entry") renderEntry();
+  else if (currentPage === "board") {
+    syncBoardControl();
+    renderBoard();
+  }
+}
+async function openNewEntry() {
+  stopPoll();
+  if (currentPage) pushHistory();
+  currentRow = 0;
+  clearForm();
+  showDiagPlaceholder();
+  currentPage = "entry";
+  applyPageVisibility();
+  closeMobileMenu();
+  window.scrollTo(0, 0);
+  updateEntryButtons();
+  try { await loadData(); clearNotice(); } catch (e) { showNotice(t("loadFail")); }
+  updateEntryButtons();
+}
+async function openEdit(row) {
+  stopPoll();
+  closePopup("detailMask");
+  if (currentPage !== "entry") await showPage("entry");
+  try {
+    await loadRowIntoForm(row);
+    clearNotice();
+  } catch (e) {
+    showNotice(t("actionFail"));
+  }
+}
+function showDetailWait() {
+  const body = document.getElementById("detailDiag");
+  body.textContent = "";
+  const box = el("div", "wait-box");
+  const icon = el("i", "fa-solid fa-spinner fa-spin");
+  icon.setAttribute("aria-hidden", "true");
+  box.appendChild(icon);
+  box.appendChild(el("span", "", t("diagWait")));
+  body.appendChild(box);
+  document.getElementById("btnDetailContinue").hidden = true;
+}
+function showDetailMarkdown(text) {
+  document.getElementById("detailDiag").innerHTML = renderMarkdown(text);
+  document.getElementById("btnDetailContinue").hidden = true;
+}
+function showDetailTimeout() {
+  const body = document.getElementById("detailDiag");
+  body.textContent = "";
+  body.appendChild(el("div", "wait-box", t("diagTimeout")));
+  document.getElementById("btnDetailContinue").hidden = false;
+}
+async function openDetail(row) {
+  detailRow = row;
+  const rec = findRecord(row);
+  const title = document.getElementById("detailTitle");
+  title.textContent = rec ? filled(rec["学员化名"]) : t("needEmpty");
+  const sub = document.getElementById("detailSub");
+  sub.textContent = "";
+  if (rec) {
+    sub.appendChild(el("span", "", filled(rec["年级"])));
+    sub.appendChild(el("span", "", filled(rec["学科"])));
+    sub.appendChild(badge(String(rec["跟进阶段"] || "").trim()));
+    sub.appendChild(el("span", "", filled(rec["试听日期"])));
+  }
+  const fields = document.getElementById("detailFields");
+  fields.textContent = "";
+  const grid = el("div", "kv");
+  for (let i = 0; i < FIELDS.length; i++) {
+    const name = FIELDS[i];
+    grid.appendChild(el("b", "", fieldLabel(name)));
+    if (name === "家长联系方式") {
+      const wrap = el("span", "");
+      const raw = rec ? String(rec["家长联系方式"] || "").trim() : "";
+      wrap.appendChild(document.createTextNode(raw ? raw : t("needEmpty")));
+      if (raw) {
+        const copy = document.createElement("button");
+        copy.type = "button";
+        copy.className = "btn small ghost";
+        copy.style.marginLeft = "8px";
+        copy.textContent = t("copyNumber");
+        copy.addEventListener("click", function () { copyPlain(raw, t("copiedNumber")); });
+        wrap.appendChild(copy);
+      }
+      grid.appendChild(wrap);
+    } else if (name === "跟进阶段") {
+      const wrap = el("span", "");
+      wrap.appendChild(badge(rec ? String(rec["跟进阶段"] || "").trim() : ""));
+      grid.appendChild(wrap);
+    } else {
+      const value = rec ? String(rec[name] || "").trim() : "";
+      grid.appendChild(el("span", "", value ? value : t("needEmpty")));
+    }
+  }
+  fields.appendChild(grid);
+  openPopup("detailMask");
+  let diag = "";
+  try {
+    diag = await getCell("诊断与跟进建议", row);
+  } catch (e) {
+    showNotice(t("loadFail"));
+    diag = "";
+  }
+  if (detailRow !== row) return;
+  if (String(diag || "").trim()) showDetailMarkdown(diag);
+  else pollDiagnosis(row, "detail");
+}
+function openStagePicker(row) {
+  pendingStageRow = row;
+  const rec = findRecord(row);
+  const current = rec ? String(rec["跟进阶段"] || "").trim() : "";
+  const host = document.getElementById("stageChoices");
+  host.textContent = "";
+  for (let i = 0; i < STAGES.length; i++) {
+    const stage = STAGES[i];
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn";
+    btn.textContent = stageLabel(stage);
+    btn.style.background = STAGE_COLOR[stage];
+    btn.style.color = stage === "试听复盘" ? "#1E3A4C" : "#FFFCF7";
+    if (stage === current) btn.disabled = true;
+    btn.addEventListener("click", function () { applyStage(row, stage); });
+    host.appendChild(btn);
+  }
+  openPopup("stageMask");
+}
+async function applyStage(row, stage) {
+  if (actionBusy) return;
+  actionBusy = true;
+  try {
+    await callAppBridge({
+      type: "SetCellValue",
+      data: SOURCE,
+      payload: "跟进阶段/" + String(row) + "/" + stage
+    });
+    closePopup("stageMask");
+    toast(t("stageSaved"));
+    showNotice(t("stageSaved"));
+    await loadData();
+    if (currentPage === "entry" && currentRow === row) setField("跟进阶段", stage);
+    renderCurrent();
+    actionBusy = false;
+    updateEntryButtons();
+  } catch (e) {
+    actionBusy = false;
+    updateEntryButtons();
+    showNotice(t("actionFail"));
+  }
+}
+function askDelete(row) {
+  pendingDeleteRow = row;
+  openPopup("confirmMask");
+}
+async function doDelete() {
+  const row = pendingDeleteRow;
+  if (!row || actionBusy) return;
+  actionBusy = true;
+  try {
+    await callAppBridge({
+      type: "DeleteRecord",
+      data: SOURCE,
+      payload: row.toString()
+    });
+    closePopup("confirmMask");
+    await loadData();
+    if (currentRow > recordCount) currentRow = recordCount;
+    renderCurrent();
+    if (currentPage === "entry") updateEntryButtons();
+    toast(t("deleted"));
+    clearNotice();
+    actionBusy = false;
+  } catch (e) {
+    actionBusy = false;
+    showNotice(t("actionFail"));
+  }
+}
+async function copyPlain(text, message) {
+  const value = String(text || "");
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const area = document.createElement("textarea");
+      area.value = value;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+    toast(message || t("copied"));
+  } catch (e) {
+    try {
+      const area = document.createElement("textarea");
+      area.value = value;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+      toast(message || t("copied"));
+    } catch (e2) {
+      showNotice(t("actionFail"));
+    }
+  }
+}
+async function shiftRow(delta) {
+  if (polling || actionBusy) return;
+  try {
+    const countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    recordCount = parseCount(countText);
+    const target = currentRow + delta;
+    if (target < 1 || target > recordCount) {
+      updateEntryButtons();
+      return;
+    }
+    await loadRowIntoForm(target);
+  } catch (e) {
+    showNotice(t("actionFail"));
+  }
+}
+function bindKeyboard() {
+  function reveal(target) {
+    if (!target) return;
+    const tag = target.tagName;
+    if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) { target.scrollIntoView(); }
+    }, 280);
+  }
+  document.addEventListener("focusin", function (e) { reveal(e.target); });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () { reveal(document.activeElement); });
+  }
+}
+function bindEvents() {
+  document.getElementById("brandBtn").addEventListener("click", function () {
+    try {
+      if (window.parent && window.parent.closeFullHtml) window.parent.closeFullHtml(false);
+    } catch (e) {}
+  });
+  const pageButtons = document.querySelectorAll("#navTabs [data-page], #mobileMenu [data-page]");
+  for (let i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener("click", function (e) {
+      const page = e.currentTarget.getAttribute("data-page");
+      closeMobileMenu();
+      showPage(page);
+    });
+  }
+  document.getElementById("langBtn").addEventListener("click", function () {
+    setLang(uiLang === "en" ? "zh" : "en");
+  });
+  document.getElementById("mLangZh").addEventListener("click", function () { setLang("zh"); });
+  document.getElementById("mLangEn").addEventListener("click", function () { setLang("en"); });
+  document.getElementById("hamburgerBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("mobileMenu");
+    if (!menu.classList.contains("open")) return;
+    const ham = document.getElementById("hamburgerBtn");
+    if (menu.contains(e.target) || ham.contains(e.target)) return;
+    closeMobileMenu();
+  });
+  document.getElementById("btnNewFromDesk").addEventListener("click", function () { openNewEntry(); });
+  document.getElementById("btnAddArchive").addEventListener("click", function () { openNewEntry(); });
+  document.getElementById("btnBackArchive").addEventListener("click", function () { showPage("archive"); });
+  document.getElementById("statRow").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-stage]");
+    if (!card) return;
+    goArchive(card.getAttribute("data-stage") || "");
+  });
+  document.getElementById("archiveSearch").addEventListener("input", function (e) {
+    archiveState.q = e.target.value;
+    renderArchiveList();
+  });
+  document.getElementById("archiveStage").addEventListener("change", function (e) {
+    archiveState.stage = e.target.value;
+    renderArchiveList();
+  });
+  document.getElementById("archiveSubject").addEventListener("change", function (e) {
+    archiveState.subject = e.target.value;
+    renderArchiveList();
+  });
+  document.getElementById("archiveSortBtn").addEventListener("click", function () {
+    if (archiveState.sort === "table") archiveState.sort = "dateAsc";
+    else if (archiveState.sort === "dateAsc") archiveState.sort = "dateDesc";
+    else archiveState.sort = "table";
+    syncSortButton();
+    renderArchiveList();
+  });
+  document.getElementById("archiveList").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-act]");
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    const row = Number(card.getAttribute("data-row"));
+    if (!btn) {
+      openDetail(row);
+      return;
+    }
+    const act = btn.getAttribute("data-act");
+    if (act === "toggle-phone") {
+      revealedPhones[row] = !revealedPhones[row];
+      renderArchiveList();
+      return;
+    }
+    if (act === "view") openDetail(row);
+    else if (act === "edit") openEdit(row);
+    else if (act === "stage") openStagePicker(row);
+    else if (act === "delete") askDelete(row);
+  });
+  document.getElementById("boardSearch").addEventListener("input", function (e) {
+    boardQuery = e.target.value;
+    renderBoard();
+  });
+  document.getElementById("boardColumns").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    const card = btn.closest("[data-row]");
+    if (!card) return;
+    const row = Number(card.getAttribute("data-row"));
+    const act = btn.getAttribute("data-act");
+    if (act === "view") openDetail(row);
+    else if (act === "edit") openEdit(row);
+    else if (act === "stage") openStagePicker(row);
+  });
+  document.getElementById("formArchive").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formArchiveFields").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-pick-stage]");
+    if (!btn) return;
+    setStageButtons(btn.getAttribute("data-pick-stage"));
+  });
+  document.getElementById("btnSubmitEntry").addEventListener("click", function () {
+    if (currentRow > 0) saveEdit();
+    else submitNewFromForm(false);
+  });
+  document.getElementById("btnAltGenerate").addEventListener("click", function () { submitNewFromForm(true); });
+  document.getElementById("btnClearEntry").addEventListener("click", function () { discardOrClear(); });
+  document.getElementById("btnPrevRow").addEventListener("click", function () { shiftRow(-1); });
+  document.getElementById("btnNextRow").addEventListener("click", function () { shiftRow(1); });
+  document.getElementById("btnCopyScript").addEventListener("click", function () {
+    if (!diagnosisText) return;
+    copyPlain(diagnosisText, t("copied"));
+  });
+  document.getElementById("btnContinueWait").addEventListener("click", function () {
+    if (currentRow > 0) pollDiagnosis(currentRow, "entry");
+  });
+  document.getElementById("detailMask").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("detailMask")) closePopup("detailMask");
+  });
+  document.getElementById("btnDetailClose").addEventListener("click", function () { closePopup("detailMask"); });
+  document.getElementById("btnDetailEdit").addEventListener("click", function () {
+    if (detailRow > 0) openEdit(detailRow);
+  });
+  document.getElementById("btnDetailContinue").addEventListener("click", function () {
+    if (detailRow > 0) pollDiagnosis(detailRow, "detail");
+  });
+  document.getElementById("stageMask").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("stageMask")) closePopup("stageMask");
+  });
+  document.getElementById("btnStageCancel").addEventListener("click", function () { closePopup("stageMask"); });
+  document.getElementById("confirmMask").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("confirmMask")) closePopup("confirmMask");
+  });
+  document.getElementById("btnConfirmCancel").addEventListener("click", function () { closePopup("confirmMask"); });
+  document.getElementById("btnConfirmOk").addEventListener("click", function () { doDelete(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (document.getElementById("mobileMenu").classList.contains("open")) closeMobileMenu();
+      else closeTopPopup();
+    }
+  });
+  window.addEventListener("resize", updateNavMode);
+  if (window.ResizeObserver) {
+    const observer = new ResizeObserver(function () { updateNavMode(); });
+    observer.observe(document.getElementById("navRow"));
+  }
+}
+async function loadMode() {
+  try {
+    const mode = await callAppBridge({ type: "模式" });
+    const text = String(mode || "");
+    if (text.indexOf("暗") >= 0) document.documentElement.classList.add("theme-dark");
+    else document.documentElement.classList.remove("theme-dark");
+  } catch (e) {
+    document.documentElement.classList.remove("theme-dark");
+  }
+}
+async function initialize() {
+  uiLang = detectLang();
+  buildForm();
+  bindEvents();
+  bindKeyboard();
+  applyI18n(false);
+  clearForm();
+  showDiagPlaceholder();
+  updateNavMode();
+  window.airBack = airBack;
+  const modeTask = loadMode();
+  await showPage("desk", { recordHistory: false });
+  await modeTask;
+  updateNavMode();
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

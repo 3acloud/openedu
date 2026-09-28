@@ -1,0 +1,3531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1E3A4C">
+<title>兴趣罗盘</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root {
+  --paper-0: #FBF6EF;
+  --paper-1: #F3E6D4;
+  --indigo: #1E3A4C;
+  --amber: #E07A3D;
+  --pine: #1F8A70;
+  --ink: #2C241C;
+  --muted: #6E6258;
+  --card: #FFFFFF;
+  --line: rgba(30, 58, 76, .1);
+  --shadow: 0 10px 28px rgba(80, 52, 28, .08);
+  --nav-h: 68px;
+  --kb: 0px;
+  --giveup: #C46B6B;
+  --goon: #1F8A70;
+  --annoy: #E0A106;
+  --fast: #E07A3D;
+  --mid: #7A8B99;
+  --slog: #6B5B95;
+}
+html[data-theme="dark"] {
+  --paper-0: #1A1612;
+  --paper-1: #2A2118;
+  --ink: #F6EDE2;
+  --muted: #C8B8A6;
+  --card: #2C261F;
+  --line: rgba(246, 237, 226, .12);
+  --shadow: 0 12px 28px rgba(0, 0, 0, .35);
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: calc(var(--nav-h) + 12px); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Nunito", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background:
+    radial-gradient(900px 420px at 100% -10%, rgba(224, 122, 61, .13), transparent 55%),
+    radial-gradient(680px 360px at -8% 16%, rgba(31, 138, 112, .08), transparent 50%),
+    linear-gradient(180deg, #FBF6EF 0%, #F3E6D4 100%);
+  padding-top: var(--nav-h);
+  overflow-x: hidden;
+}
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(900px 420px at 100% -10%, rgba(224, 122, 61, .18), transparent 55%),
+    linear-gradient(180deg, #1A1612 0%, #2A2118 100%);
+}
+body.modal-open { overflow: hidden; }
+[hidden] { display: none !important; }
+input, select, textarea { box-sizing: border-box; font-family: inherit; font-size: 16px; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid rgba(224, 122, 61, .55); outline-offset: 2px; }
+::selection { background: rgba(224, 122, 61, .28); }
+.nav-fixed { position: fixed; top: 0; left: 0; right: 0; z-index: 1001; }
+#topNav { background: #1E3A4C; color: #fff; box-shadow: 0 8px 22px rgba(30, 58, 76, .22); }
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  min-height: var(--nav-h);
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 8px 0;
+  text-align: left;
+  min-width: 0;
+}
+.brand i { font-size: 26px; color: #E07A3D; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-name { font-weight: 800; font-size: 18px; }
+.brand small { color: rgba(255, 255, 255, .72); font-size: 11px; font-weight: 700; }
+.nav-tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; flex: 1; }
+#navTabs { display: flex; flex-wrap: nowrap; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+#navTabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  background: transparent;
+  color: rgba(255, 255, 255, .78);
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 15px;
+}
+.nav-tab.is-on { color: #fff; border-bottom-color: #E07A3D; }
+.lang-switch { display: inline-flex; border-radius: 999px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .28); flex: 0 0 auto; }
+.lang-switch button, .menu-lang button {
+  background: transparent;
+  color: rgba(255, 255, 255, .82);
+  border: none;
+  padding: 6px 10px;
+  font-weight: 800;
+}
+.lang-switch button.is-on, .menu-lang button.is-on { background: #E07A3D; color: #2C241C; }
+.hamburger {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, .24);
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+  flex: 0 0 auto;
+}
+.menu-backdrop { position: fixed; left: 0; right: 0; bottom: 0; top: var(--nav-h); background: transparent; z-index: 0; }
+.menu-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #163140;
+  padding: 8px 12px 14px;
+  box-shadow: 0 16px 28px rgba(0, 0, 0, .22);
+  z-index: 2;
+}
+.menu-tab {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 10px;
+  font-weight: 800;
+  font-size: 16px;
+}
+.menu-tab.is-on { background: rgba(224, 122, 61, .2); color: #ffd8c2; }
+.menu-lang { display: flex; gap: 8px; padding: 8px 4px 2px; }
+.bottom-nav {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: #1E3A4C;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.bottom-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: transparent;
+  color: rgba(255, 255, 255, .72);
+  border: none;
+  padding: 8px 2px 10px;
+  font-weight: 800;
+  font-size: 11px;
+}
+.bottom-tab i { font-size: 16px; }
+.bottom-tab.is-on { color: #E07A3D; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 22px 18px 48px; }
+.hero, .page-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; }
+.eyebrow { margin: 0; color: var(--pine); font-weight: 800; letter-spacing: .04em; }
+h1 { font-size: 36px; line-height: 1.15; margin: 6px 0 8px; letter-spacing: -.03em; }
+h2 { margin: 0 0 8px; font-size: 22px; }
+h3 { margin: 8px 0; font-size: 20px; }
+.lede { font-size: 17px; line-height: 1.7; max-width: 46rem; margin-top: 0; }
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 800;
+  font-size: 15px;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.btn-amber { background: #E07A3D; color: #2C241C; }
+.btn-amber:hover { box-shadow: 0 8px 18px rgba(224, 122, 61, .35); }
+.btn-pine { background: #1F8A70; color: #fff; }
+.btn-pine:hover { box-shadow: 0 8px 18px rgba(31, 138, 112, .32); }
+.btn-ghost { background: transparent; color: var(--indigo); border: 1.5px solid rgba(30, 58, 76, .2); }
+html[data-theme="dark"] .btn-ghost { color: #F6EDE2; border-color: rgba(246, 237, 226, .24); }
+.btn-danger { background: #C46B6B; color: #2C241C; }
+.btn-small { padding: 8px 12px; font-size: 13px; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(1px) scale(.98); }
+.btn:disabled { opacity: .48; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 18px 0 8px; }
+.stat-card, .info-card, .panel, .form-card, .letter-card {
+  background: var(--card);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  border: 1px solid transparent;
+}
+.stat-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; overflow: hidden; }
+.stat-card:hover, .info-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(224, 122, 61, .55);
+  box-shadow: 0 16px 34px rgba(224, 122, 61, .16);
+}
+.stat-hit { width: 100%; background: transparent; border: none; text-align: left; padding: 16px 16px 14px; color: inherit; }
+.stat-accent { display: block; height: 4px; border-radius: 4px; margin-bottom: 10px; }
+#statCount .stat-accent { background: #1E3A4C; }
+#statFast .stat-accent { background: #E07A3D; }
+#statContinue .stat-accent { background: #1F8A70; }
+.stat-num { display: block; font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+.stat-num.is-text { font-size: 22px; }
+.stat-label { color: var(--muted); font-weight: 800; }
+.retry-btn { margin: 0 16px 14px; }
+.section-head { margin: 22px 0 10px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+.info-card { padding: 16px; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.info-card h3 { margin: 8px 0; }
+.clip { color: var(--muted); margin: 8px 0; line-height: 1.55; }
+.more-link { color: #C45E22; font-weight: 800; font-size: 14px; }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill, .consent-mini { font-size: 13px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(30, 58, 76, .06); border-radius: 999px; padding: 4px 8px; font-weight: 800; }
+html[data-theme="dark"] .pill { background: rgba(246, 237, 226, .08); }
+.consent-mini { color: var(--muted); font-weight: 700; }
+.react-line { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.react-line.lg { font-size: 18px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+.dot.lg { width: 18px; height: 18px; }
+.dot.sm { width: 8px; height: 8px; }
+.page-foot { margin-top: 28px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.record-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 18px; align-items: start; }
+.form-card, .letter-card { border-radius: 28px; padding: 18px; }
+.letter-rule { height: 4px; border-radius: 4px; background: linear-gradient(90deg, #E07A3D, #1F8A70); margin-bottom: 12px; }
+.notice {
+  background: #fffdf8;
+  border: 1px solid rgba(30, 58, 76, .08);
+  border-left: 4px solid #1F8A70;
+  border-radius: 18px;
+  padding: 12px 14px;
+  position: sticky;
+  top: calc(var(--nav-h) + 8px);
+  z-index: 4;
+  max-height: 32vh;
+  overflow: auto;
+  box-shadow: 0 8px 20px rgba(80, 52, 28, .06);
+}
+html[data-theme="dark"] .notice { background: #322920; }
+.notice p { margin: 0 0 8px; line-height: 1.55; font-size: 14px; }
+.ack { display: flex; gap: 10px; align-items: flex-start; font-weight: 800; margin-top: 8px; }
+.ack input { width: 20px; height: 20px; margin-top: 2px; flex: 0 0 auto; }
+.field { margin: 0 0 14px; }
+.field-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.field-label { font-weight: 800; }
+.req { color: #E07A3D; }
+.opt-tag { color: var(--muted); font-size: 12px; font-weight: 800; }
+.field-input, .filter-bar select, .tool-select, .search-input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1.5px solid rgba(30, 58, 76, .14);
+  background: rgba(255, 255, 255, .9);
+  padding: 12px;
+  box-sizing: border-box;
+}
+html[data-theme="dark"] .field-input,
+html[data-theme="dark"] .filter-bar select,
+html[data-theme="dark"] .tool-select,
+html[data-theme="dark"] .search-input {
+  background: #1F1A16;
+  border-color: rgba(246, 237, 226, .16);
+  color: #F6EDE2;
+}
+textarea.field-input { min-height: 96px; resize: vertical; line-height: 1.55; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip {
+  border: 1.5px solid rgba(30, 58, 76, .14);
+  background: rgba(255, 255, 255, .75);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 15px;
+}
+html[data-theme="dark"] .chip { background: #241E19; border-color: rgba(246, 237, 226, .16); color: #F6EDE2; }
+.chip:hover { transform: translateY(-1px); }
+.chip:active { transform: translateY(1px); }
+.seg { display: inline-flex; border-radius: 999px; overflow: hidden; border: 1.5px solid rgba(30, 58, 76, .14); }
+.seg .chip { border: none; border-radius: 0; }
+.hint-box { background: rgba(31, 138, 112, .1); border-radius: 16px; padding: 12px 14px; line-height: 1.55; }
+.missing { color: #9A4E1A; font-weight: 800; min-height: 1.2em; }
+html[data-theme="dark"] .missing { color: #F3C7A8; }
+.inline-msg { color: var(--muted); font-weight: 700; min-height: 1.2em; }
+.letter-wait, .empty { text-align: center; padding: 18px 8px; }
+.letter-wait p, .empty p { font-weight: 800; }
+.muted { color: var(--muted); }
+.filter-bar { display: grid; grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr)); gap: 10px; align-items: end; margin: 12px 0; }
+.filter-bar label, .clue-filter { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: var(--muted); }
+.summary { font-weight: 800; color: var(--muted); }
+.banner { background: rgba(31, 138, 112, .12); border: 1px solid rgba(31, 138, 112, .28); border-radius: 16px; padding: 12px 14px; font-weight: 800; margin: 12px 0; }
+.dist-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.panel { padding: 16px 16px 8px; }
+.bar-row { display: grid; grid-template-columns: 16px minmax(88px, 150px) 1fr auto; gap: 8px; align-items: center; margin: 8px 0; }
+.bar-row.is-big { grid-template-columns: 22px minmax(120px, 190px) 1fr auto; margin: 14px 0; font-size: 17px; }
+.bar-name, .bar-meta { font-weight: 800; }
+.bar-track { height: 10px; background: rgba(30, 58, 76, .08); border-radius: 999px; overflow: hidden; }
+html[data-theme="dark"] .bar-track { background: rgba(246, 237, 226, .1); }
+.bar-row.is-big .bar-track { height: 18px; }
+.bar-fill { display: block; height: 100%; border-radius: 999px; }
+.consent-line { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-weight: 800; }
+.caution { font-weight: 800; color: var(--muted); }
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(28, 24, 20, .46);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+#drawerOverlay { z-index: 1300; }
+#confirmOverlay { z-index: 1400; }
+.dialog {
+  background: var(--card);
+  color: var(--ink);
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .24);
+  padding: 22px 22px 28px;
+  opacity: 1;
+}
+#drawerOverlay .dialog { width: min(680px, 100%); }
+.confirm-dialog { width: min(440px, 100%); }
+.dialog-toolbar { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+.detail-list { display: grid; grid-template-columns: minmax(120px, 180px) 1fr; gap: 8px 12px; margin: 8px 0 16px; }
+.detail-list dt { font-weight: 800; color: var(--muted); }
+.detail-list dd { margin: 0; line-height: 1.55; }
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  background: #1E3A4C;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 999px;
+  z-index: 1600;
+  max-width: calc(100% - 32px);
+  font-weight: 800;
+}
+.mini-compass {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(30, 58, 76, .25);
+  position: relative;
+  flex: 0 0 auto;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 58%, rgba(224, 122, 61, .2) 59%, transparent 63%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .75), rgba(243, 230, 212, .25) 72%);
+  box-shadow: inset 0 0 0 6px rgba(30, 58, 76, .05);
+}
+.mini-compass.hero { width: 112px; height: 112px; }
+html[data-theme="dark"] .mini-compass {
+  border-color: rgba(246, 237, 226, .28);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 58%, rgba(224, 122, 61, .35) 59%, transparent 63%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .05), rgba(42, 33, 24, .4) 72%);
+}
+.rotor { position: absolute; inset: 12px; border-radius: 50%; animation: compass-spin 18s linear infinite; }
+.mini-compass.fast .rotor { animation-duration: 2.6s; }
+.needle {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 4px;
+  height: 48%;
+  transform: translateX(-50%);
+  background: #E07A3D;
+  border-radius: 4px 4px 0 0;
+}
+.needle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 4px;
+  height: 92%;
+  transform: translateX(-50%);
+  background: #1E3A4C;
+  border-radius: 0 0 4px 4px;
+}
+html[data-theme="dark"] .needle::after { background: #F6EDE2; }
+.rotor::before, .rotor::after { content: ""; position: absolute; background: rgba(30, 58, 76, .35); }
+html[data-theme="dark"] .rotor::before, html[data-theme="dark"] .rotor::after { background: rgba(246, 237, 226, .35); }
+.rotor::before { left: 0; right: 0; top: 50%; height: 1px; }
+.rotor::after { top: 0; bottom: 0; left: 50%; width: 1px; }
+@keyframes compass-spin { to { transform: rotate(360deg); } }
+.md-body { line-height: 1.7; font-size: 16px; overflow-wrap: anywhere; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4 { color: var(--indigo); line-height: 1.3; }
+html[data-theme="dark"] .md-body h1,
+html[data-theme="dark"] .md-body h2,
+html[data-theme="dark"] .md-body h3,
+html[data-theme="dark"] .md-body h4 { color: #F3C7A8; }
+.md-body a { color: #C45E22; }
+.md-body code { background: rgba(30, 58, 76, .06); padding: 0 4px; border-radius: 6px; }
+.md-body pre { background: #1E3A4C; color: #FBF6EF; padding: 12px 14px; border-radius: 14px; overflow: auto; }
+.md-body pre code { background: transparent; color: inherit; padding: 0; }
+.md-body blockquote { margin: 8px 0; padding: 8px 14px; border-left: 4px solid #1F8A70; background: rgba(31, 138, 112, .08); border-radius: 0 12px 12px 0; }
+.md-body img { max-width: 100%; height: auto; border-radius: 12px; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.md-body table { border-collapse: collapse; min-width: 420px; }
+.md-body th, .md-body td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+.md-body th { background: rgba(30, 58, 76, .06); }
+@media (max-width: 900px) {
+  .record-layout, .dist-grid, .filter-bar { grid-template-columns: 1fr 1fr; }
+  .filter-bar .search-label { grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  h1 { font-size: 30px; }
+  .stat-grid, .filter-bar, .dist-grid, .record-layout, .detail-list { grid-template-columns: 1fr; }
+  .hero, .page-top { flex-direction: column; }
+  .mini-compass.hero { width: 76px; height: 76px; }
+  #navTabs, #hamburgerBtn { display: none !important; }
+  #bottomNav { display: flex !important; }
+  #langSwitch { display: inline-flex !important; }
+  .notice { position: static; max-height: none; }
+  .wrap { padding-bottom: calc(56px + max(150px, var(--kb, 0px))); }
+  #detailOverlay { padding: 0; align-items: stretch; }
+  #detailOverlay .dialog {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    margin: 0;
+    padding-bottom: calc(28px + max(130px, var(--kb, 0px)));
+  }
+  #drawerOverlay { padding: 10px; }
+  #drawerOverlay .dialog { padding-bottom: calc(28px + max(130px, var(--kb, 0px))); }
+  html { scroll-padding-bottom: calc(120px + var(--kb, 0px)); }
+  .toast { bottom: calc(84px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rotor { animation: none; }
+  .btn, .stat-card, .info-card, .chip { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="nav-fixed">
+  <nav id="topNav" style="position: relative;z-index: 1001;" aria-label="兴趣罗盘">
+    <div class="nav-inner">
+      <button type="button" id="brandBtn" class="brand">
+        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+        <span class="brand-text">
+          <span class="brand-name" data-i18n="brand">兴趣罗盘</span>
+          <small data-i18n="brandSub">兴趣探索</small>
+        </span>
+      </button>
+      <div class="nav-tools">
+        <div id="navTabs">
+          <button type="button" class="nav-tab" data-page="home"><span data-i18n="navHome">首页</span></button>
+          <button type="button" class="nav-tab" data-page="record"><span data-i18n="navRecord">记下探索</span></button>
+          <button type="button" class="nav-tab" data-page="footprints"><span data-i18n="navFoot">探索足迹</span></button>
+          <button type="button" class="nav-tab" data-page="clues"><span data-i18n="navClues">线索分布</span></button>
+        </div>
+        <div id="langSwitch" class="lang-switch">
+          <button type="button" data-setlang="zh">中文</button>
+          <button type="button" data-setlang="en">EN</button>
+        </div>
+        <button type="button" id="hamburgerBtn" class="hamburger" hidden aria-expanded="false" aria-label="菜单">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <div id="menuBackdrop" class="menu-backdrop"></div>
+      <div class="menu-panel">
+        <button type="button" class="menu-tab" data-page="home"><span data-i18n="navHome">首页</span></button>
+        <button type="button" class="menu-tab" data-page="record"><span data-i18n="navRecord">记下探索</span></button>
+        <button type="button" class="menu-tab" data-page="footprints"><span data-i18n="navFoot">探索足迹</span></button>
+        <button type="button" class="menu-tab" data-page="clues"><span data-i18n="navClues">线索分布</span></button>
+        <div class="menu-lang">
+          <button type="button" id="menuLangZh" data-setlang="zh">中文</button>
+          <button type="button" id="menuLangEn" data-setlang="en">English</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+<main>
+  <section id="pageHome" class="page" data-page="home">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <p class="eyebrow" data-i18n="brandSub">兴趣探索</p>
+          <h1 data-i18n="homeTitle">兴趣罗盘</h1>
+          <p class="lede" data-i18n="homeLede">把一次被吸引、一次卡住、一次时间过得快或有点熬，记成可以回看的探索，而不是给自己下定论。</p>
+          <button type="button" class="btn btn-amber" data-go="record" data-i18n="recordThis">记下这次探索</button>
+        </div>
+        <div class="mini-compass slow hero" aria-hidden="true"><div class="rotor"><span class="needle"></span></div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card" id="statCount">
+          <button type="button" class="stat-hit" id="statCountHit" data-ok="0">
+            <span class="stat-accent"></span>
+            <span class="stat-num" id="statCountNum">…</span>
+            <span class="stat-label" data-i18n="statCount">探索次数</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-small retry-btn" id="statCountRetry" data-reload="home" hidden data-i18n="retry">重试</button>
+        </div>
+        <div class="stat-card" id="statFast">
+          <button type="button" class="stat-hit" id="statFastHit" data-ok="0">
+            <span class="stat-accent"></span>
+            <span class="stat-num" id="statFastNum">…</span>
+            <span class="stat-label" data-i18n="statFast">过得很快</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-small retry-btn" id="statFastRetry" data-reload="home" hidden data-i18n="retry">重试</button>
+        </div>
+        <div class="stat-card" id="statContinue">
+          <button type="button" class="stat-hit" id="statContinueHit" data-ok="0">
+            <span class="stat-accent"></span>
+            <span class="stat-num" id="statContinueNum">…</span>
+            <span class="stat-label" data-i18n="statContinue">困难时还想继续</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-small retry-btn" id="statContinueRetry" data-reload="home" hidden data-i18n="retry">重试</button>
+        </div>
+      </div>
+      <div class="section-head"><h2 data-i18n="recentTitle">最近足迹</h2></div>
+      <div id="recentList"></div>
+      <p class="page-foot" data-i18n="footerLine">不提供学科辅导、生涯规划或升学建议；困难反应只作线索，样本少时不下结论。</p>
+    </div>
+  </section>
+  <section id="pageRecord" class="page" data-page="record" hidden>
+    <div class="wrap">
+      <div class="page-top">
+        <div>
+          <h1 data-i18n="recordTitle">记下这次探索</h1>
+          <p class="lede" data-i18n="recordLede">先写这次实际发生的事。反馈由后台生成，页面自己不下兴趣结论。</p>
+        </div>
+        <button type="button" class="btn btn-pine" data-go="footprints" data-i18n="seeFootprints">去足迹看看</button>
+      </div>
+      <div class="record-layout">
+        <form id="formExploreNew" class="form-card" autocomplete="off" novalidate>
+          <div class="notice" id="recordNotice">
+            <p><strong data-i18n="n1t">记录内容</strong><span data-i18n="n1b">：学段、探索领域、本次做了什么、吸引我的内容、遇到的困难、困难时的反应、时间感、他人反馈、既往探索记录、学生是否同意长期记录、监护人是否同意或知情，以及提交后生成的探索反馈。</span></p>
+            <p><strong data-i18n="n2t">保存期限</strong><span data-i18n="n2b">：记录保存在本应用中，可随时删除；删除后列表不再显示。</span></p>
+            <p><strong data-i18n="n3t">可见范围</strong><span data-i18n="n3b">：只在本应用内查看。不设公开分享、外链发布或学生档案导出。</span></p>
+            <p><strong data-i18n="n4t">更正与删除</strong><span data-i18n="n4b">：到探索足迹打开该条，可修改手工字段或删除整条。修改手工字段不会重写已经生成的探索反馈。</span></p>
+            <label class="ack">
+              <input type="checkbox" id="formExploreNew_noticeAck">
+              <span data-i18n="ackLabel">我已经看过上面的记录说明。</span>
+            </label>
+          </div>
+          <div class="fields" id="newFields"></div>
+          <p id="trackingHint" class="hint-box"></p>
+          <p id="missingHint" class="missing"></p>
+          <div class="btn-row">
+            <button type="button" id="btnGenerate" class="btn btn-amber" data-i18n="generate" disabled>生成探索反馈</button>
+            <button type="button" id="btnRefreshFeedback" class="btn btn-ghost" data-i18n="refreshFeedback" disabled>刷新反馈</button>
+            <button type="button" id="btnClearForm" class="btn btn-ghost" data-i18n="clear">清空</button>
+          </div>
+        </form>
+        <aside class="letter-card" id="feedbackLetter">
+          <div class="letter-rule"></div>
+          <h2 data-i18n="letterTitle">探索反馈</h2>
+          <div id="letterBody" aria-live="polite"></div>
+        </aside>
+      </div>
+      <p class="page-foot" data-i18n="footerLine">不提供学科辅导、生涯规划或升学建议；困难反应只作线索，样本少时不下结论。</p>
+    </div>
+  </section>
+  <section id="pageFootprints" class="page" data-page="footprints" hidden>
+    <div class="wrap">
+      <div class="page-top">
+        <div>
+          <h1 data-i18n="footTitle">探索足迹</h1>
+          <p class="lede" data-i18n="footLede">每一条都是一次记录。可以查看反馈、改正手工内容，或删除整条。</p>
+        </div>
+        <button type="button" class="btn btn-pine" data-go="record" data-i18n="newExplore">+ 记下新探索</button>
+      </div>
+      <div class="filter-bar">
+        <label class="search-label"><span data-i18n="searchLabel">搜索</span>
+          <input type="search" id="footprintSearch" class="search-input" data-i18n-ph="searchPh" placeholder="按探索领域、本次做了什么、吸引我的内容搜索">
+        </label>
+        <label><span data-i18n="filterStage">学段</span>
+          <select id="filterStage" class="tool-select">
+            <option value="全部" data-opt="all" data-value="全部">全部</option>
+            <option value="小学中段" data-opt="stage" data-value="小学中段">小学中段</option>
+            <option value="小学高段" data-opt="stage" data-value="小学高段">小学高段</option>
+            <option value="初中" data-opt="stage" data-value="初中">初中</option>
+            <option value="高中" data-opt="stage" data-value="高中">高中</option>
+          </select>
+        </label>
+        <label><span data-i18n="filterReaction">困难时的反应</span>
+          <select id="filterReaction" class="tool-select">
+            <option value="全部" data-opt="all" data-value="全部">全部</option>
+            <option value="想放弃" data-opt="reaction" data-value="想放弃">想放弃</option>
+            <option value="想找资料继续" data-opt="reaction" data-value="想找资料继续">想找资料继续</option>
+            <option value="有点烦但还想搞懂" data-opt="reaction" data-value="有点烦但还想搞懂">有点烦但还想搞懂</option>
+            <option value="还想继续" data-opt="keep" data-value="还想继续">还想继续</option>
+          </select>
+        </label>
+        <label><span data-i18n="filterTime">时间感</span>
+          <select id="filterTime" class="tool-select">
+            <option value="全部" data-opt="all" data-value="全部">全部</option>
+            <option value="过得很快" data-opt="time" data-value="过得很快">过得很快</option>
+            <option value="差不多" data-opt="time" data-value="差不多">差不多</option>
+            <option value="有点熬" data-opt="time" data-value="有点熬">有点熬</option>
+          </select>
+        </label>
+        <label><span data-i18n="filterConsent">学生同意长期记录</span>
+          <select id="filterConsent" class="tool-select">
+            <option value="全部" data-opt="all" data-value="全部">全部</option>
+            <option value="是" data-opt="bool" data-value="是">是</option>
+            <option value="否" data-opt="bool" data-value="否">否</option>
+          </select>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btnClearFilters" class="btn btn-ghost btn-small" data-i18n="clearFilters">清除筛选</button>
+        <button type="button" id="btnSortOrder" class="btn btn-ghost btn-small" data-i18n="oldestFirst">最早在前</button>
+      </div>
+      <p id="footSummary" class="summary"></p>
+      <div id="footprintList"></div>
+      <p class="page-foot" data-i18n="footerLine">不提供学科辅导、生涯规划或升学建议；困难反应只作线索，样本少时不下结论。</p>
+    </div>
+  </section>
+  <section id="pageClues" class="page" data-page="clues" hidden>
+    <div class="wrap">
+      <div class="page-top">
+        <div>
+          <h1 data-i18n="cluesTitle">线索分布</h1>
+          <p class="lede" data-i18n="cluesLede">这里只数次数，不判断兴趣是否稳定，不写适合学什么或以后做什么。</p>
+        </div>
+        <button type="button" id="btnClueRefresh" class="btn btn-ghost" data-i18n="refresh">刷新</button>
+      </div>
+      <label class="clue-filter"><span data-i18n="filterStage">学段</span>
+        <select id="clueStage" class="tool-select">
+          <option value="全部" data-opt="all" data-value="全部">全部</option>
+          <option value="小学中段" data-opt="stage" data-value="小学中段">小学中段</option>
+          <option value="小学高段" data-opt="stage" data-value="小学高段">小学高段</option>
+          <option value="初中" data-opt="stage" data-value="初中">初中</option>
+          <option value="高中" data-opt="stage" data-value="高中">高中</option>
+        </select>
+      </label>
+      <p id="clueBanner" class="banner" hidden data-i18n="elemBanner">小学中高段只给8周试探线索，本页不作长期判断。</p>
+      <div id="clueEmpty"></div>
+      <div id="clueCharts">
+        <section class="panel dist-main">
+          <h2 data-i18n="distReaction">困难时的反应</h2>
+          <div id="clueMain"></div>
+        </section>
+        <div class="dist-grid">
+          <section class="panel"><h3 data-i18n="distTime">时间感</h3><div id="clueTime"></div></section>
+          <section class="panel"><h3 data-i18n="distStage">学段</h3><div id="clueStageDist"></div></section>
+          <section class="panel"><h3 data-i18n="distConsent">同意计数</h3><div id="clueConsent"></div></section>
+        </div>
+      </div>
+      <p id="clueCaution" class="caution" data-i18n="caution">样本少或刚开始记时，这里不下结论。</p>
+      <p class="page-foot" data-i18n="footerLine">不提供学科辅导、生涯规划或升学建议；困难反应只作线索，样本少时不下结论。</p>
+    </div>
+  </section>
+</main>
+<nav id="bottomNav" class="bottom-nav" aria-label="页面">
+  <button type="button" class="bottom-tab" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="navHome">首页</span></button>
+  <button type="button" class="bottom-tab" data-page="record"><i class="fa-solid fa-pen" aria-hidden="true"></i><span data-i18n="navRecord">记下探索</span></button>
+  <button type="button" class="bottom-tab" data-page="footprints"><i class="fa-solid fa-shoe-prints" aria-hidden="true"></i><span data-i18n="navFoot">探索足迹</span></button>
+  <button type="button" class="bottom-tab" data-page="clues"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="navClues">线索分布</span></button>
+</nav>
+<div id="detailOverlay" class="overlay" hidden>
+  <div class="dialog detail-dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-toolbar">
+      <h2 id="detailTitle" data-i18n="detailTitle">这次探索</h2>
+      <div class="btn-row">
+        <button type="button" id="btnDetailRefresh" class="btn btn-ghost btn-small" data-i18n="refresh">刷新</button>
+        <button type="button" id="btnDetailEdit" class="btn btn-pine btn-small" data-i18n="editThis">编辑这条</button>
+        <button type="button" id="btnDetailDelete" class="btn btn-danger btn-small" data-i18n="deleteThis">删除这条</button>
+        <button type="button" id="btnDetailClose" class="btn btn-ghost btn-small" data-i18n="close">关闭</button>
+      </div>
+    </div>
+    <div id="detailBody" class="dialog-body"></div>
+  </div>
+</div>
+<div id="drawerOverlay" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <h2 id="drawerTitle" data-i18n="drawerTitle">修改这次探索</h2>
+    <p class="hint-box" data-i18n="editHint">保存只会更新手工字段，不会重新生成探索反馈。想要新的反馈，请新记一次探索。</p>
+    <p id="editStatus" class="inline-msg" aria-live="polite"></p>
+    <form id="formExploreEdit" autocomplete="off" novalidate>
+      <div class="fields" id="editFields"></div>
+      <p id="editMissing" class="missing"></p>
+      <div class="btn-row">
+        <button type="button" id="btnSaveEdit" class="btn btn-amber" data-i18n="saveEdit">保存修改</button>
+        <button type="button" id="btnCloseEdit" class="btn btn-ghost" data-i18n="close">关闭</button>
+      </div>
+    </form>
+    <h3 data-i18n="letterTitle">探索反馈</h3>
+    <div id="editFeedbackBox"></div>
+  </div>
+</div>
+<div id="confirmOverlay" class="overlay" hidden>
+  <div class="dialog confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmText">
+    <p id="confirmText"></p>
+    <div class="btn-row">
+      <button type="button" id="btnConfirmOk" class="btn btn-danger" data-i18n="confirmDelete">确定删除</button>
+      <button type="button" id="btnConfirmCancel" class="btn btn-ghost" data-i18n="cancel">取消</button>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast" hidden role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("49c2f88d47372143_兴趣探索")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+var CSV_FIELDS = "学段,探索领域,本次做了什么,吸引我的内容,遇到的困难,困难时的反应,时间感,他人反馈,既往探索记录,学生同意长期记录,监护人同意或知情";
+var MANUAL_FIELDS = ["学段", "探索领域", "本次做了什么", "吸引我的内容", "遇到的困难", "困难时的反应", "时间感", "他人反馈", "既往探索记录", "学生同意长期记录", "监护人同意或知情"];
+var REQUIRED = ["学段", "探索领域", "本次做了什么", "吸引我的内容", "遇到的困难", "困难时的反应", "时间感"];
+var LONG_FIELDS = {"本次做了什么": true, "吸引我的内容": true, "遇到的困难": true, "他人反馈": true, "既往探索记录": true};
+var CHIP_FIELDS = {
+  "学段": ["小学中段", "小学高段", "初中", "高中"],
+  "困难时的反应": ["想放弃", "想找资料继续", "有点烦但还想搞懂"],
+  "时间感": ["过得很快", "差不多", "有点熬"]
+};
+var CHIP_COLOR = {
+  "小学中段": "#1F8A70",
+  "小学高段": "#1E6F8A",
+  "初中": "#1E3A4C",
+  "高中": "#6B5B95",
+  "想放弃": "#C46B6B",
+  "想找资料继续": "#1F8A70",
+  "有点烦但还想搞懂": "#E0A106",
+  "过得很快": "#E07A3D",
+  "差不多": "#7A8B99",
+  "有点熬": "#6B5B95",
+  "是": "#1F8A70",
+  "否": "#7A8B99"
+};
+var CHIP_GROUP = {
+  "学段": "stage",
+  "困难时的反应": "reaction",
+  "时间感": "time"
+};
+var REACTION_ORDER = ["想放弃", "想找资料继续", "有点烦但还想搞懂"];
+var TIME_ORDER = ["过得很快", "差不多", "有点熬"];
+var STAGE_ORDER = ["小学中段", "小学高段", "初中", "高中"];
+var currentLang = "zh";
+var currentPage = "home";
+var currentRow = 0;
+var pageHistory = [];
+var restore = null;
+var popupStack = [];
+var homeToken = 0;
+var fpToken = 0;
+var clueToken = 0;
+var detailToken = 0;
+var editToken = 0;
+var pollToken = 0;
+var detailRow = 0;
+var detailCache = null;
+var editReady = false;
+var editSaving = false;
+var editFeedbackRaw = "";
+var isSubmitting = false;
+var isPolling = false;
+var importing = false;
+var sortOldest = false;
+var fpState = "idle";
+var fpRows = [];
+var fpCount = 0;
+var clueState = "idle";
+var clueRows = [];
+var confirmResolver = null;
+var toastTimer = 0;
+var bound = false;
+var letterState = { mode: "placeholder", raw: "" };
+var homeState = {
+  count: { state: "loading" },
+  fast: { state: "loading" },
+  cont: { state: "loading" },
+  recent: { state: "loading", rows: [] }
+};
+var FIELD_EN = {
+  "学段": "School stage",
+  "探索领域": "Exploration area",
+  "本次做了什么": "What I did this time",
+  "吸引我的内容": "What drew me in",
+  "遇到的困难": "The difficulty I met",
+  "困难时的反应": "How I reacted",
+  "时间感": "Sense of time",
+  "他人反馈": "Others' words",
+  "既往探索记录": "Earlier exploration notes",
+  "学生同意长期记录": "Student agrees to a longer record",
+  "监护人同意或知情": "Guardian agrees or has been informed",
+  "探索反馈": "Exploration feedback"
+};
+var OPT_EN = {
+  "小学中段": "Mid elementary",
+  "小学高段": "Upper elementary",
+  "初中": "Junior high",
+  "高中": "Senior high",
+  "想放弃": "Felt like giving up",
+  "想找资料继续": "Wanted to look things up and go on",
+  "有点烦但还想搞懂": "Annoyed, but still wanted to understand",
+  "过得很快": "Time flew",
+  "差不多": "About as expected",
+  "有点熬": "Felt like a slog",
+  "还想继续": "Still wanted to continue",
+  "全部": "All",
+  "是": "Yes",
+  "否": "No"
+};
+var I18N = {
+  zh: {
+    brand: "兴趣罗盘",
+    brandSub: "兴趣探索",
+    navHome: "首页",
+    navRecord: "记下探索",
+    navFoot: "探索足迹",
+    navClues: "线索分布",
+    homeTitle: "兴趣罗盘",
+    homeLede: "把一次被吸引、一次卡住、一次时间过得快或有点熬，记成可以回看的探索，而不是给自己下定论。",
+    recordThis: "记下这次探索",
+    statCount: "探索次数",
+    statFast: "过得很快",
+    statContinue: "困难时还想继续",
+    fetchFailShort: "暂时取不到",
+    retry: "重试",
+    recentTitle: "最近足迹",
+    emptyFoot: "还没有探索足迹",
+    firstRecord: "记下第一次",
+    viewDetail: "查看详情",
+    detailTitle: "这次探索",
+    feedbackPending: "反馈还在生成，可稍后刷新",
+    close: "关闭",
+    editThis: "编辑这条",
+    deleteThis: "删除这条",
+    refresh: "刷新",
+    recordTitle: "记下这次探索",
+    recordLede: "先写这次实际发生的事。反馈由后台生成，页面自己不下兴趣结论。",
+    seeFootprints: "去足迹看看",
+    n1t: "记录内容",
+    n1b: "：学段、探索领域、本次做了什么、吸引我的内容、遇到的困难、困难时的反应、时间感、他人反馈、既往探索记录、学生是否同意长期记录、监护人是否同意或知情，以及提交后生成的探索反馈。",
+    n2t: "保存期限",
+    n2b: "：记录保存在本应用中，可随时删除；删除后列表不再显示。",
+    n3t: "可见范围",
+    n3b: "：只在本应用内查看。不设公开分享、外链发布或学生档案导出。",
+    n4t: "更正与删除",
+    n4b: "：到探索足迹打开该条，可修改手工字段或删除整条。修改手工字段不会重写已经生成的探索反馈。",
+    ackLabel: "我已经看过上面的记录说明。",
+    importPast: "摘入以往足迹",
+    noPast: "还没有以往足迹",
+    imported: "已摘入以往足迹，可以再改。",
+    trackSingle: "本次只准备单次探索反馈，不进入长期追踪。",
+    trackElem: "同意已填写，但小学中高段只给8周试探线索，不作长期判断。",
+    trackOlder: "同意条件已在表单中标为满足；样本不足时仍不下结论。",
+    trackNeedStage: "两项同意都已标为是。请选择学段。样本不足时仍不下结论。",
+    needNotice: "请先勾选「我已经看过上面的记录说明。」",
+    stillNeed: "还需要填写：",
+    generate: "生成探索反馈",
+    refreshFeedback: "刷新反馈",
+    clear: "清空",
+    letterTitle: "探索反馈",
+    letterEmpty: "提交后，这里显示本次探索反馈",
+    waiting: "正在整理这次探索的线索…",
+    notReady: "还没有生成完成",
+    submitting: "正在提交…",
+    submitFail: "提交没有完成，请稍后再试。",
+    footTitle: "探索足迹",
+    footLede: "每一条都是一次记录。可以查看反馈、改正手工内容，或删除整条。",
+    newExplore: "+ 记下新探索",
+    searchLabel: "搜索",
+    searchPh: "按探索领域、本次做了什么、吸引我的内容搜索",
+    filterStage: "学段",
+    filterReaction: "困难时的反应",
+    filterTime: "时间感",
+    filterConsent: "学生同意长期记录",
+    clearFilters: "清除筛选",
+    oldestFirst: "最早在前",
+    newestFirst: "最新在前",
+    noMatch: "没有符合的足迹",
+    edit: "编辑",
+    delete: "删除",
+    deleteConfirm: "删除后不可恢复，确定删除这条探索记录？",
+    deleted: "已删除",
+    deleteFail: "删除没有完成，请稍后再试。",
+    drawerTitle: "修改这次探索",
+    editHint: "保存只会更新手工字段，不会重新生成探索反馈。想要新的反馈，请新记一次探索。",
+    saveEdit: "保存修改",
+    saved: "已保存",
+    saveFail: "保存失败",
+    notGenerated: "探索反馈尚未生成。",
+    cluesTitle: "线索分布",
+    cluesLede: "这里只数次数，不判断兴趣是否稳定，不写适合学什么或以后做什么。",
+    elemBanner: "小学中高段只给8周试探线索，本页不作长期判断。",
+    goRecord: "去记下探索",
+    caution: "样本少或刚开始记时，这里不下结论。",
+    stageEmpty: "这个学段还没有记下的探索。",
+    distReaction: "困难时的反应",
+    distTime: "时间感",
+    distStage: "学段",
+    distConsent: "同意计数",
+    consentStudent: "学生同意为是",
+    consentGuardian: "监护人同意或知情为是",
+    consentBoth: "两项都为是",
+    loading: "正在读取…",
+    optional: "可留空",
+    footerLine: "不提供学科辅导、生涯规划或升学建议；困难反应只作线索，样本少时不下结论。",
+    imgDownload: "点击下载",
+    confirmDelete: "确定删除",
+    cancel: "取消",
+    menu: "菜单",
+    phArea: "写下这次实际接触的领域，例如画画、搭积木、看星空",
+    phDid: "按发生顺序写下这次做了什么，只记事实",
+    phDraw: "哪一段或哪一个细节让你多停了一会儿",
+    phHard: "卡在哪一步，或哪一处还没弄明白",
+    phOthers: "有人说过的话按原话记下，不要改成结论",
+    phPast: "以前相关的探索可以写在这里，也能用下面的按钮摘入后再改"
+  },
+  en: {
+    brand: "Interest Compass",
+    brandSub: "Interest exploration",
+    navHome: "Home",
+    navRecord: "Record",
+    navFoot: "Footprints",
+    navClues: "Clues",
+    homeTitle: "Interest Compass",
+    homeLede: "Turn one moment of being drawn in, one moment of getting stuck, and one moment when time flew or dragged into an exploration you can look back on. This is a record, not a verdict about you.",
+    recordThis: "Record this exploration",
+    statCount: "Explorations",
+    statFast: "Time flew",
+    statContinue: "Still wanted to continue",
+    fetchFailShort: "Couldn't load just now",
+    retry: "Retry",
+    recentTitle: "Recent footprints",
+    emptyFoot: "No exploration footprints yet",
+    firstRecord: "Record the first one",
+    viewDetail: "View details",
+    detailTitle: "This exploration",
+    feedbackPending: "Feedback is still being prepared. You can refresh in a moment.",
+    close: "Close",
+    editThis: "Edit this one",
+    deleteThis: "Delete this one",
+    refresh: "Refresh",
+    recordTitle: "Record this exploration",
+    recordLede: "Write what actually happened this time. Feedback is generated in the background. This page does not draw an interest conclusion of its own.",
+    seeFootprints: "See footprints",
+    n1t: "What is recorded",
+    n1b: ": school stage, exploration area, what you did this time, what drew you in, the difficulty you met, how you reacted, your sense of time, others' words, earlier exploration notes, whether the student agrees to a longer record, whether a guardian agrees or has been informed, and the exploration feedback generated after you submit.",
+    n2t: "How long it is kept",
+    n2b: ": records stay in this app and can be deleted at any time. After deletion they no longer appear in the list.",
+    n3t: "Who can see it",
+    n3b: ": viewable only inside this app. There is no public sharing, external publishing, or student-file export.",
+    n4t: "Correction and deletion",
+    n4b: ": open the entry in Footprints to edit the handwritten fields or delete the whole entry. Editing handwritten fields does not rewrite feedback that has already been generated.",
+    ackLabel: "I have read the note above.",
+    importPast: "Pull in earlier footprints",
+    noPast: "No earlier footprints yet",
+    imported: "Earlier footprints were added. You can edit them before submitting.",
+    trackSingle: "This prepares one-time exploration feedback only. It does not enter longer tracking.",
+    trackElem: "Agreement is filled in, but mid and upper elementary only receive an 8-week exploratory clue. No long-term judgment is made.",
+    trackOlder: "The agreement conditions are marked as met on the form. A small sample still supports no conclusion.",
+    trackNeedStage: "Both agreements are marked yes. Choose a school stage. A small sample still supports no conclusion.",
+    needNotice: "Check “I have read the note above.”",
+    stillNeed: "Still needed: ",
+    generate: "Generate exploration feedback",
+    refreshFeedback: "Refresh feedback",
+    clear: "Clear",
+    letterTitle: "Exploration feedback",
+    letterEmpty: "After you submit, this letter shows the feedback for this exploration.",
+    waiting: "Sorting out the clues from this exploration…",
+    notReady: "It has not finished generating.",
+    submitting: "Submitting…",
+    submitFail: "The submission did not go through. Please try again in a moment.",
+    footTitle: "Footprints",
+    footLede: "Each card is one record. You can read the feedback, correct the handwritten fields, or delete the whole entry.",
+    newExplore: "+ Record a new exploration",
+    searchLabel: "Search",
+    searchPh: "Search area, what you did, or what drew you in",
+    filterStage: "School stage",
+    filterReaction: "Reaction to difficulty",
+    filterTime: "Sense of time",
+    filterConsent: "Student agrees to a longer record",
+    clearFilters: "Clear filters",
+    oldestFirst: "Oldest first",
+    newestFirst: "Newest first",
+    noMatch: "No footprints match",
+    edit: "Edit",
+    delete: "Delete",
+    deleteConfirm: "This cannot be undone. Delete this exploration record?",
+    deleted: "Deleted",
+    deleteFail: "The deletion did not go through. Please try again.",
+    drawerTitle: "Edit this exploration",
+    editHint: "Saving only updates the handwritten fields. It does not regenerate the exploration feedback. To get new feedback, record a new exploration.",
+    saveEdit: "Save changes",
+    saved: "Saved",
+    saveFail: "Save failed",
+    notGenerated: "Exploration feedback has not been generated yet.",
+    cluesTitle: "Clue counts",
+    cluesLede: "This page only counts entries. It does not judge whether an interest is stable, and it does not say what to study or what to do later.",
+    elemBanner: "Mid and upper elementary only receive an 8-week exploratory clue. This page does not make a long-term judgment.",
+    goRecord: "Go record an exploration",
+    caution: "When the sample is small or you have just started, this page draws no conclusion.",
+    stageEmpty: "This school stage has no records yet.",
+    distReaction: "Reaction to difficulty",
+    distTime: "Sense of time",
+    distStage: "School stage",
+    distConsent: "Agreement counts",
+    consentStudent: "Student agreement is yes",
+    consentGuardian: "Guardian agreement or notice is yes",
+    consentBoth: "Both are yes",
+    loading: "Loading…",
+    optional: "Optional",
+    footerLine: "This page does not offer subject tutoring, career planning, or advice on school applications. A reaction to difficulty is only a clue. A small sample is not a conclusion.",
+    imgDownload: "Download image",
+    confirmDelete: "Delete",
+    cancel: "Cancel",
+    menu: "Menu",
+    phArea: "Name the area you actually touched, such as drawing, blocks, or the night sky.",
+    phDid: "Write what happened, in the order it happened. Stick to the facts.",
+    phDraw: "Which moment or detail made you stay with it a little longer.",
+    phHard: "Where you got stuck, or what you had not figured out.",
+    phOthers: "Write what someone said in their own words. Do not turn it into a conclusion.",
+    phPast: "Earlier explorations can go here. You can pull them in with the button below, then edit."
+  }
+};
+
+function t(key) {
+  var pack = I18N[currentLang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  if (I18N.zh[key] != null) return I18N.zh[key];
+  return key;
+}
+function fieldLabel(name) {
+  if (currentLang === "en" && FIELD_EN[name]) return FIELD_EN[name];
+  return name;
+}
+function optLabel(group, value) {
+  if (currentLang === "en" && OPT_EN[value]) return OPT_EN[value];
+  return value;
+}
+function showOpt(group, value) {
+  var v = String(value || "").trim();
+  if (!v) return "—";
+  if (currentLang === "en" && OPT_EN[v]) return OPT_EN[v];
+  return v;
+}
+function showBool(v) {
+  if (v === "是") return currentLang === "en" ? "Yes" : "是";
+  if (v === "否") return currentLang === "en" ? "No" : "否";
+  return v || "—";
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (ch) {
+    if (ch === "&") return "&amp;";
+    if (ch === "<") return "&lt;";
+    if (ch === ">") return "&gt;";
+    if (ch === '"') return "&quot;";
+    return "&#39;";
+  });
+}
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+function plainText(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (s.length >= 2) {
+    var a = s.charAt(0);
+    var b = s.charAt(s.length - 1);
+    if ((a === '"' && b === '"') || (a === "'" && b === "'")) s = s.substring(1, s.length - 1).trim();
+  }
+  return s;
+}
+function clipText(s, n) {
+  var arr = Array.from(String(s || ""));
+  if (arr.length <= n) return String(s || "");
+  return arr.slice(0, n).join("") + "…";
+}
+function allSettled(list) {
+  if (typeof Promise.allSettled === "function") return Promise.allSettled(list);
+  return Promise.all(list.map(function (p) {
+    return Promise.resolve(p).then(function (value) {
+      return { status: "fulfilled", value: value };
+    }, function (reason) {
+      return { status: "rejected", reason: reason };
+    });
+  }));
+}
+function throwIfFailed(res) {
+  var s = plainText(res);
+  if (!s || s.length > 120) return;
+  if (/^(error|fail|false|错误|失败|异常|exception)/i.test(s)) throw new Error(s);
+}
+function csvRows(text) {
+  if (text == null) return [];
+  var s = String(text);
+  if (!s.trim()) return [];
+  var rows = parseCSV(s);
+  while (rows.length) {
+    var last = rows[rows.length - 1];
+    var empty = true;
+    for (var i = 0; i < last.length; i++) {
+      if (String(last[i]).trim() !== "") { empty = false; break; }
+    }
+    if (!empty) break;
+    rows.pop();
+  }
+  return rows;
+}
+function rowsFromCsv(text) {
+  var rows = csvRows(text);
+  var list = [];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i] || [];
+    var item = { row: i + 1 };
+    for (var c = 0; c < MANUAL_FIELDS.length; c++) {
+      item[MANUAL_FIELDS[c]] = r[c] == null ? "" : String(r[c]);
+    }
+    list.push(item);
+  }
+  return list;
+}
+function bridgeCsv(payload) {
+  return callAppBridge({ type: "GetTableCSV", data: "兴趣探索/默认表格", payload: payload });
+}
+function bridgeGetCell(field, row) {
+  return callAppBridge({ type: "GetCellValue", data: "兴趣探索/默认表格", payload: field + "/" + row });
+}
+function fileDownloadUrl(src) {
+  var s = String(src || "").trim();
+  if (!s) return "#";
+  if (/^https?:\/\//i.test(s) || s.indexOf("data:") === 0) return s;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+}
+function safeUrl(url) {
+  var u = String(url || "").trim();
+  if (/^(https?:|mailto:)/i.test(u)) return u;
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u)) return "#";
+  return u;
+}
+function emphasis(s) {
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+  s = s.replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>");
+  s = s.replace(/~~([^~\n]+)~~/g, "<del>$1</del>");
+  return s;
+}
+function inlineMd(raw) {
+  var guards = [];
+  function guard(html) {
+    guards.push(html);
+    return "\u0001G" + (guards.length - 1) + "\u0001";
+  }
+  var s = String(raw == null ? "" : raw);
+  s = s.replace(/`([^`\n]+)`/g, function (_, c) {
+    return guard("<code>" + esc(c) + "</code>");
+  });
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function (_, alt, url) {
+    var href = fileDownloadUrl(url);
+    return guard('<a class="md-img" href="' + esc(href) + '" target="_blank" rel="noopener" title="' + esc(t("imgDownload")) + '"><img alt="' + esc(alt) + '" src="' + esc(href) + '"></a>');
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (_, text, url) {
+    var href = safeUrl(url);
+    return guard('<a href="' + esc(href) + '" target="_blank" rel="noopener">' + emphasis(esc(text)) + "</a>");
+  });
+  s = emphasis(esc(s));
+  s = s.replace(/(^|[\s(])(https?:\/\/[^\s<]+)/g, function (_, pre, url) {
+    var clean = url.replace(/[),.;!?]+$/, "");
+    var tail = url.slice(clean.length);
+    return pre + '<a href="' + clean + '" target="_blank" rel="noopener">' + clean + "</a>" + tail;
+  });
+  s = s.replace(/\u0001G(\d+)\u0001/g, function (_, n) { return guards[Number(n)] || ""; });
+  return s;
+}
+function isTableSep(line) {
+  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+}
+function splitTableRow(line) {
+  var s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.substring(1);
+  if (s.charAt(s.length - 1) === "|") s = s.substring(0, s.length - 1);
+  var parts = s.split("|");
+  var out = [];
+  for (var i = 0; i < parts.length; i++) out.push(parts[i].trim());
+  return out;
+}
+function isBlockStart(lines, i) {
+  var line = lines[i] || "";
+  if (/^\s*(`{3,}|~{3,})/.test(line)) return true;
+  if (/^(#{1,6})\s+/.test(line)) return true;
+  if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) return true;
+  if (/^\s*>\s?/.test(line)) return true;
+  if (/^\s*(?:[-*+]|\d+\.)\s+/.test(line)) return true;
+  if (/^(?: {4}|\t)\S/.test(line)) return true;
+  if (i + 1 < lines.length && line.indexOf("|") >= 0 && isTableSep(lines[i + 1])) return true;
+  if (i + 1 < lines.length && line.trim() && /^=+\s*$/.test(lines[i + 1])) return true;
+  if (i + 1 < lines.length && line.trim() && /^-{3,}\s*$/.test(lines[i + 1]) && !/^\s*[-*_]{3,}\s*$/.test(line)) return true;
+  return false;
+}
+function parseList(lines, start) {
+  var baseMatch = lines[start].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+  if (!baseMatch) return { html: "", next: start + 1 };
+  var base = baseMatch[1].length;
+  var ordered = /\d+\./.test(baseMatch[2]);
+  var items = [];
+  var i = start;
+  while (i < lines.length) {
+    if (lines[i].trim() === "" && i + 1 < lines.length) {
+      var peek = lines[i + 1].match(/^(\s*)([-*+]|\d+\.)\s+/);
+      if (peek && peek[1].length === base) { i++; continue; }
+    }
+    var m = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+    if (!m || m[1].length !== base) break;
+    var itemText = m[3];
+    var taskHtml = "";
+    var task = itemText.match(/^\[([ xX])\]\s+(.*)$/);
+    if (task) {
+      taskHtml = '<input type="checkbox" disabled' + (task[1].toLowerCase() === "x" ? " checked" : "") + "> ";
+      itemText = task[2];
+    }
+    i++;
+    var extra = [];
+    while (i < lines.length && lines[i].trim() !== "" && !isBlockStart(lines, i)) {
+      extra.push(lines[i].trim());
+      i++;
+    }
+    var nested = "";
+    if (i < lines.length) {
+      var nm = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+/);
+      if (nm && nm[1].length > base) {
+        var sub = parseList(lines, i);
+        nested = sub.html;
+        i = sub.next;
+      }
+    }
+    var body = inlineMd([itemText].concat(extra).join(" "));
+    items.push("<li>" + taskHtml + body + nested + "</li>");
+  }
+  if (i === start) i++;
+  var tag = ordered ? "ol" : "ul";
+  return { html: "<" + tag + ">" + items.join("") + "</" + tag + ">", next: i };
+}
+function renderMarkdown(md) {
+  var lines = String(md == null ? "" : md).replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  var out = [];
+  var i = 0;
+  var guard = 0;
+  while (i < lines.length && guard < lines.length + 20) {
+    guard++;
+    var line = lines[i];
+    var fence = line.match(/^(\s*)(`{3,}|~{3,})(.*)$/);
+    if (fence) {
+      var marker = fence[2].charAt(0);
+      var minLen = fence[2].length;
+      var buf = [];
+      i++;
+      while (i < lines.length) {
+        var close = lines[i].match(/^(\s*)(`{3,}|~{3,})\s*$/);
+        if (close && close[2].charAt(0) === marker && close[2].length >= minLen) { i++; break; }
+        buf.push(lines[i]);
+        i++;
+      }
+      out.push('<pre class="md-pre"><code>' + esc(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (i + 1 < lines.length && line.trim() && /^=+\s*$/.test(lines[i + 1]) && !/^(=+|-+)\s*$/.test(line.trim())) {
+      out.push("<h1>" + inlineMd(line.trim()) + "</h1>");
+      i += 2;
+      continue;
+    }
+    if (i + 1 < lines.length && line.trim() && /^-{3,}\s*$/.test(lines[i + 1]) && !/^(-+|=+)\s*$/.test(line.trim()) && !/^\s*(?:[-*+]|\d+\.)\s+/.test(line)) {
+      out.push("<h2>" + inlineMd(line.trim()) + "</h2>");
+      i += 2;
+      continue;
+    }
+    if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) { out.push("<hr>"); i++; continue; }
+    var heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      var level = heading[1].length;
+      out.push("<h" + level + ">" + inlineMd(heading[2]) + "</h" + level + ">");
+      i++;
+      continue;
+    }
+    if (/^\s*>\s?/.test(line)) {
+      var quote = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+        quote.push(lines[i].replace(/^\s*>\s?/, ""));
+        i++;
+      }
+      out.push("<blockquote>" + renderMarkdown(quote.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (line.indexOf("|") >= 0 && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+      var header = splitTableRow(line);
+      i += 2;
+      var bodyRows = [];
+      while (i < lines.length && lines[i].indexOf("|") >= 0 && lines[i].trim() !== "") {
+        bodyRows.push(splitTableRow(lines[i]));
+        i++;
+      }
+      var table = '<div class="table-scroll"><table class="md-table"><thead><tr>';
+      for (var h = 0; h < header.length; h++) table += "<th>" + inlineMd(header[h]) + "</th>";
+      table += "</tr></thead><tbody>";
+      for (var r = 0; r < bodyRows.length; r++) {
+        table += "<tr>";
+        for (var c = 0; c < bodyRows[r].length; c++) table += "<td>" + inlineMd(bodyRows[r][c]) + "</td>";
+        table += "</tr>";
+      }
+      table += "</tbody></table></div>";
+      out.push(table);
+      continue;
+    }
+    if (/^\s*(?:[-*+]|\d+\.)\s+/.test(line)) {
+      var parsed = parseList(lines, i);
+      out.push(parsed.html);
+      i = parsed.next;
+      continue;
+    }
+    if (/^(?: {4}|\t)\S/.test(line)) {
+      var code = [];
+      while (i < lines.length && (/^(?: {4}|\t)/.test(lines[i]) || lines[i].trim() === "")) {
+        if (lines[i].trim() === "") {
+          var k = i + 1;
+          while (k < lines.length && lines[k].trim() === "") k++;
+          if (k < lines.length && /^(?: {4}|\t)/.test(lines[k])) { code.push(""); i++; continue; }
+          break;
+        }
+        code.push(lines[i].replace(/^(?: {4}|\t)/, ""));
+        i++;
+      }
+      out.push('<pre class="md-pre"><code>' + esc(code.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (line.trim() === "") { i++; continue; }
+    var para = [line];
+    i++;
+    while (i < lines.length && lines[i].trim() !== "" && !isBlockStart(lines, i)) {
+      para.push(lines[i]);
+      i++;
+    }
+    out.push("<p>" + inlineMd(para.join("\n")).replace(/\n/g, "<br>") + "</p>");
+  }
+  return out.join("\n");
+}
+function detectLanguage() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var q = String(params.get("lang") || "").toLowerCase();
+    if (q === "en") return "en";
+    if (q === "cn" || q === "zh") return "zh";
+  } catch (e) {}
+  try {
+    var stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored != null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (e2) {}
+  try {
+    var list = navigator.languages;
+    if (!list || !list.length) return "zh";
+    for (var i = 0; i < list.length; i++) {
+      var item = String(list[i] || "").toLowerCase();
+      if (item === "zh" || item.indexOf("zh-") === 0) return "zh";
+    }
+    return "en";
+  } catch (e3) {
+    return "zh";
+  }
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme === "dark" ? "dark" : "light");
+  document.documentElement.style.colorScheme = theme === "dark" ? "dark" : "light";
+}
+function setLanguage(lang) {
+  currentLang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", currentLang === "en" ? "en" : "cn"); } catch (e) {}
+  applyStaticI18n();
+  renderDynamic();
+}
+function applyStaticI18n() {
+  document.documentElement.lang = currentLang === "en" ? "en" : "zh-CN";
+  document.title = t("brand");
+  var nodes = document.querySelectorAll("[data-i18n]");
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  var ph = document.querySelectorAll("[data-i18n-ph]");
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute("placeholder", t(ph[j].getAttribute("data-i18n-ph")));
+  var labels = document.querySelectorAll("[data-field-label]");
+  for (var k = 0; k < labels.length; k++) labels[k].textContent = fieldLabel(labels[k].getAttribute("data-field-label"));
+  var opts = document.querySelectorAll("[data-opt]");
+  for (var n = 0; n < opts.length; n++) opts[n].textContent = optLabel(opts[n].getAttribute("data-opt"), opts[n].getAttribute("data-value"));
+  var langNodes = document.querySelectorAll("[data-setlang]");
+  for (var a = 0; a < langNodes.length; a++) {
+    var on = langNodes[a].getAttribute("data-setlang") === currentLang;
+    langNodes[a].classList.toggle("is-on", on);
+    langNodes[a].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  var burger = document.getElementById("hamburgerBtn");
+  if (burger) burger.setAttribute("aria-label", t("menu"));
+  updateNavState();
+}
+function inkFor(hex) {
+  var c = String(hex || "").toLowerCase();
+  if (c === "#e0a106" || c === "#e07a3d" || c === "#c46b6b") return "#2C241C";
+  return "#ffffff";
+}
+function paintChips(row) {
+  if (!row) return;
+  var chips = row.querySelectorAll(".chip");
+  for (var i = 0; i < chips.length; i++) {
+    var chip = chips[i];
+    if (chip.classList.contains("is-on")) {
+      var color = chip.getAttribute("data-color") || "#E07A3D";
+      chip.style.background = color;
+      chip.style.color = inkFor(color);
+      chip.style.borderColor = color;
+    } else {
+      chip.style.background = "";
+      chip.style.color = "";
+      chip.style.borderColor = "";
+    }
+  }
+}
+function setChipValue(formId, name, value) {
+  var hidden = document.getElementById(formId + "_" + name);
+  if (!hidden) return;
+  hidden.value = value;
+  var row = hidden.closest(".chip-row");
+  if (!row) return;
+  var chips = row.querySelectorAll(".chip");
+  for (var i = 0; i < chips.length; i++) {
+    var on = chips[i].getAttribute("data-value") === value;
+    chips[i].classList.toggle("is-on", on);
+    chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  paintChips(row);
+}
+function setFieldValue(formId, name, value) {
+  var v = value == null ? "" : String(value);
+  if (name === "学生同意长期记录" || name === "监护人同意或知情") {
+    setChipValue(formId, name, v.trim() === "是" ? "是" : "否");
+    return;
+  }
+  if (CHIP_FIELDS[name]) {
+    setChipValue(formId, name, v.trim());
+    return;
+  }
+  var el = document.getElementById(formId + "_" + name);
+  if (el) el.value = v;
+}
+function fieldNode(formId, name) {
+  return document.getElementById(formId + "_" + name);
+}
+function buildForms() {
+  buildOneForm("formExploreNew", document.getElementById("newFields"), true);
+  buildOneForm("formExploreEdit", document.getElementById("editFields"), false);
+}
+function buildOneForm(formId, mount, withImport) {
+  if (!mount) return;
+  mount.innerHTML = "";
+  for (var i = 0; i < MANUAL_FIELDS.length; i++) {
+    var name = MANUAL_FIELDS[i];
+    var wrap = document.createElement("div");
+    wrap.className = "field";
+    var labelRow = document.createElement("div");
+    labelRow.className = "field-label-row";
+    var label = document.createElement("span");
+    label.className = "field-label";
+    label.setAttribute("data-field-label", name);
+    label.textContent = fieldLabel(name);
+    labelRow.appendChild(label);
+    var required = false;
+    for (var r = 0; r < REQUIRED.length; r++) if (REQUIRED[r] === name) required = true;
+    if (required) {
+      var star = document.createElement("span");
+      star.className = "req";
+      star.textContent = "*";
+      labelRow.appendChild(star);
+    }
+    if (name === "他人反馈" || name === "既往探索记录") {
+      var opt = document.createElement("span");
+      opt.className = "opt-tag";
+      opt.setAttribute("data-i18n", "optional");
+      opt.textContent = t("optional");
+      labelRow.appendChild(opt);
+    }
+    wrap.appendChild(labelRow);
+    if (CHIP_FIELDS[name]) {
+      var row = document.createElement("div");
+      row.className = "chip-row";
+      var hidden = document.createElement("input");
+      hidden.type = "hidden";
+      hidden.id = formId + "_" + name;
+      hidden.name = name;
+      hidden.value = "";
+      row.appendChild(hidden);
+      var options = CHIP_FIELDS[name];
+      for (var o = 0; o < options.length; o++) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chip";
+        btn.setAttribute("data-opt", CHIP_GROUP[name]);
+        btn.setAttribute("data-value", options[o]);
+        btn.setAttribute("data-color", CHIP_COLOR[options[o]]);
+        btn.textContent = optLabel(CHIP_GROUP[name], options[o]);
+        row.appendChild(btn);
+      }
+      wrap.appendChild(row);
+    } else if (name === "学生同意长期记录" || name === "监护人同意或知情") {
+      var seg = document.createElement("div");
+      seg.className = "chip-row seg";
+      var hiddenBool = document.createElement("input");
+      hiddenBool.type = "hidden";
+      hiddenBool.id = formId + "_" + name;
+      hiddenBool.name = name;
+      hiddenBool.value = "否";
+      seg.appendChild(hiddenBool);
+      var bools = ["是", "否"];
+      for (var b = 0; b < bools.length; b++) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chip" + (bools[b] === "否" ? " is-on" : "");
+        btn.setAttribute("data-opt", "bool");
+        btn.setAttribute("data-value", bools[b]);
+        btn.setAttribute("data-color", CHIP_COLOR[bools[b]]);
+        btn.setAttribute("aria-pressed", bools[b] === "否" ? "true" : "false");
+        btn.textContent = optLabel("bool", bools[b]);
+        seg.appendChild(btn);
+      }
+      wrap.appendChild(seg);
+      paintChips(seg);
+    } else {
+      var input = document.createElement(LONG_FIELDS[name] ? "textarea" : "input");
+      if (!LONG_FIELDS[name]) input.type = "text";
+      input.id = formId + "_" + name;
+      input.name = name;
+      input.className = "field-input";
+      input.style.boxSizing = "border-box";
+      var phKey = name === "探索领域" ? "phArea" : name === "本次做了什么" ? "phDid" : name === "吸引我的内容" ? "phDraw" : name === "遇到的困难" ? "phHard" : name === "他人反馈" ? "phOthers" : "phPast";
+      input.setAttribute("data-i18n-ph", phKey);
+      input.setAttribute("placeholder", t(phKey));
+      wrap.appendChild(input);
+      if (name === "既往探索记录" && withImport) {
+        var importBtn = document.createElement("button");
+        importBtn.type = "button";
+        importBtn.id = "btnImportPast";
+        importBtn.className = "btn btn-pine btn-small";
+        importBtn.setAttribute("data-i18n", "importPast");
+        importBtn.textContent = t("importPast");
+        importBtn.style.marginTop = "8px";
+        wrap.appendChild(importBtn);
+        var msg = document.createElement("p");
+        msg.id = "importPastMsg";
+        msg.className = "inline-msg";
+        wrap.appendChild(msg);
+      }
+    }
+    mount.appendChild(wrap);
+  }
+}
+function missingList(formId, needNotice) {
+  var notice = [];
+  var fields = [];
+  if (needNotice) {
+    var ack = document.getElementById(formId + "_noticeAck");
+    if (!ack || !ack.checked) notice.push(t("needNotice"));
+  }
+  for (var i = 0; i < REQUIRED.length; i++) {
+    var el = fieldNode(formId, REQUIRED[i]);
+    if (!el || !String(el.value).trim()) fields.push(fieldLabel(REQUIRED[i]));
+  }
+  var parts = notice.slice();
+  if (fields.length) parts.push(t("stillNeed") + fields.join(currentLang === "en" ? ", " : "、"));
+  return parts;
+}
+function updateGenerateButton() {
+  var btn = document.getElementById("btnGenerate");
+  var hint = document.getElementById("missingHint");
+  if (!btn || !hint) return;
+  var items = missingList("formExploreNew", true);
+  btn.disabled = isSubmitting || isPolling || items.length > 0;
+  if (isSubmitting) hint.textContent = t("submitting");
+  else if (isPolling) hint.textContent = t("waiting");
+  else hint.textContent = items.join(" ");
+}
+function updateEditButton() {
+  var btn = document.getElementById("btnSaveEdit");
+  var hint = document.getElementById("editMissing");
+  if (!btn || !hint) return;
+  var items = editReady ? missingList("formExploreEdit", false) : [];
+  btn.disabled = editSaving || !editReady || currentRow < 1 || items.length > 0;
+  hint.textContent = editReady ? items.join(" ") : "";
+}
+function updateRefreshButton() {
+  var btn = document.getElementById("btnRefreshFeedback");
+  if (btn) btn.disabled = currentRow < 1 || isSubmitting;
+}
+function updateTracking() {
+  var el = document.getElementById("trackingHint");
+  if (!el) return;
+  var stage = fieldNode("formExploreNew", "学段");
+  var student = fieldNode("formExploreNew", "学生同意长期记录");
+  var guardian = fieldNode("formExploreNew", "监护人同意或知情");
+  var stageVal = stage ? stage.value : "";
+  var both = student && student.value === "是" && guardian && guardian.value === "是";
+  if (!both) el.textContent = t("trackSingle");
+  else if (stageVal === "小学中段" || stageVal === "小学高段") el.textContent = t("trackElem");
+  else if (stageVal === "初中" || stageVal === "高中") el.textContent = t("trackOlder");
+  else el.textContent = t("trackNeedStage");
+}
+function compassHtml(speed) {
+  return '<div class="mini-compass ' + speed + '" aria-hidden="true"><div class="rotor"><span class="needle"></span></div></div>';
+}
+function showLetterPlaceholder() {
+  letterState = { mode: "placeholder", raw: "" };
+  document.getElementById("letterBody").innerHTML = '<div class="letter-wait">' + compassHtml("slow") + "<p>" + esc(t("letterEmpty")) + "</p></div>";
+}
+function showLetterWaiting() {
+  letterState = { mode: "waiting", raw: "" };
+  document.getElementById("letterBody").innerHTML = '<div class="letter-wait">' + compassHtml("fast") + "<p>" + esc(t("waiting")) + "</p></div>";
+}
+function showLetterTimeout() {
+  letterState = { mode: "timeout", raw: "" };
+  document.getElementById("letterBody").innerHTML = '<div class="letter-wait"><p>' + esc(t("notReady")) + "</p></div>";
+}
+function showLetterMessage(msg) {
+  letterState = { mode: "message", raw: msg };
+  document.getElementById("letterBody").innerHTML = '<div class="letter-wait"><p>' + esc(msg) + "</p></div>";
+}
+function showLetterMarkdown(raw) {
+  letterState = { mode: "markdown", raw: String(raw == null ? "" : raw) };
+  var html;
+  try { html = renderMarkdown(letterState.raw); }
+  catch (e) { html = "<pre>" + esc(letterState.raw) + "</pre>"; }
+  document.getElementById("letterBody").innerHTML = '<div class="md-body">' + html + "</div>";
+}
+function restoreLetter() {
+  if (letterState.mode === "markdown") showLetterMarkdown(letterState.raw);
+  else if (letterState.mode === "waiting") showLetterWaiting();
+  else if (letterState.mode === "timeout") showLetterTimeout();
+  else if (letterState.mode === "message") showLetterMessage(letterState.raw);
+  else showLetterPlaceholder();
+}
+function collectManual(formId) {
+  var data = {};
+  for (var i = 0; i < MANUAL_FIELDS.length; i++) {
+    var name = MANUAL_FIELDS[i];
+    var el = fieldNode(formId, name);
+    var value = el ? String(el.value) : "";
+    if (name === "学生同意长期记录" || name === "监护人同意或知情") value = value === "是" ? "是" : "否";
+    data[name] = value;
+  }
+  return data;
+}
+function resetComposerFields() {
+  for (var i = 0; i < MANUAL_FIELDS.length; i++) {
+    var name = MANUAL_FIELDS[i];
+    if (name === "学生同意长期记录" || name === "监护人同意或知情") setChipValue("formExploreNew", name, "否");
+    else if (CHIP_FIELDS[name]) setChipValue("formExploreNew", name, "");
+    else {
+      var el = fieldNode("formExploreNew", name);
+      if (el) el.value = "";
+    }
+  }
+}
+function clearComposer() {
+  if (isSubmitting) return;
+  pollToken++;
+  isPolling = false;
+  currentRow = 0;
+  resetComposerFields();
+  var ack = document.getElementById("formExploreNew_noticeAck");
+  if (ack) ack.checked = false;
+  var msg = document.getElementById("importPastMsg");
+  if (msg) msg.textContent = "";
+  showLetterPlaceholder();
+  updateTracking();
+  updateGenerateButton();
+  updateRefreshButton();
+}
+async function importPast() {
+  if (importing) return;
+  importing = true;
+  var msg = document.getElementById("importPastMsg");
+  try {
+    var csv = await bridgeCsv(CSV_FIELDS);
+    var rows = rowsFromCsv(csv).slice(0, 3);
+    if (!rows.length) {
+      if (msg) msg.textContent = t("noPast");
+      importing = false;
+      return;
+    }
+    var lines = [];
+    for (var i = 0; i < rows.length; i++) {
+      lines.push([rows[i]["探索领域"], rows[i]["吸引我的内容"], rows[i]["困难时的反应"], rows[i]["时间感"]].join("、"));
+    }
+    var block = lines.join("\n");
+    var el = fieldNode("formExploreNew", "既往探索记录");
+    if (el) {
+      var cur = String(el.value || "");
+      if (!cur.trim()) el.value = block;
+      else el.value = cur.replace(/\s*$/, "") + "\n\n" + block;
+    }
+    if (msg) msg.textContent = t("imported");
+    updateGenerateButton();
+  } catch (err) {
+    if (msg) msg.textContent = t("fetchFailShort");
+  }
+  importing = false;
+}
+async function pollFeedback(row) {
+  var token = ++pollToken;
+  isPolling = true;
+  updateGenerateButton();
+  showLetterWaiting();
+  for (var attempt = 1; attempt <= 30; attempt++) {
+    if (token !== pollToken) return;
+    try {
+      var text = await bridgeGetCell("探索反馈", row);
+      if (token !== pollToken) return;
+      if (String(text || "").trim()) {
+        isPolling = false;
+        updateGenerateButton();
+        updateRefreshButton();
+        showLetterMarkdown(text);
+        return;
+      }
+    } catch (err) {}
+    if (attempt < 30) await sleep(2000);
+  }
+  if (token !== pollToken) return;
+  isPolling = false;
+  updateGenerateButton();
+  updateRefreshButton();
+  showLetterTimeout();
+}
+async function generateFeedback() {
+  if (isSubmitting || isPolling) return;
+  if (missingList("formExploreNew", true).length) {
+    updateGenerateButton();
+    return;
+  }
+  isSubmitting = true;
+  updateGenerateButton();
+  updateRefreshButton();
+  showLetterMessage(t("submitting"));
+  try {
+    var res = await callAppBridge({ type: "SubmitRecord", data: "兴趣探索", payload: JSON.stringify(collectManual("formExploreNew")) });
+    throwIfFailed(res);
+    currentRow = 1;
+    isSubmitting = false;
+    updateRefreshButton();
+    updateGenerateButton();
+    await pollFeedback(1);
+  } catch (err) {
+    isSubmitting = false;
+    updateGenerateButton();
+    updateRefreshButton();
+    showLetterMessage(t("submitFail"));
+    showToast(t("submitFail"));
+  }
+}
+async function refreshLetter() {
+  if (currentRow < 1 || isSubmitting) return;
+  var row = currentRow;
+  pollToken++;
+  isPolling = false;
+  updateGenerateButton();
+  try {
+    var text = await bridgeGetCell("探索反馈", row);
+    if (currentRow !== row) return;
+    if (String(text || "").trim()) showLetterMarkdown(text);
+    else showLetterTimeout();
+  } catch (err) {
+    if (currentRow === row) showLetterMessage(t("fetchFailShort"));
+  }
+}
+function reactionBlock(value, big) {
+  var color = CHIP_COLOR[value] || "#7A8B99";
+  return '<div class="react-line' + (big ? " lg" : "") + '"><span class="dot' + (big ? " lg" : "") + '" style="background:' + color + '"></span><span>' + esc(showOpt("reaction", value)) + "</span></div>";
+}
+function stagePill(value) {
+  return '<span class="pill"><span class="dot sm" style="background:#1E3A4C"></span>' + esc(showOpt("stage", value)) + "</span>";
+}
+function timePill(value) {
+  var color = CHIP_COLOR[value] || "#7A8B99";
+  return '<span class="pill"><span class="dot sm" style="background:' + color + '"></span>' + esc(showOpt("time", value)) + "</span>";
+}
+function recentCardHtml(r) {
+  return '<article class="info-card" data-card="detail" data-row="' + r.row + '" tabindex="0" role="button">'
+    + reactionBlock(r["困难时的反应"], false)
+    + "<h3>" + esc(r["探索领域"] || "—") + "</h3>"
+    + '<div class="pills">' + stagePill(r["学段"]) + timePill(r["时间感"]) + "</div>"
+    + '<p class="clip">' + esc(clipText(r["吸引我的内容"], 40)) + "</p>"
+    + '<span class="more-link">' + esc(t("viewDetail")) + "</span></article>";
+}
+function footCardHtml(r) {
+  return '<article class="info-card" data-card="edit" data-row="' + r.row + '" tabindex="0">'
+    + reactionBlock(r["困难时的反应"], true)
+    + "<h3>" + esc(r["探索领域"] || "—") + "</h3>"
+    + '<div class="pills">' + stagePill(r["学段"]) + timePill(r["时间感"]) + "</div>"
+    + '<p class="clip">' + esc(clipText(r["吸引我的内容"], 60)) + "</p>"
+    + '<p class="consent-mini">' + esc(fieldLabel("学生同意长期记录")) + "：" + esc(showBool(String(r["学生同意长期记录"] || "").trim()))
+    + " · " + esc(fieldLabel("监护人同意或知情")) + "：" + esc(showBool(String(r["监护人同意或知情"] || "").trim())) + "</p>"
+    + '<div class="btn-row">'
+    + '<button type="button" class="btn btn-ghost btn-small" data-act="detail">' + esc(t("viewDetail")) + "</button>"
+    + '<button type="button" class="btn btn-pine btn-small" data-act="edit">' + esc(t("edit")) + "</button>"
+    + '<button type="button" class="btn btn-danger btn-small" data-act="delete">' + esc(t("delete")) + "</button>"
+    + "</div></article>";
+}
+function paintStat(numId, retryId, hitId, pack) {
+  var num = document.getElementById(numId);
+  var retry = document.getElementById(retryId);
+  var hit = document.getElementById(hitId);
+  if (!num || !retry || !hit) return;
+  if (!pack || pack.state === "loading") {
+    num.textContent = t("loading");
+    num.classList.add("is-text");
+    retry.hidden = true;
+    hit.setAttribute("data-ok", "0");
+  } else if (pack.state === "error") {
+    num.textContent = t("fetchFailShort");
+    num.classList.add("is-text");
+    retry.hidden = false;
+    hit.setAttribute("data-ok", "0");
+  } else {
+    num.textContent = String(pack.value);
+    num.classList.remove("is-text");
+    retry.hidden = true;
+    hit.setAttribute("data-ok", "1");
+  }
+}
+function renderRecent() {
+  var el = document.getElementById("recentList");
+  var pack = homeState.recent;
+  if (!pack || pack.state === "loading") {
+    el.innerHTML = '<p class="muted">' + esc(t("loading")) + "</p>";
+    return;
+  }
+  if (pack.state === "error") {
+    el.innerHTML = '<div class="empty"><p>' + esc(t("fetchFailShort")) + '</p><button type="button" class="btn btn-ghost" data-reload="home">' + esc(t("retry")) + "</button></div>";
+    return;
+  }
+  if (!pack.rows.length) {
+    el.innerHTML = '<div class="empty">' + compassHtml("slow") + "<p>" + esc(t("emptyFoot")) + '</p><button type="button" class="btn btn-amber" data-go="record">' + esc(t("firstRecord")) + "</button></div>";
+    return;
+  }
+  var html = '<div class="card-grid">';
+  for (var i = 0; i < pack.rows.length && i < 5; i++) html += recentCardHtml(pack.rows[i]);
+  html += "</div>";
+  el.innerHTML = html;
+}
+function renderHomeFromState() {
+  paintStat("statCountNum", "statCountRetry", "statCountHit", homeState.count);
+  paintStat("statFastNum", "statFastRetry", "statFastHit", homeState.fast);
+  paintStat("statContinueNum", "statContinueRetry", "statContinueHit", homeState.cont);
+  renderRecent();
+}
+function readCount(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (!/^\d+$/.test(s)) return null;
+  return parseInt(s, 10);
+}
+async function loadHome() {
+  var token = ++homeToken;
+  homeState.count = { state: "loading" };
+  homeState.fast = { state: "loading" };
+  homeState.cont = { state: "loading" };
+  homeState.recent = { state: "loading", rows: [] };
+  renderHomeFromState();
+  var results = await allSettled([
+    callAppBridge({ type: "GetRecordCount", data: "兴趣探索/默认表格" }),
+    bridgeCsv("时间感"),
+    bridgeCsv("困难时的反应"),
+    bridgeCsv(CSV_FIELDS)
+  ]);
+  if (token !== homeToken) return;
+  if (results[0].status === "fulfilled") {
+    var count = readCount(results[0].value);
+    homeState.count = count == null ? { state: "error" } : { state: "ok", value: count };
+  } else homeState.count = { state: "error" };
+  if (results[1].status === "fulfilled") {
+    try {
+      var timeRows = csvRows(results[1].value);
+      var fast = 0;
+      for (var i = 0; i < timeRows.length; i++) if (String(timeRows[i][0] || "").trim() === "过得很快") fast++;
+      homeState.fast = { state: "ok", value: fast };
+    } catch (e) { homeState.fast = { state: "error" }; }
+  } else homeState.fast = { state: "error" };
+  if (results[2].status === "fulfilled") {
+    try {
+      var reactRows = csvRows(results[2].value);
+      var cont = 0;
+      for (var j = 0; j < reactRows.length; j++) {
+        var rv = String(reactRows[j][0] || "").trim();
+        if (rv === "想找资料继续" || rv === "有点烦但还想搞懂") cont++;
+      }
+      homeState.cont = { state: "ok", value: cont };
+    } catch (e2) { homeState.cont = { state: "error" }; }
+  } else homeState.cont = { state: "error" };
+  if (results[3].status === "fulfilled") {
+    try {
+      var all = rowsFromCsv(results[3].value);
+      var recent = [];
+      for (var k = 0; k < all.length && k < 5; k++) recent.push(all[k]);
+      homeState.recent = { state: "ok", rows: recent };
+    } catch (e3) { homeState.recent = { state: "error", rows: [] }; }
+  } else homeState.recent = { state: "error", rows: [] };
+  renderHomeFromState();
+  finishEnter("home");
+}
+function matchesChoice(cell, choice) {
+  if (!choice || choice === "全部") return true;
+  var raw = String(cell || "").trim();
+  if (raw === choice) return true;
+  if (raw.indexOf(",") >= 0 || raw.indexOf("、") >= 0 || raw.indexOf(";") >= 0 || raw.indexOf("，") >= 0) {
+    return raw.toLowerCase().indexOf(String(choice).toLowerCase()) >= 0;
+  }
+  return false;
+}
+function filteredFootprints() {
+  var q = String(document.getElementById("footprintSearch").value || "").trim().toLowerCase();
+  var stage = document.getElementById("filterStage").value;
+  var reaction = document.getElementById("filterReaction").value;
+  var time = document.getElementById("filterTime").value;
+  var consent = document.getElementById("filterConsent").value;
+  var out = [];
+  for (var i = 0; i < fpRows.length; i++) {
+    var row = fpRows[i];
+    if (q) {
+      var blob = (row["探索领域"] + "\n" + row["本次做了什么"] + "\n" + row["吸引我的内容"]).toLowerCase();
+      if (blob.indexOf(q) < 0) continue;
+    }
+    if (!matchesChoice(row["学段"], stage)) continue;
+    if (reaction === "还想继续") {
+      if (row["困难时的反应"] !== "想找资料继续" && row["困难时的反应"] !== "有点烦但还想搞懂") continue;
+    } else if (!matchesChoice(row["困难时的反应"], reaction)) continue;
+    if (!matchesChoice(row["时间感"], time)) continue;
+    if (!matchesChoice(row["学生同意长期记录"], consent)) continue;
+    out.push(row);
+  }
+  if (sortOldest) out.reverse();
+  return out;
+}
+function formatCountLine(total, shown) {
+  if (currentLang === "en") return total + " records · showing " + shown;
+  return "共 " + total + " 条记录 · 显示 " + shown + " 条";
+}
+function updateSortButton() {
+  var btn = document.getElementById("btnSortOrder");
+  if (!btn) return;
+  btn.textContent = sortOldest ? t("newestFirst") : t("oldestFirst");
+  btn.setAttribute("aria-pressed", sortOldest ? "true" : "false");
+}
+function renderFootprints() {
+  var list = document.getElementById("footprintList");
+  var summary = document.getElementById("footSummary");
+  if (fpState === "loading") {
+    if (summary) summary.textContent = "";
+    list.innerHTML = '<p class="muted">' + esc(t("loading")) + "</p>";
+    return;
+  }
+  if (fpState === "error") {
+    if (summary) summary.textContent = "";
+    list.innerHTML = '<div class="empty"><p>' + esc(t("fetchFailShort")) + '</p><button type="button" class="btn btn-ghost" data-reload="foot">' + esc(t("retry")) + "</button></div>";
+    return;
+  }
+  if (fpState !== "ok") return;
+  var filtered = filteredFootprints();
+  if (summary) summary.textContent = formatCountLine(fpCount, filtered.length);
+  if (!fpRows.length) {
+    list.innerHTML = '<div class="empty">' + compassHtml("slow") + "<p>" + esc(t("emptyFoot")) + '</p><button type="button" class="btn btn-amber" data-go="record">' + esc(t("firstRecord")) + "</button></div>";
+    return;
+  }
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty"><p>' + esc(t("noMatch")) + '</p><button type="button" class="btn btn-ghost" data-act="clear-filters">' + esc(t("clearFilters")) + "</button></div>";
+    return;
+  }
+  var html = '<div class="card-grid">';
+  for (var i = 0; i < filtered.length; i++) html += footCardHtml(filtered[i]);
+  html += "</div>";
+  list.innerHTML = html;
+}
+async function loadFootprints() {
+  var token = ++fpToken;
+  fpState = "loading";
+  renderFootprints();
+  var results = await allSettled([
+    bridgeCsv(CSV_FIELDS),
+    callAppBridge({ type: "GetRecordCount", data: "兴趣探索/默认表格" })
+  ]);
+  if (token !== fpToken) return;
+  if (results[0].status !== "fulfilled") {
+    fpState = "error";
+    renderFootprints();
+    finishEnter("footprints");
+    return;
+  }
+  try { fpRows = rowsFromCsv(results[0].value); }
+  catch (e) {
+    fpState = "error";
+    renderFootprints();
+    finishEnter("footprints");
+    return;
+  }
+  var count = results[1].status === "fulfilled" ? readCount(results[1].value) : null;
+  fpCount = count == null ? fpRows.length : count;
+  fpState = "ok";
+  renderFootprints();
+  finishEnter("footprints");
+}
+function clearFilters() {
+  document.getElementById("footprintSearch").value = "";
+  document.getElementById("filterStage").value = "全部";
+  document.getElementById("filterReaction").value = "全部";
+  document.getElementById("filterTime").value = "全部";
+  document.getElementById("filterConsent").value = "全部";
+  sortOldest = false;
+  updateSortButton();
+  if (fpState === "ok") renderFootprints();
+}
+function openFootprintsFiltered(kind) {
+  document.getElementById("footprintSearch").value = "";
+  document.getElementById("filterStage").value = "全部";
+  document.getElementById("filterReaction").value = kind === "continue" ? "还想继续" : "全部";
+  document.getElementById("filterTime").value = kind === "fast" ? "过得很快" : "全部";
+  document.getElementById("filterConsent").value = "全部";
+  sortOldest = false;
+  updateSortButton();
+  showPage("footprints", true);
+}
+function countExact(rows, field, value) {
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) if (String(rows[i][field] || "").trim() === value) n++;
+  return n;
+}
+function barRow(label, color, count, total, big) {
+  var pct = total ? Math.round(count * 100 / total) : 0;
+  return '<div class="bar-row' + (big ? " is-big" : "") + '"><span class="dot' + (big ? " lg" : "") + '" style="background:' + color + '"></span><span class="bar-name">' + esc(label) + '</span><span class="bar-track"><span class="bar-fill" style="width:' + pct + "%;background:" + color + '"></span></span><span class="bar-meta">' + count + " · " + pct + "%</span></div>";
+}
+function barsHtml(rows, field, order, group, big) {
+  var html = "";
+  for (var i = 0; i < order.length; i++) {
+    var key = order[i];
+    html += barRow(showOpt(group, key), CHIP_COLOR[key], countExact(rows, field, key), rows.length, big);
+  }
+  return html;
+}
+function consentHtml(rows) {
+  var student = 0;
+  var guardian = 0;
+  var both = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var a = String(rows[i]["学生同意长期记录"] || "").trim() === "是";
+    var b = String(rows[i]["监护人同意或知情"] || "").trim() === "是";
+    if (a) student++;
+    if (b) guardian++;
+    if (a && b) both++;
+  }
+  function line(label, n) {
+    var pct = rows.length ? Math.round(n * 100 / rows.length) : 0;
+    return '<div class="consent-line"><span>' + esc(label) + "</span><strong>" + n + " · " + pct + "%</strong></div>";
+  }
+  return line(t("consentStudent"), student) + line(t("consentGuardian"), guardian) + line(t("consentBoth"), both);
+}
+function filteredClues() {
+  var stage = document.getElementById("clueStage").value;
+  if (!stage || stage === "全部") return clueRows.slice();
+  var out = [];
+  for (var i = 0; i < clueRows.length; i++) if (matchesChoice(clueRows[i]["学段"], stage)) out.push(clueRows[i]);
+  return out;
+}
+function renderClues() {
+  var box = document.getElementById("clueCharts");
+  var empty = document.getElementById("clueEmpty");
+  var caution = document.getElementById("clueCaution");
+  var banner = document.getElementById("clueBanner");
+  var stage = document.getElementById("clueStage").value;
+  if (clueState === "loading") {
+    box.hidden = true;
+    caution.hidden = true;
+    banner.hidden = true;
+    empty.hidden = false;
+    empty.innerHTML = '<p class="muted">' + esc(t("loading")) + "</p>";
+    return;
+  }
+  if (clueState === "error") {
+    box.hidden = true;
+    caution.hidden = true;
+    banner.hidden = true;
+    empty.hidden = false;
+    empty.innerHTML = '<div class="empty"><p>' + esc(t("fetchFailShort")) + '</p><button type="button" class="btn btn-ghost" data-reload="clue">' + esc(t("retry")) + "</button></div>";
+    return;
+  }
+  if (clueState !== "ok") return;
+  banner.hidden = !(stage === "小学中段" || stage === "小学高段");
+  if (!clueRows.length) {
+    box.hidden = true;
+    banner.hidden = true;
+    caution.hidden = false;
+    empty.hidden = false;
+    empty.innerHTML = '<div class="empty">' + compassHtml("slow") + "<p>" + esc(t("emptyFoot")) + '</p><button type="button" class="btn btn-pine" data-go="record">' + esc(t("goRecord")) + "</button></div>";
+    return;
+  }
+  var rows = filteredClues();
+  if (!rows.length) {
+    box.hidden = true;
+    caution.hidden = false;
+    empty.hidden = false;
+    empty.innerHTML = '<div class="empty"><p>' + esc(t("stageEmpty")) + '</p><button type="button" class="btn btn-pine" data-go="record">' + esc(t("goRecord")) + "</button></div>";
+    return;
+  }
+  empty.hidden = true;
+  box.hidden = false;
+  caution.hidden = false;
+  document.getElementById("clueMain").innerHTML = barsHtml(rows, "困难时的反应", REACTION_ORDER, "reaction", true);
+  document.getElementById("clueTime").innerHTML = barsHtml(rows, "时间感", TIME_ORDER, "time", false);
+  document.getElementById("clueStageDist").innerHTML = barsHtml(rows, "学段", STAGE_ORDER, "stage", false);
+  document.getElementById("clueConsent").innerHTML = consentHtml(rows);
+}
+async function loadClues() {
+  var token = ++clueToken;
+  clueState = "loading";
+  renderClues();
+  try {
+    var csv = await bridgeCsv(CSV_FIELDS);
+    if (token !== clueToken) return;
+    clueRows = rowsFromCsv(csv);
+    clueState = "ok";
+  } catch (err) {
+    if (token !== clueToken) return;
+    clueState = "error";
+  }
+  renderClues();
+  finishEnter("clues");
+}
+function renderDetail() {
+  if (!detailCache) return;
+  var html = '<dl class="detail-list">';
+  for (var i = 0; i < detailCache.fields.length; i++) {
+    var f = detailCache.fields[i];
+    var shown = f.value;
+    if (f.name === "学段" || f.name === "困难时的反应" || f.name === "时间感") shown = showOpt(f.name, f.value);
+    else if (f.name === "学生同意长期记录" || f.name === "监护人同意或知情") shown = showBool(String(f.value || "").trim());
+    else if (!String(f.value || "").trim()) shown = "—";
+    html += "<dt>" + esc(fieldLabel(f.name)) + "</dt><dd>" + esc(shown).replace(/\n/g, "<br>") + "</dd>";
+  }
+  html += "</dl><h3>" + esc(fieldLabel("探索反馈")) + "</h3>";
+  if (!String(detailCache.feedback || "").trim()) html += '<p class="muted">' + esc(t("feedbackPending")) + "</p>";
+  else {
+    try { html += '<div class="md-body">' + renderMarkdown(detailCache.feedback) + "</div>"; }
+    catch (e) { html += "<pre>" + esc(detailCache.feedback) + "</pre>"; }
+  }
+  document.getElementById("detailBody").innerHTML = html;
+}
+async function openDetail(row) {
+  if (!row) return;
+  detailRow = row;
+  var token = ++detailToken;
+  detailCache = null;
+  openPopup("detailOverlay");
+  document.getElementById("detailTitle").textContent = t("detailTitle");
+  document.getElementById("detailBody").innerHTML = '<p class="muted">' + esc(t("loading")) + "</p>";
+  var dialog = document.querySelector("#detailOverlay .dialog");
+  if (dialog) dialog.scrollTop = 0;
+  try {
+    var fields = [];
+    for (var i = 0; i < MANUAL_FIELDS.length; i++) {
+      var name = MANUAL_FIELDS[i];
+      var value = await bridgeGetCell(name, row);
+      if (token !== detailToken) return;
+      fields.push({ name: name, value: value == null ? "" : String(value) });
+    }
+    var fb = await bridgeGetCell("探索反馈", row);
+    if (token !== detailToken) return;
+    detailCache = { row: row, fields: fields, feedback: fb == null ? "" : String(fb) };
+    renderDetail();
+  } catch (err) {
+    if (token !== detailToken) return;
+    document.getElementById("detailBody").innerHTML = '<div class="empty"><p>' + esc(t("fetchFailShort")) + '</p><button type="button" class="btn btn-ghost" data-reload="detail">' + esc(t("retry")) + "</button></div>";
+  }
+}
+function closeDetail() {
+  detailToken++;
+  closePopup("detailOverlay");
+}
+async function editFromDetail() {
+  var row = detailRow;
+  closeDetail();
+  if (!row) return;
+  if (currentPage !== "footprints") showPage("footprints", true);
+  await openEdit(row);
+}
+function renderEditFeedback(raw) {
+  editFeedbackRaw = raw == null ? "" : String(raw);
+  var el = document.getElementById("editFeedbackBox");
+  if (!editFeedbackRaw.trim()) {
+    el.innerHTML = '<p class="muted">' + esc(t("notGenerated")) + "</p>";
+    return;
+  }
+  try { el.innerHTML = '<div class="md-body">' + renderMarkdown(editFeedbackRaw) + "</div>"; }
+  catch (e) { el.innerHTML = "<pre>" + esc(editFeedbackRaw) + "</pre>"; }
+}
+async function openEdit(row) {
+  if (!row) return;
+  var token = ++editToken;
+  currentRow = row;
+  updateRefreshButton();
+  editReady = false;
+  editSaving = false;
+  editFeedbackRaw = "";
+  updateEditButton();
+  document.getElementById("editStatus").textContent = t("loading");
+  document.getElementById("editFeedbackBox").innerHTML = '<p class="muted">' + esc(t("loading")) + "</p>";
+  openPopup("drawerOverlay");
+  var dialog = document.querySelector("#drawerOverlay .dialog");
+  if (dialog) dialog.scrollTop = 0;
+  try {
+    for (var i = 0; i < MANUAL_FIELDS.length; i++) {
+      var name = MANUAL_FIELDS[i];
+      var value = await bridgeGetCell(name, row);
+      if (token !== editToken) return;
+      setFieldValue("formExploreEdit", name, value == null ? "" : String(value));
+    }
+    var fb = await bridgeGetCell("探索反馈", row);
+    if (token !== editToken) return;
+    renderEditFeedback(fb == null ? "" : String(fb));
+    editReady = true;
+    document.getElementById("editStatus").textContent = "";
+    updateEditButton();
+  } catch (err) {
+    if (token !== editToken) return;
+    editReady = false;
+    document.getElementById("editStatus").textContent = t("fetchFailShort");
+    updateEditButton();
+  }
+}
+function closeEdit() {
+  editToken++;
+  closePopup("drawerOverlay");
+}
+async function saveEdit() {
+  if (editSaving || !editReady || currentRow < 1) return;
+  if (missingList("formExploreEdit", false).length) {
+    updateEditButton();
+    return;
+  }
+  editSaving = true;
+  updateEditButton();
+  var data = collectManual("formExploreEdit");
+  var row = currentRow;
+  try {
+    for (var i = 0; i < MANUAL_FIELDS.length; i++) {
+      var name = MANUAL_FIELDS[i];
+      await callAppBridge({ type: "SetCellValue", data: "兴趣探索/默认表格", payload: name + "/" + row + "/" + data[name] });
+    }
+    editSaving = false;
+    updateEditButton();
+    document.getElementById("editStatus").textContent = t("saved");
+    showToast(t("saved"));
+    if (currentPage === "footprints") loadFootprints();
+    else if (currentPage === "home") loadHome();
+  } catch (err) {
+    editSaving = false;
+    updateEditButton();
+    document.getElementById("editStatus").textContent = t("saveFail");
+    showToast(t("saveFail"));
+  }
+}
+async function deleteRecord(row) {
+  if (!row) return;
+  var ok = await askConfirm(t("deleteConfirm"));
+  if (!ok) return;
+  try {
+    var res = await callAppBridge({ type: "DeleteRecord", data: "兴趣探索/默认表格", payload: row.toString() });
+    throwIfFailed(res);
+  } catch (err) {
+    showToast(t("deleteFail"));
+    return;
+  }
+  if (currentRow === row) {
+    currentRow = 0;
+    closeEdit();
+    updateRefreshButton();
+  } else if (currentRow > row) currentRow = currentRow - 1;
+  if (!document.getElementById("detailOverlay").hidden) {
+    if (detailRow === row) closeDetail();
+    else if (detailRow > row) detailRow = detailRow - 1;
+  }
+  showToast(t("deleted"));
+  if (currentPage === "home") loadHome();
+  else if (currentPage === "footprints") loadFootprints();
+  else if (currentPage === "clues") loadClues();
+}
+function askConfirm(message) {
+  return new Promise(function (resolve) {
+    if (confirmResolver) {
+      var prev = confirmResolver;
+      confirmResolver = null;
+      prev(false);
+    }
+    confirmResolver = resolve;
+    document.getElementById("confirmText").textContent = message;
+    openPopup("confirmOverlay");
+  });
+}
+function settleConfirm(result) {
+  closePopup("confirmOverlay");
+  var fn = confirmResolver;
+  confirmResolver = null;
+  if (fn) fn(result ? true : false);
+}
+function openPopup(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.hidden = false;
+  var idx = popupStack.indexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  popupStack.push(id);
+  document.body.classList.add("modal-open");
+}
+function closePopup(id) {
+  var el = document.getElementById(id);
+  if (el) el.hidden = true;
+  var idx = popupStack.indexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  if (!popupStack.length) document.body.classList.remove("modal-open");
+}
+function closeTopPopup() {
+  if (!popupStack.length) return false;
+  var id = popupStack[popupStack.length - 1];
+  if (id === "confirmOverlay") settleConfirm(false);
+  else if (id === "drawerOverlay") closeEdit();
+  else if (id === "detailOverlay") closeDetail();
+  else closePopup(id);
+  return true;
+}
+function showToast(msg) {
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 2600);
+}
+function updateNavState() {
+  var tabs = document.querySelectorAll(".nav-tab, .menu-tab, .bottom-tab");
+  for (var i = 0; i < tabs.length; i++) {
+    var on = tabs[i].getAttribute("data-page") === currentPage;
+    tabs[i].classList.toggle("is-on", on);
+    if (on) tabs[i].setAttribute("aria-current", "page");
+    else tabs[i].removeAttribute("aria-current");
+  }
+}
+function closeMobileMenu() {
+  var menu = document.getElementById("mobileMenu");
+  if (menu) menu.hidden = true;
+  var burger = document.getElementById("hamburgerBtn");
+  if (burger) {
+    burger.setAttribute("aria-expanded", "false");
+    burger.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  }
+}
+function openMobileMenu() {
+  var menu = document.getElementById("mobileMenu");
+  if (menu) menu.hidden = false;
+  var burger = document.getElementById("hamburgerBtn");
+  if (burger) {
+    burger.setAttribute("aria-expanded", "true");
+    burger.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+  }
+}
+function checkNavFit() {
+  var tabs = document.getElementById("navTabs");
+  var burger = document.getElementById("hamburgerBtn");
+  var lang = document.getElementById("langSwitch");
+  var narrow = window.matchMedia("(max-width: 760px)").matches;
+  if (narrow) {
+    document.body.classList.add("is-narrow");
+    closeMobileMenu();
+    return;
+  }
+  document.body.classList.remove("is-narrow");
+  tabs.hidden = false;
+  burger.hidden = true;
+  lang.hidden = false;
+  if (tabs.scrollWidth > tabs.clientWidth + 1) {
+    tabs.hidden = true;
+    burger.hidden = false;
+    lang.hidden = true;
+  } else closeMobileMenu();
+}
+function finishEnter(page) {
+  if (!restore || restore.page !== page || currentPage !== page) return;
+  var y = restore.y;
+  restore = null;
+  window.scrollTo(0, y);
+  setTimeout(function () { if (currentPage === page) window.scrollTo(0, y); }, 50);
+}
+function showPage(page, pushHistory) {
+  if (pushHistory && page !== currentPage) {
+    pageHistory.push({ page: currentPage, scroll: window.scrollY || document.documentElement.scrollTop || 0 });
+  }
+  if (pushHistory) restore = null;
+  currentPage = page;
+  var pages = document.querySelectorAll(".page");
+  for (var i = 0; i < pages.length; i++) pages[i].hidden = pages[i].getAttribute("data-page") !== page;
+  updateNavState();
+  closeMobileMenu();
+  if (pushHistory) window.scrollTo(0, 0);
+  else if (restore && restore.page === page) window.scrollTo(0, restore.y);
+  if (page === "home") loadHome();
+  else if (page === "footprints") loadFootprints();
+  else if (page === "clues") loadClues();
+  else finishEnter(page);
+}
+function airBack() {
+  if (closeTopPopup()) return "false";
+  if (pageHistory.length) {
+    var prev = pageHistory.pop();
+    restore = { page: prev.page, y: prev.scroll || 0 };
+    showPage(prev.page, false);
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+function eventEl(e) {
+  var el = e.target;
+  if (el && el.nodeType !== 1) el = el.parentElement;
+  return el;
+}
+function onChip(chip) {
+  var row = chip.closest(".chip-row");
+  if (!row) return;
+  var hidden = row.querySelector('input[type="hidden"]');
+  var chips = row.querySelectorAll(".chip");
+  for (var i = 0; i < chips.length; i++) {
+    var on = chips[i] === chip;
+    chips[i].classList.toggle("is-on", on);
+    chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  if (hidden) hidden.value = chip.getAttribute("data-value");
+  paintChips(row);
+  var form = chip.closest("form");
+  if (form && form.id === "formExploreNew") {
+    updateTracking();
+    updateGenerateButton();
+  } else updateEditButton();
+}
+function onReload(which) {
+  if (which === "home") loadHome();
+  else if (which === "foot") loadFootprints();
+  else if (which === "clue") loadClues();
+  else if (which === "detail" && detailRow) openDetail(detailRow);
+  else if (which === "edit" && currentRow) openEdit(currentRow);
+}
+function onAct(act) {
+  var kind = act.getAttribute("data-act");
+  if (kind === "clear-filters") { clearFilters(); return; }
+  var holder = act.closest("[data-row]");
+  var row = holder ? Number(holder.getAttribute("data-row")) : 0;
+  if (kind === "detail") openDetail(row);
+  else if (kind === "edit") openEdit(row);
+  else if (kind === "delete") deleteRecord(row);
+}
+function onCard(card) {
+  var row = Number(card.getAttribute("data-row"));
+  if (!row) return;
+  if (card.getAttribute("data-card") === "edit") openEdit(row);
+  else openDetail(row);
+}
+function bindEvents() {
+  if (bound) return;
+  bound = true;
+  document.getElementById("brandBtn").addEventListener("click", function () {
+    try {
+      if (window.parent && typeof window.parent.closeFullHtml === "function") window.parent.closeFullHtml(false);
+    } catch (err) {}
+  });
+  document.getElementById("hamburgerBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    var menu = document.getElementById("mobileMenu");
+    if (menu.hidden) openMobileMenu();
+    else closeMobileMenu();
+  });
+  document.getElementById("menuBackdrop").addEventListener("click", function (e) {
+    e.stopPropagation();
+    closeMobileMenu();
+  });
+  document.getElementById("formExploreNew").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formExploreEdit").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formExploreNew").addEventListener("input", updateGenerateButton);
+  document.getElementById("formExploreNew").addEventListener("change", function () { updateTracking(); updateGenerateButton(); });
+  document.getElementById("formExploreEdit").addEventListener("input", updateEditButton);
+  document.getElementById("formExploreEdit").addEventListener("change", updateEditButton);
+  document.getElementById("btnGenerate").addEventListener("click", generateFeedback);
+  document.getElementById("btnRefreshFeedback").addEventListener("click", refreshLetter);
+  document.getElementById("btnClearForm").addEventListener("click", clearComposer);
+  document.getElementById("btnImportPast").addEventListener("click", importPast);
+  document.getElementById("btnClearFilters").addEventListener("click", clearFilters);
+  document.getElementById("btnSortOrder").addEventListener("click", function () {
+    sortOldest = !sortOldest;
+    updateSortButton();
+    if (fpState === "ok") renderFootprints();
+  });
+  var filters = ["filterStage", "filterReaction", "filterTime", "filterConsent"];
+  for (var i = 0; i < filters.length; i++) {
+    document.getElementById(filters[i]).addEventListener("change", function () {
+      if (fpState === "ok") renderFootprints();
+    });
+  }
+  document.getElementById("footprintSearch").addEventListener("input", function () {
+    if (fpState === "ok") renderFootprints();
+  });
+  document.getElementById("clueStage").addEventListener("change", function () {
+    if (clueState === "ok") renderClues();
+  });
+  document.getElementById("btnClueRefresh").addEventListener("click", loadClues);
+  document.getElementById("statCountHit").addEventListener("click", function () {
+    if (this.getAttribute("data-ok") === "1") openFootprintsFiltered("all");
+  });
+  document.getElementById("statFastHit").addEventListener("click", function () {
+    if (this.getAttribute("data-ok") === "1") openFootprintsFiltered("fast");
+  });
+  document.getElementById("statContinueHit").addEventListener("click", function () {
+    if (this.getAttribute("data-ok") === "1") openFootprintsFiltered("continue");
+  });
+  document.getElementById("btnDetailClose").addEventListener("click", closeDetail);
+  document.getElementById("btnDetailEdit").addEventListener("click", editFromDetail);
+  document.getElementById("btnDetailDelete").addEventListener("click", function () { if (detailRow) deleteRecord(detailRow); });
+  document.getElementById("btnDetailRefresh").addEventListener("click", function () { if (detailRow) openDetail(detailRow); });
+  document.getElementById("btnSaveEdit").addEventListener("click", saveEdit);
+  document.getElementById("btnCloseEdit").addEventListener("click", closeEdit);
+  document.getElementById("btnConfirmOk").addEventListener("click", function () { settleConfirm(true); });
+  document.getElementById("btnConfirmCancel").addEventListener("click", function () { settleConfirm(false); });
+  document.getElementById("detailOverlay").addEventListener("click", function (e) {
+    if (e.target.id === "detailOverlay") closeDetail();
+  });
+  document.getElementById("confirmOverlay").addEventListener("click", function (e) {
+    if (e.target.id === "confirmOverlay") settleConfirm(false);
+  });
+  document.addEventListener("click", function (e) {
+    var el = eventEl(e);
+    if (!el || !el.closest) return;
+    var chip = el.closest(".chip");
+    if (chip) { onChip(chip); return; }
+    var reload = el.closest("[data-reload]");
+    if (reload) { onReload(reload.getAttribute("data-reload")); return; }
+    var act = el.closest("[data-act]");
+    if (act) { onAct(act); return; }
+    var go = el.closest("[data-go]");
+    if (go) { showPage(go.getAttribute("data-go"), true); return; }
+    var langBtn = el.closest("[data-setlang]");
+    if (langBtn) { setLanguage(langBtn.getAttribute("data-setlang")); closeMobileMenu(); return; }
+    var pageBtn = el.closest("[data-page]");
+    if (pageBtn && pageBtn.closest("#topNav, #bottomNav")) {
+      showPage(pageBtn.getAttribute("data-page"), true);
+      return;
+    }
+    var card = el.closest("[data-card]");
+    if (card) onCard(card);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (popupStack.length) closeTopPopup();
+      else closeMobileMenu();
+      return;
+    }
+    var el = e.target;
+    if ((e.key === "Enter" || e.key === " ") && el && el.getAttribute && el.getAttribute("data-card")) {
+      e.preventDefault();
+      onCard(el);
+    }
+  });
+  window.addEventListener("resize", checkNavFit);
+}
+function bindKeyboardGuard() {
+  document.addEventListener("focusin", function (e) {
+    var target = e.target;
+    if (!target || !target.matches || !target.matches("input, textarea, select")) return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", behavior: "smooth" }); }
+      catch (err) { target.scrollIntoView(); }
+    }, 280);
+  });
+  function updateKb() {
+    var kb = 0;
+    if (window.visualViewport) {
+      kb = window.innerHeight - window.visualViewport.height;
+      if (kb < 60) kb = 0;
+    }
+    document.documentElement.style.setProperty("--kb", kb + "px");
+    var ae = document.activeElement;
+    if (kb > 0 && ae && ae.matches && ae.matches("input, textarea, select")) {
+      try { ae.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) {}
+    }
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateKb);
+    window.visualViewport.addEventListener("scroll", updateKb);
+  }
+  window.addEventListener("resize", updateKb);
+}
+function renderDynamic() {
+  renderHomeFromState();
+  if (fpState === "ok" || fpState === "error" || fpState === "loading") renderFootprints();
+  if (clueState === "ok" || clueState === "error" || clueState === "loading") renderClues();
+  restoreLetter();
+  if (detailCache && !document.getElementById("detailOverlay").hidden) renderDetail();
+  if (!document.getElementById("drawerOverlay").hidden) renderEditFeedback(editFeedbackRaw);
+  updateTracking();
+  updateGenerateButton();
+  updateEditButton();
+  updateSortButton();
+  updateRefreshButton();
+  checkNavFit();
+}
+async function initialize() {
+  currentLang = detectLanguage();
+  buildForms();
+  applyStaticI18n();
+  updateTracking();
+  updateGenerateButton();
+  updateRefreshButton();
+  updateSortButton();
+  showLetterPlaceholder();
+  bindEvents();
+  bindKeyboardGuard();
+  checkNavFit();
+  callAppBridge({ type: "模式" }).then(function (mode) {
+    applyTheme(plainText(mode) === "暗色" ? "dark" : "light");
+  }, function () {
+    applyTheme("light");
+  });
+  await loadHome();
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", function () {
+    (async () => { await initialize(); })();
+  });
+} else {
+  (async () => { await initialize(); })();
+}
+</script>
+</body>
+</html>

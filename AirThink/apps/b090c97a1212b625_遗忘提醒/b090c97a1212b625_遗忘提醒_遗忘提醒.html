@@ -1,0 +1,3708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1B2744">
+<title>遗忘提醒</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,560;7..72,680&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+  :root {
+    --indigo: #1B2744;
+    --indigo-2: #243356;
+    --amber: #C9842A;
+    --amber-ink: #8A5312;
+    --amber-soft: #F6E6CF;
+    --paper: #FFF8EF;
+    --paper-2: #FBF3E6;
+    --bg: #F3EBDD;
+    --ink: #241C14;
+    --ink-soft: #5E5348;
+    --line: #E4D3BC;
+    --pine: #245C40;
+    --pine-soft: #E4F2EA;
+    --clay: #A85A3A;
+    --clay-soft: #F8E7DF;
+    --nav-text: #F7F1E7;
+    --shadow: 0 12px 32px rgba(36, 28, 20, 0.08);
+    --serif: "Literata", "Iowan Old Style", Palatino, "Palatino Linotype", "Songti SC", "Noto Serif SC", "STSong", serif;
+    --sans: "Nunito Sans", "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --kb: 0px;
+    color-scheme: light;
+  }
+  [data-theme="dark"] {
+    --indigo: #1A2340;
+    --indigo-2: #243156;
+    --amber: #E0A45A;
+    --amber-ink: #F0C27A;
+    --amber-soft: #3A2E1C;
+    --paper: #262017;
+    --paper-2: #31281E;
+    --bg: #12151E;
+    --ink: #F6EFE4;
+    --ink-soft: #CDBFAE;
+    --line: #4A3E32;
+    --pine: #8FCBAA;
+    --pine-soft: #173127;
+    --clay: #E7B09A;
+    --clay-soft: #3A261F;
+    --nav-text: #F7F1E7;
+    --shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--bg);
+    padding-top: 72px;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 12% -10%, rgba(201, 132, 42, 0.16), transparent 46%),
+      radial-gradient(ellipse at 100% 100%, rgba(27, 39, 68, 0.08), transparent 42%);
+  }
+  [hidden] { display: none !important; }
+  .watermark {
+    position: fixed;
+    left: 50%;
+    top: 46%;
+    width: min(980px, 120vw);
+    transform: translate(-50%, -50%);
+    color: var(--amber);
+    opacity: 0.07;
+    z-index: 0;
+    pointer-events: none;
+  }
+  [data-theme="dark"] .watermark { opacity: 0.11; }
+  .watermark svg { width: 100%; height: auto; display: block; }
+  #navDock {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+  }
+  #main, .site-footer { position: relative; z-index: 1; }
+  .nav-inner {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    background: var(--indigo);
+    color: var(--nav-text);
+    box-shadow: 0 1px 0 rgba(201, 132, 42, 0.35);
+  }
+  #brandBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 6px 4px;
+    flex: 0 0 auto;
+    min-height: 44px;
+  }
+  .brand-mark { width: 46px; height: 30px; color: var(--amber); display: block; }
+  #brandName {
+    font-family: var(--serif);
+    font-size: 20px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  #navLinks {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .tab, .lang-btn, #hamburgerBtn, .menu-tab, .menu-lang button {
+    font: inherit;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    color: var(--nav-text);
+  }
+  .tab, .menu-tab {
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  .tab.is-active, .menu-tab.is-active {
+    color: var(--amber);
+    box-shadow: inset 0 -2px 0 var(--amber);
+  }
+  .lang-btn, .menu-lang button {
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 1px solid rgba(224, 164, 90, 0.7);
+    border-radius: 999px;
+    color: var(--amber);
+    margin-left: 6px;
+  }
+  .menu-lang button.is-active { background: rgba(224, 164, 90, 0.16); }
+  #hamburgerBtn {
+    display: none;
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 18px;
+  }
+  #topNav.is-collapsed #navLinks { display: none; }
+  #navLinks > * { flex: 0 0 auto; }
+  #topNav.is-collapsed #hamburgerBtn { display: inline-flex; align-items: center; justify-content: center; }
+  #mobileMenu {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--indigo);
+    color: var(--nav-text);
+    flex-direction: column;
+    padding: 6px 10px 12px;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.22);
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+    z-index: 1001;
+  }
+  #mobileMenu.is-open { display: flex; }
+  .menu-tab { text-align: left; border-radius: 12px; }
+  .menu-lang { display: flex; gap: 8px; padding: 8px 8px 2px; }
+  .wrap { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+  .page { padding: 22px 0 8px; }
+  .page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 680; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.18; margin: 0 0 8px; }
+  h2 { font-size: clamp(26px, 3vw, 36px); line-height: 1.22; margin: 0; }
+  h3 { font-size: 20px; line-height: 1.35; margin: 0; }
+  .lede { margin: 0; max-width: 42rem; color: var(--ink-soft); font-size: 17px; }
+  .hero-actions, .dialog-actions, .banner-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hero-actions { margin-top: 18px; }
+  button, .btn {
+    font: inherit;
+    cursor: pointer;
+    min-height: 44px;
+    border-radius: 999px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+  }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-primary { background: var(--amber); color: #1B140C; border-color: var(--amber); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-pine { background: var(--pine); color: #F4FFF8; border-color: var(--pine); }
+  .btn-danger { background: transparent; color: var(--clay); border-color: var(--clay); }
+  .btn-primary, .btn-ghost, .btn-pine, .btn-danger { display: inline-flex; align-items: center; gap: 8px; }
+  .nav-inner .tab:focus-visible,
+  .nav-inner .lang-btn:focus-visible,
+  #hamburgerBtn:focus-visible,
+  .menu-tab:focus-visible,
+  .menu-lang button:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  :focus-visible { outline: 2px solid var(--amber-ink); outline-offset: 3px; }
+  .stat-grid, .atlas-grid, .card-grid {
+    display: grid;
+    gap: 14px;
+  }
+  .stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 22px 0; }
+  .stat {
+    border-radius: 18px;
+    padding: 16px 16px 14px;
+    box-shadow: var(--shadow);
+    min-height: 118px;
+  }
+  .stat p { margin: 0; font-size: 14px; }
+  .stat strong {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--serif);
+    font-size: 40px;
+    line-height: 1;
+    font-weight: 680;
+  }
+  .stat-all { background: var(--indigo); color: var(--nav-text); border: 1px solid rgba(224, 164, 90, 0.45); }
+  .stat-yes { background: var(--pine-soft); color: var(--ink); border: 1px solid var(--pine); }
+  .stat-no { background: var(--clay-soft); color: var(--ink); border: 1px solid var(--clay); }
+  .panel, .form-card, .explain, .ticket, .atlas-card, .empty, .preview, .wait-card, .banner {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .panel { padding: 16px 16px 14px; margin-bottom: 16px; }
+  .section-label {
+    font-family: var(--serif);
+    font-size: 22px;
+    margin: 8px 0 10px;
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 1px dashed var(--line);
+    background: var(--paper-2);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  .chip b { font-family: var(--serif); font-weight: 680; }
+  .fine { color: var(--ink-soft); font-size: 13px; margin: 10px 0 0; }
+  .card-list, .card-grid { margin-top: 8px; }
+  .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ticket {
+    position: relative;
+    padding: 16px 16px 14px;
+    text-align: left;
+    color: inherit;
+    width: 100%;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    overflow: hidden;
+  }
+  .ticket::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber), transparent 78%);
+  }
+  .ticket:hover, .atlas-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--amber);
+  }
+  .ticket-button { display: block; cursor: pointer; }
+  .ribbon {
+    position: absolute;
+    top: 18px;
+    right: -34px;
+    width: 138px;
+    text-align: center;
+    transform: rotate(32deg);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 4px 0;
+    color: #fffaf4;
+  }
+  .ribbon-yes { background: var(--pine); }
+  .ribbon-no { background: var(--clay); }
+  .ticket h3 { padding-right: 78px; }
+  .meta-line, .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pill, .badge {
+    font-size: 12px;
+    border-radius: 999px;
+    padding: 3px 8px;
+    background: var(--amber-soft);
+    color: var(--ink);
+  }
+  .badge-yes { background: var(--pine-soft); color: var(--pine); }
+  .badge-no { background: var(--clay-soft); color: var(--clay); }
+  .dl { margin: 10px 0 0; display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 4px 8px; font-size: 14px; }
+  .dl dt { color: var(--ink-soft); margin: 0; }
+  .dl dd { margin: 0; }
+  .ticket-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .ticket-actions button { background: var(--paper-2); border: 1px solid var(--line); color: var(--ink); }
+  .compose-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .form-card, .explain, .preview, .wait-card, .empty, .banner { padding: 16px; }
+  .explain { position: sticky; top: 84px; }
+  .explain h2 { font-size: 26px; margin-bottom: 8px; }
+  .explain-block { margin: 0 0 10px; }
+  .explain-block b { font-family: var(--serif); display: block; }
+  .explain-block p { margin: 2px 0 0; }
+  .field { margin: 0 0 12px; }
+  .filters label span, .switch-copy b { display: block; font-size: 14px; margin-bottom: 4px; }
+  .field > span { font-size: 14px; }
+  .field > textarea, .field > select, .field > input { display: block; margin-top: 4px; }
+  .req { color: var(--clay); margin-left: 2px; }
+  input, select, textarea {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+  .field-hint { color: var(--ink-soft); font-size: 13px; margin: 6px 0 0; }
+  .field-error { color: var(--clay); font-size: 13px; margin: 6px 0 0; }
+  .switch-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper-2);
+  }
+  .switch-row input { width: 44px; min-height: 26px; height: 26px; margin-top: 4px; accent-color: var(--amber); flex: 0 0 auto; }
+  .switch-copy b { margin: 0; }
+  .switch-copy small { display: block; color: var(--ink-soft); font-size: 13px; }
+  .switch-state { font-family: var(--serif); color: var(--amber-ink); }
+  .toolbar { display: grid; gap: 10px; }
+  .search-line { position: relative; }
+  .search-line i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-soft);
+  }
+  .search-line input { padding-left: 36px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .filters label { flex: 1 1 150px; min-width: 140px; }
+  .filters label span { font-size: 12px; color: var(--ink-soft); }
+  .atlas-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .atlas-card { padding: 14px; }
+  .atlas-card .idx { font-family: var(--serif); color: var(--amber-ink); font-size: 13px; }
+  .atlas-card h3 { margin: 4px 0 6px; font-size: 18px; }
+  .atlas-card p { margin: 0; color: var(--ink-soft); font-size: 14px; }
+  .wide-card { grid-column: 1 / -1; }
+  .timeline { display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .timeline i {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--amber); display: inline-block;
+  }
+  .timeline b { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+  .quiet { color: var(--ink-soft); display: flex; align-items: center; gap: 8px; padding: 8px 2px; }
+  .pulse {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--amber); display: inline-block; flex: 0 0 auto;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.35; transform: scale(0.85); } }
+  .banner { margin: 12px 0; display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .banner p { margin: 0; }
+  .banner-ok { border-color: var(--pine); background: var(--pine-soft); }
+  .empty { text-align: center; padding: 28px 16px; }
+  .empty i { font-size: 28px; color: var(--amber); }
+  .empty p { margin: 8px auto 0; max-width: 36rem; color: var(--ink-soft); }
+  .preview { margin-top: 16px; border-color: var(--amber); }
+  .wait-card { margin-top: 16px; display: flex; gap: 12px; align-items: flex-start; background: var(--amber-soft); }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(18, 16, 14, 0.46);
+  }
+  .dialog {
+    width: min(760px, 100%);
+    max-height: calc(100vh - 48px);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .dialog-head, .dialog-actions {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+  .dialog-head { border-bottom: 1px solid var(--line); }
+  .dialog-actions { border-top: 1px solid var(--line); justify-content: flex-end; }
+  .dialog-body { overflow: auto; padding: 14px 16px 18px; -webkit-overflow-scrolling: touch; }
+  .icon-btn {
+    width: 44px; height: 44px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
+    padding: 0;
+  }
+  .dialog-confirm { width: min(480px, 100%); }
+  .markdown-body { font-size: 16px; line-height: 1.75; overflow-wrap: anywhere; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { font-family: var(--serif); line-height: 1.3; margin: 1em 0 0.4em; }
+  .markdown-body p { margin: 0.55em 0; }
+  .markdown-body ul, .markdown-body ol { padding-left: 1.3em; }
+  .markdown-body blockquote { margin: 0.8em 0; padding: 0.1em 0 0.1em 12px; border-left: 3px solid var(--amber); color: var(--ink-soft); }
+  .markdown-body code { font-family: ui-monospace, Consolas, "Courier New", monospace; background: var(--amber-soft); padding: 0.1em 0.35em; border-radius: 6px; }
+  .markdown-body pre { overflow-x: auto; padding: 12px 14px; background: var(--indigo); color: var(--nav-text); border-radius: 12px; }
+  .markdown-body pre code { background: transparent; color: inherit; padding: 0; }
+  .markdown-body img { max-width: 100%; height: auto; border-radius: 12px; cursor: pointer; }
+  .markdown-body a { color: var(--amber-ink); }
+  .markdown-body hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  .markdown-body table { border-collapse: collapse; min-width: 100%; }
+  .markdown-body th, .markdown-body td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  .md-task { list-style: none; margin-left: -0.2em; }
+  .site-footer { background: var(--indigo); color: var(--nav-text); margin-top: 36px; padding: 26px 0 30px; }
+  .site-footer p { margin: 0; }
+  .footer-brand { font-family: var(--serif); font-size: 20px; }
+  .skip {
+    position: absolute; left: 12px; top: -40px; background: var(--amber); color: #1B140C;
+    padding: 8px 12px; border-radius: 8px; z-index: 3000;
+  }
+  .skip:focus { top: 76px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); border: 0;
+  }
+  @media (max-width: 980px) {
+    .atlas-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 860px) {
+    .compose-layout, .card-grid, .stat-grid { grid-template-columns: 1fr; }
+    .explain { position: static; }
+  }
+  @media (max-width: 560px) {
+    .atlas-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    body { padding-bottom: 112px; }
+    .overlay { padding: 16px; }
+    input, select, textarea { font-size: 16px; scroll-margin-top: 90px; scroll-margin-bottom: 42vh; }
+    .dialog-body { padding-bottom: 30vh; }
+    body.kb-open { padding-bottom: calc(120px + var(--kb) + 16vh); }
+    body.kb-open .dialog-body { padding-bottom: calc(var(--kb) + 38vh); }
+    .overlay-md { padding: 0; align-items: stretch; }
+    .overlay-md .dialog {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      max-height: none;
+      border-radius: 0;
+      margin: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">跳到内容</a>
+<div class="watermark" aria-hidden="true">
+  <svg viewBox="0 0 800 360" fill="none">
+    <path d="M16 78C150 78 188 268 330 282C472 296 548 214 676 168C736 146 770 156 788 176" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+  </svg>
+</div>
+<div id="navDock">
+  <nav id="topNav" style="position: relative;z-index: 1001;">
+    <div class="nav-inner">
+      <button type="button" id="brandBtn">
+        <svg class="brand-mark" viewBox="0 0 64 36" aria-hidden="true">
+          <path d="M4 10C16 10 20 28 32 30C44 32 52 24 60 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <circle cx="60" cy="18" r="2.3" fill="currentColor"/>
+        </svg>
+        <span id="brandName" data-i18n="appName">遗忘提醒</span>
+      </button>
+      <div id="navLinks">
+        <button type="button" class="tab" id="tabHome" data-i18n="navHome">首页</button>
+        <button type="button" class="tab" id="tabCompose" data-i18n="navCompose">编排方案</button>
+        <button type="button" class="tab" id="tabShelf" data-i18n="navShelf">提醒书架</button>
+        <button type="button" class="tab" id="tabAtlas" data-i18n="navAtlas">曲线图鉴</button>
+        <button type="button" class="lang-btn" id="langToggle">EN</button>
+      </div>
+      <button type="button" id="hamburgerBtn" aria-controls="mobileMenu" aria-expanded="false" data-i18n-aria="menu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="menu-tab" id="mTabHome" data-i18n="navHome">首页</button>
+      <button type="button" class="menu-tab" id="mTabCompose" data-i18n="navCompose">编排方案</button>
+      <button type="button" class="menu-tab" id="mTabShelf" data-i18n="navShelf">提醒书架</button>
+      <button type="button" class="menu-tab" id="mTabAtlas" data-i18n="navAtlas">曲线图鉴</button>
+      <div class="menu-lang">
+        <button type="button" id="mLangZh">中文</button>
+        <button type="button" id="mLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main id="main">
+  <section class="page" id="pageHome">
+    <div class="wrap">
+      <h1 data-i18n="appName">遗忘提醒</h1>
+      <p class="lede" data-i18n="homeLede">把一次学习，排成可暂停、可取消、可免打扰的回访。没有明确同意时，只保留建议，不创建提醒。</p>
+      <div class="hero-actions">
+        <button type="button" class="btn-primary" id="btnPlanVisit"><i class="fa-solid fa-feather-pointed" aria-hidden="true"></i><span data-i18n="planVisit">编排一次回访</span></button>
+        <button type="button" class="btn-ghost" id="btnOpenShelf"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="openShelf">打开书架</span></button>
+      </div>
+      <div class="stat-grid">
+        <article class="stat stat-all" id="statCardAll" tabindex="0">
+          <p data-i18n="statAll">全部方案</p>
+          <strong id="statAll">·</strong>
+        </article>
+        <article class="stat stat-yes" id="statCardYes" tabindex="0">
+          <p data-i18n="statYes">已授权提醒</p>
+          <strong id="statYes">·</strong>
+        </article>
+        <article class="stat stat-no" id="statCardNo" tabindex="0">
+          <p data-i18n="statNo">仅建议方案</p>
+          <strong id="statNo">·</strong>
+        </article>
+      </div>
+      <div id="homeError" class="banner" hidden>
+        <p data-i18n="homeError">没能读到记录，可以再试一次。</p>
+        <button type="button" class="btn-ghost" id="btnHomeRetry" data-i18n="retry">重试</button>
+      </div>
+      <section class="panel" aria-labelledby="curveTitle">
+        <h2 class="section-label" id="curveTitle" data-i18n="curveTitle">曲线速览</h2>
+        <div class="chip-row">
+          <div class="chip" tabindex="0"><b data-i18n="freqStandard">标准间隔</b> · <span data-i18n="freqStandardDays">第1、3、7、14、30天</span></div>
+          <div class="chip" tabindex="0"><b data-i18n="freqHigh">记忆高频</b> · <span data-i18n="freqHighDays">前3天每天，再接标准间隔</span></div>
+          <div class="chip" tabindex="0"><b data-i18n="freqError">错题强化</b> · <span data-i18n="freqErrorDays">第1、2、5、10、21天</span></div>
+          <div class="chip" tabindex="0"><b data-i18n="freqWeek">每周一次</b> · <span data-i18n="freqWeekNote">降频</span></div>
+        </div>
+        <p class="fine" data-i18n="quietSummary">22:00–8:00 不发送；方案里的普通日最多 3 条</p>
+      </section>
+      <h2 class="section-label" data-i18n="recentTitle">最近回访</h2>
+      <div id="homeLoading" class="quiet" hidden><span class="pulse"></span><span data-i18n="loadingSoft">正在轻轻翻开记录…</span></div>
+      <div id="homeRecent" class="card-list"></div>
+      <div id="homeEmpty" class="empty" hidden>
+        <i class="fa-solid fa-feather" aria-hidden="true"></i>
+        <p data-i18n="homeEmpty">书架还安静着。把今天学过的一件事留下来，日子会替你记得何时回来。</p>
+        <div class="hero-actions" style="justify-content:center;">
+          <button type="button" class="btn-primary" id="btnFirstStudy" data-i18n="firstStudy">写下第一份学习内容</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="page" id="pageCompose" hidden>
+    <div class="wrap">
+      <header class="page-head">
+        <div>
+          <h2 data-i18n="navCompose">编排方案</h2>
+          <p class="lede" data-i18n="composeLede">写清学了什么、怎么检验、何时轻轻敲你。只有同意提醒，才会真正创建提醒。</p>
+        </div>
+        <button type="button" class="btn-ghost" id="btnToShelf"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="toShelf">去书架</span></button>
+      </header>
+      <div class="compose-layout">
+        <div class="form-card">
+          <h3 data-i18n="formTitle">遗忘提醒</h3>
+          <form id="formCreate" action="#" novalidate>
+            <label class="field" for="formCreate_学习内容">
+              <span data-i18n="f_学习内容">学习内容</span><span class="req">*</span>
+              <textarea id="formCreate_学习内容" name="学习内容" rows="4" data-i18n-placeholder="contentPh" placeholder="例如：一元二次方程求根公式的推导" aria-required="true"></textarea>
+              <p class="field-error" id="errCreate_学习内容" hidden></p>
+            </label>
+            <label class="field" for="formCreate_内容类型">
+              <span data-i18n="f_内容类型">内容类型</span><span class="req">*</span>
+              <select id="formCreate_内容类型" name="内容类型" aria-required="true">
+                <option value="" data-i18n="pleaseChoose">请选择</option>
+                <option value="理解类" data-i18n="v_理解类">理解类</option>
+                <option value="记忆类" data-i18n="v_记忆类">记忆类</option>
+                <option value="应用类" data-i18n="v_应用类">应用类</option>
+                <option value="错题类" data-i18n="v_错题类">错题类</option>
+              </select>
+              <p class="field-error" id="errCreate_内容类型" hidden></p>
+            </label>
+            <label class="field" for="formCreate_提醒类型">
+              <span data-i18n="f_提醒类型">提醒类型</span><span class="req">*</span>
+              <select id="formCreate_提醒类型" name="提醒类型" aria-required="true">
+                <option value="" data-i18n="pleaseChoose">请选择</option>
+                <option value="复习提醒" data-i18n="v_复习提醒">复习提醒</option>
+                <option value="计划提醒" data-i18n="v_计划提醒">计划提醒</option>
+                <option value="探索提醒" data-i18n="v_探索提醒">探索提醒</option>
+                <option value="每日确认" data-i18n="v_每日确认">每日确认</option>
+              </select>
+              <p class="field-error" id="errCreate_提醒类型" hidden></p>
+            </label>
+            <label class="field" for="formCreate_频率">
+              <span data-i18n="f_频率">频率</span><span class="req">*</span>
+              <select id="formCreate_频率" name="频率" aria-required="true">
+                <option value="" data-i18n="pleaseChoose">请选择</option>
+                <option value="标准间隔" data-i18n="v_标准间隔">标准间隔</option>
+                <option value="记忆高频" data-i18n="v_记忆高频">记忆高频</option>
+                <option value="错题强化" data-i18n="v_错题强化">错题强化</option>
+                <option value="每周一次" data-i18n="v_每周一次">每周一次</option>
+              </select>
+              <p class="field-error" id="errCreate_频率" hidden></p>
+            </label>
+            <label class="field" for="formCreate_学习日期">
+              <span data-i18n="f_学习日期">学习日期</span><span class="req">*</span>
+              <input type="date" id="formCreate_学习日期" name="学习日期" aria-required="true">
+              <p class="field-error" id="errCreate_学习日期" hidden></p>
+            </label>
+            <label class="field" for="formCreate_提醒时段">
+              <span data-i18n="f_提醒时段">提醒时段</span><span class="req">*</span>
+              <select id="formCreate_提醒时段" name="提醒时段" aria-required="true">
+                <option value="" data-i18n="pleaseChoose">请选择</option>
+                <option value="放学后" data-i18n="v_放学后">放学后</option>
+                <option value="夜间" data-i18n="v_夜间">夜间</option>
+                <option value="早起" data-i18n="v_早起">早起</option>
+                <option value="午休" data-i18n="v_午休">午休</option>
+              </select>
+              <p class="field-hint" id="slotHint"></p>
+              <p class="field-error" id="errCreate_提醒时段" hidden></p>
+            </label>
+            <div class="field">
+              <label class="switch-row" for="formCreate_同意提醒">
+                <input type="checkbox" role="switch" id="formCreate_同意提醒" name="同意提醒" aria-checked="false">
+                <span class="switch-copy">
+                  <b><span data-i18n="f_同意提醒">同意提醒</span> · <span class="switch-state" id="stateCreateConsent">否</span></b>
+                  <small data-i18n="consentHelp">只有明确同意才创建提醒，否则只给建议方案</small>
+                </span>
+              </label>
+            </div>
+            <div class="field">
+              <label class="switch-row" for="formCreate_允许共享">
+                <input type="checkbox" role="switch" id="formCreate_允许共享" name="允许共享" aria-checked="false">
+                <span class="switch-copy">
+                  <b><span data-i18n="f_允许共享">允许共享</span> · <span class="switch-state" id="stateCreateShare">否</span></b>
+                  <small data-i18n="shareHelp">为「否」时不读取其他技能资料</small>
+                </span>
+              </label>
+            </div>
+            <div class="hero-actions">
+              <button type="submit" class="btn-primary" id="btnGenerate"><i class="fa-solid fa-feather-pointed" aria-hidden="true"></i><span id="btnGenerateText" data-i18n="generate">生成方案</span></button>
+              <button type="button" class="btn-ghost" id="btnClearCompose" data-i18n="clearForm">清空</button>
+            </div>
+          </form>
+        </div>
+        <aside class="explain" id="explainCard" aria-live="polite">
+          <h2 data-i18n="explainTitle">这一次会怎样</h2>
+          <div id="explainBody"></div>
+        </aside>
+      </div>
+      <div id="composeError" class="banner" hidden>
+        <p id="composeErrorText"></p>
+        <div class="banner-actions">
+          <button type="button" class="btn-ghost" id="btnComposeRetry" data-i18n="retry">重试</button>
+          <button type="button" class="btn-ghost" id="btnErrorShelf" hidden data-i18n="viewOnShelf">去书架查看</button>
+        </div>
+      </div>
+      <div id="planWait" class="wait-card" hidden role="status" aria-live="polite">
+        <span class="pulse"></span>
+        <div>
+          <strong data-i18n="generating">正在按遗忘曲线写方案…</strong>
+          <p class="fine" data-i18n="generatingNote">写好之前只是安静等待，不会编造进度，也不会在这里补写方案。</p>
+        </div>
+      </div>
+      <section id="planPreview" class="preview" hidden>
+        <h2 id="planPreviewTitle"></h2>
+        <div id="planPreviewBody" class="markdown-body"></div>
+        <div class="hero-actions">
+          <button type="button" class="btn-pine" id="btnPreviewShelf" data-i18n="viewOnShelf">去书架查看</button>
+          <button type="button" class="btn-ghost" id="btnComposeAnother" data-i18n="composeAnother">再编一份</button>
+        </div>
+      </section>
+    </div>
+  </section>
+  <section class="page" id="pageShelf" hidden>
+    <div class="wrap">
+      <header class="page-head">
+        <div>
+          <h2 data-i18n="navShelf">提醒书架</h2>
+          <p class="lede" data-i18n="shelfLede">每张卡片是一次学习的回访票。点开可读方案，可改登记，可删除。</p>
+        </div>
+        <button type="button" class="btn-primary" id="btnShelfCompose"><i class="fa-solid fa-plus" aria-hidden="true"></i><span data-i18n="addCompose">编排方案</span></button>
+      </header>
+      <div class="panel toolbar">
+        <label class="search-line" for="shelfSearch">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" id="shelfSearch" data-i18n-placeholder="searchPh" placeholder="搜索学习内容" autocomplete="off">
+        </label>
+        <div class="filters">
+          <label><span data-i18n="f_内容类型">内容类型</span>
+            <select id="filterType">
+              <option value="" data-i18n="filterAll">全部</option>
+              <option value="理解类" data-i18n="v_理解类">理解类</option>
+              <option value="记忆类" data-i18n="v_记忆类">记忆类</option>
+              <option value="应用类" data-i18n="v_应用类">应用类</option>
+              <option value="错题类" data-i18n="v_错题类">错题类</option>
+            </select>
+          </label>
+          <label><span data-i18n="f_提醒类型">提醒类型</span>
+            <select id="filterRemind">
+              <option value="" data-i18n="filterAll">全部</option>
+              <option value="复习提醒" data-i18n="v_复习提醒">复习提醒</option>
+              <option value="计划提醒" data-i18n="v_计划提醒">计划提醒</option>
+              <option value="探索提醒" data-i18n="v_探索提醒">探索提醒</option>
+              <option value="每日确认" data-i18n="v_每日确认">每日确认</option>
+            </select>
+          </label>
+          <label><span data-i18n="f_频率">频率</span>
+            <select id="filterFreq">
+              <option value="" data-i18n="filterAll">全部</option>
+              <option value="标准间隔" data-i18n="v_标准间隔">标准间隔</option>
+              <option value="记忆高频" data-i18n="v_记忆高频">记忆高频</option>
+              <option value="错题强化" data-i18n="v_错题强化">错题强化</option>
+              <option value="每周一次" data-i18n="v_每周一次">每周一次</option>
+            </select>
+          </label>
+          <label><span data-i18n="f_提醒时段">提醒时段</span>
+            <select id="filterSlot">
+              <option value="" data-i18n="filterAll">全部</option>
+              <option value="放学后" data-i18n="v_放学后">放学后</option>
+              <option value="夜间" data-i18n="v_夜间">夜间</option>
+              <option value="早起" data-i18n="v_早起">早起</option>
+              <option value="午休" data-i18n="v_午休">午休</option>
+            </select>
+          </label>
+          <label><span data-i18n="f_同意提醒">同意提醒</span>
+            <select id="filterConsent">
+              <option value="" data-i18n="filterAll">全部</option>
+              <option value="是" data-i18n="yes">是</option>
+              <option value="否" data-i18n="no">否</option>
+            </select>
+          </label>
+          <label><span data-i18n="f_允许共享">允许共享</span>
+            <select id="filterShare">
+              <option value="" data-i18n="filterAll">全部</option>
+              <option value="是" data-i18n="yes">是</option>
+              <option value="否" data-i18n="no">否</option>
+            </select>
+          </label>
+          <label><span data-i18n="sortLabel">排序</span>
+            <select id="sortShelf">
+              <option value="desc" data-i18n="sortDesc">学习日期新到旧</option>
+              <option value="asc" data-i18n="sortAsc">学习日期旧到新</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <button type="button" class="btn-ghost" id="btnClearFilter" data-i18n="clearFilter">清除筛选</button>
+        </div>
+      </div>
+      <div id="shelfNote" class="banner banner-ok" hidden>
+        <p id="shelfNoteText"></p>
+        <button type="button" class="btn-ghost" id="btnNoteDismiss" data-i18n="gotIt">知道了</button>
+      </div>
+      <div id="shelfLoading" class="quiet" hidden><span class="pulse"></span><span data-i18n="loadingSoft">正在轻轻翻开记录…</span></div>
+      <div id="shelfError" class="banner" hidden>
+        <p data-i18n="homeError">没能读到记录，可以再试一次。</p>
+        <button type="button" class="btn-ghost" id="btnShelfRetry" data-i18n="retry">重试</button>
+      </div>
+      <div id="shelfList" class="card-grid"></div>
+      <div id="shelfEmptyNone" class="empty" hidden>
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <p data-i18n="shelfEmptyNone">还没有任何回访票。第一次学习，值得被轻轻记住。</p>
+        <div class="hero-actions" style="justify-content:center;">
+          <button type="button" class="btn-primary" id="btnEmptyCompose" data-i18n="firstStudy">写下第一份学习内容</button>
+        </div>
+      </div>
+      <div id="shelfEmptyFilter" class="empty" hidden>
+        <i class="fa-solid fa-filter" aria-hidden="true"></i>
+        <p data-i18n="shelfEmptyFilter">没有符合这些条件的回访票。</p>
+        <div class="hero-actions" style="justify-content:center;">
+          <button type="button" class="btn-ghost" id="btnEmptyClearFilter" data-i18n="clearFilter">清除筛选</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="page" id="pageAtlas" hidden>
+    <div class="wrap">
+      <header class="page-head">
+        <div>
+          <h2 data-i18n="navAtlas">曲线图鉴</h2>
+          <p class="lede" data-i18n="atlasLede">频率决定间隔，内容类型只决定检验形式，提醒类型决定文案任务</p>
+        </div>
+      </header>
+      <h3 class="section-label" data-i18n="atlasFreq">四档频率</h3>
+      <div class="atlas-grid">
+        <article class="atlas-card" tabindex="0"><div class="idx">01</div><h3 data-i18n="v_标准间隔">标准间隔</h3><p data-i18n="freqStandardDays">第1、3、7、14、30天</p><div class="timeline" aria-hidden="true"><i></i><b>1</b><i></i><b>3</b><i></i><b>7</b><i></i><b>14</b><i></i><b>30</b></div></article>
+        <article class="atlas-card" tabindex="0"><div class="idx">02</div><h3 data-i18n="v_记忆高频">记忆高频</h3><p data-i18n="freqHighDays">前3天每天，再接标准间隔</p><div class="timeline" aria-hidden="true"><i></i><b>1</b><i></i><b>2</b><i></i><b>3</b><i></i><b>7</b><i></i><b>14</b><i></i><b>30</b></div></article>
+        <article class="atlas-card" tabindex="0"><div class="idx">03</div><h3 data-i18n="v_错题强化">错题强化</h3><p data-i18n="freqErrorDays">第1、2、5、10、21天</p><div class="timeline" aria-hidden="true"><i></i><b>1</b><i></i><b>2</b><i></i><b>5</b><i></i><b>10</b><i></i><b>21</b></div></article>
+        <article class="atlas-card" tabindex="0"><div class="idx">04</div><h3 data-i18n="v_每周一次">每周一次</h3><p data-i18n="weekIsSlow">每周一次是降频</p><div class="timeline" aria-hidden="true"><i></i><b data-i18n="freqWeekNote">降频</b></div></article>
+      </div>
+      <h3 class="section-label" data-i18n="atlasType">内容类型</h3>
+      <div class="atlas-grid">
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-comments" aria-hidden="true"></i></div><h3 data-i18n="v_理解类">理解类</h3><p data-i18n="typeUnderstand">理解类用开放问答</p></article>
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></div><h3 data-i18n="v_记忆类">记忆类</h3><p data-i18n="typeMemory">记忆类用填空默写</p></article>
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-shapes" aria-hidden="true"></i></div><h3 data-i18n="v_应用类">应用类</h3><p data-i18n="typeApply">应用类用变形练习</p></article>
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div><h3 data-i18n="v_错题类">错题类</h3><p data-i18n="typeError">错题类用针对性练习</p></article>
+      </div>
+      <h3 class="section-label" data-i18n="atlasRemind">提醒类型</h3>
+      <div class="atlas-grid">
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-rotate" aria-hidden="true"></i></div><h3 data-i18n="v_复习提醒">复习提醒</h3><p data-i18n="remindReview">复习提醒围绕学习内容巩固</p></article>
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-list-check" aria-hidden="true"></i></div><h3 data-i18n="v_计划提醒">计划提醒</h3><p data-i18n="remindPlan">计划提醒写清今天要做的事，做完回复「完成」，不编造未提供的时长</p></article>
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i></div><h3 data-i18n="v_探索提醒">探索提醒</h3><p data-i18n="remindExplore">探索提醒按咖啡聊天三问回收感觉</p></article>
+        <article class="atlas-card" tabindex="0"><div class="idx"><i class="fa-solid fa-moon" aria-hidden="true"></i></div><h3 data-i18n="v_每日确认">每日确认</h3><p data-i18n="remindDaily">每日确认用晚间30秒三问</p></article>
+      </div>
+      <h3 class="section-label" data-i18n="atlasSlot">时段</h3>
+      <article class="atlas-card wide-card" tabindex="0">
+        <p data-i18n="slot_放学后">放学后取 16:30–17:30 或 19:00–20:00。</p>
+        <p data-i18n="slot_夜间">夜间取 20:00–21:00。</p>
+        <p data-i18n="slot_早起">早起取 7:00–7:30。</p>
+        <p data-i18n="slot_午休">午休取 12:00–12:30。</p>
+        <p data-i18n="quietHours">22:00–8:00 不发送。</p>
+      </article>
+      <h3 class="section-label" data-i18n="atlasBound">边界</h3>
+      <article class="atlas-card wide-card" tabindex="0">
+        <p data-i18n="boundConsent">同意提醒不是「是」时，只给建议方案，不创建提醒</p>
+        <p data-i18n="boundShare">允许共享为「否」时，不读取其他技能资料</p>
+        <p data-i18n="boundDaily">普通日最多 3 条</p>
+        <p data-i18n="boundWarm">文案要有内容、有动作、有温度</p>
+        <p data-i18n="boundCmd">暂停、取消、调频靠方案里的回复口令，本应用不另建字段</p>
+      </article>
+      <div class="hero-actions">
+        <button type="button" class="btn-primary" id="btnAtlasCompose" data-i18n="atlasGo">按这个去编排</button>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-brand" data-i18n="appName">遗忘提醒</p>
+    <p data-i18n="footerLine">夜读琥珀 · 22:00–8:00 不发送</p>
+  </div>
+</footer>
+<div id="readerOverlay" class="overlay overlay-md" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+    <div class="dialog-head">
+      <h2 id="readerTitle" data-i18n="readPlan">查看方案</h2>
+      <button type="button" class="icon-btn" id="btnReaderCloseX" data-i18n-aria="close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="dialog-body" id="readerBody">
+      <div id="readerLoading" class="quiet" hidden><span class="pulse"></span><span data-i18n="loadingTicket">正在翻开这张回访票…</span></div>
+      <div id="readerError" class="banner" hidden>
+        <p data-i18n="cellError">没能读到这一条。窗口还在，可以再试。</p>
+        <button type="button" class="btn-ghost" id="btnReaderRetry" data-i18n="retry">重试</button>
+      </div>
+      <div id="readerMeta"></div>
+      <p id="readerSaved" class="fine" hidden></p>
+      <div id="readerEmpty" hidden>
+        <p data-i18n="planPending">方案仍在生成</p>
+        <button type="button" class="btn-ghost" id="btnRefreshPlan" data-i18n="refreshPlan">刷新方案</button>
+      </div>
+      <div id="readerPlan" class="markdown-body"></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn-ghost" id="btnReaderEdit" data-i18n="editThis">编辑这条</button>
+      <button type="button" class="btn-danger" id="btnReaderDelete" data-i18n="deleteThis">删除这条</button>
+      <button type="button" class="btn-primary" id="btnReaderClose" data-i18n="close">关闭</button>
+    </div>
+  </div>
+</div>
+<div id="editOverlay" class="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="dialog-head">
+      <h2 id="editTitle" data-i18n="editTitle">修改回访登记</h2>
+      <button type="button" class="icon-btn" id="btnEditCloseX" data-i18n-aria="cancel"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="dialog-body">
+      <div id="editLoading" class="quiet" hidden><span class="pulse"></span><span data-i18n="loadingTicket">正在翻开这张回访票…</span></div>
+      <div id="editLoadError" class="banner" hidden>
+        <p data-i18n="cellError">没能读到这一条。窗口还在，可以再试。</p>
+        <button type="button" class="btn-ghost" id="btnEditReload" data-i18n="retry">重试</button>
+      </div>
+      <form id="formEdit" action="#" novalidate>
+        <label class="field" for="formEdit_学习内容">
+          <span data-i18n="f_学习内容">学习内容</span><span class="req">*</span>
+          <textarea id="formEdit_学习内容" name="学习内容" rows="4" data-i18n-placeholder="contentPh" placeholder="例如：一元二次方程求根公式的推导" aria-required="true"></textarea>
+          <p class="field-error" id="errEdit_学习内容" hidden></p>
+        </label>
+        <label class="field" for="formEdit_内容类型">
+          <span data-i18n="f_内容类型">内容类型</span><span class="req">*</span>
+          <select id="formEdit_内容类型" name="内容类型" aria-required="true">
+            <option value="" data-i18n="pleaseChoose">请选择</option>
+            <option value="理解类" data-i18n="v_理解类">理解类</option>
+            <option value="记忆类" data-i18n="v_记忆类">记忆类</option>
+            <option value="应用类" data-i18n="v_应用类">应用类</option>
+            <option value="错题类" data-i18n="v_错题类">错题类</option>
+          </select>
+          <p class="field-error" id="errEdit_内容类型" hidden></p>
+        </label>
+        <label class="field" for="formEdit_提醒类型">
+          <span data-i18n="f_提醒类型">提醒类型</span><span class="req">*</span>
+          <select id="formEdit_提醒类型" name="提醒类型" aria-required="true">
+            <option value="" data-i18n="pleaseChoose">请选择</option>
+            <option value="复习提醒" data-i18n="v_复习提醒">复习提醒</option>
+            <option value="计划提醒" data-i18n="v_计划提醒">计划提醒</option>
+            <option value="探索提醒" data-i18n="v_探索提醒">探索提醒</option>
+            <option value="每日确认" data-i18n="v_每日确认">每日确认</option>
+          </select>
+          <p class="field-error" id="errEdit_提醒类型" hidden></p>
+        </label>
+        <label class="field" for="formEdit_频率">
+          <span data-i18n="f_频率">频率</span><span class="req">*</span>
+          <select id="formEdit_频率" name="频率" aria-required="true">
+            <option value="" data-i18n="pleaseChoose">请选择</option>
+            <option value="标准间隔" data-i18n="v_标准间隔">标准间隔</option>
+            <option value="记忆高频" data-i18n="v_记忆高频">记忆高频</option>
+            <option value="错题强化" data-i18n="v_错题强化">错题强化</option>
+            <option value="每周一次" data-i18n="v_每周一次">每周一次</option>
+          </select>
+          <p class="field-error" id="errEdit_频率" hidden></p>
+        </label>
+        <label class="field" for="formEdit_学习日期">
+          <span data-i18n="f_学习日期">学习日期</span><span class="req">*</span>
+          <input type="date" id="formEdit_学习日期" name="学习日期" aria-required="true">
+          <p class="field-error" id="errEdit_学习日期" hidden></p>
+        </label>
+        <label class="field" for="formEdit_提醒时段">
+          <span data-i18n="f_提醒时段">提醒时段</span><span class="req">*</span>
+          <select id="formEdit_提醒时段" name="提醒时段" aria-required="true">
+            <option value="" data-i18n="pleaseChoose">请选择</option>
+            <option value="放学后" data-i18n="v_放学后">放学后</option>
+            <option value="夜间" data-i18n="v_夜间">夜间</option>
+            <option value="早起" data-i18n="v_早起">早起</option>
+            <option value="午休" data-i18n="v_午休">午休</option>
+          </select>
+          <p class="field-error" id="errEdit_提醒时段" hidden></p>
+        </label>
+        <div class="field">
+          <label class="switch-row" for="formEdit_同意提醒">
+            <input type="checkbox" role="switch" id="formEdit_同意提醒" name="同意提醒">
+            <span class="switch-copy">
+              <b><span data-i18n="f_同意提醒">同意提醒</span> · <span class="switch-state" id="stateEditConsent">否</span></b>
+              <small data-i18n="consentHelp">只有明确同意才创建提醒，否则只给建议方案</small>
+            </span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="switch-row" for="formEdit_允许共享">
+            <input type="checkbox" role="switch" id="formEdit_允许共享" name="允许共享">
+            <span class="switch-copy">
+              <b><span data-i18n="f_允许共享">允许共享</span> · <span class="switch-state" id="stateEditShare">否</span></b>
+              <small data-i18n="shareHelp">为「否」时不读取其他技能资料</small>
+            </span>
+          </label>
+        </div>
+      </form>
+      <h3 data-i18n="planReadonly">提醒方案</h3>
+      <p class="fine" data-i18n="planLocked">提醒方案只读。修改登记不会重写已经生成的方案。</p>
+      <div id="editPlanEmpty" hidden>
+        <p data-i18n="planPending">方案仍在生成</p>
+        <button type="button" class="btn-ghost" id="btnEditRefreshPlan" data-i18n="refreshPlan">刷新方案</button>
+      </div>
+      <div id="editPlan" class="markdown-body"></div>
+      <p class="field-error" id="editSaveError" hidden></p>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn-ghost" id="btnEditCancel" data-i18n="cancel">取消</button>
+      <button type="button" class="btn-primary" id="btnEditSave" data-i18n="save">保存</button>
+    </div>
+  </div>
+</div>
+<div id="confirmOverlay" class="overlay" hidden>
+  <div class="dialog dialog-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="dialog-head">
+      <h2 id="confirmTitle" data-i18n="confirmTitle">删除这张回访票</h2>
+    </div>
+    <div class="dialog-body">
+      <p id="confirmText"></p>
+      <p class="field-error" id="confirmError" hidden></p>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn-ghost" id="btnConfirmCancel" data-i18n="cancel">取消</button>
+      <button type="button" class="btn-danger" id="btnConfirmDelete" data-i18n="delete">删除</button>
+    </div>
+  </div>
+</div>
+<div id="liveStatus" class="sr-only" aria-live="polite"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("b090c97a1212b625_遗忘提醒")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+</script>
+<script>
+var FIELDS = ["学习内容", "内容类型", "提醒类型", "频率", "学习日期", "提醒时段", "同意提醒", "允许共享"];
+var CSV_FIELDS = "学习内容,内容类型,提醒类型,频率,学习日期,提醒时段,同意提醒,允许共享";
+var SOURCE = "遗忘提醒/默认表格";
+var TABLE = "遗忘提醒";
+var I18N = {
+  zh: {
+    appName: "遗忘提醒",
+    skip: "跳到内容",
+    menu: "打开菜单",
+    navHome: "首页",
+    navCompose: "编排方案",
+    navShelf: "提醒书架",
+    navAtlas: "曲线图鉴",
+    homeLede: "把一次学习，排成可暂停、可取消、可免打扰的回访。没有明确同意时，只保留建议，不创建提醒。",
+    planVisit: "编排一次回访",
+    openShelf: "打开书架",
+    statAll: "全部方案",
+    statYes: "已授权提醒",
+    statNo: "仅建议方案",
+    curveTitle: "曲线速览",
+    freqStandard: "标准间隔",
+    freqStandardDays: "第1、3、7、14、30天",
+    freqHigh: "记忆高频",
+    freqHighDays: "前3天每天，再接标准间隔",
+    freqError: "错题强化",
+    freqErrorDays: "第1、2、5、10、21天",
+    freqWeek: "每周一次",
+    freqWeekNote: "降频",
+    weekIsSlow: "每周一次是降频",
+    quietSummary: "22:00–8:00 不发送；方案里的普通日最多 3 条",
+    recentTitle: "最近回访",
+    loadingSoft: "正在轻轻翻开记录…",
+    loadingTicket: "正在翻开这张回访票…",
+    homeEmpty: "书架还安静着。把今天学过的一件事留下来，日子会替你记得何时回来。",
+    firstStudy: "写下第一份学习内容",
+    homeError: "没能读到记录，可以再试一次。",
+    retry: "重试",
+    composeLede: "写清学了什么、怎么检验、何时轻轻敲你。只有同意提醒，才会真正创建提醒。",
+    toShelf: "去书架",
+    formTitle: "遗忘提醒",
+    pleaseChoose: "请选择",
+    filterAll: "全部",
+    contentPh: "例如：一元二次方程求根公式的推导",
+    consentHelp: "只有明确同意才创建提醒，否则只给建议方案",
+    shareHelp: "为「否」时不读取其他技能资料",
+    generate: "生成方案",
+    clearForm: "清空",
+    explainTitle: "这一次会怎样",
+    generating: "正在按遗忘曲线写方案…",
+    generatingNote: "写好之前只是安静等待，不会编造进度，也不会在这里补写方案。",
+    previewYes: "已授权的提醒方案",
+    previewNo: "建议方案（尚未创建提醒）",
+    viewOnShelf: "去书架查看",
+    composeAnother: "再编一份",
+    shelfLede: "每张卡片是一次学习的回访票。点开可读方案，可改登记，可删除。",
+    addCompose: "编排方案",
+    searchPh: "搜索学习内容",
+    sortLabel: "排序",
+    sortDesc: "学习日期新到旧",
+    sortAsc: "学习日期旧到新",
+    clearFilter: "清除筛选",
+    gotIt: "知道了",
+    shelfEmptyNone: "还没有任何回访票。第一次学习，值得被轻轻记住。",
+    shelfEmptyFilter: "没有符合这些条件的回访票。",
+    viewPlan: "查看方案",
+    edit: "编辑",
+    delete: "删除",
+    readPlan: "查看方案",
+    planPending: "方案仍在生成",
+    refreshPlan: "刷新方案",
+    editThis: "编辑这条",
+    deleteThis: "删除这条",
+    close: "关闭",
+    editTitle: "修改回访登记",
+    planReadonly: "提醒方案",
+    savedNote: "登记已更新；提醒方案是提交时生成的，修改登记不会自动重写方案。要全新方案，请重新编排一份",
+    planLocked: "提醒方案只读。修改登记不会重写已经生成的方案。",
+    save: "保存",
+    cancel: "取消",
+    confirmTitle: "删除这张回访票",
+    confirmDelete: "要删除「{content}」这份回访吗？",
+    cellError: "没能读到这一条。窗口还在，可以再试。",
+    submitError: "没能送出这份登记。已经填写的内容都还在。",
+    pollError: "登记已经收下，方案暂时没取到。可以再读一次，不用重新提交，也不会在这里编造方案。",
+    pollTimeout: "等了很久，方案仍是空的。没有在本地补写。可以继续等，或到书架里稍后刷新。",
+    continueWait: "继续等待",
+    saveError: "有的字段没能写上。表单还在，可以再保存一次。",
+    deleteError: "没能删除。这张票还在，可以再试。",
+    deleting: "正在拿下…",
+    saving: "正在写下…",
+    atlasLede: "频率决定间隔，内容类型只决定检验形式，提醒类型决定文案任务",
+    atlasFreq: "四档频率",
+    atlasType: "内容类型",
+    atlasRemind: "提醒类型",
+    atlasSlot: "时段",
+    atlasBound: "边界",
+    atlasGo: "按这个去编排",
+    typeUnderstand: "理解类用开放问答",
+    typeMemory: "记忆类用填空默写",
+    typeApply: "应用类用变形练习",
+    typeError: "错题类用针对性练习",
+    remindReview: "复习提醒围绕学习内容巩固",
+    remindPlan: "计划提醒写清今天要做的事，做完回复「完成」，不编造未提供的时长",
+    remindExplore: "探索提醒按咖啡聊天三问回收感觉",
+    remindDaily: "每日确认用晚间30秒三问",
+    slot_放学后: "放学后取 16:30–17:30 或 19:00–20:00。",
+    slot_夜间: "夜间取 20:00–21:00。",
+    slot_早起: "早起取 7:00–7:30。",
+    slot_午休: "午休取 12:00–12:30。",
+    quietHours: "22:00–8:00 不发送。",
+    boundConsent: "同意提醒不是「是」时，只给建议方案，不创建提醒",
+    boundShare: "允许共享为「否」时，不读取其他技能资料",
+    boundDaily: "普通日最多 3 条",
+    boundWarm: "文案要有内容、有动作、有温度",
+    boundCmd: "暂停、取消、调频靠方案里的回复口令，本应用不另建字段",
+    footerLine: "夜读琥珀 · 22:00–8:00 不发送",
+    notChosen: "尚未选择",
+    errContent: "请填写学习内容",
+    errType: "请选择内容类型",
+    errRemind: "请选择提醒类型",
+    errFreq: "请选择频率",
+    errDate: "请选择学习日期",
+    errSlot: "请选择提醒时段",
+    yes: "是",
+    no: "否",
+    badgeYes: "已授权",
+    badgeNo: "仅建议",
+    badgeShare: "可共享",
+    badgePrivate: "不读取其他资料",
+    consentOff: "还没有明确同意。只保留建议方案，不创建提醒。",
+    consentOn: "已经明确同意。这一次会创建提醒。",
+    shareOff: "当前为「否」。为「否」时不读取其他技能资料。",
+    shareOn: "当前为「是」。",
+    studyOn: "学习日期",
+    f_学习内容: "学习内容",
+    f_内容类型: "内容类型",
+    f_提醒类型: "提醒类型",
+    f_频率: "频率",
+    f_学习日期: "学习日期",
+    f_提醒时段: "提醒时段",
+    f_同意提醒: "同意提醒",
+    f_允许共享: "允许共享",
+    v_理解类: "理解类",
+    v_记忆类: "记忆类",
+    v_应用类: "应用类",
+    v_错题类: "错题类",
+    v_复习提醒: "复习提醒",
+    v_计划提醒: "计划提醒",
+    v_探索提醒: "探索提醒",
+    v_每日确认: "每日确认",
+    v_标准间隔: "标准间隔",
+    v_记忆高频: "记忆高频",
+    v_错题强化: "错题强化",
+    v_每周一次: "每周一次",
+    v_放学后: "放学后",
+    v_夜间: "夜间",
+    v_早起: "早起",
+    v_午休: "午休",
+    v_是: "是",
+    v_否: "否",
+    explainType: "检验",
+    explainRemind: "文案",
+    explainFreq: "间隔",
+    explainSlot: "时段",
+    explainConsent: "同意",
+    explainShare: "共享"
+  },
+  en: {
+    appName: "Forgetting Reminder",
+    skip: "Skip to content",
+    menu: "Open menu",
+    navHome: "Home",
+    navCompose: "Compose",
+    navShelf: "Shelf",
+    navAtlas: "Curve guide",
+    homeLede: "Turn one study session into revisits you can pause, cancel, or keep quiet. Without a clear yes, only a suggestion is kept and no reminder is created.",
+    planVisit: "Plan a revisit",
+    openShelf: "Open the shelf",
+    statAll: "All plans",
+    statYes: "Authorized reminders",
+    statNo: "Suggestion only",
+    curveTitle: "Curve at a glance",
+    freqStandard: "Standard spacing",
+    freqStandardDays: "Days 1, 3, 7, 14, 30",
+    freqHigh: "High-frequency memory",
+    freqHighDays: "Every day for the first 3 days, then standard spacing",
+    freqError: "Error drill",
+    freqErrorDays: "Days 1, 2, 5, 10, 21",
+    freqWeek: "Once a week",
+    freqWeekNote: "A slower cadence",
+    weekIsSlow: "Once a week is a slower cadence",
+    quietSummary: "Nothing is sent from 22:00 to 8:00. An ordinary day holds at most 3 notes.",
+    recentTitle: "Recent revisits",
+    loadingSoft: "Turning the pages quietly…",
+    loadingTicket: "Opening this revisit ticket…",
+    homeEmpty: "The shelf is still quiet. Leave one thing you studied today, and the days will remember when to come back.",
+    firstStudy: "Write the first study note",
+    homeError: "The records could not be read. You can try again.",
+    retry: "Try again",
+    composeLede: "Write what you studied, how it will be checked, and when to tap you gently. A reminder is created only if you agree.",
+    toShelf: "To the shelf",
+    formTitle: "Forgetting Reminder",
+    pleaseChoose: "Choose",
+    filterAll: "All",
+    contentPh: "For example: deriving the quadratic formula",
+    consentHelp: "A reminder is created only with a clear yes. Otherwise only a suggestion is kept.",
+    shareHelp: "When this is No, other skill materials are not read.",
+    generate: "Generate plan",
+    clearForm: "Clear",
+    explainTitle: "What this visit will be",
+    generating: "Writing the plan along the forgetting curve…",
+    generatingNote: "While it is being written there is only a quiet wait. No fake progress, and no plan is drafted here.",
+    previewYes: "Authorized reminder plan",
+    previewNo: "Suggestion (no reminder created yet)",
+    viewOnShelf: "View on the shelf",
+    composeAnother: "Compose another",
+    shelfLede: "Each card is a revisit ticket for one study session. Open it to read the plan, edit the registration, or delete it.",
+    addCompose: "Compose",
+    searchPh: "Search study notes",
+    sortLabel: "Sort",
+    sortDesc: "Study date, newest first",
+    sortAsc: "Study date, oldest first",
+    clearFilter: "Clear filters",
+    gotIt: "Got it",
+    shelfEmptyNone: "There are no revisit tickets yet. A first study note is worth keeping gently.",
+    shelfEmptyFilter: "No revisit tickets match these filters.",
+    viewPlan: "View plan",
+    edit: "Edit",
+    delete: "Delete",
+    readPlan: "View plan",
+    planPending: "The plan is still being written",
+    refreshPlan: "Refresh plan",
+    editThis: "Edit this",
+    deleteThis: "Delete this",
+    close: "Close",
+    editTitle: "Edit this registration",
+    planReadonly: "Reminder plan",
+    savedNote: "The registration is updated. The reminder plan was written when it was submitted; editing the registration does not rewrite the plan. To get a new plan, compose another one.",
+    planLocked: "The reminder plan is read-only. Editing the registration does not rewrite a plan that was already written.",
+    save: "Save",
+    cancel: "Cancel",
+    confirmTitle: "Remove this revisit ticket",
+    confirmDelete: "Delete the revisit for “{content}”?",
+    cellError: "This row could not be read. The window is still here, so you can try again.",
+    submitError: "This registration could not be sent. What you filled in is still here.",
+    pollError: "The registration was accepted, but the plan is not here yet. Read it again without submitting once more. Nothing will be invented here.",
+    pollTimeout: "This waited a long time and the plan is still empty. Nothing was written locally. You can keep waiting, or refresh it later on the shelf.",
+    continueWait: "Keep waiting",
+    saveError: "Some fields could not be written. The form is still here, so you can save again.",
+    deleteError: "It could not be deleted. The ticket is still here, so you can try again.",
+    deleting: "Removing…",
+    saving: "Saving…",
+    atlasLede: "Frequency sets the spacing. Content type only sets the check. Reminder type sets the wording task.",
+    atlasFreq: "Four frequencies",
+    atlasType: "Content types",
+    atlasRemind: "Reminder types",
+    atlasSlot: "Times of day",
+    atlasBound: "Boundaries",
+    atlasGo: "Compose with this",
+    typeUnderstand: "Understanding uses open questions",
+    typeMemory: "Memory uses cloze recall",
+    typeApply: "Application uses a varied exercise",
+    typeError: "Missed questions use a targeted exercise",
+    remindReview: "A review reminder stays with the study note and helps it settle",
+    remindPlan: "A plan reminder states what to do today. Reply “done” when it is finished. It does not invent a duration you did not give.",
+    remindExplore: "An explore reminder gathers a feeling with three café-chat questions",
+    remindDaily: "A daily check uses three questions in 30 seconds at night",
+    slot_放学后: "After school uses 16:30–17:30 or 19:00–20:00.",
+    slot_夜间: "Evening uses 20:00–21:00.",
+    slot_早起: "Early morning uses 7:00–7:30.",
+    slot_午休: "Lunch break uses 12:00–12:30.",
+    quietHours: "Nothing is sent from 22:00 to 8:00.",
+    boundConsent: "Unless agree-to-remind is Yes, only a suggestion is kept and no reminder is created",
+    boundShare: "When allow-sharing is No, other skill materials are not read",
+    boundDaily: "An ordinary day holds at most 3 notes",
+    boundWarm: "The wording needs substance, an action, and warmth",
+    boundCmd: "Pause, cancel, and retune use reply phrases inside the plan. This app does not add fields for them.",
+    footerLine: "Night-reading amber · nothing is sent from 22:00 to 8:00",
+    notChosen: "Not chosen yet",
+    errContent: "Please enter what you studied",
+    errType: "Please choose a content type",
+    errRemind: "Please choose a reminder type",
+    errFreq: "Please choose a frequency",
+    errDate: "Please choose the study date",
+    errSlot: "Please choose a time of day",
+    yes: "Yes",
+    no: "No",
+    badgeYes: "Authorized",
+    badgeNo: "Suggestion only",
+    badgeShare: "Can be shared",
+    badgePrivate: "Does not read other materials",
+    consentOff: "There is no clear yes yet. Only a suggestion is kept, and no reminder is created.",
+    consentOn: "There is a clear yes. This one will create a reminder.",
+    shareOff: "Currently No. When it is No, other skill materials are not read.",
+    shareOn: "Currently Yes.",
+    studyOn: "Study date",
+    f_学习内容: "What you studied",
+    f_内容类型: "Content type",
+    f_提醒类型: "Reminder type",
+    f_频率: "Frequency",
+    f_学习日期: "Study date",
+    f_提醒时段: "Time of day",
+    f_同意提醒: "Agree to remind",
+    f_允许共享: "Allow sharing",
+    v_理解类: "Understanding",
+    v_记忆类: "Memory",
+    v_应用类: "Application",
+    v_错题类: "Missed questions",
+    v_复习提醒: "Review reminder",
+    v_计划提醒: "Plan reminder",
+    v_探索提醒: "Explore reminder",
+    v_每日确认: "Daily check",
+    v_标准间隔: "Standard spacing",
+    v_记忆高频: "High-frequency memory",
+    v_错题强化: "Error drill",
+    v_每周一次: "Once a week",
+    v_放学后: "After school",
+    v_夜间: "Evening",
+    v_早起: "Early morning",
+    v_午休: "Lunch break",
+    v_是: "Yes",
+    v_否: "No",
+    explainType: "Check",
+    explainRemind: "Wording",
+    explainFreq: "Spacing",
+    explainSlot: "Time",
+    explainConsent: "Consent",
+    explainShare: "Sharing"
+  }
+};
+var TYPE_COPY = { "理解类": "typeUnderstand", "记忆类": "typeMemory", "应用类": "typeApply", "错题类": "typeError" };
+var REMIND_COPY = { "复习提醒": "remindReview", "计划提醒": "remindPlan", "探索提醒": "remindExplore", "每日确认": "remindDaily" };
+var FREQ_COPY = { "标准间隔": "freqStandardDays", "记忆高频": "freqHighDays", "错题强化": "freqErrorDays", "每周一次": "weekIsSlow" };
+
+var lang = "zh";
+var currentPage = "";
+var currentRow = 0;
+var historyStack = [];
+var overlayStack = [];
+var pendingReaderRow = 0;
+var scrollAfterLoad = null;
+var homeToken = 0;
+var shelfToken = 0;
+var homeRecords = [];
+var homeReady = false;
+var shelfRows = [];
+var shelfReady = false;
+var pollToken = 0;
+var pollStartedAt = 0;
+var planState = "idle";
+var lastSubmitConsent = "否";
+var lastPlanText = "";
+var readerOpenRow = 0;
+var readerToken = 0;
+var readerCache = null;
+var editToken = 0;
+var editRow = 0;
+var deleteRow = 0;
+var deleteContent = "";
+var bound = false;
+
+function t(key) {
+  var pack = I18N[lang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  if (I18N.zh[key] != null) return I18N.zh[key];
+  return key;
+}
+function pad2(n) { return n < 10 ? "0" + n : String(n); }
+function formatDate(d) {
+  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+}
+function todayString() { return formatDate(new Date()); }
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function clearNode(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+function say(text) {
+  var live = document.getElementById("liveStatus");
+  if (live) live.textContent = text || "";
+}
+
+function detectLanguage() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var q = String(params.get("lang") || "").toLowerCase();
+    if (q === "cn") return "zh";
+    if (q === "en") return "en";
+  } catch (err) {}
+  try {
+    var saved = localStorage.getItem("iThinkAir_UiLanguage");
+    if (saved != null && saved !== "") return saved === "en" ? "en" : "zh";
+  } catch (err2) {}
+  try {
+    var list = navigator.languages;
+    if (!list || typeof list.length !== "number" || list.length === 0) return "zh";
+    for (var i = 0; i < list.length; i++) {
+      var tag = String(list[i] || "").toLowerCase().replace(/_/g, "-");
+      if (tag === "zh" || tag.indexOf("zh-") === 0) return "zh";
+    }
+    return "en";
+  } catch (err3) {
+    return "zh";
+  }
+}
+function applyI18n() {
+  var nodes = document.querySelectorAll("[data-i18n]");
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  var holders = document.querySelectorAll("[data-i18n-placeholder]");
+  for (var j = 0; j < holders.length; j++) holders[j].setAttribute("placeholder", t(holders[j].getAttribute("data-i18n-placeholder")));
+  var arias = document.querySelectorAll("[data-i18n-aria]");
+  for (var k = 0; k < arias.length; k++) arias[k].setAttribute("aria-label", t(arias[k].getAttribute("data-i18n-aria")));
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  refreshLangButtons();
+  refreshGenerateButton();
+  syncSwitchLabels();
+  updateComposeAside();
+  if (homeReady) renderHomeRecent();
+  if (shelfReady) renderShelf();
+  if (readerCache && overlayStack.indexOf("readerOverlay") >= 0) paintReader(readerCache.meta, readerCache.plan, false);
+  var note = document.getElementById("shelfNote");
+  if (note && !note.hidden && note.getAttribute("data-kind") === "saved") {
+    document.getElementById("shelfNoteText").textContent = t("savedNote");
+  }
+  var saved = document.getElementById("readerSaved");
+  if (saved && !saved.hidden) saved.textContent = t("savedNote");
+  if (planState === "ready" || planState === "submit-error" || planState === "poll-error" || planState === "timeout" || planState === "polling" || planState === "submitting") {
+    renderComposeState();
+  }
+}
+function refreshLangButtons() {
+  var toggle = document.getElementById("langToggle");
+  toggle.textContent = lang === "en" ? "中文" : "EN";
+  toggle.setAttribute("aria-label", lang === "en" ? "切换到中文" : "Switch to English");
+  document.getElementById("mLangZh").classList.toggle("is-active", lang !== "en");
+  document.getElementById("mLangEn").classList.toggle("is-active", lang === "en");
+}
+function setLanguage(next, persist) {
+  lang = next === "en" ? "en" : "zh";
+  if (persist) {
+    try { localStorage.setItem("iThinkAir_UiLanguage", lang === "en" ? "en" : "zh"); } catch (err) {}
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set("lang", lang === "en" ? "en" : "cn");
+      history.replaceState(null, "", url.pathname + url.search + url.hash);
+    } catch (err2) {}
+  }
+  applyI18n();
+  syncNavCollapse();
+}
+
+function boolText(checked) { return checked ? "是" : "否"; }
+function displayEnum(value) {
+  if (!value) return "";
+  var key = "v_" + value;
+  var pack = I18N[lang] || I18N.zh;
+  if (Object.prototype.hasOwnProperty.call(pack, key)) return pack[key];
+  return value;
+}
+function syncSwitchLabels() {
+  var pairs = [
+    ["formCreate_同意提醒", "stateCreateConsent"],
+    ["formCreate_允许共享", "stateCreateShare"],
+    ["formEdit_同意提醒", "stateEditConsent"],
+    ["formEdit_允许共享", "stateEditShare"]
+  ];
+  for (var i = 0; i < pairs.length; i++) {
+    var input = document.getElementById(pairs[i][0]);
+    var label = document.getElementById(pairs[i][1]);
+    if (!input || !label) continue;
+    var on = !!input.checked;
+    input.setAttribute("aria-checked", on ? "true" : "false");
+    label.textContent = on ? t("yes") : t("no");
+  }
+}
+
+function closeMobileMenu() {
+  var menu = document.getElementById("mobileMenu");
+  var burger = document.getElementById("hamburgerBtn");
+  menu.classList.remove("is-open");
+  burger.setAttribute("aria-expanded", "false");
+  var icon = burger.querySelector("i");
+  if (icon) icon.className = "fa-solid fa-bars";
+}
+function syncNavCollapse() {
+  var nav = document.getElementById("topNav");
+  var links = document.getElementById("navLinks");
+  var inner = nav.querySelector(".nav-inner");
+  var brand = document.getElementById("brandBtn");
+  var clone = links.cloneNode(true);
+  clone.removeAttribute("id");
+  clone.style.cssText = "display:flex;position:absolute;left:-10000px;top:0;width:max-content;visibility:hidden;pointer-events:none;flex-wrap:nowrap;gap:4px;";
+  document.body.appendChild(clone);
+  var needed = clone.scrollWidth;
+  document.body.removeChild(clone);
+  var styles = window.getComputedStyle(inner);
+  var pad = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+  var available = inner.clientWidth - pad - brand.offsetWidth - 20;
+  nav.classList.toggle("is-collapsed", needed > available);
+  if (needed <= available) closeMobileMenu();
+}
+function updateNavActive() {
+  var map = {
+    home: ["tabHome", "mTabHome"],
+    compose: ["tabCompose", "mTabCompose"],
+    shelf: ["tabShelf", "mTabShelf"],
+    atlas: ["tabAtlas", "mTabAtlas"]
+  };
+  var all = ["tabHome", "tabCompose", "tabShelf", "tabAtlas", "mTabHome", "mTabCompose", "mTabShelf", "mTabAtlas"];
+  var active = map[currentPage] || [];
+  for (var i = 0; i < all.length; i++) {
+    var btn = document.getElementById(all[i]);
+    var on = active.indexOf(all[i]) >= 0;
+    btn.classList.toggle("is-active", on);
+    if (on) btn.setAttribute("aria-current", "page");
+    else btn.removeAttribute("aria-current");
+  }
+}
+function showPage(page, options) {
+  var opts = options || {};
+  if (page !== "home" && page !== "compose" && page !== "shelf" && page !== "atlas") return;
+  var same = page === currentPage;
+  if (same && !opts.force) {
+    closeMobileMenu();
+    if (opts.scroll != null) window.scrollTo(0, opts.scroll);
+    return;
+  }
+  if (!same && opts.record !== false && currentPage) {
+    historyStack.push({ page: currentPage, scroll: window.scrollY || window.pageYOffset || 0 });
+  }
+  currentPage = page;
+  var ids = { home: "pageHome", compose: "pageCompose", shelf: "pageShelf", atlas: "pageAtlas" };
+  var keys = ["home", "compose", "shelf", "atlas"];
+  for (var i = 0; i < keys.length; i++) {
+    document.getElementById(ids[keys[i]]).hidden = keys[i] !== page;
+  }
+  updateNavActive();
+  closeMobileMenu();
+  scrollAfterLoad = opts.scroll != null ? opts.scroll : null;
+  if (opts.scroll != null) window.scrollTo(0, opts.scroll);
+  else if (!same) window.scrollTo(0, 0);
+  say(t(page === "home" ? "navHome" : page === "compose" ? "navCompose" : page === "shelf" ? "navShelf" : "navAtlas"));
+  if (page === "home") loadHome();
+  else if (page === "shelf") loadShelf({ keepNote: !!opts.keepNote });
+  else if (scrollAfterLoad != null) {
+    window.scrollTo(0, scrollAfterLoad);
+    scrollAfterLoad = null;
+  }
+}
+function finishLoadScroll(page) {
+  if (scrollAfterLoad != null && currentPage === page) {
+    var y = scrollAfterLoad;
+    scrollAfterLoad = null;
+    window.scrollTo(0, y);
+  }
+}
+
+function openOverlay(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var idx = overlayStack.indexOf(id);
+  if (idx >= 0) overlayStack.splice(idx, 1);
+  overlayStack.push(id);
+  el.hidden = false;
+  document.body.classList.add("has-overlay");
+}
+function closeOverlay(id) {
+  var el = document.getElementById(id);
+  if (el) el.hidden = true;
+  var idx = overlayStack.indexOf(id);
+  if (idx >= 0) overlayStack.splice(idx, 1);
+  if (!overlayStack.length) document.body.classList.remove("has-overlay");
+}
+function airBack() {
+  if (overlayStack.length) {
+    var top = overlayStack[overlayStack.length - 1];
+    if (top === "confirmOverlay") cancelDelete();
+    else if (top === "editOverlay") closeEdit();
+    else if (top === "readerOverlay") closeReader();
+    else closeOverlay(top);
+    return "false";
+  }
+  var menu = document.getElementById("mobileMenu");
+  if (menu.classList.contains("is-open")) {
+    closeMobileMenu();
+    return "false";
+  }
+  if (historyStack.length) {
+    var prev = historyStack.pop();
+    showPage(prev.page, { record: false, scroll: prev.scroll, force: true });
+    return "false";
+  }
+  return "true";
+}
+
+function stripBom(s) {
+  var text = s == null ? "" : String(s);
+  if (text.charCodeAt(0) === 0xFEFF) return text.slice(1);
+  return text;
+}
+function parseRecords(csvText) {
+  var table = parseCSV(stripBom(csvText).replace(/^\uFEFF/, ""));
+  var list = [];
+  for (var i = 0; i < table.length; i++) {
+    var cols = table[i] || [];
+    var item = { row: i + 1, _order: i };
+    var any = false;
+    for (var c = 0; c < FIELDS.length; c++) {
+      var value = cols[c] != null ? String(cols[c]).replace(/^\uFEFF/, "").trim() : "";
+      item[FIELDS[c]] = value;
+      if (value !== "") any = true;
+    }
+    if (any) list.push(item);
+  }
+  return list;
+}
+function countConsent(csvText) {
+  var table = parseCSV(stripBom(csvText));
+  var yes = 0;
+  var no = 0;
+  for (var i = 0; i < table.length; i++) {
+    var cols = table[i] || [];
+    var value = cols[0] != null ? String(cols[0]).replace(/^\uFEFF/, "").trim() : "";
+    if (!value) continue;
+    if (value === "是") yes++;
+    else if (value === "否") no++;
+  }
+  return { yes: yes, no: no };
+}
+function parseCount(text) {
+  var matched = String(text == null ? "" : text).match(/-?\d+/);
+  if (!matched) return 0;
+  var n = parseInt(matched[0], 10);
+  return isNaN(n) ? 0 : n;
+}
+function filterAndSort(records, query) {
+  var q = String(query.q || "").trim().toLowerCase();
+  var out = [];
+  for (var i = 0; i < records.length; i++) {
+    var item = records[i];
+    if (q && String(item["学习内容"] || "").toLowerCase().indexOf(q) < 0) continue;
+    if (query.type && item["内容类型"] !== query.type) continue;
+    if (query.remind && item["提醒类型"] !== query.remind) continue;
+    if (query.freq && item["频率"] !== query.freq) continue;
+    if (query.slot && item["提醒时段"] !== query.slot) continue;
+    if (query.consent && item["同意提醒"] !== query.consent) continue;
+    if (query.share && item["允许共享"] !== query.share) continue;
+    out.push(item);
+  }
+  out.sort(function (a, b) {
+    var da = a["学习日期"] || "";
+    var db = b["学习日期"] || "";
+    if (da === db) return a._order - b._order;
+    if (!da) return 1;
+    if (!db) return -1;
+    if (da < db) return query.sort === "asc" ? -1 : 1;
+    if (da > db) return query.sort === "asc" ? 1 : -1;
+    return a._order - b._order;
+  });
+  return out;
+}
+function shelfQuery() {
+  return {
+    q: document.getElementById("shelfSearch").value,
+    type: document.getElementById("filterType").value,
+    remind: document.getElementById("filterRemind").value,
+    freq: document.getElementById("filterFreq").value,
+    slot: document.getElementById("filterSlot").value,
+    consent: document.getElementById("filterConsent").value,
+    share: document.getElementById("filterShare").value,
+    sort: document.getElementById("sortShelf").value || "desc"
+  };
+}
+function filtersActive(query) {
+  return !!(String(query.q || "").trim() || query.type || query.remind || query.freq || query.slot || query.consent || query.share);
+}
+
+function safeUrl(url) {
+  var u = String(url || "").trim();
+  if (!u) return "";
+  if (/^javascript:/i.test(u)) return "";
+  if (/^https?:\/\//i.test(u) || /^mailto:/i.test(u) || /^data:image\//i.test(u)) return u;
+  if (/^[^\s"'<>]+$/.test(u)) return u;
+  return "";
+}
+function inlineMd(src) {
+  var s = String(src == null ? "" : src);
+  var slots = [];
+  function slot(html) {
+    var id = slots.length;
+    slots.push(html);
+    return "\u0001" + id + "\u0001";
+  }
+  s = s.replace(/\\([\\`*_{}\[\]()#+\-.!|>~])/g, function (m, ch) { return slot(escapeHtml(ch)); });
+  s = s.replace(/(`+)([^\n]*?)\1/g, function (m, ticks, code) { return slot("<code>" + escapeHtml(code) + "</code>"); });
+  s = s.replace(/!\[([^\]]*)\]\(\s*([^)\s]+)(?:\s+["']([^"']*)["'])?\s*\)/g, function (m, alt, url) {
+    var safe = safeUrl(url);
+    if (!safe) return escapeHtml(m);
+    return slot('<img src="' + escapeHtml(safe) + '" alt="' + escapeHtml(alt) + '">');
+  });
+  s = s.replace(/\[([^\]]+)\]\(\s*([^)\s]+)(?:\s+["']([^"']*)["'])?\s*\)/g, function (m, text, url) {
+    var safe = safeUrl(url);
+    if (!safe) return escapeHtml(m);
+    return slot('<a href="' + escapeHtml(safe) + '" target="_blank" rel="noopener noreferrer">' + inlineMd(text) + "</a>");
+  });
+  s = s.replace(/<((?:https?:\/\/|mailto:)[^>\s]+)>/g, function (m, url) {
+    var safe = safeUrl(url);
+    if (!safe) return escapeHtml(m);
+    return slot('<a href="' + escapeHtml(safe) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(url) + "</a>");
+  });
+  s = escapeHtml(s);
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,;:!?，。！？]|$)/g, "$1<em>$2</em>");
+  s = s.replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?，。！？]|$)/g, "$1<em>$2</em>");
+  s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  s = s.replace(/\u0001(\d+)\u0001/g, function (m, n) { return slots[Number(n)] || ""; });
+  return s;
+}
+function isTableSep(line) {
+  return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(String(line || "").trim());
+}
+function splitTableRow(line) {
+  var s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  var cells = [];
+  var cur = "";
+  for (var k = 0; k < s.length; k++) {
+    if (s.charAt(k) === "\\" && s.charAt(k + 1) === "|") { cur += "|"; k++; }
+    else if (s.charAt(k) === "|") { cells.push(cur.trim()); cur = ""; }
+    else cur += s.charAt(k);
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+function parseList(lines, start, end) {
+  var first = String(lines[start] || "").match(/^(\s*)([-+*]|\d+[.)])\s+(.*)$/);
+  if (!first) return null;
+  var indent = first[1].length;
+  var ordered = /^\d+[.)]$/.test(first[2]);
+  var items = [];
+  var i = start;
+  while (i < end) {
+    var raw = String(lines[i] || "");
+    if (raw.trim() === "") break;
+    var m = raw.match(/^(\s*)([-+*]|\d+[.)])\s+(.*)$/);
+    if (!m || m[1].length < indent) break;
+    if (m[1].length > indent) break;
+    if ((/^\d+[.)]$/.test(m[2])) !== ordered) break;
+    var content = m[3];
+    var task = null;
+    var taskMatch = content.match(/^\[([ xX])\]\s+(.*)$/);
+    if (taskMatch && /^[-+*]$/.test(m[2])) {
+      task = taskMatch[1].toLowerCase() === "x";
+      content = taskMatch[2];
+    }
+    i++;
+    var extra = [];
+    while (i < end && String(lines[i] || "").trim() !== "") {
+      var look = String(lines[i]).match(/^(\s*)([-+*]|\d+[.)])\s+/);
+      if (look && look[1].length >= indent) break;
+      if (!/^\s+/.test(lines[i])) break;
+      extra.push(String(lines[i]).trim());
+      i++;
+    }
+    var childHtml = "";
+    if (i < end) {
+      var childLook = String(lines[i] || "").match(/^(\s*)([-+*]|\d+[.)])\s+/);
+      if (childLook && childLook[1].length > indent) {
+        var nested = parseList(lines, i, end);
+        if (nested) { childHtml = nested.html; i = nested.next; }
+      }
+    }
+    var inner = inlineMd(content);
+    if (extra.length) inner += "<br>" + extra.map(function (line) { return inlineMd(line); }).join("<br>");
+    if (task === null) items.push("<li>" + inner + childHtml + "</li>");
+    else items.push('<li class="md-task"><input type="checkbox" disabled' + (task ? " checked" : "") + "> " + inner + childHtml + "</li>");
+  }
+  if (!items.length) return null;
+  var tag = ordered ? "ol" : "ul";
+  return { html: "<" + tag + ">" + items.join("") + "</" + tag + ">", next: i };
+}
+function renderBlocks(lines, start, end) {
+  var out = [];
+  var i = start;
+  while (i < end) {
+    var line = String(lines[i] || "");
+    if (line.trim() === "") { i++; continue; }
+    var fence = line.match(/^(```+|~~~+)(.*)$/);
+    if (fence) {
+      var marker = fence[1].charAt(0);
+      var minLen = fence[1].length;
+      var buf = [];
+      i++;
+      while (i < end) {
+        var close = String(lines[i]).match(/^(```+|~~~+)\s*$/);
+        if (close && close[1].charAt(0) === marker && close[1].length >= minLen) { i++; break; }
+        buf.push(lines[i]);
+        i++;
+      }
+      out.push('<pre class="md-pre"><code>' + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) { out.push("<hr>"); i++; continue; }
+    var heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      var level = heading[1].length;
+      out.push("<h" + level + ">" + inlineMd(heading[2]) + "</h" + level + ">");
+      i++;
+      continue;
+    }
+    if (i + 1 < end && line.trim() && /^(=+|-+)\s*$/.test(String(lines[i + 1]).trim()) && String(lines[i + 1]).trim().length >= 3 && !/^[-+*]\s+/.test(line)) {
+      var hLevel = /^=+/.test(String(lines[i + 1]).trim()) ? 1 : 2;
+      out.push("<h" + hLevel + ">" + inlineMd(line.trim()) + "</h" + hLevel + ">");
+      i += 2;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      var quoted = [];
+      while (i < end && /^>\s?/.test(String(lines[i] || ""))) {
+        quoted.push(String(lines[i]).replace(/^>\s?/, ""));
+        i++;
+      }
+      out.push("<blockquote>" + renderMarkdown(quoted.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (line.indexOf("|") >= 0 && i + 1 < end && isTableSep(lines[i + 1])) {
+      var headers = splitTableRow(line);
+      var aligns = splitTableRow(lines[i + 1]).map(function (cell) {
+        var left = cell.charAt(0) === ":";
+        var right = cell.charAt(cell.length - 1) === ":";
+        if (left && right) return "center";
+        if (right) return "right";
+        return "left";
+      });
+      i += 2;
+      var body = [];
+      while (i < end && String(lines[i]).indexOf("|") >= 0 && String(lines[i]).trim() !== "") {
+        body.push(splitTableRow(lines[i]));
+        i++;
+      }
+      var html = '<div class="table-scroll"><table><thead><tr>';
+      for (var h = 0; h < headers.length; h++) {
+        html += '<th style="text-align:' + (aligns[h] || "left") + '">' + inlineMd(headers[h]) + "</th>";
+      }
+      html += "</tr></thead><tbody>";
+      for (var r = 0; r < body.length; r++) {
+        html += "<tr>";
+        for (var c = 0; c < headers.length; c++) {
+          html += '<td style="text-align:' + (aligns[c] || "left") + '">' + inlineMd(body[r][c] || "") + "</td>";
+        }
+        html += "</tr>";
+      }
+      html += "</tbody></table></div>";
+      out.push(html);
+      continue;
+    }
+    if (/^(\s*)([-+*]|\d+[.)])\s+/.test(line)) {
+      var list = parseList(lines, i, end);
+      if (list) { out.push(list.html); i = list.next; continue; }
+    }
+    if (/^( {4}|\t)/.test(line)) {
+      var code = [];
+      while (i < end && (/^( {4}|\t)/.test(String(lines[i])) || String(lines[i]).trim() === "")) {
+        if (String(lines[i]).trim() === "") {
+          var j = i + 1;
+          while (j < end && String(lines[j]).trim() === "") j++;
+          if (j < end && /^( {4}|\t)/.test(String(lines[j]))) { code.push(""); i++; continue; }
+          break;
+        }
+        code.push(String(lines[i]).replace(/^( {4}|\t)/, ""));
+        i++;
+      }
+      out.push('<pre class="md-pre"><code>' + escapeHtml(code.join("\n")) + "</code></pre>");
+      continue;
+    }
+    var para = [line];
+    i++;
+    while (i < end && String(lines[i]).trim() !== "" && !/^(#{1,6}\s|```|~~~|>\s?| {4}|\t)/.test(String(lines[i])) && !/^(\s*)([-+*]|\d+[.)])\s+/.test(String(lines[i])) && !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(String(lines[i]).trim())) {
+      if (i + 1 < end && isTableSep(lines[i + 1]) && String(lines[i]).indexOf("|") >= 0) break;
+      para.push(lines[i]);
+      i++;
+    }
+    var parts = [];
+    for (var p = 0; p < para.length; p++) {
+      var one = String(para[p]);
+      var hard = false;
+      if (/\\$/.test(one)) { hard = true; one = one.slice(0, -1); }
+      else if (/[ \t]{2}$/.test(one)) { hard = true; one = one.replace(/[ \t]+$/, ""); }
+      parts.push(inlineMd(one));
+      if (p < para.length - 1) parts.push(hard ? "<br>" : " ");
+    }
+    out.push("<p>" + parts.join("") + "</p>");
+  }
+  return out.join("\n");
+}
+function renderMarkdown(src) {
+  var text = String(src == null ? "" : src).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  if (text.trim() === "") return "";
+  return renderBlocks(text.split("\n"), 0, text.split("\n").length);
+}
+function fileNameFromSrc(src) {
+  var value = String(src || "");
+  if (/^https?:\/\//i.test(value)) {
+    try {
+      var u = new URL(value);
+      var parts = u.pathname.split("/");
+      return decodeURIComponent(parts[parts.length - 1] || value);
+    } catch (err) { return value; }
+  }
+  return value;
+}
+function enhanceMarkdown(root) {
+  var tables = root.querySelectorAll("table");
+  for (var tIndex = 0; tIndex < tables.length; tIndex++) {
+    var table = tables[tIndex];
+    if (table.parentNode && table.parentNode.className === "table-scroll") continue;
+    var wrap = document.createElement("div");
+    wrap.className = "table-scroll";
+    table.parentNode.insertBefore(wrap, table);
+    wrap.appendChild(table);
+  }
+  var imgs = root.querySelectorAll("img");
+  for (var i = 0; i < imgs.length; i++) {
+    var img = imgs[i];
+    var src = img.getAttribute("src") || "";
+    if (src.indexOf("data:") === 0) continue;
+    var fileName = fileNameFromSrc(src);
+    var downloadUrl = "https://www.ithinkair.com:3031/download/" + encodeURIComponent(fileName);
+    if (!/^https?:\/\//i.test(src)) img.setAttribute("src", downloadUrl);
+    var parent = img.parentNode;
+    if (parent && parent.tagName === "A") {
+      parent.setAttribute("href", downloadUrl);
+      parent.setAttribute("download", fileName);
+      continue;
+    }
+    var link = document.createElement("a");
+    link.className = "md-image-link";
+    link.setAttribute("href", downloadUrl);
+    link.setAttribute("download", fileName);
+    parent.insertBefore(link, img);
+    link.appendChild(img);
+  }
+}
+function mountMarkdown(element, text) {
+  element.innerHTML = renderMarkdown(text);
+  enhanceMarkdown(element);
+}
+
+function setFieldError(id, msg) {
+  var el = document.getElementById(id);
+  var inputId = id.replace("errCreate_", "formCreate_").replace("errEdit_", "formEdit_");
+  var input = document.getElementById(inputId);
+  if (!msg) {
+    el.hidden = true;
+    el.textContent = "";
+    if (input) input.removeAttribute("aria-invalid");
+    return;
+  }
+  el.hidden = false;
+  el.textContent = msg;
+  if (input) input.setAttribute("aria-invalid", "true");
+}
+function clearFormErrors(prefix) {
+  for (var i = 0; i < FIELDS.length; i++) {
+    var errId = (prefix === "formCreate" ? "errCreate_" : "errEdit_") + FIELDS[i];
+    var err = document.getElementById(errId);
+    if (err) setFieldError(errId, "");
+  }
+}
+function readForm(prefix) {
+  var data = {};
+  data["学习内容"] = document.getElementById(prefix + "_学习内容").value.trim();
+  data["内容类型"] = document.getElementById(prefix + "_内容类型").value;
+  data["提醒类型"] = document.getElementById(prefix + "_提醒类型").value;
+  data["频率"] = document.getElementById(prefix + "_频率").value;
+  data["学习日期"] = document.getElementById(prefix + "_学习日期").value;
+  data["提醒时段"] = document.getElementById(prefix + "_提醒时段").value;
+  data["同意提醒"] = boolText(document.getElementById(prefix + "_同意提醒").checked);
+  data["允许共享"] = boolText(document.getElementById(prefix + "_允许共享").checked);
+  return data;
+}
+function validateForm(prefix) {
+  clearFormErrors(prefix);
+  var data = readForm(prefix);
+  var errPrefix = prefix === "formCreate" ? "errCreate_" : "errEdit_";
+  var first = "";
+  function bad(field, msg) {
+    setFieldError(errPrefix + field, msg);
+    if (!first) first = prefix + "_" + field;
+  }
+  if (!data["学习内容"]) bad("学习内容", t("errContent"));
+  if (!data["内容类型"]) bad("内容类型", t("errType"));
+  if (!data["提醒类型"]) bad("提醒类型", t("errRemind"));
+  if (!data["频率"]) bad("频率", t("errFreq"));
+  if (!data["学习日期"]) bad("学习日期", t("errDate"));
+  if (!data["提醒时段"]) bad("提醒时段", t("errSlot"));
+  if (first) {
+    var el = document.getElementById(first);
+    if (el && el.focus) el.focus();
+    return null;
+  }
+  return data;
+}
+function setComposeLocked(mode) {
+  var ids = ["formCreate_学习内容", "formCreate_内容类型", "formCreate_提醒类型", "formCreate_频率", "formCreate_学习日期", "formCreate_提醒时段", "formCreate_同意提醒", "formCreate_允许共享", "btnGenerate", "btnClearCompose"];
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (mode === "busy") el.disabled = true;
+    else if (mode === "hold") el.disabled = ids[i] !== "btnClearCompose";
+    else el.disabled = false;
+  }
+}
+function refreshGenerateButton() {
+  var span = document.getElementById("btnGenerateText");
+  if (!span) return;
+  if (planState === "polling" || planState === "submitting") span.textContent = t("generating");
+  else span.textContent = t("generate");
+}
+function renderComposeState() {
+  var wait = document.getElementById("planWait");
+  var preview = document.getElementById("planPreview");
+  var error = document.getElementById("composeError");
+  var errorText = document.getElementById("composeErrorText");
+  var retry = document.getElementById("btnComposeRetry");
+  var shelfBtn = document.getElementById("btnErrorShelf");
+  wait.hidden = planState !== "polling" && planState !== "submitting";
+  preview.hidden = planState !== "ready";
+  error.hidden = planState !== "submit-error" && planState !== "poll-error" && planState !== "timeout";
+  shelfBtn.hidden = planState !== "timeout" && planState !== "poll-error";
+  if (planState === "submit-error") errorText.textContent = t("submitError");
+  if (planState === "poll-error") errorText.textContent = t("pollError");
+  if (planState === "timeout") errorText.textContent = t("pollTimeout");
+  retry.textContent = planState === "submit-error" ? t("retry") : t("continueWait");
+  if (planState === "submitting" || planState === "polling") setComposeLocked("busy");
+  else if (planState === "poll-error" || planState === "timeout") setComposeLocked("hold");
+  else setComposeLocked("open");
+  refreshGenerateButton();
+  if (planState === "ready") {
+    document.getElementById("planPreviewTitle").textContent = lastSubmitConsent === "是" ? t("previewYes") : t("previewNo");
+    mountMarkdown(document.getElementById("planPreviewBody"), lastPlanText);
+  }
+}
+function updateComposeAside() {
+  var body = document.getElementById("explainBody");
+  if (!body) return;
+  var data = readForm("formCreate");
+  var hint = document.getElementById("slotHint");
+  var slotText = data["提醒时段"] ? t("slot_" + data["提醒时段"]) + " " + t("quietHours") : t("quietHours");
+  if (hint) hint.textContent = slotText;
+  if (data["学习内容"]) setFieldError("errCreate_学习内容", "");
+  if (data["内容类型"]) setFieldError("errCreate_内容类型", "");
+  if (data["提醒类型"]) setFieldError("errCreate_提醒类型", "");
+  if (data["频率"]) setFieldError("errCreate_频率", "");
+  if (data["学习日期"]) setFieldError("errCreate_学习日期", "");
+  if (data["提醒时段"]) setFieldError("errCreate_提醒时段", "");
+  syncSwitchLabels();
+  clearNode(body);
+  function block(title, text) {
+    var wrap = document.createElement("div");
+    wrap.className = "explain-block";
+    var b = document.createElement("b");
+    b.textContent = title;
+    var p = document.createElement("p");
+    p.textContent = text;
+    wrap.appendChild(b);
+    wrap.appendChild(p);
+    body.appendChild(wrap);
+  }
+  block(t("explainType"), TYPE_COPY[data["内容类型"]] ? t(TYPE_COPY[data["内容类型"]]) : t("notChosen"));
+  block(t("explainRemind"), REMIND_COPY[data["提醒类型"]] ? t(REMIND_COPY[data["提醒类型"]]) : t("notChosen"));
+  block(t("explainFreq"), FREQ_COPY[data["频率"]] ? t(FREQ_COPY[data["频率"]]) : t("notChosen"));
+  block(t("explainSlot"), slotText);
+  block(t("studyOn"), data["学习日期"] || t("notChosen"));
+  block(t("explainConsent"), data["同意提醒"] === "是" ? t("consentOn") : t("consentOff"));
+  block(t("explainShare"), data["允许共享"] === "是" ? t("shareOn") : t("shareOff"));
+  var quiet = document.createElement("p");
+  quiet.className = "fine";
+  quiet.textContent = t("quietSummary");
+  body.appendChild(quiet);
+}
+function resetComposeForm() {
+  pollToken++;
+  pollStartedAt = 0;
+  planState = "idle";
+  lastPlanText = "";
+  lastSubmitConsent = "否";
+  currentRow = 0;
+  var form = document.getElementById("formCreate");
+  form.reset();
+  document.getElementById("formCreate_学习日期").value = todayString();
+  document.getElementById("formCreate_同意提醒").checked = false;
+  document.getElementById("formCreate_允许共享").checked = false;
+  clearFormErrors("formCreate");
+  renderComposeState();
+  updateComposeAside();
+}
+async function pollPlan(row, token) {
+  if (!pollStartedAt) pollStartedAt = Date.now();
+  var limit = 1800 * 1000;
+  while (Date.now() - pollStartedAt < limit) {
+    if (token !== pollToken) return;
+    try {
+      var text = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "提醒方案/" + String(row) });
+      if (token !== pollToken) return;
+      if (text && String(text).trim() !== "") {
+        lastPlanText = String(text);
+        planState = "ready";
+        renderComposeState();
+        var box = document.getElementById("planPreview");
+        if (box && box.scrollIntoView) box.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+    } catch (err) {
+      if (token !== pollToken) return;
+      planState = "poll-error";
+      renderComposeState();
+      return;
+    }
+    await sleep(1000);
+  }
+  if (token !== pollToken) return;
+  planState = "timeout";
+  renderComposeState();
+}
+function resumePoll() {
+  pollToken++;
+  var token = pollToken;
+  planState = "polling";
+  renderComposeState();
+  pollPlan(1, token);
+}
+async function generatePlan() {
+  if (planState === "submitting" || planState === "polling") return;
+  var data = validateForm("formCreate");
+  if (!data) return;
+  planState = "submitting";
+  renderComposeState();
+  try {
+    await callAppBridge({ type: "SubmitRecord", data: TABLE, payload: JSON.stringify(data) });
+  } catch (err) {
+    planState = "submit-error";
+    renderComposeState();
+    return;
+  }
+  currentRow = 1;
+  lastSubmitConsent = data["同意提醒"];
+  pollStartedAt = Date.now();
+  pollToken++;
+  var token = pollToken;
+  planState = "polling";
+  renderComposeState();
+  await pollPlan(1, token);
+}
+
+function makeBadge(text, yes) {
+  var span = document.createElement("span");
+  span.className = "badge " + (yes ? "badge-yes" : "badge-no");
+  span.textContent = text;
+  return span;
+}
+function renderHomeRecent() {
+  var host = document.getElementById("homeRecent");
+  var empty = document.getElementById("homeEmpty");
+  clearNode(host);
+  if (!homeReady) { empty.hidden = true; return; }
+  var sorted = filterAndSort(homeRecords, { q: "", sort: "desc" });
+  var shown = sorted.slice(0, 5);
+  empty.hidden = shown.length !== 0;
+  for (var i = 0; i < shown.length; i++) {
+    (function (item) {
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "ticket ticket-button";
+      card.setAttribute("data-row", String(item.row));
+      var ribbon = document.createElement("span");
+      ribbon.className = "ribbon " + (item["同意提醒"] === "是" ? "ribbon-yes" : "ribbon-no");
+      ribbon.textContent = item["同意提醒"] === "是" ? t("badgeYes") : t("badgeNo");
+      var title = document.createElement("h3");
+      title.textContent = item["学习内容"] || t("notChosen");
+      var metas = document.createElement("div");
+      metas.className = "meta-line";
+      ["内容类型", "提醒类型", "频率"].forEach(function (name) {
+        var pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = displayEnum(item[name]) || t("notChosen");
+        metas.appendChild(pill);
+      });
+      var when = document.createElement("p");
+      when.className = "fine";
+      when.textContent = (item["学习日期"] || "") + " · " + (displayEnum(item["提醒时段"]) || "");
+      var badges = document.createElement("div");
+      badges.className = "badge-row";
+      badges.appendChild(makeBadge(item["同意提醒"] === "是" ? t("badgeYes") : t("badgeNo"), item["同意提醒"] === "是"));
+      badges.appendChild(makeBadge(item["允许共享"] === "是" ? t("badgeShare") : t("badgePrivate"), item["允许共享"] === "是"));
+      card.appendChild(ribbon);
+      card.appendChild(title);
+      card.appendChild(metas);
+      card.appendChild(when);
+      card.appendChild(badges);
+      card.addEventListener("click", function () { openRecent(item.row); });
+      host.appendChild(card);
+    })(shown[i]);
+  }
+}
+async function loadHome() {
+  var token = ++homeToken;
+  var loading = document.getElementById("homeLoading");
+  var error = document.getElementById("homeError");
+  loading.hidden = false;
+  error.hidden = true;
+  var failed = false;
+  try {
+    var countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    if (token !== homeToken) return;
+    document.getElementById("statAll").textContent = String(parseCount(countText));
+  } catch (err) { failed = true; }
+  try {
+    var consentCsv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "同意提醒" });
+    if (token !== homeToken) return;
+    var counts = countConsent(consentCsv);
+    document.getElementById("statYes").textContent = String(counts.yes);
+    document.getElementById("statNo").textContent = String(counts.no);
+  } catch (err2) { failed = true; }
+  try {
+    var csv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: CSV_FIELDS });
+    if (token !== homeToken) return;
+    homeRecords = parseRecords(csv);
+    homeReady = true;
+    renderHomeRecent();
+  } catch (err3) {
+    failed = true;
+    if (!homeReady) {
+      clearNode(document.getElementById("homeRecent"));
+      document.getElementById("homeEmpty").hidden = true;
+    }
+  }
+  if (token !== homeToken) return;
+  loading.hidden = true;
+  error.hidden = !failed;
+  finishLoadScroll("home");
+}
+function openRecent(row) {
+  pendingReaderRow = row;
+  showPage("shelf", { force: true });
+}
+
+function renderShelf() {
+  var host = document.getElementById("shelfList");
+  var none = document.getElementById("shelfEmptyNone");
+  var filteredEmpty = document.getElementById("shelfEmptyFilter");
+  clearNode(host);
+  if (!shelfReady) {
+    none.hidden = true;
+    filteredEmpty.hidden = true;
+    return;
+  }
+  var query = shelfQuery();
+  var rows = filterAndSort(shelfRows, query);
+  if (!shelfRows.length) {
+    none.hidden = false;
+    filteredEmpty.hidden = true;
+    return;
+  }
+  none.hidden = true;
+  filteredEmpty.hidden = rows.length !== 0;
+  for (var i = 0; i < rows.length; i++) {
+    host.appendChild(buildShelfCard(rows[i]));
+  }
+}
+function buildShelfCard(item) {
+  var card = document.createElement("article");
+  card.className = "ticket";
+  card.tabIndex = 0;
+  card.setAttribute("data-row", String(item.row));
+  var ribbon = document.createElement("span");
+  ribbon.className = "ribbon " + (item["同意提醒"] === "是" ? "ribbon-yes" : "ribbon-no");
+  ribbon.textContent = item["同意提醒"] === "是" ? t("badgeYes") : t("badgeNo");
+  var title = document.createElement("h3");
+  title.textContent = item["学习内容"] || t("notChosen");
+  var list = document.createElement("dl");
+  list.className = "dl";
+  for (var i = 0; i < FIELDS.length; i++) {
+    var dt = document.createElement("dt");
+    dt.textContent = t("f_" + FIELDS[i]);
+    var dd = document.createElement("dd");
+    if (FIELDS[i] === "学习内容" || FIELDS[i] === "学习日期") dd.textContent = item[FIELDS[i]] || "";
+    else dd.textContent = displayEnum(item[FIELDS[i]]) || "";
+    list.appendChild(dt);
+    list.appendChild(dd);
+  }
+  var actions = document.createElement("div");
+  actions.className = "ticket-actions";
+  function action(label, className, handler) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      handler();
+    });
+    actions.appendChild(btn);
+  }
+  action(t("viewPlan"), "", function () { openReader(item.row); });
+  action(t("edit"), "", function () { openEdit(item.row); });
+  action(t("delete"), "", function () { askDelete(item.row, item["学习内容"]); });
+  card.appendChild(ribbon);
+  card.appendChild(title);
+  card.appendChild(list);
+  card.appendChild(actions);
+  card.addEventListener("click", function () { openReader(item.row); });
+  card.addEventListener("keydown", function (event) {
+    if (event.target !== card) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openReader(item.row);
+    }
+  });
+  return card;
+}
+function clearShelfFilters() {
+  document.getElementById("shelfSearch").value = "";
+  document.getElementById("filterType").value = "";
+  document.getElementById("filterRemind").value = "";
+  document.getElementById("filterFreq").value = "";
+  document.getElementById("filterSlot").value = "";
+  document.getElementById("filterConsent").value = "";
+  document.getElementById("filterShare").value = "";
+  renderShelf();
+}
+async function loadShelf(options) {
+  var opts = options || {};
+  var token = ++shelfToken;
+  var loading = document.getElementById("shelfLoading");
+  var error = document.getElementById("shelfError");
+  loading.hidden = false;
+  error.hidden = true;
+  if (!opts.keepNote) {
+    document.getElementById("shelfNote").hidden = true;
+  }
+  try {
+    var csv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: CSV_FIELDS });
+    if (token !== shelfToken) return;
+    shelfRows = parseRecords(csv);
+    shelfReady = true;
+    loading.hidden = true;
+    renderShelf();
+    var pending = pendingReaderRow;
+    if (pending) {
+      pendingReaderRow = 0;
+      await openReader(pending);
+    }
+  } catch (err) {
+    if (token !== shelfToken) return;
+    loading.hidden = true;
+    error.hidden = false;
+    if (!shelfReady) {
+      clearNode(document.getElementById("shelfList"));
+      document.getElementById("shelfEmptyNone").hidden = true;
+      document.getElementById("shelfEmptyFilter").hidden = true;
+    }
+  }
+  finishLoadScroll("shelf");
+}
+function showShelfNote() {
+  var note = document.getElementById("shelfNote");
+  note.hidden = false;
+  note.setAttribute("data-kind", "saved");
+  document.getElementById("shelfNoteText").textContent = t("savedNote");
+}
+
+async function fetchRowMeta(row) {
+  var meta = {};
+  for (var i = 0; i < FIELDS.length; i++) {
+    var name = FIELDS[i];
+    var text = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: name + "/" + String(row) });
+    meta[name] = text == null ? "" : String(text).trim();
+  }
+  return meta;
+}
+function paintReader(meta, plan, loading) {
+  document.getElementById("readerLoading").hidden = !loading;
+  document.getElementById("readerError").hidden = true;
+  var host = document.getElementById("readerMeta");
+  clearNode(host);
+  if (!meta) return;
+  var ribbon = document.createElement("span");
+  ribbon.className = "badge " + (meta["同意提醒"] === "是" ? "badge-yes" : "badge-no");
+  ribbon.textContent = meta["同意提醒"] === "是" ? t("badgeYes") : t("badgeNo");
+  host.appendChild(ribbon);
+  var list = document.createElement("dl");
+  list.className = "dl";
+  for (var i = 0; i < FIELDS.length; i++) {
+    var dt = document.createElement("dt");
+    dt.textContent = t("f_" + FIELDS[i]);
+    var dd = document.createElement("dd");
+    if (FIELDS[i] === "学习内容" || FIELDS[i] === "学习日期") dd.textContent = meta[FIELDS[i]] || "";
+    else dd.textContent = displayEnum(meta[FIELDS[i]]) || meta[FIELDS[i]] || "";
+    list.appendChild(dt);
+    list.appendChild(dd);
+  }
+  host.appendChild(list);
+  var empty = document.getElementById("readerEmpty");
+  var planHost = document.getElementById("readerPlan");
+  if (plan && String(plan).trim()) {
+    empty.hidden = true;
+    mountMarkdown(planHost, plan);
+  } else {
+    empty.hidden = false;
+    planHost.innerHTML = "";
+  }
+}
+async function openReader(row) {
+  var token = ++readerToken;
+  readerOpenRow = row;
+  currentRow = row;
+  readerCache = null;
+  openOverlay("readerOverlay");
+  document.getElementById("readerSaved").hidden = true;
+  document.getElementById("readerLoading").hidden = false;
+  document.getElementById("readerError").hidden = true;
+  clearNode(document.getElementById("readerMeta"));
+  document.getElementById("readerPlan").innerHTML = "";
+  document.getElementById("readerEmpty").hidden = true;
+  try {
+    var meta = await fetchRowMeta(row);
+    if (token !== readerToken) return;
+    var plan = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "提醒方案/" + String(row) });
+    if (token !== readerToken) return;
+    readerCache = { meta: meta, plan: plan == null ? "" : String(plan) };
+    paintReader(readerCache.meta, readerCache.plan, false);
+  } catch (err) {
+    if (token !== readerToken) return;
+    document.getElementById("readerLoading").hidden = true;
+    document.getElementById("readerError").hidden = false;
+  }
+}
+function closeReader() {
+  readerToken++;
+  readerOpenRow = 0;
+  closeOverlay("readerOverlay");
+}
+async function refreshReaderPlan() {
+  var row = readerOpenRow;
+  if (!row) return;
+  try {
+    var plan = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "提醒方案/" + String(row) });
+    if (readerOpenRow !== row) return;
+    if (!readerCache) readerCache = { meta: {}, plan: "" };
+    readerCache.plan = plan == null ? "" : String(plan);
+    paintReader(readerCache.meta, readerCache.plan, false);
+  } catch (err) {
+    document.getElementById("readerError").hidden = false;
+  }
+}
+
+function fillEditForm(meta) {
+  for (var i = 0; i < FIELDS.length; i++) {
+    var name = FIELDS[i];
+    var el = document.getElementById("formEdit_" + name);
+    if (name === "同意提醒" || name === "允许共享") el.checked = meta[name] === "是";
+    else el.value = meta[name] || "";
+  }
+  if (!document.getElementById("formEdit_学习日期").value) {
+    document.getElementById("formEdit_学习日期").value = todayString();
+  }
+  syncSwitchLabels();
+  clearFormErrors("formEdit");
+}
+function paintEditPlan(plan) {
+  var empty = document.getElementById("editPlanEmpty");
+  var host = document.getElementById("editPlan");
+  if (plan && String(plan).trim()) {
+    empty.hidden = true;
+    mountMarkdown(host, plan);
+  } else {
+    empty.hidden = false;
+    host.innerHTML = "";
+  }
+}
+async function openEdit(row) {
+  var token = ++editToken;
+  editRow = row;
+  currentRow = row;
+  openOverlay("editOverlay");
+  document.getElementById("editLoading").hidden = false;
+  document.getElementById("editLoadError").hidden = true;
+  document.getElementById("editSaveError").hidden = true;
+  document.getElementById("formEdit").hidden = true;
+  document.getElementById("editPlan").innerHTML = "";
+  document.getElementById("editPlanEmpty").hidden = true;
+  try {
+    var meta = await fetchRowMeta(row);
+    if (token !== editToken) return;
+    var plan = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "提醒方案/" + String(row) });
+    if (token !== editToken) return;
+    fillEditForm(meta);
+    paintEditPlan(plan == null ? "" : String(plan));
+    document.getElementById("editLoading").hidden = true;
+    document.getElementById("formEdit").hidden = false;
+    document.getElementById("formEdit_学习内容").focus();
+  } catch (err) {
+    if (token !== editToken) return;
+    document.getElementById("editLoading").hidden = true;
+    document.getElementById("editLoadError").hidden = false;
+  }
+}
+function closeEdit() {
+  editToken++;
+  closeOverlay("editOverlay");
+}
+async function saveEdit() {
+  var data = validateForm("formEdit");
+  if (!data) return;
+  var row = editRow;
+  var saveBtn = document.getElementById("btnEditSave");
+  saveBtn.disabled = true;
+  saveBtn.textContent = t("saving");
+  document.getElementById("editSaveError").hidden = true;
+  try {
+    for (var i = 0; i < FIELDS.length; i++) {
+      var name = FIELDS[i];
+      await callAppBridge({
+        type: "SetCellValue",
+        data: SOURCE,
+        payload: name + "/" + String(row) + "/" + data[name]
+      });
+    }
+  } catch (err) {
+    saveBtn.disabled = false;
+    saveBtn.textContent = t("save");
+    var error = document.getElementById("editSaveError");
+    error.hidden = false;
+    error.textContent = t("saveError");
+    return;
+  }
+  saveBtn.disabled = false;
+  saveBtn.textContent = t("save");
+  closeEdit();
+  var keepReader = readerOpenRow === row && overlayStack.indexOf("readerOverlay") >= 0;
+  await loadShelf({ keepNote: true });
+  showShelfNote();
+  if (keepReader) {
+    await openReader(row);
+    var saved = document.getElementById("readerSaved");
+    saved.hidden = false;
+    saved.textContent = t("savedNote");
+  }
+}
+async function refreshEditPlan() {
+  var row = editRow;
+  if (!row) return;
+  try {
+    var plan = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "提醒方案/" + String(row) });
+    if (editRow !== row) return;
+    paintEditPlan(plan == null ? "" : String(plan));
+  } catch (err) {
+    document.getElementById("editLoadError").hidden = false;
+  }
+}
+
+function askDelete(row, content) {
+  deleteRow = row;
+  deleteContent = content || "";
+  currentRow = row;
+  document.getElementById("confirmText").textContent = t("confirmDelete").split("{content}").join(deleteContent);
+  document.getElementById("confirmError").hidden = true;
+  document.getElementById("btnConfirmDelete").disabled = false;
+  document.getElementById("btnConfirmDelete").textContent = t("delete");
+  openOverlay("confirmOverlay");
+}
+function cancelDelete() {
+  closeOverlay("confirmOverlay");
+}
+async function performDelete() {
+  var row = deleteRow;
+  var btn = document.getElementById("btnConfirmDelete");
+  btn.disabled = true;
+  btn.textContent = t("deleting");
+  document.getElementById("confirmError").hidden = true;
+  try {
+    await callAppBridge({ type: "DeleteRecord", data: SOURCE, payload: row.toString() });
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = t("delete");
+    var error = document.getElementById("confirmError");
+    error.hidden = false;
+    error.textContent = t("deleteError");
+    return;
+  }
+  closeOverlay("confirmOverlay");
+  if (readerOpenRow === row) closeReader();
+  if (editRow === row && overlayStack.indexOf("editOverlay") >= 0) closeEdit();
+  if (currentRow === row) currentRow = 0;
+  await loadShelf({ keepNote: true });
+}
+
+async function locateRowByField(fieldName, value) {
+  var text = await callAppBridge({ type: "GetRecordRow", data: SOURCE, payload: fieldName + "/" + value });
+  var n = parseInt(String(text == null ? "" : text).trim(), 10);
+  return isNaN(n) ? 0 : n;
+}
+
+function bindKeyboardGuard() {
+  function bump(target) {
+    var kb = 0;
+    if (window.visualViewport) kb = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+    document.documentElement.style.setProperty("--kb", (kb + 24) + "px");
+    document.body.classList.add("kb-open");
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", inline: "nearest" }); }
+      catch (err) { target.scrollIntoView(true); }
+    }, 280);
+  }
+  document.addEventListener("focusin", function (event) {
+    var target = event.target;
+    if (!target || !target.matches || !target.matches("input, textarea, select")) return;
+    bump(target);
+  });
+  document.addEventListener("focusout", function () {
+    setTimeout(function () {
+      var active = document.activeElement;
+      if (!active || !active.matches || !active.matches("input, textarea, select")) {
+        document.body.classList.remove("kb-open");
+        document.documentElement.style.setProperty("--kb", "0px");
+      }
+    }, 180);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () {
+      var active = document.activeElement;
+      if (active && active.matches && active.matches("input, textarea, select")) bump(active);
+    });
+  }
+}
+function bindAll() {
+  if (bound) return;
+  bound = true;
+  document.getElementById("brandBtn").addEventListener("click", function () {
+    try { parent.closeFullHtml(false); } catch (err) {}
+  });
+  function go(page) {
+    pendingReaderRow = 0;
+    showPage(page);
+  }
+  document.getElementById("tabHome").addEventListener("click", function () { go("home"); });
+  document.getElementById("tabCompose").addEventListener("click", function () { go("compose"); });
+  document.getElementById("tabShelf").addEventListener("click", function () { go("shelf"); });
+  document.getElementById("tabAtlas").addEventListener("click", function () { go("atlas"); });
+  document.getElementById("mTabHome").addEventListener("click", function () { go("home"); });
+  document.getElementById("mTabCompose").addEventListener("click", function () { go("compose"); });
+  document.getElementById("mTabShelf").addEventListener("click", function () { go("shelf"); });
+  document.getElementById("mTabAtlas").addEventListener("click", function () { go("atlas"); });
+  document.getElementById("langToggle").addEventListener("click", function () { setLanguage(lang === "en" ? "zh" : "en", true); });
+  document.getElementById("mLangZh").addEventListener("click", function () { setLanguage("zh", true); closeMobileMenu(); });
+  document.getElementById("mLangEn").addEventListener("click", function () { setLanguage("en", true); closeMobileMenu(); });
+  document.getElementById("hamburgerBtn").addEventListener("click", function (event) {
+    event.stopPropagation();
+    var menu = document.getElementById("mobileMenu");
+    var open = !menu.classList.contains("is-open");
+    menu.classList.toggle("is-open", open);
+    this.setAttribute("aria-expanded", open ? "true" : "false");
+    var icon = this.querySelector("i");
+    if (icon) icon.className = open ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+  });
+  document.addEventListener("click", function (event) {
+    var menu = document.getElementById("mobileMenu");
+    var burger = document.getElementById("hamburgerBtn");
+    if (!menu.classList.contains("is-open")) return;
+    if (menu.contains(event.target) || burger.contains(event.target)) return;
+    closeMobileMenu();
+  });
+  document.getElementById("btnPlanVisit").addEventListener("click", function () { go("compose"); });
+  document.getElementById("btnOpenShelf").addEventListener("click", function () { go("shelf"); });
+  document.getElementById("btnFirstStudy").addEventListener("click", function () { go("compose"); });
+  document.getElementById("btnHomeRetry").addEventListener("click", function () { loadHome(); });
+  document.getElementById("btnToShelf").addEventListener("click", function () { go("shelf"); });
+  function clearCreateError(event) {
+    var target = event.target;
+    if (!target || !target.id || target.id.indexOf("formCreate_") !== 0) return;
+    setFieldError("errCreate_" + target.id.slice("formCreate_".length), "");
+  }
+  document.getElementById("formCreate").addEventListener("input", function (event) {
+    clearCreateError(event);
+    updateComposeAside();
+  });
+  document.getElementById("formCreate").addEventListener("change", function (event) {
+    clearCreateError(event);
+    updateComposeAside();
+  });
+  document.getElementById("formCreate").addEventListener("submit", function (event) {
+    event.preventDefault();
+    generatePlan();
+  });
+  document.getElementById("btnClearCompose").addEventListener("click", function () { resetComposeForm(); });
+  document.getElementById("btnComposeAnother").addEventListener("click", function () { resetComposeForm(); });
+  document.getElementById("btnComposeRetry").addEventListener("click", function () {
+    if (planState === "submit-error") generatePlan();
+    else resumePoll();
+  });
+  document.getElementById("btnErrorShelf").addEventListener("click", function () {
+    pendingReaderRow = currentRow > 0 ? currentRow : 1;
+    showPage("shelf", { force: true });
+  });
+  document.getElementById("btnPreviewShelf").addEventListener("click", function () {
+    pendingReaderRow = currentRow > 0 ? currentRow : 1;
+    showPage("shelf", { force: true });
+  });
+  document.getElementById("btnShelfCompose").addEventListener("click", function () {
+    resetComposeForm();
+    showPage("compose");
+  });
+  document.getElementById("btnEmptyCompose").addEventListener("click", function () {
+    resetComposeForm();
+    showPage("compose");
+  });
+  document.getElementById("shelfSearch").addEventListener("input", function () { renderShelf(); });
+  ["filterType", "filterRemind", "filterFreq", "filterSlot", "filterConsent", "filterShare", "sortShelf"].forEach(function (id) {
+    document.getElementById(id).addEventListener("change", function () { renderShelf(); });
+  });
+  document.getElementById("btnClearFilter").addEventListener("click", clearShelfFilters);
+  document.getElementById("btnEmptyClearFilter").addEventListener("click", clearShelfFilters);
+  document.getElementById("btnShelfRetry").addEventListener("click", function () { loadShelf(); });
+  document.getElementById("btnNoteDismiss").addEventListener("click", function () { document.getElementById("shelfNote").hidden = true; });
+  document.getElementById("btnReaderClose").addEventListener("click", closeReader);
+  document.getElementById("btnReaderCloseX").addEventListener("click", closeReader);
+  document.getElementById("btnReaderEdit").addEventListener("click", function () { if (readerOpenRow) openEdit(readerOpenRow); });
+  document.getElementById("btnReaderDelete").addEventListener("click", function () {
+    var content = readerCache && readerCache.meta ? readerCache.meta["学习内容"] : "";
+    if (readerOpenRow) askDelete(readerOpenRow, content);
+  });
+  document.getElementById("btnReaderRetry").addEventListener("click", function () { if (readerOpenRow) openReader(readerOpenRow); });
+  document.getElementById("btnRefreshPlan").addEventListener("click", refreshReaderPlan);
+  document.getElementById("readerOverlay").addEventListener("click", function (event) {
+    if (event.target === document.getElementById("readerOverlay")) closeReader();
+  });
+  document.getElementById("btnEditCancel").addEventListener("click", closeEdit);
+  document.getElementById("btnEditCloseX").addEventListener("click", closeEdit);
+  document.getElementById("btnEditSave").addEventListener("click", function () { saveEdit(); });
+  document.getElementById("btnEditReload").addEventListener("click", function () { if (editRow) openEdit(editRow); });
+  document.getElementById("btnEditRefreshPlan").addEventListener("click", refreshEditPlan);
+  function clearEditError(event) {
+    var target = event.target;
+    if (!target || !target.id || target.id.indexOf("formEdit_") !== 0) return;
+    setFieldError("errEdit_" + target.id.slice("formEdit_".length), "");
+    syncSwitchLabels();
+  }
+  document.getElementById("formEdit").addEventListener("input", clearEditError);
+  document.getElementById("formEdit").addEventListener("change", clearEditError);
+  document.getElementById("formEdit").addEventListener("submit", function (event) { event.preventDefault(); saveEdit(); });
+  document.getElementById("btnConfirmCancel").addEventListener("click", cancelDelete);
+  document.getElementById("btnConfirmDelete").addEventListener("click", function () { performDelete(); });
+  document.getElementById("confirmOverlay").addEventListener("click", function (event) {
+    if (event.target === document.getElementById("confirmOverlay")) cancelDelete();
+  });
+  document.getElementById("btnAtlasCompose").addEventListener("click", function () { go("compose"); });
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") return;
+    if (overlayStack.length || document.getElementById("mobileMenu").classList.contains("is-open")) {
+      event.preventDefault();
+      airBack();
+    }
+  });
+  window.addEventListener("resize", syncNavCollapse);
+  window.addEventListener("load", syncNavCollapse);
+  bindKeyboardGuard();
+}
+async function applyMode() {
+  var modeText = await callAppBridge({ type: "模式" });
+  var dark = String(modeText == null ? "" : modeText).indexOf("暗色") >= 0;
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", dark ? "#1A2340" : "#1B2744");
+}
+async function initialize() {
+  bindAll();
+  setLanguage(detectLanguage(), false);
+  resetComposeForm();
+  try { await applyMode(); }
+  catch (err) {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
+  syncNavCollapse();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { syncNavCollapse(); });
+  }
+  showPage("home", { record: false });
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

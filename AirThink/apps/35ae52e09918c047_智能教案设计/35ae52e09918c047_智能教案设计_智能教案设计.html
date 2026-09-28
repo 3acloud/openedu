@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>智能教案设计</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+<style>
+:root{--paper:#f4efe6;--nav:#1c3556;--gold:#b08948;--green:#2f6d62;--card:#fffcf7;--ink:#243044;--muted:#687385;--line:#ded6c9;--danger:#9c4a3c;--shadow:0 12px 34px #1c355615;color-scheme:light}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Microsoft YaHei",sans-serif}body.dark{--paper:#151e29;--nav:#101b2b;--gold:#d8b478;--green:#85b7a8;--card:#202c3a;--ink:#f0ede7;--muted:#bac4cb;--line:#39485a;--danger:#e5998c;--shadow:0 12px 34px #0005;color-scheme:dark}button,input,select,textarea{font:inherit}input,select,textarea{box-sizing:border-box}button{cursor:pointer}a{color:inherit}.topbar{position:relative;z-index:1001;position:sticky;top:0;background:var(--nav);color:#fff;box-shadow:0 3px 14px #0002}.top-inner{max-width:1280px;margin:auto;min-height:68px;display:flex;align-items:center;gap:18px;padding:0 24px}.brand{display:flex;align-items:center;gap:12px;border:0;background:none;color:#fff;font:700 21px Georgia,"Noto Serif SC",serif;white-space:nowrap}.brand i{color:#d8b478}.nav-tabs{display:flex;align-items:center;gap:5px;margin-left:auto;white-space:nowrap}.nav-tabs button,.lang-btn,.menu-btn{background:none;border:0;color:#edf1f5;padding:11px 13px;border-radius:5px}.nav-tabs button.active{color:#e9c78e;border-bottom:3px solid var(--gold);border-radius:0}.nav-tabs button:hover,.lang-btn:hover,.menu-btn:hover{background:#ffffff1a}.menu-btn{display:none;margin-left:auto}.mobile-menu{display:none;position:absolute;top:100%;right:12px;min-width:190px;background:var(--nav);box-shadow:var(--shadow);padding:8px;border-radius:0 0 10px 10px}.mobile-menu.open{display:grid}.mobile-menu button{border:0;background:none;color:#fff;text-align:left;padding:10px 13px;border-radius:5px}.mobile-menu button:hover{background:#ffffff20}main{max-width:1280px;margin:auto;padding:38px 24px 130px}.page{display:none}.page.active{display:block}h1,h2,h3{font-family:Georgia,"Noto Serif SC","Songti SC",serif;line-height:1.3}h1{font-size:clamp(32px,4.5vw,58px);margin:0 0 16px}h2{font-size:29px;margin:0}h3{margin:0 0 10px}.eyebrow{letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-size:13px;font-weight:700}.muted{color:var(--muted)}.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:28px;align-items:center;margin:20px 0 30px}.hero-note{padding:28px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold);box-shadow:var(--shadow);border-radius:10px}.hero-note p{margin:0 0 12px}.method-row,.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}.method{border:1px solid var(--line);border-radius:9px;padding:14px 17px;background:var(--card);font-family:Georgia,"Noto Serif SC",serif}.method b{color:var(--gold);margin-right:9px}.stats{grid-template-columns:repeat(4,1fr)}.card,.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.stat{padding:20px;text-align:left;color:var(--ink);transition:transform .2s,box-shadow .2s}.stat:hover,.lesson-card:hover,.recent-card:hover,.primary:hover,.secondary:hover{transform:translateY(-3px);box-shadow:0 17px 35px #1c355627}.stat .number{display:block;font:700 36px Georgia,serif;color:var(--gold)}.stat .label{font-size:14px;color:var(--muted)}.section-head,.page-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:30px 0 17px}.page-head{margin-top:0}.primary,.secondary,.danger,.ghost{border-radius:7px;padding:10px 18px;font-weight:650;transition:transform .2s,box-shadow .2s}.primary{background:var(--nav);border:1px solid var(--nav);color:#fff}.secondary{background:var(--card);border:1px solid var(--gold);color:var(--ink)}.danger{background:var(--danger);border:1px solid var(--danger);color:#fff}.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}.primary:disabled,.secondary:disabled{opacity:.55;cursor:not-allowed}.recent-grid,.library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.recent-card,.lesson-card{padding:20px;text-align:left;color:var(--ink);transition:transform .2s,box-shadow .2s}.recent-card{width:100%;cursor:pointer}.card-title{font:700 21px Georgia,"Noto Serif SC",serif;margin:4px 0 7px}.meta{display:flex;flex-wrap:wrap;gap:7px 13px;color:var(--muted);font-size:13px}.stamp{display:inline-block;border:1px solid currentColor;border-radius:3px;padding:1px 7px;font-size:12px;font-weight:700;letter-spacing:.08em}.stamp.new{color:var(--green)}.stamp.review{color:#6683a9}.stamp.comment{color:var(--gold)}.design-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px}.form-card,.preview-card{padding:23px;min-width:0}.group-title{border-bottom:1px solid var(--line);margin:20px 0 12px;padding-bottom:7px;color:var(--green);font-weight:700}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field.wide{grid-column:1/-1}.field label{display:block;font-size:14px;font-weight:650;margin-bottom:4px}.field input,.field select,.field textarea,.filters input,.filters select{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);padding:10px 12px}.field textarea{min-height:100px;resize:vertical}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.preview-card{min-height:530px}.preview-empty{min-height:360px;display:grid;place-items:center;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:28px}.preview-empty i{font-size:38px;color:var(--gold)}.waiting{text-align:center;padding:45px 14px}.steps{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:22px}.steps span{padding:6px 10px;border-radius:20px;border:1px solid var(--line);animation:pulse 2s infinite alternate}.steps span:nth-child(2){animation-delay:.5s}.steps span:nth-child(3){animation-delay:1s}@keyframes pulse{to{background:var(--gold);color:#fff}}.filters{display:grid;grid-template-columns:minmax(180px,1fr) 180px 180px auto;gap:10px;margin:23px 0}.lesson-card{padding:19px;transition:transform .2s,box-shadow .2s;cursor:pointer}.lesson-card p{margin:9px 0;color:var(--muted);font-size:14px}.lesson-card .actions{margin-top:12px}.lesson-card .actions button{padding:6px 10px;font-size:13px}.empty{padding:38px;text-align:center}.message{padding:11px 14px;border-radius:7px;border:1px solid var(--line);margin:12px 0}.message.error{border-color:var(--danger);color:var(--danger)}.message.success{border-color:var(--green);color:var(--green)}.overlay{position:fixed;inset:0;background:#101c2bb8;z-index:2000;display:none;align-items:center;justify-content:center;padding:24px}.overlay.open{display:flex}.dialog{background:var(--card);color:var(--ink);width:min(900px,100%);max-height:calc(100dvh - 48px);overflow:auto;border-radius:12px;box-shadow:0 24px 70px #0007;padding:26px;overscroll-behavior:contain}.dialog-head{display:flex;justify-content:space-between;align-items:start;gap:15px;border-bottom:1px solid var(--line);padding-bottom:12px}.close-x{border:0;background:none;color:var(--ink);font-size:23px}.detail-block{margin:16px 0;padding:15px;border-radius:8px;background:var(--paper);white-space:pre-wrap}.markdown{overflow-wrap:anywhere}.markdown h1,.markdown h2,.markdown h3,.markdown h4{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:5px}.markdown table{border-collapse:collapse;display:block;max-width:100%;overflow-x:auto}.markdown th,.markdown td{border:1px solid var(--line);padding:7px 10px}.markdown th{background:var(--paper)}.markdown pre{background:#e9e8e5;color:#243044;padding:15px;border-radius:7px;overflow:auto}.markdown blockquote{border-left:4px solid var(--gold);margin-left:0;padding-left:16px;color:var(--muted)}.markdown img{max-width:100%;height:auto}.markdown a{color:var(--green)}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:3000;background:var(--nav);color:#fff;border-radius:7px;padding:10px 17px;display:none}body.dark .markdown pre{background:#151e29;color:#eee}@media(max-width:850px){.hero,.design-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}.nav-tabs,.lang-btn{display:none}.menu-btn{display:block}}@media(max-width:600px){main{padding:23px 14px 180px}.top-inner{padding:0 12px}.brand{font-size:17px}.method-row,.recent-grid,.library-grid{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:13px}.stat .number{font-size:28px}.fields{grid-template-columns:1fr}.field.wide{grid-column:auto}.page-head,.section-head{align-items:start;flex-direction:column}.filters{grid-template-columns:1fr}.filters input{grid-column:auto}.overlay.markdown-overlay{padding:0}.overlay.markdown-overlay .dialog{width:100%;height:100dvh;max-height:100dvh;border-radius:0;padding:18px 15px 180px}.dialog{padding:18px 15px 180px;max-height:calc(100dvh - 24px)}}
+</style></head><body>
+<header class="topbar" id="topbar"><div class="top-inner"><button class="brand" id="brand"><span><i class="fa-solid fa-book-open"></i><i class="fa-solid fa-compass" style="font-size:12px;margin-left:-7px"></i></span><span data-i18n="app">智能教案设计</span></button><nav class="nav-tabs" id="nav-tabs"><button data-page="home" class="active" data-i18n="home">首页</button><button data-page="design" data-i18n="design">设计教案</button><button data-page="library" data-i18n="library">教案库</button></nav><button class="lang-btn" id="lang-btn" aria-label="Language">中 / EN</button><button class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div><div class="mobile-menu" id="mobile-menu"><button data-page="home" data-i18n="home">首页</button><button data-page="design" data-i18n="design">设计教案</button><button data-page="library" data-i18n="library">教案库</button><button id="mobile-lang">中 / EN</button></div></header>
+<main><section id="page-home" class="page active"><div class="hero"><div><div class="eyebrow" data-i18n="reviewNote">生成内容供教师审定</div><h1 data-i18n="heroTitle">把一节课，从终点设计回来。</h1><p class="muted" data-i18n="heroText">填写主题、目标与班级学情，生成可评估的教案、与课时一致的时间安排和递进提问链；有可靠A/B/C分层才做差异化，否则为基础版。</p><button class="primary" id="start-design" data-i18n="start">开始设计一课</button></div><div class="hero-note"><h3 data-i18n="method">逆向设计 · UbD</h3><p data-i18n="methodText">从学生最终需要理解什么出发，再寻找可观察的证据，最后安排学习体验。</p><span class="eyebrow" data-i18n="reviewNote">生成内容供教师审定</span></div></div><div class="method-row"><div class="method"><b>01</b><span data-i18n="step1">确定预期理解</span></div><div class="method"><b>02</b><span data-i18n="step2">设计评估证据</span></div><div class="method"><b>03</b><span data-i18n="step3">安排学习体验</span></div></div><div class="stats" id="stats"></div><div class="section-head"><h2 data-i18n="recent">最近教案</h2><button class="secondary" data-page="library" data-i18n="allLessons">查看全部</button></div><div id="home-error"></div><div class="recent-grid" id="recent-list"></div></section>
+<section id="page-design" class="page"><div class="page-head"><div><h2 data-i18n="design">设计教案</h2><p class="muted" data-i18n="designIntro">先写清预期，再交给后台生成可审定的教案。</p></div><button class="secondary" data-page="library" data-i18n="viewLibrary">查看教案库</button></div><div class="design-grid"><div class="card form-card"><h3 data-i18n="design">设计教案</h3><form id="create-form"></form><div id="create-error"></div><div class="actions"><button class="primary" type="submit" form="create-form" id="generate-btn" data-i18n="generate">生成教案</button><button class="ghost" id="clear-form" data-i18n="clearSheet">清空备课笺</button></div></div><div class="card preview-card"><div class="section-head" style="margin:0 0 16px"><h3 data-i18n="preview">教案预览</h3><div class="actions" id="preview-actions" style="display:none;margin:0"><button class="secondary" id="copy-preview" data-i18n="copy">复制全文</button><button class="ghost" id="new-again" data-i18n="again">再设计一课</button></div></div><div id="preview-content"></div></div></div></section>
+<section id="page-library" class="page"><div class="page-head"><div><h2 data-i18n="library">教案库</h2><p class="muted" data-i18n="libraryIntro">审阅、修改教师填写项，或另存后重新生成。</p></div><button class="primary" id="library-new" data-i18n="newLesson">+ 设计新教案</button></div><div class="filters"><input id="search-input" type="search" data-placeholder="search" placeholder="搜索课时主题或学科"><select id="stage-filter"></select><select id="type-filter"></select><button class="ghost" id="clear-filters" data-i18n="clearFilters">清空筛选</button></div><div id="library-error"></div><div class="library-grid" id="library-list"></div></section></main>
+<div class="overlay" id="edit-overlay"><div class="dialog"><div class="dialog-head"><h2 data-i18n="editTitle">修改备课信息</h2><button class="close-x" data-close="edit" aria-label="Close">×</button></div><div id="edit-error"></div><form id="edit-form"></form><div class="actions"><button class="primary" type="submit" form="edit-form" id="save-edit" data-i18n="save">保存修改</button><button class="secondary" id="save-copy" data-i18n="saveCopy">另存并重新生成</button><button class="ghost" data-close="edit" data-i18n="cancel">取消</button></div><p class="muted" data-i18n="copyHint">另存并重新生成会新建一条，不覆盖原教案。</p></div></div>
+<div class="overlay markdown-overlay" id="detail-overlay"><div class="dialog"><div class="dialog-head"><div><h2 id="detail-title"></h2><div class="meta" id="detail-meta"></div></div><button class="close-x" data-close="detail" aria-label="Close">×</button></div><div id="detail-body"></div><div class="actions"><button class="ghost" data-close="detail" data-i18n="close">关闭</button><button class="secondary" id="detail-copy" data-i18n="copy">复制全文</button><button class="secondary" id="detail-edit" data-i18n="editThis">编辑此教案</button><button class="danger" id="detail-delete" data-i18n="delete">删除</button></div></div></div><div class="toast" id="toast" role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("35ae52e09918c047_智能教案设计")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+const SOURCE='教案设计/默认表格', TABLE='教案设计';
+const FIELDS=['课时主题','学科','学段','课型','课时分钟','课标与教学目标','班级学情摘要'];
+const STAGES=['小学中段','小学高段','初中'], TYPES=['新授课','复习课','讲评课'];
+const dict={cn:{app:'智能教案设计',home:'首页',design:'设计教案',library:'教案库',reviewNote:'生成内容供教师审定',heroTitle:'把一节课，从终点设计回来。',heroText:'填写主题、目标与班级学情，生成可评估的教案、与课时一致的时间安排和递进提问链；有可靠A/B/C分层才做差异化，否则为基础版。',start:'开始设计一课',method:'逆向设计 · UbD',methodText:'从学生最终需要理解什么出发，再寻找可观察的证据，最后安排学习体验。',step1:'确定预期理解',step2:'设计评估证据',step3:'安排学习体验',recent:'最近教案',allLessons:'查看全部',designIntro:'先写清预期，再交给后台生成可审定的教案。',viewLibrary:'查看教案库',generate:'生成教案',clearSheet:'清空备课笺',preview:'教案预览',copy:'复制全文',again:'再设计一课',libraryIntro:'审阅、修改教师填写项，或另存后重新生成。',newLesson:'+ 设计新教案',search:'搜索课时主题或学科',clearFilters:'清空筛选',editTitle:'修改备课信息',save:'保存修改',saveCopy:'另存并重新生成',cancel:'取消',copyHint:'另存并重新生成会新建一条，不覆盖原教案。',close:'关闭',editThis:'编辑此教案',delete:'删除',topic:'课时主题',subject:'学科',stage:'学段',type:'课型',minutes:'课时分钟',goals:'课标与教学目标',profile:'班级学情摘要',info:'备课信息',target:'目标与学情',profileHint:'若有可靠的A/B/C分层，请写明层级与依据；没有则留空。',total:'教案总数',all:'全部',none:'还没有教案',first:'设计第一节课',noMatch:'没有匹配的教案',view:'查看教案',edit:'编辑',goalsLabel:'课标与教学目标',profileLabel:'班级学情摘要',noProfile:'未填写学情',notReady:'教案尚未生成',previewEmpty:'生成后，这里以Markdown呈现供审定的教案',wait:'正在按UbD逆向设计撰写教案，请稍候。',timeout:'生成仍在进行，请稍后在教案库查看。',readFail:'读取失败，请重试',retry:'重试',saved:'已保存。已生成的教案不会因此自动重写',deleted:'已删除',confirmDelete:'确定删除该教案？此操作不可撤销。',copied:'已复制全文',copyFail:'复制失败，请重试',required:'请填写所有必填项。',invalidMinutes:'课时分钟须为正整数。',invalidOption:'请选择有效的学段和课型。',submitFail:'提交失败，请重试',saveFail:'保存失败，请重试',loading:'读取中…',unit:'分钟'},en:{app:'Lesson Design',home:'Home',design:'Design',library:'Library',reviewNote:'Teacher review required',heroTitle:'Design a lesson from its destination.',heroText:'Enter the topic, objectives and class context. The background process creates an assessable lesson with timed activities and progressive questions; differentiation requires reliable evidence.',start:'Design a lesson',method:'Backward design · UbD',methodText:'Begin with the intended understanding, identify observable evidence, then plan learning experiences.',step1:'Identify understanding',step2:'Determine evidence',step3:'Plan experiences',recent:'Recent lessons',allLessons:'View all',designIntro:'Clarify the intended learning, then let the background process generate a draft for review.',viewLibrary:'View library',generate:'Generate lesson',clearSheet:'Clear form',preview:'Lesson preview',copy:'Copy full text',again:'Design another',libraryIntro:'Review and edit teacher inputs, or save a new copy and regenerate.',newLesson:'+ New lesson',search:'Search topic or subject',clearFilters:'Clear filters',editTitle:'Edit lesson inputs',save:'Save changes',saveCopy:'Save copy and regenerate',cancel:'Cancel',copyHint:'Saving a copy creates a new record and preserves the original lesson.',close:'Close',editThis:'Edit this lesson',delete:'Delete',topic:'Lesson topic',subject:'Subject',stage:'School stage',type:'Lesson type',minutes:'Minutes',goals:'Standards and objectives',profile:'Class context',info:'Lesson information',target:'Objectives and context',profileHint:'Describe A/B/C groups and evidence only if reliable; otherwise leave blank.',total:'Total lessons',all:'All',none:'No lessons yet',first:'Design the first lesson',noMatch:'No matching lessons',view:'View lesson',edit:'Edit',goalsLabel:'Standards and objectives',profileLabel:'Class context',noProfile:'No class context provided',notReady:'Lesson is still being generated',previewEmpty:'After generation, the Markdown lesson will appear here for review.',wait:'Writing the lesson with UbD backward design. Please wait.',timeout:'Still generating. Check the library later.',readFail:'Could not read data. Please retry.',retry:'Retry',saved:'Saved. The existing generated lesson will not change automatically.',deleted:'Deleted',confirmDelete:'Delete this lesson? This cannot be undone.',copied:'Full text copied',copyFail:'Copy failed. Please retry.',required:'Please complete all required fields.',invalidMinutes:'Minutes must be a positive integer.',invalidOption:'Choose a valid school stage and lesson type.',submitFail:'Submission failed. Please retry.',saveFail:'Could not save. Please retry.',loading:'Loading…',unit:'min'}};
+const stageEn={'小学中段':'Middle primary','小学高段':'Upper primary','初中':'Junior secondary'},typeEn={'新授课':'New lesson','复习课':'Review','讲评课':'Feedback'};
+const $=id=>document.getElementById(id);let lang='cn',page='home',rows=[],currentRow=0,detailRow=0,detailText='',previewText='',busy=false,historyStack=[],retryAction=null,requestToken=0;
+function t(k){return dict[lang][k]||k}function valueLabel(v){return lang==='en'?(stageEn[v]||typeEn[v]||v):v}function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function attr(v){return esc(v)}
+function chooseLang(){let p=new URLSearchParams(location.search).get('lang');let saved=localStorage.getItem('iThinkAir_UiLanguage');if(saved!==null&&saved!=='')return saved==='en'?'en':'cn';if(p==='en'||p==='cn')return p;let ls=navigator.languages;if(!ls||!ls.length)return 'cn';return ls.some(x=>String(x).toLowerCase().startsWith('zh'))?'cn':'en'}
+function setLang(next){lang=next;document.documentElement.lang=next==='cn'?'zh-CN':'en';localStorage.setItem('iThinkAir_UiLanguage',next);document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));document.querySelectorAll('[data-placeholder]').forEach(e=>e.placeholder=t(e.dataset.placeholder));renderForm('create-form');renderForm('edit-form');renderFilters(false);renderStats();renderRecent();renderLibrary();renderPreview();if(detailRow&&$('detail-overlay').classList.contains('open'))renderDetailFields();}
+function fieldHtml(formId,i){let key=FIELDS[i],id=formId+'-'+i,label=t(['topic','subject','stage','type','minutes','goals','profile'][i]);let wide=i>=5?' wide':'';let req=i!==6?' required':'';let input;if(i===2||i===3){let vals=i===2?STAGES:TYPES;input=`<select id="${id}" name="${attr(key)}"${req}><option value="">${esc(label)}</option>${vals.map(v=>`<option value="${attr(v)}">${esc(valueLabel(v))}</option>`).join('')}</select>`}else if(i>=5){input=`<textarea id="${id}" name="${attr(key)}" ${i===6?`placeholder="${attr(t('profileHint'))}"`:''}${req}></textarea>`}else{input=`<input id="${id}" name="${attr(key)}" type="${i===4?'number':'text'}" ${i===4?'min="1" step="1"':''}${req}>`}return `<div class="field${wide}"><label for="${id}">${esc(label)}${i===6?'':' *'}</label>${input}</div>`}
+function renderForm(id){let old=Object.fromEntries(FIELDS.map((_,i)=>[i,$(id+'-'+i)?.value||'']));$(id).innerHTML=`<div class="group-title">${esc(t('info'))}</div><div class="fields">${FIELDS.slice(0,5).map((_,i)=>fieldHtml(id,i)).join('')}</div><div class="group-title">${esc(t('target'))}</div><div class="fields">${FIELDS.slice(5).map((_,i)=>fieldHtml(id,i+5)).join('')}</div>`;for(let i=0;i<7;i++)$(id+'-'+i).value=old[i]}
+function formData(id){let d={};for(let i=0;i<7;i++)d[FIELDS[i]]=$(id+'-'+i).value.trim();if(FIELDS.some((f,i)=>i!==6&&!d[f]))throw Error(t('required'));if(!STAGES.includes(d['学段'])||!TYPES.includes(d['课型']))throw Error(t('invalidOption'));let m=Number(d['课时分钟']);if(!Number.isSafeInteger(m)||m<=0)throw Error(t('invalidMinutes'));d['课时分钟']=m;return d}
+function clearForm(){for(let i=0;i<7;i++)$('create-form-'+i).value='';currentRow=0;previewText='';renderPreview();$('create-error').innerHTML=''}
+function showError(id,msg,fn){retryAction=fn||null;$(id).innerHTML=`<div class="message error">${esc(msg)} ${fn?`<button class="ghost" data-retry="1">${esc(t('retry'))}</button>`:''}</div>`}function toast(s){let e=$('toast');e.textContent=s;e.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.style.display='none',3500)}
+async function api(type,data,payload){let request={type};if(data!==undefined)request.data=data;if(payload!==undefined)request.payload=payload;return await callAppBridge(request)}
+async function loadRows(){let csv=await api('GetTableCSV',SOURCE,FIELDS.join(','));rows=parseCSV(String(csv||'')).filter(r=>r.some(c=>c!=='' )).map((r,i)=>({row:i+1,values:Object.fromEntries(FIELDS.map((f,j)=>[f,r[j]??'']))}));return rows}
+function stamp(type){let cls=type==='新授课'?'new':type==='复习课'?'review':'comment';return `<span class="stamp ${cls}">${esc(valueLabel(type))}</span>`}function summary(v,n){let s=String(v||'');return s.length>n?s.slice(0,n)+'…':s}
+function renderStats(){let defs=[['total',null],['新授课','新授课'],['复习课','复习课'],['讲评课','讲评课']];$('stats').innerHTML=defs.map(([label,type])=>`<button class="stat" data-stat="${attr(type||'all')}"><span class="number">${type?rows.filter(r=>r.values['课型']===type).length:window.totalCount??'—'}</span><span class="label">${esc(type?valueLabel(type):t(label))}</span></button>`).join('')}
+function renderRecent(){$('recent-list').innerHTML=rows.length?rows.slice(0,5).map(r=>`<button class="card recent-card" data-detail="${r.row}"><div class="meta">${stamp(r.values['课型'])}<span>${esc(r.values['学科'])}</span><span>${esc(valueLabel(r.values['学段']))}</span><span>${esc(r.values['课时分钟'])} ${esc(t('unit'))}</span></div><div class="card-title">${esc(r.values['课时主题'])}</div><div class="muted">${esc(summary(r.values['课标与教学目标'],40))}</div></button>`).join(''):`<div class="card empty"><p>${esc(t('none'))}</p><button class="primary" id="first-lesson">${esc(t('first'))}</button></div>`}
+function renderFilters(reset){let a=$('stage-filter'),b=$('type-filter'),oldA=reset?'':a.value,oldB=reset?'':b.value;a.innerHTML=`<option value="">${esc(t('all'))} · ${esc(t('stage'))}</option>`+STAGES.map(v=>`<option value="${attr(v)}">${esc(valueLabel(v))}</option>`).join('');b.innerHTML=`<option value="">${esc(t('all'))} · ${esc(t('type'))}</option>`+TYPES.map(v=>`<option value="${attr(v)}">${esc(valueLabel(v))}</option>`).join('');a.value=oldA;b.value=oldB;if(reset)$('search-input').value=''}
+function renderLibrary(){let q=$('search-input').value.trim().toLocaleLowerCase(),stage=$('stage-filter').value,type=$('type-filter').value;let list=rows.filter(r=>(!q||[r.values['课时主题'],r.values['学科']].some(v=>String(v).toLocaleLowerCase().includes(q)))&&(!stage||r.values['学段']===stage)&&(!type||r.values['课型']===type));$('library-list').innerHTML=list.length?list.map(r=>`<article class="card lesson-card" data-edit-card="${r.row}" tabindex="0"><div class="meta">${stamp(r.values['课型'])}<span>${esc(r.values['学科'])}</span><span>${esc(valueLabel(r.values['学段']))}</span><span>${esc(r.values['课时分钟'])} ${esc(t('unit'))}</span></div><div class="card-title">${esc(r.values['课时主题'])}</div><p><b>${esc(t('goalsLabel'))}：</b>${esc(summary(r.values['课标与教学目标'],140))}</p><p><b>${esc(t('profileLabel'))}：</b>${esc(summary(r.values['班级学情摘要']||t('noProfile'),120))}</p><div class="actions"><button class="secondary" data-detail="${r.row}">${esc(t('view'))}</button><button class="secondary" data-edit="${r.row}">${esc(t('edit'))}</button><button class="danger" data-delete="${r.row}">${esc(t('delete'))}</button></div></article>`).join(''):`<div class="card empty">${esc(t('noMatch'))}</div>`}
+async function refreshAll(){try{await loadRows();$('home-error').innerHTML='';$('library-error').innerHTML='';renderRecent();renderLibrary();renderStats()}catch(e){showError('home-error',t('readFail'),refreshAll);showError('library-error',t('readFail'),refreshAll)}try{let n=Number(await api('GetRecordCount',SOURCE));window.totalCount=Number.isFinite(n)?n:'—';renderStats()}catch(e){window.totalCount='—';renderStats();showError('home-error',t('readFail'),refreshAll)}}
+function navigate(next,add=true,refresh=true){if(next===page&&refresh===false)return;if(add&&next!==page)historyStack.push({page,scroll:window.scrollY});page=next;document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(e=>e.classList.toggle('active',e.dataset.page===page));closeMenu();window.scrollTo(0,0);if(refresh)refreshAll()}
+function closeMenu(){$('mobile-menu').classList.remove('open');$('menu-btn').setAttribute('aria-expanded','false')}
+function renderPreview(){let c=$('preview-content');$('preview-actions').style.display=previewText?'flex':'none';if(previewText){setMarkdown(c,previewText);return}c.innerHTML=`<div class="preview-empty"><div><i class="fa-regular fa-file-lines"></i><p>${esc(t('previewEmpty'))}</p></div></div>`}
+function setMarkdown(el,source){let raw=window.marked?marked.parse(source,{gfm:true,breaks:true}):`<pre>${esc(source)}</pre>`;el.classList.add('markdown');el.innerHTML=window.DOMPurify?DOMPurify.sanitize(raw):`<pre>${esc(source)}</pre>`;el.querySelectorAll('img').forEach(img=>{let src=img.getAttribute('src')||'';let url=src.startsWith('http')?src:'http://' + window.location.hostname + ':3130/download/'+encodeURIComponent(src);img.src=url;let link=document.createElement('a');link.href=url;link.download='';img.parentNode.insertBefore(link,img);link.appendChild(img)})}
+async function createRecord(data){await api('SubmitRecord',TABLE,JSON.stringify(data));currentRow=1;await refreshAll();navigate('design',true,false);await pollLesson(1)}
+async function pollLesson(row){let token=++requestToken;busy=true;$('generate-btn').disabled=true;$('save-copy').disabled=true;previewText='';$('preview-actions').style.display='none';$('preview-content').classList.remove('markdown');$('preview-content').innerHTML=`<div class="waiting"><i class="fa-solid fa-spinner fa-spin"></i><p>${esc(t('wait'))}</p><div class="steps"><span>${esc(t('step1'))}</span><span>${esc(t('step2'))}</span><span>${esc(t('step3'))}</span></div></div>`;try{for(let i=0;i<60&&token===requestToken;i++){await new Promise(resolve=>setTimeout(resolve,2000));let result=String(await api('GetCellValue',SOURCE,'教案/'+row)||'').trim();if(result){previewText=result;renderPreview();return}}if(token===requestToken)$('preview-content').innerHTML=`<div class="message">${esc(t('timeout'))}</div>`}catch(e){if(token===requestToken)showError('create-error',t('readFail'),()=>pollLesson(row))}finally{if(token===requestToken){busy=false;$('generate-btn').disabled=false;$('save-copy').disabled=false}}}
+async function readFields(row,includeLesson){let out={};for(let f of [...FIELDS,...(includeLesson?['教案']:[])])out[f]=await api('GetCellValue',SOURCE,f+'/'+row);return out}
+function openOverlay(id){$(id).classList.add('open');document.body.style.overflow='hidden'}function closeOverlay(id){$(id).classList.remove('open');if(!document.querySelector('.overlay.open'))document.body.style.overflow='';if(id==='edit-overlay')currentRow=0;if(id==='detail-overlay')detailRow=0}
+async function openEdit(row){currentRow=row;openOverlay('edit-overlay');$('edit-error').innerHTML=`<div class="message">${esc(t('loading'))}</div>`;try{let vals=await readFields(row,false);for(let i=0;i<7;i++)$('edit-form-'+i).value=vals[FIELDS[i]]??'';$('edit-error').innerHTML=''}catch(e){showError('edit-error',t('readFail'),()=>openEdit(row))}}
+let detailValues=null;function renderDetailFields(){if(!detailValues)return;let v=detailValues;$('detail-title').textContent=v['课时主题']||'';$('detail-meta').innerHTML=`<span>${esc(v['学科'])}</span><span>${esc(valueLabel(v['学段']))}</span>${stamp(v['课型'])}<span>${esc(v['课时分钟'])} ${esc(t('unit'))}</span>`;$('detail-body').innerHTML=`<h3>${esc(t('goalsLabel'))}</h3><div class="detail-block">${esc(v['课标与教学目标'])}</div><h3>${esc(t('profileLabel'))}</h3><div class="detail-block">${esc(v['班级学情摘要']||t('noProfile'))}</div><h3>${esc(t('preview'))}</h3><div id="detail-markdown"></div>`;if(detailText)setMarkdown($('detail-markdown'),detailText);else $('detail-markdown').innerHTML=`<div class="message">${esc(t('notReady'))}</div>`}
+async function openDetail(row){detailRow=row;openOverlay('detail-overlay');$('detail-title').textContent=t('loading');$('detail-body').innerHTML='';try{detailValues=await readFields(row,true);detailText=String(detailValues['教案']||'');renderDetailFields()}catch(e){$('detail-title').textContent=t('readFail');showError('detail-body',t('readFail'),()=>openDetail(row))}}
+async function removeRecord(row){if(!confirm(t('confirmDelete')))return;try{await api('DeleteRecord',SOURCE,row.toString());if(currentRow===row)closeOverlay('edit-overlay');if(detailRow===row)closeOverlay('detail-overlay');await refreshAll();toast(t('deleted'))}catch(e){let target=$('detail-overlay').classList.contains('open')?'detail-body':'library-error';showError(target,t('readFail'),()=>removeRecord(row))}}
+async function copyText(s){try{await navigator.clipboard.writeText(s);toast(t('copied'))}catch(e){try{let x=document.createElement('textarea');x.value=s;document.body.appendChild(x);x.select();if(!document.execCommand('copy'))throw Error();x.remove();toast(t('copied'))}catch(_){toast(t('copyFail'))}}}
+function newDesign(){clearForm();navigate('design')}
+function airBack(){if($('detail-overlay').classList.contains('open')){closeOverlay('detail-overlay');return 'false'}if($('edit-overlay').classList.contains('open')){closeOverlay('edit-overlay');return 'false'}if($('mobile-menu').classList.contains('open')){closeMenu();return 'false'}if(historyStack.length){let h=historyStack.pop();navigate(h.page,false);requestAnimationFrame(()=>window.scrollTo(0,h.scroll));return 'false'}return 'true'}window.airBack=airBack;
+async function initialize(){lang=chooseLang();renderForm('create-form');renderForm('edit-form');renderFilters(true);setLang(lang);renderPreview();try{let m=await api('模式');if(String(m).includes('暗色'))document.body.classList.add('dark')}catch(e){if(window.matchMedia?.('(prefers-color-scheme: dark)').matches)document.body.classList.add('dark')}await refreshAll()}
+document.addEventListener('click',async e=>{let x=e.target.closest('[data-page],[data-detail],[data-edit],[data-delete],[data-close],[data-retry],[data-stat],[data-edit-card],button');if(!x)return;if(x.dataset.page){navigate(x.dataset.page);return}if(x.dataset.detail){e.stopPropagation();await openDetail(Number(x.dataset.detail));return}if(x.dataset.edit){e.stopPropagation();await openEdit(Number(x.dataset.edit));return}if(x.dataset.delete){e.stopPropagation();await removeRecord(Number(x.dataset.delete));return}if(x.dataset.editCard){await openEdit(Number(x.dataset.editCard));return}if(x.dataset.close){closeOverlay(x.dataset.close+'-overlay');return}if(x.dataset.retry){if(retryAction)await retryAction();return}if(x.dataset.stat){renderFilters(true);if(x.dataset.stat!=='all')$('type-filter').value=x.dataset.stat;navigate('library');renderLibrary();return}switch(x.id){case 'brand':try{parent.closeFullHtml(false)}catch(_){ }break;case 'menu-btn':$('mobile-menu').classList.toggle('open');x.setAttribute('aria-expanded',$('mobile-menu').classList.contains('open'));break;case 'lang-btn':case 'mobile-lang':setLang(lang==='cn'?'en':'cn');closeMenu();break;case 'start-design':case 'library-new':case 'first-lesson':newDesign();break;case 'clear-form':case 'new-again':clearForm();break;case 'copy-preview':await copyText(previewText);break;case 'detail-copy':await copyText(detailText);break;case 'detail-edit':{let r=detailRow;closeOverlay('detail-overlay');navigate('library');await openEdit(r);break}case 'detail-delete':await removeRecord(detailRow);break;case 'clear-filters':renderFilters(true);renderLibrary();break;case 'save-copy':if(busy)return;try{let data=formData('edit-form');x.disabled=true;await api('SubmitRecord',TABLE,JSON.stringify(data));closeOverlay('edit-overlay');currentRow=1;await refreshAll();navigate('design',true,false);await pollLesson(1)}catch(err){showError('edit-error',err.message||t('submitFail'),null);openOverlay('edit-overlay')}finally{x.disabled=false}break}});
+document.addEventListener('click',e=>{if(!e.target.closest('#mobile-menu,#menu-btn'))closeMenu();if(e.target.classList.contains('overlay'))closeOverlay(e.target.id)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('detail-overlay').classList.contains('open'))closeOverlay('detail-overlay');else if($('edit-overlay').classList.contains('open'))closeOverlay('edit-overlay');else closeMenu()}if(e.key==='Enter'&&e.target.matches('[data-edit-card]'))openEdit(Number(e.target.dataset.editCard))});
+$('create-form').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;try{let data=formData('create-form');$('create-error').innerHTML='';$('generate-btn').disabled=true;await createRecord(data)}catch(err){showError('create-error',err.message||t('submitFail'),null)}finally{if(!busy)$('generate-btn').disabled=false}});
+$('edit-form').addEventListener('submit',async e=>{e.preventDefault();if(busy||!currentRow)return;try{let data=formData('edit-form');$('save-edit').disabled=true;for(let f of FIELDS)await api('SetCellValue',SOURCE,f+'/'+currentRow+'/'+String(data[f]));closeOverlay('edit-overlay');await refreshAll();toast(t('saved'))}catch(err){showError('edit-error',err.message||t('saveFail'),null)}finally{$('save-edit').disabled=false}});
+for(let id of ['search-input','stage-filter','type-filter'])$(id).addEventListener(id==='search-input'?'input':'change',renderLibrary);
+document.addEventListener('focusin',e=>{if(e.target.matches('input,textarea,select'))setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),250)});if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{let e=document.activeElement;if(e?.matches('input,textarea,select'))setTimeout(()=>e.scrollIntoView({block:'center',behavior:'smooth'}),100)});
+(async()=>{await initialize()})();
+</script></body></html>

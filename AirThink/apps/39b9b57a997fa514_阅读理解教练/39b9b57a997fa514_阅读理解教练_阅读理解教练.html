@@ -1,0 +1,3364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" id="metaTheme" content="#1b2742">
+<title>阅读理解教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+<style>
+:root {
+  --paper: #f3ead8;
+  --paper-2: #e9dcc4;
+  --card: #fffaf2;
+  --field: #fffdf8;
+  --ink: #1b2742;
+  --ink-soft: #4d5b78;
+  --cinnabar: #c44736;
+  --cinnabar-soft: #f8e3de;
+  --bamboo: #2c7a52;
+  --bamboo-soft: #e3f3ea;
+  --line: #e0d2ba;
+  --nav: #1b2742;
+  --on-nav: #ffffff;
+  --shadow: 0 12px 30px rgba(27, 39, 66, .08);
+  --serif: "Iowan Old Style", Palatino, "Palatino Linotype", "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+  --sans: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --kb: 0px;
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  --paper: #12161e;
+  --paper-2: #1c2431;
+  --card: #1d2533;
+  --field: #151c28;
+  --ink: #f4ecdf;
+  --ink-soft: #c5cedf;
+  --cinnabar: #ef7b68;
+  --cinnabar-soft: #3c2624;
+  --bamboo: #86d3ab;
+  --bamboo-soft: #173328;
+  --line: #334158;
+  --nav: #0e141e;
+  --on-nav: #ffffff;
+  --shadow: 0 14px 32px rgba(0, 0, 0, .32);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at top, rgba(255, 248, 230, .75), transparent 52%),
+    repeating-linear-gradient(0deg, rgba(90, 66, 30, .04) 0 1px, transparent 1px 32px);
+  padding-top: calc(58px + env(safe-area-inset-top));
+}
+html[data-theme="dark"] body {
+  background-image:
+    radial-gradient(ellipse at top, rgba(70, 52, 30, .28), transparent 48%),
+    repeating-linear-gradient(0deg, rgba(255, 236, 210, .04) 0 1px, transparent 1px 32px);
+}
+body.modal-open { overflow: hidden; }
+input, select, textarea { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--cinnabar); outline-offset: 2px; }
+.paper-card, .dialog, .pre, h3 { overflow-wrap: break-word; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 700; line-height: 1.3; }
+h1 { font-size: 34px; margin: 0 0 8px; }
+h2 { font-size: 26px; margin: 0 0 8px; }
+h3 { font-size: 18px; margin: 8px 0; }
+p { margin: 0; }
+#topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  background: var(--nav);
+  padding-top: env(safe-area-inset-top);
+}
+#topNav {
+  position: relative;
+  z-index: 1001;
+  background: var(--nav);
+  color: var(--on-nav);
+}
+#navRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 58px;
+  padding: 0 14px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  background: transparent;
+  color: #fff;
+  border: 0;
+  padding: 8px 4px;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+}
+#navLinks {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+.nav-tab {
+  background: transparent;
+  color: #fff;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 16px 12px 13px;
+  white-space: nowrap;
+}
+.nav-tab.active { border-bottom-color: var(--cinnabar); }
+.nav-tools { display: flex; align-items: center; gap: 8px; margin-left: 8px; flex: 0 0 auto; }
+.lang-toggle { display: flex; border: 1px solid rgba(255,255,255,.4); border-radius: 999px; overflow: hidden; }
+.lang-toggle button, .mobile-lang button {
+  background: transparent;
+  color: #fff;
+  border: 0;
+  padding: 6px 10px;
+}
+.lang-toggle button.active, .mobile-lang button.active { background: var(--cinnabar); }
+#btnHamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  margin-left: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.35);
+  background: transparent;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+}
+body.hamburger-mode #navLinks, body.hamburger-mode #btnLang { display: none; }
+body.hamburger-mode #btnHamburger { display: inline-flex; }
+body.hamburger-mode .nav-tools { margin-left: auto; }
+#navMobileMenu {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--nav);
+  border-top: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 16px 28px rgba(0,0,0,.24);
+  padding: 8px;
+  z-index: 1002;
+}
+#navMobileMenu.open { display: block; }
+.mobile-tab {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  white-space: nowrap;
+}
+.mobile-tab.active { background: rgba(196, 71, 54, .22); box-shadow: inset 3px 0 0 var(--cinnabar); }
+.mobile-lang { display: flex; gap: 8px; padding: 8px 4px 4px; }
+.mobile-lang button { flex: 1; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; }
+.page-wrap { width: min(1080px, calc(100% - 32px)); margin: 20px auto 32px; }
+.page-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+.lead { color: var(--ink-soft); }
+.home-top, .practice-grid, .edit-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 18px;
+  align-items: start;
+}
+.steps, .stats-col { display: grid; gap: 10px; }
+.step { display: flex; gap: 10px; align-items: center; }
+.step-no {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--cinnabar); color: #fff; font-family: var(--serif); flex: none;
+}
+.paper-card, .stat-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.paper-card { padding: 16px 16px 16px 18px; transition: transform .18s ease, box-shadow .18s ease; }
+.paper-card:hover, .stat-card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(27, 39, 66, .12); }
+.stat-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px 14px 12px 16px;
+  color: inherit;
+}
+#statPrimary { border-left-color: var(--bamboo); }
+#statJunior { border-left-color: var(--cinnabar); }
+.stat-label { display: block; color: var(--ink-soft); font-size: 14px; }
+.stat-num { display: block; font-family: var(--serif); font-size: 36px; line-height: 1.15; }
+.ratio-box { margin-top: 2px; }
+.ratio-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--line); }
+.ratio-seg { height: 100%; }
+.ratio-seg.primary { background: var(--bamboo); }
+.ratio-seg.junior { background: var(--cinnabar); }
+.ratio-label { margin-top: 6px; color: var(--ink-soft); font-size: 13px; }
+.section-head { margin: 22px 0 10px; }
+.lamp { color: #e2a33a; margin-right: 6px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--paper);
+  transition: transform .15s ease, filter .15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn.primary { background: var(--cinnabar); color: #fff; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn.danger { background: transparent; color: var(--cinnabar); border-color: var(--cinnabar); }
+.btn.small { padding: 7px 12px; font-size: 14px; }
+.btn-row, .card-top, .card-actions, .detail-actions, .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn-row { margin-top: 12px; }
+.field { margin-bottom: 14px; }
+.field-label { display: block; font-weight: 700; margin-bottom: 6px; }
+input, select, textarea {
+  width: 100%;
+  font-size: 16px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+textarea { display: block; resize: vertical; min-height: 96px; line-height: 1.7; }
+.paper-area {
+  min-height: 220px;
+  line-height: 32px;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(130, 98, 46, .14) 32px);
+}
+.seg { display: flex; gap: 8px; flex-wrap: wrap; }
+.seg-btn {
+  flex: 1;
+  min-width: 120px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 10px 12px;
+}
+.seg-btn.active { background: var(--cinnabar); border-color: var(--cinnabar); color: #fff; }
+.count-line, .hint, .note, .muted { color: var(--ink-soft); font-size: 13px; }
+.hint { min-height: 1.2em; margin: 6px 0 0; }
+.tips { list-style: none; padding: 0; margin: 8px 0 0; }
+.tips li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.tips i { color: var(--bamboo); margin-top: 3px; }
+.wait-box { text-align: center; padding: 28px 8px; }
+.wait-lamp { font-size: 30px; color: #e2a33a; animation: lampPulse 1.4s ease-in-out infinite; }
+@keyframes lampPulse { 50% { opacity: .35; transform: scale(.92); } }
+.coach-card { border-left-color: var(--bamboo); }
+@media (min-width: 861px) { .coach-card { position: sticky; top: 76px; } }
+.search-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 14px;
+  margin: 8px 0 12px;
+}
+.search-label input { border: 0; background: transparent; padding: 10px 0; }
+.search-label i { color: var(--ink-soft); }
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 8px 14px;
+}
+.chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+#bookList, #recentList { display: grid; gap: 14px; }
+#bookList { grid-template-columns: 1fr 1fr; }
+.card-hit { cursor: pointer; }
+.card-line { margin: 0 0 6px; color: var(--ink-soft); font-size: 14px; }
+.card-line b { color: var(--ink); font-weight: 700; }
+.card-actions { margin-top: 10px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+}
+.badge.ready, .badge.primary { background: var(--bamboo-soft); color: var(--bamboo); }
+.badge.pending, .badge.junior { background: var(--cinnabar-soft); color: var(--cinnabar); }
+.empty-card { text-align: left; }
+.empty-card p { margin-bottom: 12px; }
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(16, 20, 28, .52);
+  z-index: 2000;
+}
+.overlay.show { display: flex; }
+.dialog {
+  background-color: var(--card);
+  color: var(--ink);
+  width: min(920px, 100%);
+  max-height: calc(100vh - 56px);
+  overflow: auto;
+  border-radius: 18px;
+  border-left: 4px solid var(--ink);
+  box-shadow: 0 24px 60px rgba(0,0,0,.28);
+  opacity: 1;
+}
+.dialog.narrow { width: min(440px, 100%); }
+.dialog-head, .dialog-foot { padding: 16px 18px; }
+.dialog-head {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+.dialog-body { padding: 0 18px 18px; }
+.dialog-foot { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.detail-k { font-size: 13px; color: var(--ink-soft); margin: 12px 0 4px; }
+.pre { white-space: pre-wrap; word-break: break-word; margin: 0 0 8px; }
+.markdown-body, .table-scroll { overflow-x: auto; max-width: 100%; }
+.markdown-body { line-height: 1.75; }
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { font-family: var(--serif); margin: 1em 0 .4em; }
+.markdown-body p, .markdown-body ul, .markdown-body ol, .markdown-body pre, .markdown-body blockquote, .markdown-body table { margin: 0 0 12px; }
+.markdown-body ul, .markdown-body ol { padding-left: 1.3em; }
+.markdown-body pre, .markdown-body code { font-family: Consolas, "Courier New", monospace; }
+.markdown-body pre { padding: 12px; background: var(--paper-2); border-radius: 10px; }
+.markdown-body code { font-size: .92em; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: 8px; }
+.markdown-body blockquote { margin-left: 0; padding: 2px 0 2px 12px; border-left: 3px solid var(--cinnabar); color: var(--ink-soft); }
+.markdown-body a { color: var(--cinnabar); }
+.markdown-body table { border-collapse: collapse; min-width: 100%; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.markdown-body .task { list-style: none; margin-left: -1.2em; }
+.md-img-link { display: inline-block; }
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(12px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: .2s ease;
+  z-index: 4000;
+  max-width: calc(100% - 32px);
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (max-width: 860px) {
+  .home-top, .practice-grid, .edit-grid, #bookList { grid-template-columns: 1fr; }
+  h1 { font-size: 28px; }
+  .page-head { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .page-wrap { width: min(1080px, calc(100% - 24px)); padding-bottom: 120px; }
+  .overlay.form-overlay { padding: 12px; }
+  .overlay.form-overlay .dialog { max-height: calc(100vh - 24px); }
+  .overlay.md-overlay { padding: 0; }
+  .overlay.md-overlay .dialog {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  .dialog-body { padding-bottom: calc(140px + var(--kb, 0px)); }
+  .btn-row .primary { width: 100%; }
+}
+</style>
+</head>
+<body>
+<header id="topBar">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div id="navRow">
+      <button type="button" id="navBrand" class="brand">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span id="navAppName" data-i18n="appName">阅读理解教练</span>
+      </button>
+      <div id="navLinks">
+        <button type="button" class="nav-tab" data-page="home" data-i18n="navHome">首页</button>
+        <button type="button" class="nav-tab" data-page="practice" data-i18n="navPractice">开始练习</button>
+        <button type="button" class="nav-tab" data-page="book" data-i18n="navBook">练习册</button>
+      </div>
+      <div class="nav-tools">
+        <div id="btnLang" class="lang-toggle" role="group">
+          <button type="button" id="langBtnZh">中文</button>
+          <button type="button" id="langBtnEn">EN</button>
+        </div>
+        <button type="button" id="btnHamburger" aria-expanded="false" data-i18n-aria="menuLabel" aria-label="菜单">
+          <i id="hamburgerIcon" class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <div id="navMobileMenu">
+      <button type="button" class="mobile-tab" data-page="home" data-i18n="navHome">首页</button>
+      <button type="button" class="mobile-tab" data-page="practice" data-i18n="navPractice">开始练习</button>
+      <button type="button" class="mobile-tab" data-page="book" data-i18n="navBook">练习册</button>
+      <div class="mobile-lang">
+        <button type="button" id="mobileLangZh">中文</button>
+        <button type="button" id="mobileLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main class="page-wrap">
+  <section id="pageHome" class="page">
+    <div class="home-top">
+      <div>
+        <h1><i class="fa-solid fa-lightbulb lamp" aria-hidden="true"></i><span data-i18n="homeTitle">阅读理解教练</span></h1>
+        <p class="lead" data-i18n="homeDesc">贴上一篇现代文和题目，写下你的作答。教练先帮你读懂文章，再按考点和原文依据看答题要点。</p>
+        <div class="steps">
+          <div class="paper-card step"><span class="step-no">1</span><span data-i18n="step1">贴上文章和题目</span></div>
+          <div class="paper-card step"><span class="step-no">2</span><span data-i18n="step2">写下作答，还没写也可以</span></div>
+          <div class="paper-card step"><span class="step-no">3</span><span data-i18n="step3">告诉教练你想突破的地方</span></div>
+        </div>
+        <button type="button" id="btnHomeStart" class="btn primary"><i class="fa-solid fa-pen" aria-hidden="true"></i><span data-i18n="btnStart">开始一次练习</span></button>
+      </div>
+      <div class="stats-col">
+        <button type="button" class="stat-card" id="statTotal">
+          <span class="stat-label" data-i18n="statTotal">练习次数</span>
+          <span class="stat-num" id="statTotalNum">0</span>
+        </button>
+        <button type="button" class="stat-card" id="statPrimary">
+          <span class="stat-label" data-i18n="statPrimary">小学高段</span>
+          <span class="stat-num" id="statPrimaryNum">0</span>
+        </button>
+        <button type="button" class="stat-card" id="statJunior">
+          <span class="stat-label" data-i18n="statJunior">初中</span>
+          <span class="stat-num" id="statJuniorNum">0</span>
+        </button>
+        <div class="ratio-box">
+          <div id="ratioBar" class="ratio-bar" hidden>
+            <div id="ratioPrimary" class="ratio-seg primary"></div>
+            <div id="ratioJunior" class="ratio-seg junior"></div>
+          </div>
+          <p id="ratioLabel" class="ratio-label">还没有练习</p>
+        </div>
+      </div>
+    </div>
+    <div class="section-head">
+      <h2 data-i18n="recentTitle">最近练习</h2>
+      <p class="lead" data-i18n="recentDesc">最新提交的排在前面</p>
+    </div>
+    <div id="recentEmpty" class="paper-card empty-card">
+      <p id="recentEmptyText">还没有练习，先去开始一次阅读练习吧。</p>
+      <button type="button" id="btnRecentStart" class="btn primary" data-i18n="btnStart">开始一次练习</button>
+    </div>
+    <div id="recentList" hidden></div>
+  </section>
+  <section id="pagePractice" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="practiceTitle">开始练习</h1>
+        <p class="lead" data-i18n="practiceDesc">把文章和题目贴进来。你还没写答案也可以提交，教练会先带你读懂文本，不会直接给原题答案。</p>
+      </div>
+      <button type="button" id="btnGoBook" class="btn ghost"><i class="fa-solid fa-book" aria-hidden="true"></i><span data-i18n="goBook">去练习册</span></button>
+    </div>
+    <div class="practice-grid">
+      <form id="formStartPractice" class="paper-card" novalidate>
+        <h2 data-i18n="practiceTitle">开始练习</h2>
+        <div class="field">
+          <span class="field-label" data-i18n="fieldStage">学段</span>
+          <div class="seg" id="formStartPractice_stage" role="radiogroup">
+            <input type="hidden" id="formStartPractice_学段" name="学段" value="">
+            <button type="button" class="seg-btn" data-value="小学高段" data-i18n="statPrimary">小学高段</button>
+            <button type="button" class="seg-btn" data-value="初中" data-i18n="statJunior">初中</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="formStartPractice_阅读材料与题目" data-i18n="fieldMaterial">阅读材料与题目</label>
+          <textarea class="paper-area" id="formStartPractice_阅读材料与题目" name="阅读材料与题目" data-i18n-ph="phMaterial" placeholder="把文章和题目一起贴在这里"></textarea>
+          <p id="practiceCount" class="count-line">0 字</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="formStartPractice_学生作答" data-i18n="fieldAnswer">学生作答</label>
+          <textarea id="formStartPractice_学生作答" name="学生作答" data-i18n-ph="phAnswer" placeholder="写下你的答案；还没写可以先留空"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="formStartPractice_学习需求" data-i18n="fieldNeed">学习需求</label>
+          <textarea id="formStartPractice_学习需求" name="学习需求" data-i18n-ph="phNeed" placeholder="例如想知道概括题怎么找中心，或想把理由写完整"></textarea>
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btnLoadFile" class="btn ghost"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="btnLoadFile">从文本文件载入</span></button>
+          <button type="button" id="btnClearPractice" class="btn ghost"><span data-i18n="btnClear">清空</span></button>
+          <button type="button" id="btnGenerate" class="btn primary" disabled><i class="fa-solid fa-feather" aria-hidden="true"></i><span data-i18n="btnGenerate">生成阅读指导</span></button>
+        </div>
+        <p id="generateHint" class="hint">先选择学段，并贴上文章和题目。</p>
+      </form>
+      <aside id="coachPanel" class="paper-card coach-card">
+        <h2 data-i18n="coachTitle">教练批注</h2>
+        <ul id="coachTips" class="tips">
+          <li><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="tip1">先读懂写了什么</span></li>
+          <li><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span data-i18n="tip2">答题要回到原文找依据</span></li>
+          <li><i class="fa-solid fa-comment" aria-hidden="true"></i><span data-i18n="tip3">没写答案时，教练只会引导，不会直接报答案</span></li>
+        </ul>
+        <div id="coachWait" class="wait-box" hidden>
+          <i class="fa-solid fa-lightbulb wait-lamp" aria-hidden="true"></i>
+          <p data-i18n="waitMsg">教练正在逐段阅读你的材料和作答</p>
+        </div>
+        <div id="coachTimeout" hidden>
+          <p data-i18n="timeoutMsg">教练还在写，可以稍后到练习册刷新</p>
+          <button type="button" id="btnRetry" class="btn ghost"><span data-i18n="btnRetry">再看一次</span></button>
+        </div>
+        <div id="coachResult" class="markdown-body" hidden></div>
+        <div id="coachActions" class="btn-row" hidden>
+          <button type="button" id="btnCopyGuide" class="btn ghost"><i class="fa-solid fa-copy" aria-hidden="true"></i><span data-i18n="btnCopy">复制指导</span></button>
+          <button type="button" id="btnViewRecord" class="btn primary"><span data-i18n="btnViewRecord">查看这条记录</span></button>
+        </div>
+      </aside>
+    </div>
+  </section>
+  <section id="pageBook" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="bookTitle">练习册</h1>
+        <p class="lead" data-i18n="bookDesc">回看每一次练习。点卡片可以修改材料和作答</p>
+      </div>
+      <button type="button" id="btnNewPractice" class="btn primary"><span data-i18n="btnNew">+ 新的练习</span></button>
+    </div>
+    <label class="search-label" for="bookSearch">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input id="bookSearch" name="bookSearch" type="search" data-i18n-ph="searchPh" placeholder="搜索材料、作答或学习需求" autocomplete="off">
+    </label>
+    <div id="bookFilters" class="filters">
+      <button type="button" class="chip active" data-filter="all" data-i18n="filterAll">全部</button>
+      <button type="button" class="chip" data-filter="小学高段" data-i18n="statPrimary">小学高段</button>
+      <button type="button" class="chip" data-filter="初中" data-i18n="statJunior">初中</button>
+    </div>
+    <div id="bookEmpty" class="paper-card empty-card" hidden>
+      <p id="bookEmptyText"></p>
+      <button type="button" id="btnClearFilter" class="btn ghost" data-i18n="btnClearFilter">清空筛选</button>
+      <button type="button" id="btnEmptyStart" class="btn primary" data-i18n="btnStart">开始一次练习</button>
+    </div>
+    <div id="bookList"></div>
+  </section>
+</main>
+<div id="detailOverlay" class="overlay md-overlay" aria-hidden="true">
+  <div id="detailDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-head">
+      <div>
+        <h2 id="detailTitle" data-i18n="btnDetail">查看详情</h2>
+        <p id="detailPosition" class="note"></p>
+      </div>
+      <button type="button" id="btnDetailClose" class="btn ghost"><span data-i18n="detailClose">关闭</span></button>
+    </div>
+    <div class="dialog-body">
+      <div class="detail-k" data-i18n="fieldStage">学段</div>
+      <div id="detailStage" class="pre"></div>
+      <div class="detail-k" data-i18n="fieldMaterial">阅读材料与题目</div>
+      <div id="detailMaterial" class="pre"></div>
+      <div class="detail-k" data-i18n="fieldAnswer">学生作答</div>
+      <div id="detailAnswer" class="pre"></div>
+      <div class="detail-k" data-i18n="fieldNeed">学习需求</div>
+      <div id="detailNeed" class="pre"></div>
+      <div class="detail-k" data-i18n="fieldGuide">阅读指导</div>
+      <div id="detailGuide" class="markdown-body"></div>
+      <div class="detail-actions">
+        <button type="button" id="btnDetailPrev" class="btn ghost"><span data-i18n="detailPrev">上一条</span></button>
+        <button type="button" id="btnDetailNext" class="btn ghost"><span data-i18n="detailNext">下一条</span></button>
+        <button type="button" id="btnDetailEdit" class="btn primary"><span data-i18n="detailEdit">去修改</span></button>
+        <button type="button" id="btnDetailCopy" class="btn ghost"><span data-i18n="btnCopy">复制指导</span></button>
+        <button type="button" id="btnDetailDelete" class="btn danger"><span data-i18n="btnDelete">删除</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="editOverlay" class="overlay form-overlay" aria-hidden="true">
+  <div id="editDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <form id="formEditPractice" novalidate>
+      <div class="dialog-head">
+        <h2 id="editTitle" data-i18n="editTitle">修改练习</h2>
+        <button type="button" id="btnEditCancel" class="btn ghost"><span data-i18n="btnCancel">取消</span></button>
+      </div>
+      <div class="dialog-body">
+        <p class="note" data-i18n="editNote">保存只会改你写下的内容，不会自动重写教练指导</p>
+        <p id="editStatus" class="note"></p>
+        <div class="edit-grid">
+          <div>
+            <div class="field">
+              <span class="field-label" data-i18n="fieldStage">学段</span>
+              <div class="seg" id="formEditPractice_stage" role="radiogroup">
+                <input type="hidden" id="formEditPractice_学段" name="学段" value="">
+                <button type="button" class="seg-btn" data-value="小学高段" data-i18n="statPrimary">小学高段</button>
+                <button type="button" class="seg-btn" data-value="初中" data-i18n="statJunior">初中</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="formEditPractice_阅读材料与题目" data-i18n="fieldMaterial">阅读材料与题目</label>
+              <textarea class="paper-area" id="formEditPractice_阅读材料与题目" name="阅读材料与题目" data-i18n-ph="phMaterial" placeholder="把文章和题目一起贴在这里"></textarea>
+              <p id="editCount" class="count-line">0 字</p>
+            </div>
+            <div class="field">
+              <label class="field-label" for="formEditPractice_学生作答" data-i18n="fieldAnswer">学生作答</label>
+              <textarea id="formEditPractice_学生作答" name="学生作答" data-i18n-ph="phAnswer" placeholder="写下你的答案；还没写可以先留空"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label" for="formEditPractice_学习需求" data-i18n="fieldNeed">学习需求</label>
+              <textarea id="formEditPractice_学习需求" name="学习需求" data-i18n-ph="phNeed" placeholder="例如想知道概括题怎么找中心，或想把理由写完整"></textarea>
+            </div>
+          </div>
+          <div>
+            <div class="field-label" data-i18n="fieldGuide">阅读指导</div>
+            <div id="editWait" class="wait-box" hidden>
+              <i class="fa-solid fa-lightbulb wait-lamp" aria-hidden="true"></i>
+              <p data-i18n="waitMsg">教练正在逐段阅读你的材料和作答</p>
+            </div>
+            <div id="editTimeout" hidden>
+              <p data-i18n="timeoutMsg">教练还在写，可以稍后到练习册刷新</p>
+              <button type="button" id="btnEditRetry" class="btn ghost"><span data-i18n="btnRetry">再看一次</span></button>
+            </div>
+            <div id="formEditPractice_阅读指导" class="markdown-body"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btnEditLoadFile" class="btn ghost"><span data-i18n="btnLoadFile">从文本文件载入</span></button>
+          <button type="button" id="btnEditSave" class="btn primary" disabled><span data-i18n="btnSave">保存修改</span></button>
+          <button type="button" id="btnEditRegen" class="btn ghost" disabled><span data-i18n="btnRegen">按当前内容再请教练指导</span></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="confirmOverlay" class="overlay form-overlay" aria-hidden="true">
+  <div id="confirmDialog" class="dialog narrow" role="dialog" aria-modal="true" aria-labelledby="confirmMessage">
+    <div class="dialog-body">
+      <h2 id="confirmMessage">确定删除这条练习吗？删除后不能恢复</h2>
+    </div>
+    <div class="dialog-foot">
+      <button type="button" id="btnConfirmCancel" class="btn ghost"><span data-i18n="btnCancel">取消</span></button>
+      <button type="button" id="btnConfirmOk" class="btn primary"><span data-i18n="confirmOk">确定</span></button>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("39b9b57a997fa514_阅读理解教练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const DATA_SOURCE = "阅读练习/默认表格";
+const TABLE_NAME = "阅读练习";
+const DOWNLOAD_PREFIX = "https://www.ithinkair.com:3031/download/";
+const I18N = {
+  zh: {
+    appName: "阅读理解教练",
+    navHome: "首页",
+    navPractice: "开始练习",
+    navBook: "练习册",
+    homeTitle: "阅读理解教练",
+    homeDesc: "贴上一篇现代文和题目，写下你的作答。教练先帮你读懂文章，再按考点和原文依据看答题要点。",
+    step1: "贴上文章和题目",
+    step2: "写下作答，还没写也可以",
+    step3: "告诉教练你想突破的地方",
+    btnStart: "开始一次练习",
+    statTotal: "练习次数",
+    statPrimary: "小学高段",
+    statJunior: "初中",
+    ratioEmpty: "还没有练习",
+    ratioText: "小学高段 {p} · 初中 {j}",
+    recentTitle: "最近练习",
+    recentDesc: "最新提交的排在前面",
+    hasGuide: "已有指导",
+    guidePending: "指导生成中",
+    recentEmpty: "还没有练习，先去开始一次阅读练习吧。",
+    practiceTitle: "开始练习",
+    practiceDesc: "把文章和题目贴进来。你还没写答案也可以提交，教练会先带你读懂文本，不会直接给原题答案。",
+    goBook: "去练习册",
+    fieldStage: "学段",
+    fieldMaterial: "阅读材料与题目",
+    fieldAnswer: "学生作答",
+    fieldNeed: "学习需求",
+    fieldGuide: "阅读指导",
+    phMaterial: "把文章和题目一起贴在这里",
+    phAnswer: "写下你的答案；还没写可以先留空",
+    phNeed: "例如想知道概括题怎么找中心，或想把理由写完整",
+    wordCount: "{n} 字",
+    btnLoadFile: "从文本文件载入",
+    btnClear: "清空",
+    btnGenerate: "生成阅读指导",
+    generateHint: "先选择学段，并贴上文章和题目。",
+    coachTitle: "教练批注",
+    waitMsg: "教练正在逐段阅读你的材料和作答",
+    timeoutMsg: "教练还在写，可以稍后到练习册刷新",
+    btnRetry: "再看一次",
+    tip1: "先读懂写了什么",
+    tip2: "答题要回到原文找依据",
+    tip3: "没写答案时，教练只会引导，不会直接报答案",
+    btnCopy: "复制指导",
+    btnViewRecord: "查看这条记录",
+    copied: "已复制",
+    copyFail: "没有复制成功，请再试一次",
+    fileFail: "请选择txt或md等文本文件",
+    bookTitle: "练习册",
+    bookDesc: "回看每一次练习。点卡片可以修改材料和作答",
+    btnNew: "+ 新的练习",
+    searchPh: "搜索材料、作答或学习需求",
+    filterAll: "全部",
+    noMatch: "没有找到这样的练习",
+    btnClearFilter: "清空筛选",
+    btnDetail: "查看详情",
+    btnEdit: "编辑",
+    btnDelete: "删除",
+    btnRefreshGuide: "刷新指导",
+    confirmDelete: "确定删除这条练习吗？删除后不能恢复",
+    confirmOk: "确定",
+    editTitle: "修改练习",
+    editNote: "保存只会改你写下的内容，不会自动重写教练指导",
+    btnSave: "保存修改",
+    saved: "已保存",
+    btnRegen: "按当前内容再请教练指导",
+    btnCancel: "取消",
+    detailClose: "关闭",
+    detailEdit: "去修改",
+    detailPrev: "上一条",
+    detailNext: "下一条",
+    guideEmpty: "指导还在生成",
+    deleted: "已删除",
+    saveFail: "保存没有成功，请再试一次",
+    submitFail: "提交没有成功，请再试一次",
+    deleteFail: "删除没有成功，请再试一次",
+    loadFail: "这一条没有读出来，请再试一次",
+    needStageMaterial: "请先选择学段，并贴上阅读材料与题目",
+    answerEmpty: "还没写答案",
+    needEmpty: "还没写学习需求",
+    materialEmpty: "还没有材料",
+    position: "第 {n} 条",
+    regenNote: "这是刚提交的新练习。指导会显示在右边。",
+    menuLabel: "菜单",
+    loading: "正在读取…"
+  },
+  en: {
+    appName: "Reading Coach",
+    navHome: "Home",
+    navPractice: "Start",
+    navBook: "Notebook",
+    homeTitle: "Reading Coach",
+    homeDesc: "Paste a passage and its questions, then write your answer. The coach helps you understand the text first, then looks at the key points and the evidence in the passage.",
+    step1: "Paste the passage and the questions",
+    step2: "Write your answer, or leave it blank",
+    step3: "Tell the coach what you want to improve",
+    btnStart: "Start a practice",
+    statTotal: "Practices",
+    statPrimary: "Upper elementary",
+    statJunior: "Junior high",
+    ratioEmpty: "No practice yet",
+    ratioText: "Upper elementary {p} · Junior high {j}",
+    recentTitle: "Recent practice",
+    recentDesc: "The newest one is first",
+    hasGuide: "Guide ready",
+    guidePending: "Guide is being written",
+    recentEmpty: "No practice yet. Start a reading practice first.",
+    practiceTitle: "Start practice",
+    practiceDesc: "Paste the passage and the questions. You can submit before you write an answer. The coach will help you understand the text and will not give the answer away.",
+    goBook: "Open notebook",
+    fieldStage: "Level",
+    fieldMaterial: "Passage and questions",
+    fieldAnswer: "Your answer",
+    fieldNeed: "What you want to work on",
+    fieldGuide: "Reading guide",
+    phMaterial: "Paste the passage and the questions here",
+    phAnswer: "Write your answer. You can leave this blank.",
+    phNeed: "For example: how to find the main idea, or how to give a full reason",
+    wordCount: "{n} characters",
+    btnLoadFile: "Load a text file",
+    btnClear: "Clear",
+    btnGenerate: "Make a reading guide",
+    generateHint: "Choose a level and paste the passage first.",
+    coachTitle: "Coach notes",
+    waitMsg: "The coach is reading your passage and answer, part by part",
+    timeoutMsg: "The coach is still writing. You can refresh this later in the notebook.",
+    btnRetry: "Check again",
+    tip1: "First, understand what the text says",
+    tip2: "Answers need evidence from the passage",
+    tip3: "If you have not written an answer, the coach will only guide you. It will not tell you the answer.",
+    btnCopy: "Copy guide",
+    btnViewRecord: "View this record",
+    copied: "Copied",
+    copyFail: "Could not copy. Please try again.",
+    fileFail: "Please choose a text file such as txt or md",
+    bookTitle: "Notebook",
+    bookDesc: "Look back at each practice. Tap a card to change the passage and your answer.",
+    btnNew: "+ New practice",
+    searchPh: "Search passage, answer, or goal",
+    filterAll: "All",
+    noMatch: "No practice like that",
+    btnClearFilter: "Clear filter",
+    btnDetail: "Details",
+    btnEdit: "Edit",
+    btnDelete: "Delete",
+    btnRefreshGuide: "Refresh guide",
+    confirmDelete: "Delete this practice? You cannot undo this.",
+    confirmOk: "Confirm",
+    editTitle: "Edit practice",
+    editNote: "Saving only changes what you wrote. It will not rewrite the coach guide.",
+    btnSave: "Save changes",
+    saved: "Saved",
+    btnRegen: "Ask the coach again with this text",
+    btnCancel: "Cancel",
+    detailClose: "Close",
+    detailEdit: "Edit this",
+    detailPrev: "Previous",
+    detailNext: "Next",
+    guideEmpty: "The guide is still being written",
+    deleted: "Deleted",
+    saveFail: "Could not save. Please try again.",
+    submitFail: "Could not submit. Please try again.",
+    deleteFail: "Could not delete. Please try again.",
+    loadFail: "Could not load this practice. Please try again.",
+    needStageMaterial: "Choose a level, and paste the passage and questions.",
+    answerEmpty: "No answer yet",
+    needEmpty: "No goal yet",
+    materialEmpty: "No passage yet",
+    position: "No. {n}",
+    regenNote: "This is a new practice. The guide will show beside your writing.",
+    menuLabel: "Menu",
+    loading: "Loading…"
+  }
+};
+
+let lang = "zh";
+let currentPage = "home";
+let currentRow = 0;
+let historyStack = [];
+let records = [];
+let bookFilter = "all";
+let bookSearch = "";
+let dataReady = false;
+let dataSeq = 0;
+let pageSeq = 0;
+let totalCount = 0;
+let primaryCount = 0;
+let juniorCount = 0;
+let overlayStack = [];
+let confirmResolver = null;
+let pollToken = 0;
+let pollOwner = "";
+let polling = false;
+let practiceSubmitting = false;
+let practiceGen = 0;
+let practiceView = "tips";
+let practiceGuideText = "";
+let editToken = 0;
+let editBoundRow = 0;
+let editLoaded = false;
+let editSaving = false;
+let editRegenToken = 0;
+let editView = "guide";
+let editGuideText = "";
+let editStatusKey = "";
+let detailToken = 0;
+let detailRow = 0;
+let detailCount = 0;
+let detailStageValue = "";
+let detailGuideText = "";
+let booted = false;
+let toastTimer = 0;
+
+function t(key) {
+  const pack = I18N[lang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  return I18N.zh[key] != null ? I18N.zh[key] : key;
+}
+
+function byId(id) { return document.getElementById(id); }
+
+function waitMs(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function withTimeout(promise, ms) {
+  return new Promise(function (resolve, reject) {
+    let settled = false;
+    const timer = setTimeout(function () {
+      if (settled) return;
+      settled = true;
+      reject(new Error("timeout"));
+    }, ms);
+    Promise.resolve(promise).then(function (value) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    }, function (error) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(error);
+    });
+  });
+}
+
+function currentScroll() {
+  return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
+
+function showToast(message) {
+  const el = byId("toast");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove("show"); }, 2400);
+}
+
+function detectLanguage() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const q = String(params.get("lang") || "").toLowerCase();
+    if (q === "cn") return "zh";
+    if (q === "en") return "en";
+  } catch (e) {}
+  try {
+    const stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored != null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (e2) {}
+  let list = null;
+  try { list = navigator.languages; } catch (e3) { list = null; }
+  if (!list || !list.length) {
+    try {
+      if (navigator.language) list = [navigator.language];
+      else list = null;
+    } catch (e4) { list = null; }
+  }
+  if (!list || !list.length) return "zh";
+  for (let i = 0; i < list.length; i++) {
+    const item = String(list[i] || "").toLowerCase();
+    if (item === "zh" || item.indexOf("zh-") === 0) return "zh";
+  }
+  return "en";
+}
+
+function stageLabel(value) {
+  const v = String(value || "").trim();
+  if (v === "小学高段") return t("statPrimary");
+  if (v === "初中") return t("statJunior");
+  return v;
+}
+
+function normalizeStage(value) {
+  const v = String(value == null ? "" : value).replace(/\uFEFF/g, "").trim();
+  if (v === "小学高段" || v === "初中") return v;
+  return "";
+}
+
+function charCount(value) {
+  return Array.from(String(value || "")).length;
+}
+
+function preview(text, limit, emptyKey) {
+  const raw = String(text || "").replace(/\s+/g, " ").trim();
+  if (!raw) return t(emptyKey);
+  const chars = Array.from(raw);
+  if (chars.length <= limit) return raw;
+  return chars.slice(0, limit).join("") + "…";
+}
+
+function applyLanguage(next) {
+  lang = next === "en" ? "en" : "zh";
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  const placeholders = document.querySelectorAll("[data-i18n-ph]");
+  for (let i = 0; i < placeholders.length; i++) placeholders[i].setAttribute("placeholder", t(placeholders[i].getAttribute("data-i18n-ph")));
+  const ariaNodes = document.querySelectorAll("[data-i18n-aria]");
+  for (let i = 0; i < ariaNodes.length; i++) ariaNodes[i].setAttribute("aria-label", t(ariaNodes[i].getAttribute("data-i18n-aria")));
+  syncLangButtons();
+  updatePracticeWordCount();
+  updateEditWordCount();
+  renderStats();
+  renderRecent();
+  renderBookList();
+  paintPractice();
+  paintEditGuide();
+  paintDetail();
+  const status = byId("editStatus");
+  if (status) status.textContent = editStatusKey ? t(editStatusKey) : "";
+  updateGenerateState();
+  updateNavMode();
+}
+
+function chooseLanguage(next) {
+  const value = next === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", value); } catch (e) {}
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", value === "en" ? "en" : "cn");
+    history.replaceState(null, "", url.toString());
+  } catch (e2) {}
+  applyLanguage(value);
+  closeMobileMenu();
+}
+
+function syncLangButtons() {
+  const zhOn = lang !== "en";
+  const pairs = [["langBtnZh", zhOn], ["langBtnEn", !zhOn], ["mobileLangZh", zhOn], ["mobileLangEn", !zhOn]];
+  for (let i = 0; i < pairs.length; i++) {
+    const el = byId(pairs[i][0]);
+    if (!el) continue;
+    el.classList.toggle("active", pairs[i][1]);
+    el.setAttribute("aria-pressed", pairs[i][1] ? "true" : "false");
+  }
+}
+
+function applyTheme(mode) {
+  const dark = mode === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const meta = byId("metaTheme");
+  if (meta) meta.setAttribute("content", dark ? "#0e141e" : "#1b2742");
+}
+
+async function loadTheme() {
+  try {
+    const mode = await withTimeout(callAppBridge({ type: "模式" }), 15000);
+    let text = String(mode == null ? "" : mode).trim();
+    if ((text.charAt(0) === '"' && text.charAt(text.length - 1) === '"') || (text.charAt(0) === "'" && text.charAt(text.length - 1) === "'")) text = text.slice(1, -1);
+    applyTheme(text === "暗色" ? "dark" : "light");
+  } catch (e) {
+    applyTheme("light");
+  }
+}
+
+function syncHamburgerIcon() {
+  const open = byId("navMobileMenu").classList.contains("open");
+  const icon = byId("hamburgerIcon");
+  if (icon) icon.className = open ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+  byId("btnHamburger").setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function closeMobileMenu() {
+  byId("navMobileMenu").classList.remove("open");
+  syncHamburgerIcon();
+}
+
+function toggleMobileMenu() {
+  byId("navMobileMenu").classList.toggle("open");
+  syncHamburgerIcon();
+}
+
+function updateNavMode() {
+  const row = byId("navRow");
+  if (!row) return;
+  const menu = byId("navMobileMenu");
+  const wasOpen = menu.classList.contains("open");
+  document.body.classList.remove("hamburger-mode");
+  const need = row.scrollWidth > row.clientWidth + 1;
+  if (need) document.body.classList.add("hamburger-mode");
+  else if (wasOpen) closeMobileMenu();
+  syncHamburgerIcon();
+}
+
+function updateNavActive() {
+  const tabs = document.querySelectorAll("[data-page]");
+  for (let i = 0; i < tabs.length; i++) {
+    const on = tabs[i].getAttribute("data-page") === currentPage;
+    tabs[i].classList.toggle("active", on);
+    tabs[i].setAttribute("aria-current", on ? "page" : "false");
+  }
+}
+
+function openOverlay(id) {
+  const el = byId(id);
+  if (!el) return;
+  if (overlayStack.indexOf(id) < 0) overlayStack.push(id);
+  el.style.zIndex = String(2000 + overlayStack.length * 20);
+  el.classList.add("show");
+  el.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeOverlay(id) {
+  const el = byId(id);
+  if (el) {
+    el.classList.remove("show");
+    el.setAttribute("aria-hidden", "true");
+  }
+  const idx = overlayStack.indexOf(id);
+  if (idx >= 0) overlayStack.splice(idx, 1);
+  if (!overlayStack.length) document.body.classList.remove("modal-open");
+}
+
+function closeAllOverlays() {
+  if (byId("confirmOverlay").classList.contains("show")) closeConfirm(false);
+  if (byId("editOverlay").classList.contains("show")) closeEdit(true);
+  if (byId("detailOverlay").classList.contains("show")) closeDetail();
+}
+
+function switchPage(page, patch) {
+  closeAllOverlays();
+  const snapshot = { page: currentPage, scrollY: currentScroll(), bookFilter: bookFilter, bookSearch: bookSearch };
+  if (patch) {
+    if (patch.bookFilter != null) bookFilter = patch.bookFilter;
+    if (patch.bookSearch != null) bookSearch = patch.bookSearch;
+    const search = byId("bookSearch");
+    if (search && patch.bookSearch != null) search.value = bookSearch;
+    syncFilterChips();
+  }
+  closeMobileMenu();
+  if (page === currentPage) {
+    if (page === "book") renderBookList();
+    return;
+  }
+  historyStack.push(snapshot);
+  if (historyStack.length > 40) historyStack.shift();
+  showPage(page, null);
+}
+
+async function showPage(page, restore) {
+  const seq = ++pageSeq;
+  currentPage = page;
+  byId("pageHome").hidden = page !== "home";
+  byId("pagePractice").hidden = page !== "practice";
+  byId("pageBook").hidden = page !== "book";
+  updateNavActive();
+  closeMobileMenu();
+  const y = restore && typeof restore.scrollY === "number" ? restore.scrollY : 0;
+  window.scrollTo(0, y);
+  if (page === "home" || page === "book") await refreshData();
+  if (seq !== pageSeq) return;
+  window.scrollTo(0, y);
+}
+
+function airBack() {
+  if (overlayStack.length) {
+    const id = overlayStack[overlayStack.length - 1];
+    if (id === "confirmOverlay") closeConfirm(false);
+    else if (id === "editOverlay") closeEdit(true);
+    else if (id === "detailOverlay") closeDetail();
+    else closeOverlay(id);
+    return "false";
+  }
+  if (byId("navMobileMenu").classList.contains("open")) {
+    closeMobileMenu();
+    return "false";
+  }
+  if (historyStack.length) {
+    const prev = historyStack.pop();
+    bookFilter = prev.bookFilter || "all";
+    bookSearch = prev.bookSearch || "";
+    const search = byId("bookSearch");
+    if (search) search.value = bookSearch;
+    syncFilterChips();
+    showPage(prev.page, { scrollY: prev.scrollY || 0 });
+    return "false";
+  }
+  return "true";
+}
+
+function openBookFiltered(filter) {
+  switchPage("book", { bookFilter: filter, bookSearch: "" });
+}
+
+function readCsv(text) {
+  let raw = text == null ? "" : String(text);
+  if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+  if (raw.trim() === "") return [];
+  try { return parseCSV(raw); } catch (e) { return []; }
+}
+
+function parseRecords(text) {
+  const rows = readCsv(text);
+  const list = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i] || [];
+    const rec = {
+      row: i + 1,
+      学段: row[0] != null ? String(row[0]) : "",
+      阅读材料与题目: row[1] != null ? String(row[1]) : "",
+      学生作答: row[2] != null ? String(row[2]) : "",
+      学习需求: row[3] != null ? String(row[3]) : "",
+      阅读指导: row[4] != null ? String(row[4]) : ""
+    };
+    if (!rec.学段.trim() && !rec.阅读材料与题目.trim() && !rec.学生作答.trim() && !rec.学习需求.trim() && !rec.阅读指导.trim()) continue;
+    list.push(rec);
+  }
+  return list;
+}
+
+function countStages(text) {
+  const rows = readCsv(text);
+  let primary = 0;
+  let junior = 0;
+  for (let i = 0; i < rows.length; i++) {
+    const value = String((rows[i] && rows[i][0]) || "").trim();
+    if (value === "小学高段") primary++;
+    else if (value === "初中") junior++;
+  }
+  return { primary: primary, junior: junior };
+}
+
+function parseCount(value) {
+  let text = String(value == null ? "" : value).trim();
+  if (text.charAt(0) === '"' && text.charAt(text.length - 1) === '"') text = text.slice(1, -1);
+  const n = parseInt(text, 10);
+  return isNaN(n) || n < 0 ? 0 : n;
+}
+
+async function refreshData() {
+  const seq = ++dataSeq;
+  let total = 0;
+  let primary = 0;
+  let junior = 0;
+  let nextRecords = [];
+  try {
+    const totalText = await withTimeout(callAppBridge({ type: "GetRecordCount", data: DATA_SOURCE }), 30000);
+    total = parseCount(totalText);
+  } catch (e) { total = 0; }
+  if (seq !== dataSeq) return;
+  try {
+    const stageCsv = await withTimeout(callAppBridge({ type: "GetTableCSV", data: DATA_SOURCE, payload: "学段" }), 30000);
+    const counted = countStages(stageCsv);
+    primary = counted.primary;
+    junior = counted.junior;
+  } catch (e2) { primary = 0; junior = 0; }
+  if (seq !== dataSeq) return;
+  try {
+    const csv = await withTimeout(callAppBridge({ type: "GetTableCSV", data: DATA_SOURCE, payload: "学段,阅读材料与题目,学生作答,学习需求,阅读指导" }), 30000);
+    nextRecords = parseRecords(csv);
+  } catch (e3) { nextRecords = []; }
+  if (seq !== dataSeq) return;
+  totalCount = total;
+  primaryCount = primary;
+  juniorCount = junior;
+  records = nextRecords;
+  dataReady = true;
+  renderStats();
+  renderRecent();
+  renderBookList();
+}
+
+async function fetchCount() {
+  const text = await withTimeout(callAppBridge({ type: "GetRecordCount", data: DATA_SOURCE }), 30000);
+  return parseCount(text);
+}
+
+function renderStats() {
+  byId("statTotalNum").textContent = String(totalCount);
+  byId("statPrimaryNum").textContent = String(primaryCount);
+  byId("statJuniorNum").textContent = String(juniorCount);
+  const bar = byId("ratioBar");
+  const label = byId("ratioLabel");
+  if (totalCount <= 0) {
+    bar.hidden = true;
+    label.textContent = t("ratioEmpty");
+    return;
+  }
+  bar.hidden = false;
+  const sum = primaryCount + juniorCount;
+  const denom = sum > 0 ? sum : 1;
+  const primaryPct = (primaryCount / denom * 100) + "%";
+  const juniorPct = (juniorCount / denom * 100) + "%";
+  byId("ratioPrimary").style.flex = "0 0 " + primaryPct;
+  byId("ratioJunior").style.flex = "0 0 " + juniorPct;
+  label.textContent = t("ratioText").replace("{p}", String(primaryCount)).replace("{j}", String(juniorCount));
+}
+
+function makeBadge(text, className) {
+  const span = document.createElement("span");
+  span.className = "badge " + className;
+  span.textContent = text;
+  return span;
+}
+
+function guideBadge(text) {
+  const ready = String(text || "").trim() !== "";
+  return makeBadge(ready ? t("hasGuide") : t("guidePending"), ready ? "ready" : "pending");
+}
+
+function stageBadge(value) {
+  const v = String(value || "").trim();
+  const kind = v === "初中" ? "junior" : "primary";
+  return makeBadge(stageLabel(v) || t("fieldStage"), kind);
+}
+
+function makeLine(label, value) {
+  const p = document.createElement("p");
+  p.className = "card-line";
+  const b = document.createElement("b");
+  b.textContent = label + "：";
+  p.appendChild(b);
+  p.appendChild(document.createTextNode(value));
+  return p;
+}
+
+function buildRecentCard(rec) {
+  const art = document.createElement("article");
+  art.className = "paper-card recent-card";
+  art.setAttribute("data-row", String(rec.row));
+  art.tabIndex = 0;
+  art.setAttribute("role", "button");
+  const top = document.createElement("div");
+  top.className = "card-top";
+  top.appendChild(stageBadge(rec.学段));
+  top.appendChild(guideBadge(rec.阅读指导));
+  art.appendChild(top);
+  const title = document.createElement("h3");
+  title.textContent = preview(rec.阅读材料与题目, 80, "materialEmpty");
+  art.appendChild(title);
+  art.appendChild(makeLine(t("fieldNeed"), preview(rec.学习需求, 40, "needEmpty")));
+  return art;
+}
+
+function actionButton(act, key, className) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn small " + (className || "ghost");
+  btn.setAttribute("data-act", act);
+  btn.textContent = t(key);
+  return btn;
+}
+
+function buildBookCard(rec) {
+  const art = document.createElement("article");
+  art.className = "paper-card book-card";
+  art.setAttribute("data-row", String(rec.row));
+  const hit = document.createElement("div");
+  hit.className = "card-hit";
+  hit.tabIndex = 0;
+  hit.setAttribute("role", "button");
+  const top = document.createElement("div");
+  top.className = "card-top";
+  top.appendChild(stageBadge(rec.学段));
+  top.appendChild(guideBadge(rec.阅读指导));
+  hit.appendChild(top);
+  const title = document.createElement("h3");
+  title.textContent = preview(rec.阅读材料与题目, 100, "materialEmpty");
+  hit.appendChild(title);
+  hit.appendChild(makeLine(t("fieldAnswer"), preview(rec.学生作答, 60, "answerEmpty")));
+  hit.appendChild(makeLine(t("fieldNeed"), preview(rec.学习需求, 40, "needEmpty")));
+  art.appendChild(hit);
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(actionButton("detail", "btnDetail", "ghost"));
+  actions.appendChild(actionButton("edit", "btnEdit", "ghost"));
+  actions.appendChild(actionButton("delete", "btnDelete", "danger"));
+  actions.appendChild(actionButton("refresh", "btnRefreshGuide", "ghost"));
+  art.appendChild(actions);
+  return art;
+}
+
+function renderRecent() {
+  const list = byId("recentList");
+  const empty = byId("recentEmpty");
+  const text = byId("recentEmptyText");
+  const btn = byId("btnRecentStart");
+  list.textContent = "";
+  if (!dataReady) {
+    empty.hidden = false;
+    list.hidden = true;
+    text.textContent = t("loading");
+    btn.hidden = true;
+    return;
+  }
+  const slice = records.slice(0, 5);
+  if (!slice.length) {
+    empty.hidden = false;
+    list.hidden = true;
+    text.textContent = t("recentEmpty");
+    btn.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+  list.hidden = false;
+  for (let i = 0; i < slice.length; i++) list.appendChild(buildRecentCard(slice[i]));
+}
+
+function recordMatches(rec) {
+  if (bookFilter !== "all" && String(rec.学段 || "").trim() !== bookFilter) return false;
+  const q = String(bookSearch || "").trim().toLowerCase();
+  if (!q) return true;
+  const fields = [rec.阅读材料与题目, rec.学生作答, rec.学习需求];
+  for (let i = 0; i < fields.length; i++) {
+    if (String(fields[i] || "").toLowerCase().indexOf(q) >= 0) return true;
+  }
+  return false;
+}
+
+function syncFilterChips() {
+  const chips = document.querySelectorAll("#bookFilters [data-filter]");
+  for (let i = 0; i < chips.length; i++) {
+    const on = chips[i].getAttribute("data-filter") === bookFilter;
+    chips[i].classList.toggle("active", on);
+    chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+
+function renderBookList() {
+  const list = byId("bookList");
+  const empty = byId("bookEmpty");
+  const text = byId("bookEmptyText");
+  const clearBtn = byId("btnClearFilter");
+  const startBtn = byId("btnEmptyStart");
+  if (!list) return;
+  list.textContent = "";
+  if (!dataReady) {
+    empty.hidden = false;
+    list.hidden = true;
+    text.textContent = t("loading");
+    clearBtn.hidden = true;
+    startBtn.hidden = true;
+    return;
+  }
+  const shown = [];
+  for (let i = 0; i < records.length; i++) {
+    if (recordMatches(records[i])) shown.push(records[i]);
+  }
+  if (!shown.length) {
+    empty.hidden = false;
+    list.hidden = true;
+    const filtering = bookFilter !== "all" || String(bookSearch || "").trim() !== "";
+    if (filtering) {
+      text.textContent = t("noMatch");
+      clearBtn.hidden = false;
+      startBtn.hidden = true;
+    } else {
+      text.textContent = t("recentEmpty");
+      clearBtn.hidden = true;
+      startBtn.hidden = false;
+    }
+    return;
+  }
+  empty.hidden = true;
+  list.hidden = false;
+  for (let i = 0; i < shown.length; i++) list.appendChild(buildBookCard(shown[i]));
+}
+
+function clearBookFilter() {
+  bookFilter = "all";
+  bookSearch = "";
+  const search = byId("bookSearch");
+  if (search) search.value = "";
+  syncFilterChips();
+  renderBookList();
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderInline(src) {
+  let text = escapeHtml(src);
+  text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;[^&]*&quot;)?\)/g, function (_, alt, url) {
+    return '<img alt="' + alt + '" src="' + url + '">';
+  });
+  text = text.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (_, label, url) {
+    if (/^\s*javascript:/i.test(url)) return label;
+    return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + "</a>";
+  });
+  text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
+  text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  text = text.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  text = text.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+  text = text.replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>");
+  return text;
+}
+
+function splitTableRow(line) {
+  let text = String(line || "").trim();
+  if (text.charAt(0) === "|") text = text.slice(1);
+  if (text.charAt(text.length - 1) === "|") text = text.slice(0, -1);
+  const parts = text.split("|");
+  const cells = [];
+  for (let i = 0; i < parts.length; i++) cells.push(parts[i].trim());
+  return cells;
+}
+
+function basicMarkdown(src) {
+  const lines = String(src || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  let html = "";
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim() === "") { i++; continue; }
+    if (/^```/.test(line.trim())) {
+      const fence = line.trim().slice(3).trim();
+      const buf = [];
+      i++;
+      while (i < lines.length && !/^```/.test(lines[i].trim())) { buf.push(lines[i]); i++; }
+      if (i < lines.length) i++;
+      html += "<pre><code" + (fence ? ' class="language-' + escapeHtml(fence) + '"' : "") + ">" + escapeHtml(buf.join("\n")) + "</code></pre>";
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) { html += "<hr>"; i++; continue; }
+    if (/^\|.+\|$/.test(line.trim()) && i + 1 < lines.length && /^\|?\s*:?-{3,}/.test(lines[i + 1].trim())) {
+      const header = splitTableRow(line);
+      i += 2;
+      const body = [];
+      while (i < lines.length && /^\|.+\|$/.test(lines[i].trim())) { body.push(splitTableRow(lines[i])); i++; }
+      html += '<div class="table-scroll"><table><thead><tr>';
+      for (let c = 0; c < header.length; c++) html += "<th>" + renderInline(header[c]) + "</th>";
+      html += "</tr></thead><tbody>";
+      for (let r = 0; r < body.length; r++) {
+        html += "<tr>";
+        for (let c = 0; c < body[r].length; c++) html += "<td>" + renderInline(body[r][c]) + "</td>";
+        html += "</tr>";
+      }
+      html += "</tbody></table></div>";
+      continue;
+    }
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) {
+      const level = heading[1].length;
+      html += "<h" + level + ">" + renderInline(heading[2]) + "</h" + level + ">";
+      i++;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i++; }
+      html += "<blockquote>" + basicMarkdown(buf.join("\n")) + "</blockquote>";
+      continue;
+    }
+    if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+      const ordered = /^\s*\d+\.\s+/.test(line);
+      const tag = ordered ? "ol" : "ul";
+      html += "<" + tag + ">";
+      while (i < lines.length && /^\s*([-*+]|\d+\.)\s+/.test(lines[i])) {
+        const item = lines[i].replace(/^\s*([-*+]|\d+\.)\s+/, "");
+        const task = /^\[( |x|X)\]\s+(.*)$/.exec(item);
+        if (task) {
+          const checked = task[1].toLowerCase() === "x" ? " checked" : "";
+          html += '<li class="task"><input type="checkbox" disabled' + checked + "> " + renderInline(task[2]) + "</li>";
+        } else html += "<li>" + renderInline(item) + "</li>";
+        i++;
+      }
+      html += "</" + tag + ">";
+      continue;
+    }
+    const buf = [line];
+    i++;
+    while (i < lines.length && lines[i].trim() !== "" && !/^(#{1,6}\s|```|>\s?|\s*([-*+]|\d+\.)\s+|\|.+\||-{3,}|\*{3,}|_{3,})/.test(lines[i])) {
+      buf.push(lines[i]);
+      i++;
+    }
+    html += "<p>" + renderInline(buf.join("\n")).replace(/\n/g, "<br>") + "</p>";
+  }
+  return html;
+}
+
+function markdownToHtml(src) {
+  const text = String(src || "");
+  try {
+    if (window.marked) {
+      if (typeof window.marked.parse === "function") {
+        const parsed = window.marked.parse(text, { gfm: true, breaks: true });
+        if (parsed && typeof parsed.then === "function") throw new Error("async markdown");
+        return parsed;
+      }
+      if (typeof window.marked === "function") {
+        if (window.marked.setOptions) window.marked.setOptions({ gfm: true, breaks: true });
+        return window.marked(text);
+      }
+    }
+  } catch (e) {}
+  return basicMarkdown(text);
+}
+
+function sanitizeHtml(html) {
+  const root = document.createElement("div");
+  root.innerHTML = String(html || "");
+  const blocked = root.querySelectorAll("script, iframe, object, embed, link, meta, base, form");
+  for (let i = blocked.length - 1; i >= 0; i--) blocked[i].parentNode.removeChild(blocked[i]);
+  const all = root.querySelectorAll("*");
+  for (let i = 0; i < all.length; i++) {
+    const el = all[i];
+    const names = [];
+    for (let a = 0; a < el.attributes.length; a++) names.push(el.attributes[a].name);
+    for (let a = 0; a < names.length; a++) {
+      const name = names[a];
+      const low = name.toLowerCase();
+      const val = el.getAttribute(name) || "";
+      if (low.indexOf("on") === 0 || low === "srcdoc" || low === "style") el.removeAttribute(name);
+      else if ((low === "href" || low === "src") && /^\s*javascript:/i.test(val)) el.removeAttribute(name);
+    }
+  }
+  return root.innerHTML;
+}
+
+function toDownloadUrl(src) {
+  const raw = String(src || "").trim();
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw) || raw.indexOf("data:") === 0) return raw;
+  return DOWNLOAD_PREFIX + encodeURI(raw);
+}
+
+function renderMarkdownInto(target, markdown) {
+  if (!target) return;
+  const html = sanitizeHtml(markdownToHtml(markdown));
+  const box = document.createElement("div");
+  box.innerHTML = html;
+  const images = box.querySelectorAll("img");
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+    const href = toDownloadUrl(img.getAttribute("src") || "");
+    if (!href) continue;
+    img.setAttribute("src", href);
+    const link = document.createElement("a");
+    link.href = href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.className = "md-img-link";
+    img.parentNode.insertBefore(link, img);
+    link.appendChild(img);
+  }
+  target.textContent = "";
+  while (box.firstChild) target.appendChild(box.firstChild);
+}
+
+function loadMarked() {
+  if (window.marked) return;
+  const script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js";
+  script.onload = function () {
+    paintPractice();
+    paintEditGuide();
+    paintDetailGuide();
+  };
+  script.onerror = function () {};
+  document.head.appendChild(script);
+}
+
+function setStage(prefix, value) {
+  const allowed = value === "小学高段" || value === "初中" ? value : "";
+  const hidden = byId(prefix + "_学段");
+  if (hidden) hidden.value = allowed;
+  const host = byId(prefix + "_stage");
+  if (host) {
+    const buttons = host.querySelectorAll("[data-value]");
+    for (let i = 0; i < buttons.length; i++) {
+      const on = buttons[i].getAttribute("data-value") === allowed && allowed !== "";
+      buttons[i].classList.toggle("active", on);
+      buttons[i].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+  updateGenerateState();
+  updateEditButtons();
+}
+
+function canGenerate() {
+  const stage = byId("formStartPractice_学段").value;
+  const material = byId("formStartPractice_阅读材料与题目").value;
+  return (stage === "小学高段" || stage === "初中") && String(material).trim() !== "";
+}
+
+function updatePracticeWordCount() {
+  const area = byId("formStartPractice_阅读材料与题目");
+  const out = byId("practiceCount");
+  if (!area || !out) return;
+  out.textContent = t("wordCount").replace("{n}", String(charCount(area.value)));
+}
+
+function updateEditWordCount() {
+  const area = byId("formEditPractice_阅读材料与题目");
+  const out = byId("editCount");
+  if (!area || !out) return;
+  out.textContent = t("wordCount").replace("{n}", String(charCount(area.value)));
+}
+
+function updateGenerateState() {
+  const btn = byId("btnGenerate");
+  const hint = byId("generateHint");
+  const busy = practiceSubmitting || (polling && pollOwner === "practice");
+  const ok = canGenerate();
+  if (btn) btn.disabled = busy || !ok;
+  if (hint) hint.textContent = !ok && !busy ? t("generateHint") : "";
+}
+
+function editFormValid() {
+  const stage = byId("formEditPractice_学段").value;
+  const material = byId("formEditPractice_阅读材料与题目").value;
+  return (stage === "小学高段" || stage === "初中") && String(material).trim() !== "";
+}
+
+function updateEditButtons() {
+  const save = byId("btnEditSave");
+  const regen = byId("btnEditRegen");
+  const load = byId("btnEditLoadFile");
+  const busy = editSaving || (polling && pollOwner === "edit");
+  if (save) save.disabled = busy || !editLoaded || !editFormValid();
+  if (regen) regen.disabled = busy || !editFormValid();
+  if (load) load.disabled = busy;
+}
+
+function paintPractice() {
+  const tips = byId("coachTips");
+  const wait = byId("coachWait");
+  const timeout = byId("coachTimeout");
+  const result = byId("coachResult");
+  const actions = byId("coachActions");
+  if (!tips) return;
+  tips.hidden = practiceView !== "tips";
+  wait.hidden = practiceView !== "wait";
+  timeout.hidden = practiceView !== "timeout";
+  actions.hidden = practiceView !== "guide";
+  result.hidden = practiceView !== "guide";
+  if (practiceView === "guide") {
+    if (String(practiceGuideText || "").trim()) renderMarkdownInto(result, practiceGuideText);
+    else result.textContent = t("guideEmpty");
+  }
+}
+
+function showPracticeTips() {
+  practiceView = "tips";
+  practiceGuideText = "";
+  paintPractice();
+}
+
+function paintEditGuide() {
+  const box = byId("formEditPractice_阅读指导");
+  const wait = byId("editWait");
+  const timeout = byId("editTimeout");
+  if (!box) return;
+  wait.hidden = editView !== "wait";
+  timeout.hidden = editView !== "timeout";
+  box.hidden = editView !== "guide";
+  if (editView === "guide") {
+    if (String(editGuideText || "").trim()) renderMarkdownInto(box, editGuideText);
+    else box.textContent = t("guideEmpty");
+  }
+}
+
+function setEditStatus(key) {
+  editStatusKey = key || "";
+  const el = byId("editStatus");
+  if (el) el.textContent = editStatusKey ? t(editStatusKey) : "";
+}
+
+function stopPoll() {
+  pollToken++;
+  polling = false;
+  pollOwner = "";
+  updateGenerateState();
+  updateEditButtons();
+}
+
+async function pollGuide(owner) {
+  const previous = pollOwner;
+  const my = ++pollToken;
+  if (previous && previous !== owner && previous === "practice") showPracticeTips();
+  pollOwner = owner;
+  polling = true;
+  if (owner === "practice") {
+    practiceView = "wait";
+    paintPractice();
+  } else {
+    editView = "wait";
+    paintEditGuide();
+  }
+  updateGenerateState();
+  updateEditButtons();
+  const startAt = Date.now();
+  while (pollToken === my) {
+    if (Date.now() - startAt >= 1800 * 1000) {
+      polling = false;
+      pollOwner = "";
+      if (owner === "practice") practiceView = "timeout";
+      else editView = "timeout";
+      if (owner === "practice") paintPractice();
+      else paintEditGuide();
+      updateGenerateState();
+      updateEditButtons();
+      return;
+    }
+    let text = "";
+    try {
+      text = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读指导/1" }), 20000);
+    } catch (e) { text = ""; }
+    if (pollToken !== my) return;
+    if (String(text || "").trim() !== "") {
+      polling = false;
+      pollOwner = "";
+      if (owner === "practice") {
+        practiceGuideText = String(text);
+        practiceView = "guide";
+        paintPractice();
+      } else {
+        editGuideText = String(text);
+        editView = "guide";
+        paintEditGuide();
+      }
+      updateGenerateState();
+      updateEditButtons();
+      return;
+    }
+    await waitMs(2000);
+    if (pollToken !== my) return;
+  }
+}
+
+async function retryGuide(owner) {
+  let text = "";
+  try {
+    text = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读指导/1" }), 20000);
+  } catch (e) { text = ""; }
+  if (String(text || "").trim()) {
+    if (owner === "practice") {
+      practiceGuideText = String(text);
+      practiceView = "guide";
+      paintPractice();
+    } else {
+      editGuideText = String(text);
+      editView = "guide";
+      paintEditGuide();
+    }
+    refreshData();
+    return;
+  }
+  if (owner === "practice") { practiceView = "timeout"; paintPractice(); }
+  else { editView = "timeout"; paintEditGuide(); }
+}
+
+function readPracticeFields() {
+  return {
+    学段: byId("formStartPractice_学段").value,
+    阅读材料与题目: byId("formStartPractice_阅读材料与题目").value,
+    学生作答: byId("formStartPractice_学生作答").value,
+    学习需求: byId("formStartPractice_学习需求").value
+  };
+}
+
+function readEditFields() {
+  return {
+    学段: byId("formEditPractice_学段").value,
+    阅读材料与题目: byId("formEditPractice_阅读材料与题目").value,
+    学生作答: byId("formEditPractice_学生作答").value,
+    学习需求: byId("formEditPractice_学习需求").value
+  };
+}
+
+function buildSubmitPayload(fields) {
+  return JSON.stringify({
+    "学段": fields.学段,
+    "阅读材料与题目": fields.阅读材料与题目,
+    "学生作答": fields.学生作答,
+    "学习需求": fields.学习需求
+  });
+}
+
+async function generatePractice() {
+  if (practiceSubmitting || (polling && pollOwner === "practice")) return;
+  if (!canGenerate()) return;
+  const gen = ++practiceGen;
+  practiceSubmitting = true;
+  updateGenerateState();
+  const fields = readPracticeFields();
+  try {
+    await withTimeout(callAppBridge({ type: "SubmitRecord", data: TABLE_NAME, payload: buildSubmitPayload(fields) }), 60000);
+  } catch (e) {
+    practiceSubmitting = false;
+    updateGenerateState();
+    showToast(t("submitFail"));
+    return;
+  }
+  currentRow = 1;
+  try { await refreshData(); } catch (e2) {}
+  if (gen !== practiceGen) {
+    practiceSubmitting = false;
+    updateGenerateState();
+    return;
+  }
+  practiceSubmitting = false;
+  await pollGuide("practice");
+  if (gen !== practiceGen) return;
+  try { await refreshData(); } catch (e3) {}
+}
+
+function clearPractice() {
+  practiceGen++;
+  if (pollOwner === "practice") stopPoll();
+  currentRow = 0;
+  setStage("formStartPractice", "");
+  byId("formStartPractice_阅读材料与题目").value = "";
+  byId("formStartPractice_学生作答").value = "";
+  byId("formStartPractice_学习需求").value = "";
+  practiceGuideText = "";
+  showPracticeTips();
+  updatePracticeWordCount();
+  updateGenerateState();
+}
+
+function looksBinary(text) {
+  return String(text || "").indexOf("\u0000") >= 0;
+}
+
+async function loadMaterialInto(areaId) {
+  let filename = "";
+  try {
+    filename = await withTimeout(callAppBridge({ type: "SelectFile" }), 600000);
+  } catch (e) {
+    showToast(t("fileFail"));
+    return;
+  }
+  filename = String(filename || "").trim();
+  if (!filename) return;
+  let text = "";
+  try {
+    text = await withTimeout(callAppBridge({ type: "ReadFile", data: filename }), 60000);
+  } catch (e2) {
+    showToast(t("fileFail"));
+    return;
+  }
+  if (looksBinary(text)) {
+    showToast(t("fileFail"));
+    return;
+  }
+  const area = byId(areaId);
+  area.value = text == null ? "" : String(text);
+  if (areaId.indexOf("formStartPractice") === 0) updatePracticeWordCount();
+  else updateEditWordCount();
+  updateGenerateState();
+  updateEditButtons();
+  area.focus();
+}
+
+async function copyText(text) {
+  const value = String(text || "");
+  if (!value.trim()) {
+    showToast(t("guideEmpty"));
+    return;
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      showToast(t("copied"));
+      return;
+    }
+  } catch (e) {}
+  const area = document.createElement("textarea");
+  area.value = value;
+  area.setAttribute("readonly", "readonly");
+  area.style.position = "fixed";
+  area.style.left = "-9999px";
+  document.body.appendChild(area);
+  area.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e2) { ok = false; }
+  document.body.removeChild(area);
+  showToast(ok ? t("copied") : t("copyFail"));
+}
+
+function setPre(id, value, emptyKey) {
+  const el = byId(id);
+  if (!el) return;
+  if (String(value || "").length && String(value).trim()) {
+    el.textContent = value;
+    el.classList.remove("muted");
+  } else {
+    el.textContent = t(emptyKey);
+    el.classList.add("muted");
+  }
+}
+
+function paintDetailGuide() {
+  const box = byId("detailGuide");
+  if (!box || !byId("detailOverlay").classList.contains("show")) return;
+  if (String(detailGuideText || "").trim()) renderMarkdownInto(box, detailGuideText);
+  else box.textContent = t("guideEmpty");
+}
+
+function paintDetail() {
+  if (!byId("detailOverlay").classList.contains("show")) return;
+  byId("detailPosition").textContent = t("position").replace("{n}", String(detailRow || currentRow || ""));
+  byId("detailStage").textContent = stageLabel(detailStageValue);
+  setPre("detailMaterial", detailMaterialText, "materialEmpty");
+  setPre("detailAnswer", detailAnswerText, "answerEmpty");
+  setPre("detailNeed", detailNeedText, "needEmpty");
+  paintDetailGuide();
+  updateDetailNav();
+}
+
+let detailMaterialText = "";
+let detailAnswerText = "";
+let detailNeedText = "";
+
+function updateDetailNav() {
+  const prev = byId("btnDetailPrev");
+  const next = byId("btnDetailNext");
+  if (prev) prev.disabled = detailRow <= 1;
+  if (next) next.disabled = detailCount > 0 ? detailRow >= detailCount : true;
+}
+
+function closeDetail() {
+  detailToken++;
+  detailRow = 0;
+  closeOverlay("detailOverlay");
+}
+
+async function openDetail(row) {
+  const target = parseInt(row, 10);
+  if (!target || target < 1) return;
+  const token = ++detailToken;
+  currentRow = target;
+  detailRow = target;
+  detailStageValue = "";
+  detailMaterialText = "";
+  detailAnswerText = "";
+  detailNeedText = "";
+  detailGuideText = "";
+  openOverlay("detailOverlay");
+  byId("detailPosition").textContent = t("position").replace("{n}", String(target));
+  byId("detailStage").textContent = t("loading");
+  byId("detailMaterial").textContent = "";
+  byId("detailAnswer").textContent = "";
+  byId("detailNeed").textContent = "";
+  byId("detailGuide").textContent = t("loading");
+  byId("btnDetailPrev").disabled = true;
+  byId("btnDetailNext").disabled = true;
+  let stage = "";
+  let material = "";
+  let answer = "";
+  let need = "";
+  let guide = "";
+  try {
+    stage = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "学段/" + target }), 30000);
+    if (token !== detailToken) return;
+    material = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读材料与题目/" + target }), 30000);
+    if (token !== detailToken) return;
+    answer = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "学生作答/" + target }), 30000);
+    if (token !== detailToken) return;
+    need = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "学习需求/" + target }), 30000);
+    if (token !== detailToken) return;
+    guide = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读指导/" + target }), 30000);
+    if (token !== detailToken) return;
+  } catch (e) {
+    if (token !== detailToken) return;
+    showToast(t("loadFail"));
+  }
+  if (token !== detailToken) return;
+  detailStageValue = String(stage || "").trim();
+  detailMaterialText = material == null ? "" : String(material);
+  detailAnswerText = answer == null ? "" : String(answer);
+  detailNeedText = need == null ? "" : String(need);
+  detailGuideText = guide == null ? "" : String(guide);
+  try { detailCount = await fetchCount(); } catch (e2) { detailCount = records.length; }
+  if (token !== detailToken) return;
+  paintDetail();
+  const closeBtn = byId("btnDetailClose");
+  if (closeBtn) closeBtn.focus();
+}
+
+async function moveDetail(delta) {
+  let count = detailCount;
+  try { count = await fetchCount(); } catch (e) {}
+  detailCount = count;
+  const target = detailRow + delta;
+  if (target < 1 || target > count) {
+    updateDetailNav();
+    return;
+  }
+  await openDetail(target);
+}
+
+function closeEdit(resetRow) {
+  const wasOpen = byId("editOverlay").classList.contains("show");
+  editRegenToken++;
+  editToken++;
+  if (pollOwner === "edit") stopPoll();
+  editBoundRow = 0;
+  editLoaded = false;
+  editView = "guide";
+  closeOverlay("editOverlay");
+  if (resetRow && wasOpen) currentRow = 0;
+  updateEditButtons();
+}
+
+async function openEdit(row) {
+  const target = parseInt(row, 10);
+  if (!target || target < 1) return;
+  const token = ++editToken;
+  currentRow = target;
+  editBoundRow = target;
+  editLoaded = false;
+  editView = "guide";
+  editGuideText = "";
+  setEditStatus("loading");
+  setStage("formEditPractice", "");
+  byId("formEditPractice_阅读材料与题目").value = "";
+  byId("formEditPractice_学生作答").value = "";
+  byId("formEditPractice_学习需求").value = "";
+  updateEditWordCount();
+  paintEditGuide();
+  const guideBox = byId("formEditPractice_阅读指导");
+  if (guideBox) guideBox.textContent = t("loading");
+  updateEditButtons();
+  openOverlay("editOverlay");
+  let stage = "";
+  let material = "";
+  let answer = "";
+  let need = "";
+  let guide = "";
+  try {
+    stage = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "学段/" + target }), 30000);
+    if (token !== editToken) return;
+    material = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读材料与题目/" + target }), 30000);
+    if (token !== editToken) return;
+    answer = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "学生作答/" + target }), 30000);
+    if (token !== editToken) return;
+    need = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "学习需求/" + target }), 30000);
+    if (token !== editToken) return;
+    guide = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读指导/" + target }), 30000);
+    if (token !== editToken) return;
+  } catch (e) {
+    if (token !== editToken) return;
+    setEditStatus("loadFail");
+    showToast(t("loadFail"));
+    return;
+  }
+  setStage("formEditPractice", normalizeStage(stage));
+  byId("formEditPractice_阅读材料与题目").value = material == null ? "" : String(material);
+  byId("formEditPractice_学生作答").value = answer == null ? "" : String(answer);
+  byId("formEditPractice_学习需求").value = need == null ? "" : String(need);
+  editGuideText = guide == null ? "" : String(guide);
+  editView = "guide";
+  editLoaded = true;
+  editBoundRow = target;
+  currentRow = target;
+  setEditStatus("");
+  updateEditWordCount();
+  paintEditGuide();
+  updateEditButtons();
+}
+
+async function setField(name, row, value) {
+  await withTimeout(callAppBridge({
+    type: "SetCellValue",
+    data: DATA_SOURCE,
+    payload: name + "/" + String(row) + "/" + (value == null ? "" : String(value))
+  }), 30000);
+}
+
+async function saveEdit() {
+  if (editSaving || !editLoaded || !currentRow) return;
+  const fields = readEditFields();
+  if (fields.学段 !== "小学高段" && fields.学段 !== "初中") {
+    showToast(t("needStageMaterial"));
+    return;
+  }
+  if (!String(fields.阅读材料与题目).trim()) {
+    showToast(t("needStageMaterial"));
+    return;
+  }
+  const row = currentRow;
+  editSaving = true;
+  updateEditButtons();
+  try {
+    await setField("学段", row, fields.学段);
+    await setField("阅读材料与题目", row, fields.阅读材料与题目);
+    await setField("学生作答", row, fields.学生作答);
+    await setField("学习需求", row, fields.学习需求);
+  } catch (e) {
+    editSaving = false;
+    updateEditButtons();
+    showToast(t("saveFail"));
+    return;
+  }
+  editSaving = false;
+  updateEditButtons();
+  setEditStatus("saved");
+  showToast(t("saved"));
+  try { await refreshData(); } catch (e2) {}
+}
+
+async function regenFromEdit() {
+  if (editSaving || (polling && pollOwner === "edit")) return;
+  const fields = readEditFields();
+  if ((fields.学段 !== "小学高段" && fields.学段 !== "初中") || !String(fields.阅读材料与题目).trim()) {
+    showToast(t("needStageMaterial"));
+    return;
+  }
+  const regenToken = ++editRegenToken;
+  editToken++;
+  editSaving = true;
+  updateEditButtons();
+  try {
+    await withTimeout(callAppBridge({ type: "SubmitRecord", data: TABLE_NAME, payload: buildSubmitPayload(fields) }), 60000);
+  } catch (e) {
+    editSaving = false;
+    updateEditButtons();
+    showToast(t("submitFail"));
+    return;
+  }
+  currentRow = 1;
+  editBoundRow = 1;
+  editLoaded = true;
+  setEditStatus("regenNote");
+  try { await refreshData(); } catch (e2) {}
+  if (regenToken !== editRegenToken) {
+    editSaving = false;
+    updateEditButtons();
+    return;
+  }
+  editSaving = false;
+  await pollGuide("edit");
+  try { await refreshData(); } catch (e3) {}
+}
+
+function openConfirm(message) {
+  return new Promise(function (resolve) {
+    if (confirmResolver) confirmResolver(false);
+    confirmResolver = resolve;
+    byId("confirmMessage").textContent = message;
+    openOverlay("confirmOverlay");
+    const cancel = byId("btnConfirmCancel");
+    if (cancel) cancel.focus();
+  });
+}
+
+function closeConfirm(result) {
+  closeOverlay("confirmOverlay");
+  if (confirmResolver) {
+    const fn = confirmResolver;
+    confirmResolver = null;
+    fn(!!result);
+  }
+}
+
+async function deleteRow(row) {
+  const target = parseInt(row, 10);
+  if (!target || target < 1) return;
+  const ok = await openConfirm(t("confirmDelete"));
+  if (!ok) return;
+  try {
+    await withTimeout(callAppBridge({ type: "DeleteRecord", data: DATA_SOURCE, payload: target.toString() }), 30000);
+  } catch (e) {
+    showToast(t("deleteFail"));
+    return;
+  }
+  if (detailRow === target) closeDetail();
+  if (editBoundRow === target && byId("editOverlay").classList.contains("show")) closeEdit(true);
+  if (currentRow === target) currentRow = 0;
+  showToast(t("deleted"));
+  try { await refreshData(); } catch (e2) {}
+}
+
+async function refreshGuide(row) {
+  const target = parseInt(row, 10);
+  if (!target) return;
+  let text = "";
+  try {
+    text = await withTimeout(callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "阅读指导/" + target }), 30000);
+  } catch (e) {
+    showToast(t("loadFail"));
+    return;
+  }
+  const value = text == null ? "" : String(text);
+  for (let i = 0; i < records.length; i++) {
+    if (records[i].row === target) records[i].阅读指导 = value;
+  }
+  renderRecent();
+  renderBookList();
+  if (detailRow === target && byId("detailOverlay").classList.contains("show")) {
+    detailGuideText = value;
+    paintDetailGuide();
+  }
+  if (editBoundRow === target && byId("editOverlay").classList.contains("show") && !(polling && pollOwner === "edit")) {
+    editGuideText = value;
+    editView = "guide";
+    paintEditGuide();
+  }
+}
+
+async function detailToEdit() {
+  const row = detailRow || currentRow;
+  closeDetail();
+  if (row) await openEdit(row);
+}
+
+function setupKeyboard() {
+  function bump(target) {
+    if (!target) return;
+    const tag = target.tagName;
+    if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") return;
+    const vv = window.visualViewport;
+    const keyboard = vv ? Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0)) : 0;
+    document.documentElement.style.setProperty("--kb", keyboard + "px");
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", behavior: "smooth" }); }
+      catch (e) { target.scrollIntoView(); }
+    }, 280);
+  }
+  document.addEventListener("focusin", function (e) { bump(e.target); });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () { bump(document.activeElement); });
+  }
+}
+
+function bindStage(prefix) {
+  const host = byId(prefix + "_stage");
+  host.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-value]");
+    if (!btn || !host.contains(btn)) return;
+    setStage(prefix, btn.getAttribute("data-value"));
+  });
+}
+
+function bindEvents() {
+  byId("navBrand").addEventListener("click", function () {
+    try { parent.closeFullHtml(false); } catch (e) {}
+  });
+  const pageButtons = document.querySelectorAll("[data-page]");
+  for (let i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener("click", function () {
+      switchPage(pageButtons[i].getAttribute("data-page"));
+    });
+  }
+  byId("btnHamburger").addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+  document.addEventListener("click", function (e) {
+    const menu = byId("navMobileMenu");
+    if (!menu.classList.contains("open")) return;
+    if (menu.contains(e.target) || byId("btnHamburger").contains(e.target)) return;
+    closeMobileMenu();
+  });
+  byId("langBtnZh").addEventListener("click", function () { chooseLanguage("zh"); });
+  byId("langBtnEn").addEventListener("click", function () { chooseLanguage("en"); });
+  byId("mobileLangZh").addEventListener("click", function () { chooseLanguage("zh"); });
+  byId("mobileLangEn").addEventListener("click", function () { chooseLanguage("en"); });
+  byId("btnHomeStart").addEventListener("click", function () { switchPage("practice"); });
+  byId("btnRecentStart").addEventListener("click", function () { switchPage("practice"); });
+  byId("btnEmptyStart").addEventListener("click", function () { switchPage("practice"); });
+  byId("btnNewPractice").addEventListener("click", function () { switchPage("practice"); });
+  byId("btnGoBook").addEventListener("click", function () { switchPage("book"); });
+  byId("statTotal").addEventListener("click", function () { openBookFiltered("all"); });
+  byId("statPrimary").addEventListener("click", function () { openBookFiltered("小学高段"); });
+  byId("statJunior").addEventListener("click", function () { openBookFiltered("初中"); });
+  bindStage("formStartPractice");
+  bindStage("formEditPractice");
+  byId("formStartPractice_阅读材料与题目").addEventListener("input", function () {
+    updatePracticeWordCount();
+    updateGenerateState();
+  });
+  byId("formStartPractice_学生作答").addEventListener("input", updateGenerateState);
+  byId("formStartPractice_学习需求").addEventListener("input", updateGenerateState);
+  byId("formEditPractice_阅读材料与题目").addEventListener("input", function () {
+    updateEditWordCount();
+    updateEditButtons();
+  });
+  byId("formEditPractice_学生作答").addEventListener("input", updateEditButtons);
+  byId("formEditPractice_学习需求").addEventListener("input", updateEditButtons);
+  byId("formStartPractice").addEventListener("submit", function (e) { e.preventDefault(); generatePractice(); });
+  byId("formEditPractice").addEventListener("submit", function (e) { e.preventDefault(); });
+  byId("btnGenerate").addEventListener("click", generatePractice);
+  byId("btnClearPractice").addEventListener("click", clearPractice);
+  byId("btnLoadFile").addEventListener("click", function () { loadMaterialInto("formStartPractice_阅读材料与题目"); });
+  byId("btnCopyGuide").addEventListener("click", function () { copyText(practiceGuideText); });
+  byId("btnViewRecord").addEventListener("click", function () { openDetail(1); });
+  byId("btnRetry").addEventListener("click", function () { retryGuide("practice"); });
+  byId("bookSearch").addEventListener("input", function () {
+    bookSearch = byId("bookSearch").value;
+    renderBookList();
+  });
+  byId("bookSearch").addEventListener("search", function () {
+    bookSearch = byId("bookSearch").value;
+    renderBookList();
+  });
+  byId("bookFilters").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-filter]");
+    if (!btn) return;
+    bookFilter = btn.getAttribute("data-filter");
+    syncFilterChips();
+    renderBookList();
+  });
+  byId("btnClearFilter").addEventListener("click", clearBookFilter);
+  byId("recentList").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    openDetail(parseInt(card.getAttribute("data-row"), 10));
+  });
+  byId("recentList").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    e.preventDefault();
+    openDetail(parseInt(card.getAttribute("data-row"), 10));
+  });
+  byId("bookList").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    const row = parseInt(card.getAttribute("data-row"), 10);
+    if (!row) return;
+    const btn = e.target.closest("button");
+    if (btn && card.contains(btn)) {
+      const act = btn.getAttribute("data-act");
+      if (act === "detail") openDetail(row);
+      else if (act === "edit") openEdit(row);
+      else if (act === "delete") deleteRow(row);
+      else if (act === "refresh") refreshGuide(row);
+      return;
+    }
+    if (e.target.closest(".card-hit")) openEdit(row);
+  });
+  byId("bookList").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const hit = e.target.closest(".card-hit");
+    if (!hit) return;
+    const card = hit.closest("[data-row]");
+    if (!card) return;
+    e.preventDefault();
+    openEdit(parseInt(card.getAttribute("data-row"), 10));
+  });
+  byId("detailOverlay").addEventListener("click", function (e) {
+    if (e.target === byId("detailOverlay")) closeDetail();
+  });
+  byId("btnDetailClose").addEventListener("click", closeDetail);
+  byId("btnDetailEdit").addEventListener("click", detailToEdit);
+  byId("btnDetailDelete").addEventListener("click", function () { deleteRow(detailRow); });
+  byId("btnDetailCopy").addEventListener("click", function () { copyText(detailGuideText); });
+  byId("btnDetailPrev").addEventListener("click", function () { moveDetail(-1); });
+  byId("btnDetailNext").addEventListener("click", function () { moveDetail(1); });
+  byId("btnEditCancel").addEventListener("click", function () { closeEdit(true); });
+  byId("btnEditSave").addEventListener("click", saveEdit);
+  byId("btnEditRegen").addEventListener("click", regenFromEdit);
+  byId("btnEditLoadFile").addEventListener("click", function () { loadMaterialInto("formEditPractice_阅读材料与题目"); });
+  byId("btnEditRetry").addEventListener("click", function () { retryGuide("edit"); });
+  byId("btnConfirmCancel").addEventListener("click", function () { closeConfirm(false); });
+  byId("btnConfirmOk").addEventListener("click", function () { closeConfirm(true); });
+  window.addEventListener("resize", updateNavMode);
+  window.addEventListener("orientationchange", updateNavMode);
+}
+
+async function initialize() {
+  if (!booted) {
+    booted = true;
+    bindEvents();
+    setupKeyboard();
+    loadMarked();
+  }
+  currentRow = 0;
+  applyLanguage(detectLanguage());
+  await loadTheme();
+  await showPage("home", null);
+  updateNavMode();
+  setTimeout(updateNavMode, 300);
+}
+
+window.airBack = airBack;
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

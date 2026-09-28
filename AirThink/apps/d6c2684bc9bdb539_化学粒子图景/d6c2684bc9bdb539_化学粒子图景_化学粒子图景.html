@@ -1,0 +1,2925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="color-scheme" content="light dark">
+<title>化学粒子图景</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script>
+(function () {
+  try {
+    if (window.matchMedia && window.matchMedia('(max-width: 980px)').matches) {
+      document.documentElement.classList.add('pre-compact');
+    }
+  } catch (err) {}
+})();
+</script>
+<style>
+:root {
+  --text: #14343A;
+  --muted: #4E6A70;
+  --line: rgba(14, 124, 134, 0.24);
+  --keyboard-gap: 0px;
+  --nav: #0B3D45;
+  --primary: #0E7C86;
+  --accent: #E07A3D;
+  --card: rgba(255, 255, 255, 0.84);
+}
+body.theme-dark {
+  --text: #E7F6F3;
+  --muted: #A9C4C8;
+  --line: rgba(127, 214, 216, 0.28);
+  --card: rgba(14, 32, 40, 0.9);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: clip; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding-top: 64px;
+  color: var(--text);
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(165deg, #E7F6F3 0%, #F3F0FF 100%);
+}
+body.theme-dark {
+  background: linear-gradient(165deg, #071C22 0%, #1A1430 100%);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(540px 260px at 0% 0%, rgba(224, 122, 61, 0.16), transparent 70%),
+    radial-gradient(680px 340px at 100% 0%, rgba(124, 107, 196, 0.18), transparent 72%);
+}
+body.theme-dark::before {
+  background:
+    radial-gradient(540px 260px at 0% 0%, rgba(224, 122, 61, 0.22), transparent 70%),
+    radial-gradient(680px 340px at 100% 0%, rgba(124, 107, 196, 0.3), transparent 72%);
+}
+main { position: relative; z-index: 1; }
+input, select, textarea { box-sizing: border-box; font-family: inherit; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.55; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+#topNav {
+  background: var(--nav);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(6, 28, 34, 0.18);
+}
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 0 14px;
+}
+.brand {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: #fff;
+  border: 0;
+  padding: 8px 0;
+  text-align: left;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.logo-mark { width: 78px; height: 28px; flex: 0 0 auto; }
+.nav-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 4px; }
+.nav-tabs { display: flex; flex-wrap: nowrap; gap: 2px; }
+.tab, .lang-btn, #hamburgerBtn, .mobile-menu button {
+  background: transparent;
+  color: #fff;
+  border: 0;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 10px 12px;
+  border-radius: 10px 10px 0 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.78);
+}
+.tab.is-active {
+  color: #fff;
+  box-shadow: inset 0 -3px 0 #E07A3D;
+}
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  margin-left: 6px;
+}
+.lang-btn span.is-on, .lang-choice.is-on { color: #E07A3D; font-weight: 700; }
+#hamburgerBtn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+.hb, .hb::before, .hb::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #fff;
+  position: relative;
+  border-radius: 2px;
+}
+.hb::before, .hb::after { content: ""; position: absolute; left: 0; }
+.hb::before { top: -6px; }
+.hb::after { top: 6px; }
+html.pre-compact #navTabs, html.pre-compact #langToggle,
+#topNav.is-compact #navTabs, #topNav.is-compact #langToggle { display: none; }
+html.pre-compact #hamburgerBtn, #topNav.is-compact #hamburgerBtn { display: inline-flex; }
+.mobile-menu { display: flex; flex-direction: column; background: #084652; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+.mobile-menu[hidden] { display: none !important; }
+.mobile-menu .tab {
+  width: 100%;
+  border-radius: 0;
+  text-align: left;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+.mobile-menu .tab.is-active { box-shadow: inset 3px 0 0 #E07A3D; }
+.mobile-lang { display: flex; gap: 8px; padding: 12px 18px 16px; }
+.lang-choice {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 14px;
+  color: #fff;
+}
+.page { display: none; }
+.page.active { display: block; }
+.wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 26px 0 40px; }
+h1 { margin: 0; font-size: 34px; line-height: 1.2; font-weight: 700; letter-spacing: -0.03em; }
+.lead { margin: 10px 0 0; max-width: 44rem; color: var(--muted); font-size: 16px; line-height: 1.75; }
+.title-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.hero-molecule { width: min(250px, 38vw); height: auto; flex: 0 0 auto; }
+.path-grid, .stat-grid, .recent-grid { display: grid; gap: 14px; }
+.path-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 20px; }
+.stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 18px; }
+.recent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.center-line { display: flex; justify-content: center; margin-top: 18px; }
+.glass {
+  background: var(--card);
+  border: 1px solid rgba(14, 124, 134, 0.22);
+  box-shadow: 0 0 0 4px rgba(14, 124, 134, 0.045), 0 14px 32px rgba(11, 61, 69, 0.06);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+}
+body.theme-dark .glass {
+  border-color: rgba(127, 214, 216, 0.24);
+  box-shadow: 0 0 0 4px rgba(60, 186, 196, 0.05), 0 14px 32px rgba(0, 0, 0, 0.28);
+}
+.lift-card { position: relative; transition: transform 0.18s ease, box-shadow 0.18s ease; }
+.lift-card::before, .lift-card::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.lift-card::before { top: 12px; right: 18px; background: #E07A3D; }
+.lift-card::after { top: 22px; right: 30px; width: 5px; height: 5px; background: #0E7C86; box-shadow: -12px 7px 0 0 rgba(14, 124, 134, 0); }
+.lift-card:hover { transform: translateY(-4px); }
+.lift-card:hover::before, .lift-card:hover::after { opacity: 1; }
+.lift-card:hover::after { box-shadow: -12px 7px 0 0 #0E7C86; }
+.path-card, .stat-card, .recent-card, .record-card, .empty-card { padding: 16px; }
+.path-card h2 { margin: 8px 0; font-size: 18px; }
+.path-card p, .empty-card p { margin: 0; color: var(--muted); line-height: 1.65; }
+.path-kicker { height: 18px; }
+.stat-card { text-align: left; width: 100%; color: inherit; border-radius: 18px; }
+button.stat-card { cursor: pointer; }
+.stat-num { font-size: 32px; font-weight: 700; color: var(--primary); line-height: 1.1; }
+.stat-label { margin-top: 6px; color: var(--muted); font-size: 14px; }
+.section-title { margin: 28px 0 12px; font-size: 22px; }
+.recent-card { display: block; width: 100%; text-align: left; color: inherit; }
+.q-title { margin: 8px 0 6px; font-size: 17px; font-weight: 700; line-height: 1.45; word-break: break-word; }
+.idea-text { color: var(--muted); font-size: 13px; line-height: 1.6; word-break: break-word; }
+.badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 10px; font-size: 12px; background: rgba(14, 124, 134, 0.12); color: #0B3D45; }
+.badge.b-junior { background: rgba(224, 122, 61, 0.16); color: #8A3E12; }
+.badge.b-senior { background: rgba(110, 92, 196, 0.16); color: #3E3478; }
+body.theme-dark .badge { color: #D7F7F4; }
+body.theme-dark .badge.b-junior { color: #FFD0B4; }
+body.theme-dark .badge.b-senior { color: #DDD4FF; }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.page-head h1 { font-size: 32px; }
+.workshop-grid { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 16px; align-items: start; margin-top: 16px; }
+.gallery-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.gallery-layout.show-edit { grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.82fr); }
+.form-panel, .canvas-panel {
+  background: #ffffff;
+  border: 1px solid rgba(14, 124, 134, 0.2);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 12px 32px rgba(11, 61, 69, 0.06);
+}
+body.theme-dark .form-panel, body.theme-dark .canvas-panel {
+  background: #10242C;
+  border-color: rgba(127, 214, 216, 0.24);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+.field { margin-top: 14px; }
+.field-label, .field label { display: block; font-weight: 700; margin-bottom: 8px; }
+.req { color: var(--accent); }
+.chip-row, .filter-row, .action-line, .record-actions, .mobile-lang { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-row, .filter-row, .action-line { margin-top: 8px; }
+.chip, .filter-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 124, 134, 0.3);
+  background: #fff;
+  color: var(--text);
+  padding: 8px 12px;
+  line-height: 1.35;
+}
+body.theme-dark .chip, body.theme-dark .filter-chip { background: #0E1C24; }
+.chip.is-on { background: var(--primary); color: #fff; border-color: var(--primary); }
+.filter-chip.is-on { background: var(--nav); color: #fff; border-color: var(--nav); }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.hint, .gentle, .tip, .soft { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.tip { color: #8A3E12; }
+body.theme-dark .tip { color: #F0B48A; }
+textarea, select,
+input[type="text"], input[type="search"], input[type="password"], input[type="email"], input[type="url"], input[type="tel"], input[type="number"], input[type="date"], input[type="time"], input[type="datetime-local"] {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(14, 124, 134, 0.28);
+  background: #fff;
+  padding: 10px 12px;
+  color: var(--text);
+}
+body.theme-dark textarea, body.theme-dark select,
+body.theme-dark input[type="text"], body.theme-dark input[type="search"], body.theme-dark input[type="password"], body.theme-dark input[type="email"], body.theme-dark input[type="url"], body.theme-dark input[type="tel"], body.theme-dark input[type="number"], body.theme-dark input[type="date"], body.theme-dark input[type="time"], body.theme-dark input[type="datetime-local"] {
+  background: #0C1E24;
+  border-color: rgba(127, 214, 216, 0.32);
+}
+textarea { min-height: 110px; resize: vertical; line-height: 1.65; }
+textarea, select, input { scroll-margin-top: 88px; scroll-margin-bottom: 28px; }
+.btn, .mini-btn, .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn { border-radius: 999px; padding: 12px 18px; border: 1px solid transparent; font-size: 15px; font-weight: 700; line-height: 1.2; }
+.btn.primary { background: var(--primary); color: #fff; }
+.btn.accent { background: var(--accent); color: #fff; }
+.btn.ghost { background: transparent; color: var(--text); border-color: rgba(14, 124, 134, 0.35); }
+.mini-btn { border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--text); padding: 7px 12px; font-size: 13px; }
+.mini-btn.danger { color: #A33B24; border-color: rgba(224, 122, 61, 0.5); }
+body.theme-dark .mini-btn.danger { color: #FFB59A; }
+.canvas-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.canvas-tools { display: flex; align-items: center; gap: 6px; }
+.icon-btn { width: 36px; height: 36px; border-radius: 999px; border: 1px solid rgba(14, 124, 134, 0.3); background: #fff; color: #0B3D45; }
+body.theme-dark .icon-btn { background: #0E1C24; color: #E7F6F3; }
+#rowLabel { min-width: 4.5em; text-align: center; font-size: 13px; color: var(--muted); }
+.canvas-stage { min-height: 220px; }
+.wait-box, .wait-inline { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 180px; text-align: center; }
+.wait-dots { display: flex; align-items: center; gap: 0; }
+.wait-dots span {
+  width: 10px; height: 10px; border-radius: 50%; display: block;
+  animation: floaty 1.8s ease-in-out infinite;
+}
+.wait-dots span:nth-child(1) { background: #0E7C86; }
+.wait-dots span:nth-child(3) { background: #E07A3D; animation-delay: 0.25s; }
+.wait-dots span:nth-child(5) { background: #7C6BC4; animation-delay: 0.5s; }
+.wait-dots i { width: 16px; height: 2px; background: rgba(14, 124, 134, 0.45); display: block; }
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50% { transform: translateY(-8px); opacity: 1; }
+}
+.empty-copy { color: var(--muted); line-height: 1.7; }
+.empty-card { text-align: center; }
+.search-line { margin-top: 14px; }
+.search-box { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid rgba(14, 124, 134, 0.28); border-radius: 999px; padding: 0 14px; min-height: 46px; }
+body.theme-dark .search-box { background: #0E1C24; }
+.search-box input { border: 0; background: transparent; min-height: 42px; outline: none; padding: 8px 0; }
+.search-box i { color: var(--primary); }
+.record-card { padding: 0; overflow: hidden; }
+.record-main { display: block; width: 100%; text-align: left; background: transparent; border: 0; color: inherit; padding: 16px 16px 8px; font: inherit; }
+.record-actions { padding: 0 16px 16px; }
+.detail-box { margin: 0 16px 16px; padding-top: 12px; border-top: 1px dashed rgba(14, 124, 134, 0.28); }
+.detail-box[hidden] { display: none !important; }
+.md-body { line-height: 1.75; word-break: break-word; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4 { line-height: 1.35; margin: 0.8em 0 0.4em; color: #0B3D45; }
+body.theme-dark .md-body h1, body.theme-dark .md-body h2, body.theme-dark .md-body h3, body.theme-dark .md-body h4 { color: #D9FBFA; }
+.md-body p { margin: 0.55em 0; }
+.md-body a { color: var(--primary); }
+.md-body code { font-family: Consolas, "Sarasa Mono SC", monospace; background: rgba(14, 124, 134, 0.1); padding: 0.1em 0.35em; border-radius: 6px; }
+.md-body pre { overflow-x: auto; max-width: 100%; background: rgba(14, 124, 134, 0.08); border-radius: 12px; padding: 12px 14px; }
+.md-body pre code { background: transparent; padding: 0; white-space: pre; }
+.md-body blockquote { margin: 0.8em 0; padding: 0.35em 0 0.35em 12px; border-left: 4px solid #E07A3D; background: rgba(224, 122, 61, 0.1); }
+.md-body ul, .md-body ol { padding-left: 1.3em; }
+.md-body .task-item { list-style: none; margin-left: -1.2em; }
+.md-body hr { border: 0; height: 0; margin: 1.2em 0; text-align: center; }
+.md-body hr::before { content: "————"; color: var(--primary); letter-spacing: 1px; }
+.md-body img { max-width: 100%; height: auto; border-radius: 12px; }
+.table-scroll { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+.md-body table { border-collapse: collapse; min-width: 420px; }
+.md-body th, .md-body td { border: 1px solid rgba(14, 124, 134, 0.25); padding: 6px 10px; vertical-align: top; }
+.md-body th { background: rgba(14, 124, 134, 0.12); }
+.md-sec { margin: 12px 0; padding: 12px 14px; border-radius: 14px; }
+.sec-phenomenon { background: rgba(14, 124, 134, 0.08); }
+.sec-particles { background: rgba(11, 61, 69, 0.04); border: 1px dashed rgba(14, 124, 134, 0.35); white-space: pre-wrap; font-family: Consolas, "Sarasa Mono SC", monospace; line-height: 1.5; }
+.sec-symbols { background: rgba(224, 122, 61, 0.1); }
+.sec-boundary { background: rgba(224, 122, 61, 0.06); }
+.sec-check { background: rgba(124, 107, 196, 0.1); }
+.sec-particles h1, .sec-particles h2, .sec-particles h3, .sec-particles h4 { font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; white-space: normal; }
+body.theme-dark .sec-phenomenon { background: rgba(60, 186, 196, 0.12); }
+body.theme-dark .sec-particles { background: rgba(255, 255, 255, 0.04); }
+body.theme-dark .sec-symbols { background: rgba(224, 122, 61, 0.16); }
+body.theme-dark .sec-boundary { background: rgba(224, 122, 61, 0.1); }
+body.theme-dark .sec-check { background: rgba(140, 120, 220, 0.18); }
+.overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(8, 28, 34, 0.5); display: flex; align-items: center; justify-content: center; padding: 24px 18px; }
+.overlay[hidden] { display: none !important; }
+.dialog { width: min(480px, 100%); max-height: calc(100vh - 48px); overflow: auto; background: #ffffff; color: var(--text); border-radius: 18px; padding: 22px 20px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24); }
+body.theme-dark .dialog { background: #10242C; }
+.dialog-scroll { padding-bottom: 8px; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 4000; background: #0B3D45; color: #fff; padding: 12px 16px; border-radius: 999px; max-width: min(560px, calc(100% - 32px)); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22); }
+.toast[hidden] { display: none !important; }
+[hidden] { display: none !important; }
+@media (max-width: 980px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .workshop-grid, .gallery-layout.show-edit { grid-template-columns: 1fr; }
+  #editPanel { position: static; max-height: none; overflow: visible; }
+}
+@media (min-width: 901px) {
+  #editPanel { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow: auto; }
+}
+@media (max-width: 800px) {
+  .wrap { width: calc(100% - 24px); }
+  .title-row { flex-direction: column; align-items: flex-start; }
+  .path-grid, .recent-grid { grid-template-columns: 1fr; }
+  h1, .page-head h1 { font-size: 28px; }
+  .page.active { padding-bottom: calc(46vh + var(--keyboard-gap)); }
+  .dialog-scroll { padding-bottom: 96px; }
+  textarea, select,
+  input[type="text"], input[type="search"], input[type="password"], input[type="email"], input[type="url"], input[type="tel"], input[type="number"], input[type="date"], input[type="time"], input[type="datetime-local"] { font-size: 16px; }
+}
+@media (max-width: 560px) {
+  .stat-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wait-dots span, .lift-card { animation: none; transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav id="topNav" style="position: relative;z-index: 1001;">
+    <div id="navRow" class="nav-row">
+      <button type="button" id="navBrand" class="brand">
+        <svg class="logo-mark" viewBox="0 0 78 28" aria-hidden="true">
+          <line x1="12" y1="14" x2="36" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          <line x1="42" y1="14" x2="66" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          <circle cx="12" cy="14" r="5" fill="#E07A3D"></circle>
+          <circle cx="39" cy="14" r="5" fill="#F4FBFA"></circle>
+          <circle cx="66" cy="14" r="5" fill="#E07A3D"></circle>
+        </svg>
+        <span id="navTitle" class="brand-name" data-i18n="appName">化学粒子图景</span>
+      </button>
+      <div id="navActions" class="nav-actions">
+        <div id="navTabs" class="nav-tabs">
+          <button type="button" id="tabHome" class="tab is-active" data-page="home" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="navHome">首页</span></button>
+          <button type="button" id="tabWorkshop" class="tab" data-page="workshop"><i class="fa-solid fa-circle-nodes" aria-hidden="true"></i><span data-i18n="navWorkshop">粒子工坊</span></button>
+          <button type="button" id="tabGallery" class="tab" data-page="gallery"><i class="fa-solid fa-scroll" aria-hidden="true"></i><span data-i18n="navGallery">图景长卷</span></button>
+        </div>
+        <button type="button" id="langToggle" class="lang-btn" aria-label="中文 / English"><span id="langZhMark" class="is-on">中</span><span>/</span><span id="langEnMark">EN</span></button>
+        <button type="button" id="hamburgerBtn" aria-expanded="false" data-i18n-aria="menu" aria-label="菜单"><span class="hb"></span></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <button type="button" id="mobileTabHome" class="tab is-active" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="navHome">首页</span></button>
+      <button type="button" id="mobileTabWorkshop" class="tab" data-page="workshop"><i class="fa-solid fa-circle-nodes" aria-hidden="true"></i><span data-i18n="navWorkshop">粒子工坊</span></button>
+      <button type="button" id="mobileTabGallery" class="tab" data-page="gallery"><i class="fa-solid fa-scroll" aria-hidden="true"></i><span data-i18n="navGallery">图景长卷</span></button>
+      <div class="mobile-lang">
+        <button type="button" id="mobileLangZh" class="lang-choice is-on">中文</button>
+        <button type="button" id="mobileLangEn" class="lang-choice">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main id="appMain">
+  <section id="pageHome" class="page active">
+    <div class="wrap">
+      <div class="title-row">
+        <div>
+          <h1 id="homeTitle" data-i18n="appName">化学粒子图景</h1>
+          <p id="homeDesc" class="lead" data-i18n="homeLead">从看得见的现象出发，用文字粒子图连上微观过程；符号只在学段适用时出现</p>
+        </div>
+        <svg class="hero-molecule" viewBox="0 0 220 120" aria-hidden="true">
+          <line x1="28" y1="78" x2="96" y2="36" stroke="#0E7C86" stroke-width="3" stroke-linecap="round"></line>
+          <line x1="112" y1="36" x2="188" y2="82" stroke="#0E7C86" stroke-width="3" stroke-linecap="round"></line>
+          <circle cx="28" cy="78" r="10" fill="#E07A3D"></circle>
+          <circle cx="104" cy="36" r="10" fill="#F7FFFE" stroke="#0E7C86" stroke-width="2"></circle>
+          <circle cx="188" cy="82" r="10" fill="#E07A3D"></circle>
+        </svg>
+      </div>
+      <div class="path-grid">
+        <article class="glass lift-card path-card">
+          <svg class="path-kicker" viewBox="0 0 78 18" aria-hidden="true"><circle cx="9" cy="9" r="4" fill="#E07A3D"></circle></svg>
+          <h2 data-i18n="pathSeeTitle">看见现象</h2>
+          <p data-i18n="pathSeeText">先说你观察到什么</p>
+        </article>
+        <article class="glass lift-card path-card">
+          <svg class="path-kicker" viewBox="0 0 78 18" aria-hidden="true"><circle cx="9" cy="9" r="4" fill="#0E7C86"></circle><line x1="16" y1="9" x2="34" y2="9" stroke="#0E7C86" stroke-width="2"></line><circle cx="41" cy="9" r="4" fill="#E07A3D"></circle></svg>
+          <h2 data-i18n="pathDrawTitle">画出粒子</h2>
+          <p data-i18n="pathDrawText">看粒子如何排列、运动、分开或重新组合</p>
+        </article>
+        <article class="glass lift-card path-card">
+          <svg class="path-kicker" viewBox="0 0 78 18" aria-hidden="true"><circle cx="8" cy="9" r="3.5" fill="#E07A3D"></circle><line x1="14" y1="9" x2="28" y2="9" stroke="#0B3D45" stroke-width="2"></line><circle cx="34" cy="9" r="3.5" fill="#0E7C86"></circle><line x1="40" y1="9" x2="54" y2="9" stroke="#0B3D45" stroke-width="2"></line><circle cx="60" cy="9" r="3.5" fill="#E07A3D"></circle></svg>
+          <h2 data-i18n="pathSignTitle">连上符号</h2>
+          <p data-i18n="pathSignText">初中和高中再把粒子变化对上适用的化学符号；尚未学习化学时不展开化学式</p>
+        </article>
+      </div>
+      <div class="center-line">
+        <button type="button" id="btnStart" class="btn accent"><i class="fa-solid fa-circle-dot" aria-hidden="true"></i><span data-i18n="start">开始一次粒子讲解</span></button>
+      </div>
+      <div class="stat-grid">
+        <article id="statTotal" class="glass lift-card stat-card">
+          <div id="statTotalValue" class="stat-num">…</div>
+          <div class="stat-label" data-i18n="statTotal">总讲解数</div>
+        </article>
+        <button type="button" id="statNone" class="glass lift-card stat-card" data-stage="尚未学习化学">
+          <div id="statNoneValue" class="stat-num">…</div>
+          <div class="stat-label" data-i18n="stageNone">尚未学习化学</div>
+        </button>
+        <button type="button" id="statJunior" class="glass lift-card stat-card" data-stage="初中">
+          <div id="statJuniorValue" class="stat-num">…</div>
+          <div class="stat-label" data-i18n="stageJunior">初中</div>
+        </button>
+        <button type="button" id="statSenior" class="glass lift-card stat-card" data-stage="高中">
+          <div id="statSeniorValue" class="stat-num">…</div>
+          <div class="stat-label" data-i18n="stageSenior">高中</div>
+        </button>
+      </div>
+      <h2 id="recentTitle" class="section-title" data-i18n="recentTitle">最近图景</h2>
+      <p id="recentLoading" class="soft">…</p>
+      <div id="recentEmpty" class="glass empty-card" hidden>
+        <p data-i18n="farAway">粒子还在远处</p>
+      </div>
+      <div id="recentList" class="recent-grid"></div>
+    </div>
+  </section>
+  <section id="pageWorkshop" class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="workshopTitle" data-i18n="navWorkshop">粒子工坊</h1>
+          <p id="workshopDesc" class="lead" data-i18n="workshopLead">选择学段，写下疑问和已有想法。图景由后台生成，请用粒子语言阅读，而不是背结论</p>
+        </div>
+        <button type="button" id="btnToGallery" class="btn ghost"><i class="fa-solid fa-scroll" aria-hidden="true"></i><span data-i18n="toGallery">查看图景长卷</span></button>
+      </div>
+      <div class="workshop-grid">
+        <form id="formWorkshop" class="form-panel" action="javascript:void(0)">
+          <div class="field-label"><span data-i18n="fieldStage">学段</span><span class="req" aria-hidden="true"> *</span></div>
+          <div id="formWorkshop_学段" class="chip-row" role="radiogroup">
+            <label class="chip"><input type="radio" name="学段" id="formWorkshop_学段_none" value="尚未学习化学"><span data-i18n="stageNone">尚未学习化学</span></label>
+            <label class="chip"><input type="radio" name="学段" id="formWorkshop_学段_junior" value="初中"><span data-i18n="stageJunior">初中</span></label>
+            <label class="chip"><input type="radio" name="学段" id="formWorkshop_学段_senior" value="高中"><span data-i18n="stageSenior">高中</span></label>
+          </div>
+          <p id="stageHint" class="hint" data-i18n="hintPick">请选择一个学段</p>
+          <div class="field">
+            <label for="formWorkshop_化学疑问"><span data-i18n="fieldQuestion">化学疑问</span><span class="req" aria-hidden="true"> *</span></label>
+            <textarea id="formWorkshop_化学疑问" name="化学疑问" data-i18n-ph="questionPh" placeholder="你观察到了什么"></textarea>
+          </div>
+          <div class="field">
+            <label for="formWorkshop_已有想法"><span data-i18n="fieldIdea">已有想法</span></label>
+            <textarea id="formWorkshop_已有想法" name="已有想法" data-i18n-ph="ideaPh" placeholder="可以写下你以为发生了什么，也可以先留空"></textarea>
+          </div>
+          <div class="action-line">
+            <button type="button" id="btnGenerate" class="btn primary" disabled><span data-i18n="generate">生成粒子图景</span></button>
+            <span id="generateHint" class="gentle" data-i18n="needInput">先选择学段，并写下化学疑问</span>
+          </div>
+          <div class="action-line">
+            <button type="button" id="btnClear" class="btn ghost"><span data-i18n="clear">清空</span></button>
+            <button type="button" id="btnSave" class="btn ghost" hidden><span data-i18n="save">保存修改</span></button>
+            <button type="button" id="btnRetell" class="btn primary" disabled><span data-i18n="retell">据此再讲一次</span></button>
+          </div>
+          <p id="saveTip" class="tip" hidden></p>
+        </form>
+        <div>
+          <div class="canvas-panel">
+            <div class="canvas-bar">
+              <strong id="canvasTitle" data-i18n="canvasTitle">粒子图景</strong>
+              <div class="canvas-tools">
+                <button type="button" id="btnPrev" class="icon-btn" data-i18n-aria="prev" aria-label="上一条" disabled><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                <span id="rowLabel">—</span>
+                <button type="button" id="btnNext" class="icon-btn" data-i18n-aria="next" aria-label="下一条" disabled><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="canvas-stage">
+              <div id="canvasEmpty" class="empty-copy" data-i18n="farAway">粒子还在远处</div>
+              <div id="canvasWait" class="wait-box" hidden>
+                <div class="wait-dots" aria-hidden="true"><span></span><i></i><span></span><i></i><span></span></div>
+                <p id="waitText" data-i18n="waiting">粒子正在聚集成图……</p>
+              </div>
+              <div id="canvasTimeout" class="empty-copy" data-i18n="timeout" hidden>粒子还在远处，这次等待已经超时</div>
+              <div id="canvasBody" class="md-body" hidden></div>
+            </div>
+          </div>
+          <div class="form-panel draft-panel" style="margin-top:16px;">
+            <label for="draftRetell" data-i18n="draftTitle">用粒子语言复述</label>
+            <textarea id="draftRetell" data-i18n-ph="draftPh" placeholder="用粒子的位置、运动和重新组合来说"></textarea>
+            <div class="action-line">
+              <button type="button" id="btnCompare" class="btn ghost"><span data-i18n="compare">对照图景</span></button>
+            </div>
+            <p id="compareTip" class="tip" role="status" hidden></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="pageGallery" class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="galleryTitle" data-i18n="navGallery">图景长卷</h1>
+          <p id="galleryDesc" class="lead" data-i18n="galleryLead">回看每一次从现象走到粒子的讲解</p>
+        </div>
+        <button type="button" id="btnNew" class="btn accent"><span data-i18n="newOne">+ 新的粒子讲解</span></button>
+      </div>
+      <div id="galleryLayout" class="gallery-layout">
+        <div>
+          <div class="search-line">
+            <label class="search-box" for="gallerySearch">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <input id="gallerySearch" type="search" data-i18n-ph="searchPh" placeholder="搜索化学疑问" autocomplete="off">
+            </label>
+          </div>
+          <div class="filter-row" id="filterRow">
+            <button type="button" id="filterAll" class="filter-chip is-on" data-filter="all"><span data-i18n="filterAll">全部</span></button>
+            <button type="button" id="filterNone" class="filter-chip" data-filter="尚未学习化学"><span data-i18n="stageNone">尚未学习化学</span></button>
+            <button type="button" id="filterJunior" class="filter-chip" data-filter="初中"><span data-i18n="stageJunior">初中</span></button>
+            <button type="button" id="filterSenior" class="filter-chip" data-filter="高中"><span data-i18n="stageSenior">高中</span></button>
+          </div>
+          <p id="galleryLoading" class="soft">…</p>
+          <div id="galleryEmpty" class="glass empty-card" hidden>
+            <p data-i18n="emptyGallery">还没有这样的粒子图景</p>
+            <div class="center-line">
+              <button type="button" id="btnEmptyGo" class="btn primary"><span data-i18n="goWorkshop">去粒子工坊</span></button>
+            </div>
+          </div>
+          <div id="galleryList" class="recent-grid"></div>
+        </div>
+        <aside id="editPanel" class="form-panel" hidden>
+          <h2 id="editTitle" data-i18n="editTitle">修改这一则</h2>
+          <form id="formEdit" action="javascript:void(0)">
+            <div class="field-label"><span data-i18n="fieldStage">学段</span><span class="req" aria-hidden="true"> *</span></div>
+            <div id="formEdit_学段" class="chip-row" role="radiogroup">
+              <label class="chip"><input type="radio" name="学段" id="formEdit_学段_none" value="尚未学习化学"><span data-i18n="stageNone">尚未学习化学</span></label>
+              <label class="chip"><input type="radio" name="学段" id="formEdit_学段_junior" value="初中"><span data-i18n="stageJunior">初中</span></label>
+              <label class="chip"><input type="radio" name="学段" id="formEdit_学段_senior" value="高中"><span data-i18n="stageSenior">高中</span></label>
+            </div>
+            <p id="editStageHint" class="hint" data-i18n="hintPick">请选择一个学段</p>
+            <div class="field">
+              <label for="formEdit_化学疑问"><span data-i18n="fieldQuestion">化学疑问</span><span class="req" aria-hidden="true"> *</span></label>
+              <textarea id="formEdit_化学疑问" name="化学疑问" data-i18n-ph="questionPh" placeholder="你观察到了什么"></textarea>
+            </div>
+            <div class="field">
+              <label for="formEdit_已有想法"><span data-i18n="fieldIdea">已有想法</span></label>
+              <textarea id="formEdit_已有想法" name="已有想法" data-i18n-ph="ideaPh" placeholder="可以写下你以为发生了什么，也可以先留空"></textarea>
+            </div>
+            <div class="action-line">
+              <button type="button" id="btnEditSave" class="btn primary" disabled><span data-i18n="save">保存修改</span></button>
+              <button type="button" id="btnEditClose" class="btn ghost"><span data-i18n="editClose">收起</span></button>
+              <span id="editHint" class="gentle" hidden></span>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="confirmOverlay" class="overlay" hidden>
+  <div id="confirmDialog" class="dialog" role="dialog" aria-modal="true">
+    <div class="dialog-scroll">
+      <p id="confirmMessage"></p>
+      <div class="action-line">
+        <button type="button" id="confirmYes" class="btn accent" data-i18n="remove">拿掉</button>
+        <button type="button" id="confirmNo" class="btn ghost" data-i18n="keep">留下</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("d6c2684bc9bdb539_化学粒子图景")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+var state = {
+  lang: 'zh',
+  currentPage: 'home',
+  history: [],
+  currentRow: 0,
+  editingRow: 0,
+  recordCount: 0,
+  records: [],
+  countsReady: false,
+  galleryFilter: 'all',
+  expandedRow: 0,
+  detailCache: {},
+  galleryPollingRow: 0,
+  galleryTimeoutRow: 0,
+  galleryToken: 0,
+  workshopToken: 0,
+  polling: false,
+  submitting: false,
+  rowLoading: false,
+  canvasMode: 'empty',
+  canvasMarkdown: '',
+  saveTipOn: false,
+  compareTipOn: false,
+  navBusy: false
+};
+var popupStack = [];
+var confirmResolver = null;
+var toastTimer = 0;
+var eventsBound = false;
+var I18N = {
+  zh: {
+    appName: '化学粒子图景', navHome: '首页', navWorkshop: '粒子工坊', navGallery: '图景长卷',
+    homeLead: '从看得见的现象出发，用文字粒子图连上微观过程；符号只在学段适用时出现',
+    pathSeeTitle: '看见现象', pathSeeText: '先说你观察到什么',
+    pathDrawTitle: '画出粒子', pathDrawText: '看粒子如何排列、运动、分开或重新组合',
+    pathSignTitle: '连上符号', pathSignText: '初中和高中再把粒子变化对上适用的化学符号；尚未学习化学时不展开化学式',
+    start: '开始一次粒子讲解', statTotal: '总讲解数', stageNone: '尚未学习化学', stageJunior: '初中', stageSenior: '高中',
+    recentTitle: '最近图景', noIdea: '还没有形成想法', farAway: '粒子还在远处',
+    workshopLead: '选择学段，写下疑问和已有想法。图景由后台生成，请用粒子语言阅读，而不是背结论',
+    toGallery: '查看图景长卷', fieldStage: '学段', fieldQuestion: '化学疑问', fieldIdea: '已有想法',
+    hintPick: '请选择一个学段', hintNone: '只用粒子说话，不展开化学式', hintJunior: '可以连上初中适用的化学符号',
+    hintSenior: '可以连上更细的过程与符号，仍不代替计算、配平或实验教练',
+    ideaPh: '可以写下你以为发生了什么，也可以先留空', questionPh: '你观察到了什么',
+    generate: '生成粒子图景', needInput: '先选择学段，并写下化学疑问', clear: '清空', save: '保存修改',
+    savedTip: '想法已更新；已生成的粒子图解不会自动重写', retell: '据此再讲一次',
+    waiting: '粒子正在聚集成图……', timeout: '粒子还在远处，这次等待已经超时',
+    draftTitle: '用粒子语言复述', draftPh: '用粒子的位置、运动和重新组合来说', compare: '对照图景',
+    compareTip: '试着说清粒子变了什么，不必追求标准答案',
+    galleryLead: '回看每一次从现象走到粒子的讲解', newOne: '+ 新的粒子讲解', searchPh: '搜索化学疑问', filterAll: '全部',
+    view: '查看图景', edit: '编辑', del: '删除', deleteAsk: '这张粒子图景会被拿掉', emptyGallery: '还没有这样的粒子图景',
+    goWorkshop: '去粒子工坊', remove: '拿掉', keep: '留下', editTitle: '修改这一则', editClose: '收起',
+    loadError: '暂时没有连上粒子数据', menu: '菜单', prev: '上一条', next: '下一条', canvasTitle: '粒子图景', rowEmpty: '—'
+  },
+  en: {
+    appName: 'Chemical Particle Scenes', navHome: 'Home', navWorkshop: 'Particle Workshop', navGallery: 'Scene Scroll',
+    homeLead: 'Start from what you can see, and connect the microscopic process with a written particle picture. Symbols appear only when the stage calls for them.',
+    pathSeeTitle: 'See the phenomenon', pathSeeText: 'First say what you observed.',
+    pathDrawTitle: 'Draw the particles', pathDrawText: 'See how particles arrange, move, separate, or join again.',
+    pathSignTitle: 'Connect the symbols', pathSignText: 'In middle school and high school, match the particle change to the symbols that fit. Before chemistry, formulas stay closed.',
+    start: 'Start a particle explanation', statTotal: 'Total explanations', stageNone: 'Not yet studying chemistry', stageJunior: 'Middle school', stageSenior: 'High school',
+    recentTitle: 'Recent scenes', noIdea: 'No idea formed yet', farAway: 'Particles are still far away',
+    workshopLead: 'Choose a stage, then write the question and any idea you already have. The scene is made in the background. Read it in particle language, not as a line to memorize.',
+    toGallery: 'View the scene scroll', fieldStage: 'Stage', fieldQuestion: 'Chemical question', fieldIdea: 'Idea so far',
+    hintPick: 'Choose one stage.', hintNone: 'Speak only with particles. Chemical formulas stay closed.',
+    hintJunior: 'You can connect the chemical symbols used in middle school.',
+    hintSenior: 'You can connect a finer process and its symbols. This still does not replace calculation, balancing, or a lab coach.',
+    ideaPh: 'You can write what you think is happening, or leave this empty for now.', questionPh: 'What did you notice?',
+    generate: 'Generate particle scene', needInput: 'Choose a stage and write the question first.', clear: 'Clear', save: 'Save changes',
+    savedTip: 'Idea updated. The particle picture already made will not be rewritten on its own.', retell: 'Explain this again',
+    waiting: 'Particles are gathering into a picture…', timeout: 'Particles are still far away. This wait has timed out.',
+    draftTitle: 'Retell in particle language', draftPh: 'Say where the particles are, how they move, and how they regroup.', compare: 'Compare with the scene',
+    compareTip: 'Try to say what changed for the particles. A standard answer is not required.',
+    galleryLead: 'Look back at each explanation that walked from a phenomenon to particles.', newOne: '+ New particle explanation', searchPh: 'Search the question', filterAll: 'All',
+    view: 'View scene', edit: 'Edit', del: 'Delete', deleteAsk: 'This particle scene will be removed.', emptyGallery: 'No particle scene like this yet.',
+    goWorkshop: 'Go to the workshop', remove: 'Remove', keep: 'Keep', editTitle: 'Edit this one', editClose: 'Close',
+    loadError: 'The particle data could not be reached.', menu: 'Menu', prev: 'Previous', next: 'Next', canvasTitle: 'Particle scene', rowEmpty: '—'
+  }
+};
+
+function el(id) { return document.getElementById(id); }
+function t(key) {
+  var pack = I18N[state.lang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  if (I18N.zh[key] != null) return I18N.zh[key];
+  return key;
+}
+function delay(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function escapeAttr(s) { return escapeHtml(s); }
+function asDisplay(value) {
+  var raw = value == null ? '' : String(value);
+  var v = raw.trim().toLowerCase();
+  if (v === 'true') return '是';
+  if (v === 'false') return '否';
+  return raw;
+}
+function likeValue(hay, needle) {
+  return String(hay == null ? '' : hay).toLowerCase().indexOf(String(needle == null ? '' : needle).toLowerCase()) !== -1;
+}
+function stageLabel(value) {
+  if (value === '尚未学习化学') return t('stageNone');
+  if (value === '初中') return t('stageJunior');
+  if (value === '高中') return t('stageSenior');
+  return asDisplay(value);
+}
+function stageBadgeClass(stage) {
+  if (stage === '初中') return 'badge b-junior';
+  if (stage === '高中') return 'badge b-senior';
+  return 'badge';
+}
+function briefIdea(idea) {
+  var text = asDisplay(idea).replace(/\s+/g, ' ').trim();
+  if (!text) return t('noIdea');
+  if (text.length > 72) return text.slice(0, 72) + '…';
+  return text;
+}
+function safeUrl(url) {
+  var u = String(url || '').trim();
+  if (/^javascript:/i.test(u)) return '#';
+  return u;
+}
+function fileDownloadUrl(src) {
+  var s = safeUrl(src);
+  if (!s || s === '#') return 'http://' + window.location.hostname + ':3130/download/';
+  if (/^https?:\/\//i.test(s)) return s;
+  var name = s;
+  var slash = Math.max(s.lastIndexOf('/'), s.lastIndexOf('\\'));
+  if (slash >= 0) name = s.slice(slash + 1);
+  return 'http://' + window.location.hostname + ':3130/download/' + encodeURIComponent(name);
+}
+function imageHtml(alt, url) {
+  var raw = safeUrl(url);
+  var href = fileDownloadUrl(raw);
+  var show = /^https?:\/\//i.test(raw) ? raw : href;
+  return '<a class="md-img-link" href="' + escapeAttr(href) + '" target="_blank" rel="noopener"><img alt="' + escapeAttr(alt) + '" src="' + escapeAttr(show) + '"></a>';
+}
+function renderInline(text) {
+  var src = String(text == null ? '' : text);
+  var tokens = [];
+  function hold(html) {
+    tokens.push(html);
+    return '\u0000' + (tokens.length - 1) + '\u0000';
+  }
+  src = src.replace(/`([^`\n]+)`/g, function (_, code) {
+    return hold('<code>' + escapeHtml(code) + '</code>');
+  });
+  src = src.replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g, function (_, alt, url) {
+    return hold(imageHtml(alt, url));
+  });
+  src = src.replace(/\[([^\]]+)\]\(\s*<?([^)\s>]+)>?(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g, function (_, label, url) {
+    return hold('<a href="' + escapeAttr(safeUrl(url)) + '" target="_blank" rel="noopener">' + renderInline(label) + '</a>');
+  });
+  src = src.replace(/(^|[\s(])(https?:\/\/[^\s<]+)/g, function (_, pre, url) {
+    var core = url;
+    var tail = '';
+    while (core.length && /[.,;:!?)]$/.test(core)) {
+      tail = core.charAt(core.length - 1) + tail;
+      core = core.slice(0, -1);
+    }
+    return pre + hold('<a href="' + escapeAttr(safeUrl(core)) + '" target="_blank" rel="noopener">' + escapeHtml(core) + '</a>') + tail;
+  });
+  src = escapeHtml(src);
+  src = src.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  src = src.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+  src = src.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  src = src.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+  src = src.replace(/__([^_\n]+)__/g, '<strong>$1</strong>');
+  src = src.replace(/(^|[\s(])_([^_\n]+)_(?!_)/g, '$1<em>$2</em>');
+  src = src.replace(/\u0000(\d+)\u0000/g, function (_, n) { return tokens[Number(n)] || ''; });
+  return src;
+}
+function sectionClass(text) {
+  var plain = String(text || '').replace(/[*_`~#]/g, '').trim();
+  var keys = [
+    ['类比失效边界', 'sec-boundary'],
+    ['粒子文字图', 'sec-particles'],
+    ['化学符号', 'sec-symbols'],
+    ['检验问题', 'sec-check'],
+    ['现象', 'sec-phenomenon']
+  ];
+  for (var i = 0; i < keys.length; i++) {
+    if (plain.indexOf(keys[i][0]) !== -1) return keys[i][1];
+  }
+  return '';
+}
+function headingTag(level, text) {
+  var lv = level;
+  if (lv < 1) lv = 1;
+  if (lv > 6) lv = 6;
+  return '<h' + lv + '>' + renderInline(text) + '</h' + lv + '>';
+}
+function isFence(line) { return /^ {0,3}(`{3,}|~{3,})/.test(line); }
+function isHeading(line) { return /^ {0,3}#{1,6}\s+/.test(line); }
+function isHr(line) {
+  var tline = line.trim();
+  return /^(\*\s*){3,}$/.test(tline) || /^(-\s*){3,}$/.test(tline) || /^(_\s*){3,}$/.test(tline);
+}
+function isQuote(line) { return /^ {0,3}>\s?/.test(line); }
+function isSetext(line, ch) {
+  var tline = line.trim();
+  if (tline.length < 3) return false;
+  for (var i = 0; i < tline.length; i++) if (tline.charAt(i) !== ch) return false;
+  return true;
+}
+function listMatch(line) { return String(line || '').match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/); }
+function splitCells(line) {
+  var s = String(line || '').trim();
+  if (s.charAt(0) === '|') s = s.slice(1);
+  if (s.charAt(s.length - 1) === '|' && s.charAt(s.length - 2) !== '\\') s = s.slice(0, -1);
+  var parts = [];
+  var cur = '';
+  for (var i = 0; i < s.length; i++) {
+    if (s.charAt(i) === '\\' && s.charAt(i + 1) === '|') { cur += '|'; i++; continue; }
+    if (s.charAt(i) === '|') { parts.push(cur.trim()); cur = ''; continue; }
+    cur += s.charAt(i);
+  }
+  parts.push(cur.trim());
+  return parts;
+}
+function isSepLine(line) {
+  if (String(line).indexOf('-') === -1) return false;
+  var cells = splitCells(line);
+  if (!cells.length) return false;
+  for (var i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i].replace(/\s+/g, ''))) return false;
+  }
+  return true;
+}
+function isTableStart(lines, index) {
+  if (index + 1 >= lines.length) return false;
+  if (lines[index].indexOf('|') === -1) return false;
+  return isSepLine(lines[index + 1]);
+}
+function isBlockStart(lines, index) {
+  var line = lines[index];
+  if (isFence(line) || isHeading(line) || isHr(line) || isQuote(line)) return true;
+  if (isTableStart(lines, index)) return true;
+  if (listMatch(line)) return true;
+  return false;
+}
+function readFence(lines, start) {
+  var m = lines[start].match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+  var fence = m[1];
+  var lang = String(m[2] || '').trim().split(/\s+/)[0] || '';
+  lang = lang.replace(/[^a-zA-Z0-9_+-]/g, '');
+  var i = start + 1;
+  var body = [];
+  while (i < lines.length && !isClosingFence(lines[i], fence)) {
+    body.push(lines[i]);
+    i++;
+  }
+  if (i < lines.length) i++;
+  var cls = lang ? ' class="language-' + escapeAttr(lang) + '"' : '';
+  return { html: '<pre><code' + cls + '>' + escapeHtml(body.join('\n')) + '</code></pre>', next: i };
+}
+function isClosingFence(line, fence) {
+  var tline = String(line || '').trim();
+  if (tline.length < fence.length) return false;
+  for (var k = 0; k < tline.length; k++) if (tline.charAt(k) !== fence.charAt(0)) return false;
+  return true;
+}
+function readQuote(lines, start) {
+  var i = start;
+  var inner = [];
+  while (i < lines.length) {
+    if (lines[i].trim() === '') {
+      if (i + 1 < lines.length && isQuote(lines[i + 1])) { inner.push(''); i++; continue; }
+      break;
+    }
+    if (!isQuote(lines[i])) break;
+    inner.push(lines[i].replace(/^ {0,3}>\s?/, ''));
+    i++;
+  }
+  return { html: '<blockquote>' + parseBlocks(inner.join('\n'), false) + '</blockquote>', next: i };
+}
+function readTable(lines, start) {
+  var header = splitCells(lines[start]);
+  var marks = splitCells(lines[start + 1]);
+  var align = [];
+  for (var a = 0; a < marks.length; a++) {
+    var cell = marks[a].replace(/\s+/g, '');
+    var left = cell.charAt(0) === ':';
+    var right = cell.charAt(cell.length - 1) === ':';
+    align.push(left && right ? 'center' : (right ? 'right' : 'left'));
+  }
+  var i = start + 2;
+  var body = [];
+  while (i < lines.length && lines[i].trim() !== '' && lines[i].indexOf('|') !== -1 && !isSepLine(lines[i])) {
+    body.push(splitCells(lines[i]));
+    i++;
+  }
+  var html = '<div class="table-scroll"><table><thead><tr>';
+  for (var h = 0; h < header.length; h++) html += '<th style="text-align:' + align[h] + '">' + renderInline(header[h]) + '</th>';
+  html += '</tr></thead><tbody>';
+  for (var r = 0; r < body.length; r++) {
+    html += '<tr>';
+    for (var c = 0; c < header.length; c++) html += '<td style="text-align:' + (align[c] || 'left') + '">' + renderInline(body[r][c] || '') + '</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  return { html: html, next: i };
+}
+function stripTask(content) {
+  var m = String(content || '').match(/^\[([ xX])\]\s+(.*)$/);
+  if (!m) return { task: null, content: content };
+  return { task: m[1] !== ' ', content: m[2] };
+}
+function readList(lines, start) {
+  var first = listMatch(lines[start]);
+  var base = first[1].length;
+  var ordered = /^\d+\./.test(first[2]);
+  var i = start;
+  var items = [];
+  while (i < lines.length) {
+    var line = lines[i];
+    if (line.trim() === '') {
+      var k = i + 1;
+      while (k < lines.length && lines[k].trim() === '') k++;
+      var peek = k < lines.length ? listMatch(lines[k]) : null;
+      if (peek && peek[1].length >= base) { i = k; continue; }
+      break;
+    }
+    var m = listMatch(line);
+    if (!m || m[1].length !== base) break;
+    var taskInfo = stripTask(m[3]);
+    var contentLines = [taskInfo.content];
+    i++;
+    var nestedHtml = '';
+    while (i < lines.length && lines[i].trim() !== '') {
+      var m2 = listMatch(lines[i]);
+      if (m2 && m2[1].length === base) break;
+      if (m2 && m2[1].length > base) {
+        var nested = readList(lines, i);
+        nestedHtml += nested.html;
+        i = nested.next;
+        continue;
+      }
+      if (m2 && m2[1].length < base) break;
+      if (/^\s+/.test(lines[i]) && !isBlockStart(lines, i)) {
+        contentLines.push(lines[i].trim());
+        i++;
+        continue;
+      }
+      break;
+    }
+    items.push({ task: taskInfo.task, html: renderInline(contentLines.join(' ')), nested: nestedHtml });
+  }
+  var tag = ordered ? 'ol' : 'ul';
+  var html = '<' + tag + '>';
+  for (var n = 0; n < items.length; n++) {
+    var it = items[n];
+    if (it.task === null) html += '<li>' + it.html + it.nested + '</li>';
+    else html += '<li class="task-item"><label><input type="checkbox" disabled' + (it.task ? ' checked' : '') + '> <span>' + it.html + '</span></label>' + it.nested + '</li>';
+  }
+  html += '</' + tag + '>';
+  return { html: html, next: i };
+}
+function readIndented(lines, start) {
+  if (!/^ {4}\S/.test(lines[start])) return null;
+  var i = start;
+  var body = [];
+  while (i < lines.length) {
+    if (lines[i].trim() === '') {
+      var k = i + 1;
+      while (k < lines.length && lines[k].trim() === '') k++;
+      if (k < lines.length && /^ {4}/.test(lines[k])) { body.push(''); i++; continue; }
+      break;
+    }
+    if (!/^ {4}/.test(lines[i])) break;
+    body.push(lines[i].replace(/^ {4}/, ''));
+    i++;
+  }
+  if (!body.length) return null;
+  return { html: '<pre><code>' + escapeHtml(body.join('\n')) + '</code></pre>', next: i };
+}
+function renderParagraph(text) {
+  var lines = String(text || '').split('\n');
+  var parts = [];
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    var hard = /  $/.test(line) || /\\$/.test(line);
+    if (hard) line = line.replace(/[ \\]+$/, '');
+    parts.push(renderInline(line));
+    if (i < lines.length - 1) parts.push(hard ? '<br>' : ' ');
+  }
+  return '<p>' + parts.join('') + '</p>';
+}
+function readParagraph(lines, start) {
+  var buf = [];
+  var i = start;
+  while (i < lines.length) {
+    if (lines[i].trim() === '') break;
+    if (buf.length > 0 && isBlockStart(lines, i)) break;
+    buf.push(lines[i]);
+    i++;
+  }
+  if (buf.length === 1 && i < lines.length && lines[i].trim() !== '') {
+    if (isSetext(lines[i], '=')) return { kind: 'h', level: 1, text: buf[0], next: i + 1 };
+    if (isSetext(lines[i], '-') && isHr(lines[i])) return { kind: 'h', level: 2, text: buf[0], next: i + 1 };
+  }
+  return { kind: 'p', html: renderParagraph(buf.join('\n')), next: i };
+}
+function parseBlocks(src, decorate) {
+  var lines = String(src || '').split('\n');
+  var html = '';
+  var i = 0;
+  var sectionOpen = false;
+  var sectionLevel = 0;
+  function closeSection() {
+    if (sectionOpen) { html += '</section>'; sectionOpen = false; }
+  }
+  function pushHeading(level, text) {
+    var cls = decorate ? sectionClass(text) : '';
+    if (decorate) {
+      if (sectionOpen && (level <= sectionLevel || cls)) closeSection();
+      if (cls) {
+        html += '<section class="md-sec ' + cls + '">';
+        sectionOpen = true;
+        sectionLevel = level;
+      }
+    }
+    html += headingTag(level, text);
+  }
+  while (i < lines.length) {
+    var line = lines[i];
+    if (line.trim() === '') { i++; continue; }
+    if (isFence(line)) { var fence = readFence(lines, i); html += fence.html; i = fence.next; continue; }
+    if (isHeading(line)) {
+      var hm = line.match(/^ {0,3}(#{1,6})\s+(.+?)\s*#*\s*$/);
+      pushHeading(hm[1].length, hm[2]);
+      i++;
+      continue;
+    }
+    if (isHr(line)) { html += '<hr>'; i++; continue; }
+    if (isQuote(line)) { var quote = readQuote(lines, i); html += quote.html; i = quote.next; continue; }
+    if (isTableStart(lines, i)) { var table = readTable(lines, i); html += table.html; i = table.next; continue; }
+    if (listMatch(line)) { var list = readList(lines, i); html += list.html; i = list.next; continue; }
+    var indented = readIndented(lines, i);
+    if (indented) { html += indented.html; i = indented.next; continue; }
+    var para = readParagraph(lines, i);
+    if (para.kind === 'h') pushHeading(para.level, para.text);
+    else html += para.html;
+    i = para.next;
+  }
+  if (decorate) closeSection();
+  return html;
+}
+function renderMarkdown(markdown) {
+  var src = String(markdown == null ? '' : markdown).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  if (src.indexOf('\t') !== -1) src = src.split('\t').join('    ');
+  return parseBlocks(src, true);
+}
+function waitingBlockHtml() {
+  return '<div class="wait-inline"><div class="wait-dots" aria-hidden="true"><span></span><i></i><span></span><i></i><span></span></div><p>' + escapeHtml(t('waiting')) + '</p></div>';
+}
+function timeoutBlockHtml() {
+  return '<p class="empty-copy">' + escapeHtml(t('timeout')) + '</p>';
+}
+function detectBrowserLang() {
+  try {
+    var list = navigator.languages;
+    if (!list || typeof list.length !== 'number') return 'zh';
+    for (var i = 0; i < list.length; i++) {
+      var item = String(list[i] || '').toLowerCase();
+      if (item === 'zh' || item.indexOf('zh-') === 0) return 'zh';
+    }
+    return 'en';
+  } catch (err) {
+    return 'zh';
+  }
+}
+function resolveLang() {
+  var lang = detectBrowserLang();
+  try {
+    var saved = localStorage.getItem('iThinkAir_UiLanguage');
+    if (saved !== null && String(saved) !== '') lang = String(saved).toLowerCase() === 'en' ? 'en' : 'zh';
+  } catch (err2) {}
+  try {
+    var params = new URLSearchParams(window.location.search || '');
+    var lp = params.get('lang');
+    if (lp === 'en') lang = 'en';
+    else if (lp === 'cn') lang = 'zh';
+  } catch (err1) {}
+  return lang;
+}
+function persistLang(lang) {
+  try { localStorage.setItem('iThinkAir_UiLanguage', lang === 'en' ? 'en' : 'zh'); } catch (err) {}
+  try {
+    var url = new URL(window.location.href);
+    if (url.searchParams.has('lang')) {
+      url.searchParams.set('lang', lang === 'en' ? 'en' : 'cn');
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  } catch (err2) {}
+}
+function paintLangToggle() {
+  var zhOn = state.lang !== 'en';
+  el('langZhMark').classList.toggle('is-on', zhOn);
+  el('langEnMark').classList.toggle('is-on', !zhOn);
+  el('mobileLangZh').classList.toggle('is-on', zhOn);
+  el('mobileLangEn').classList.toggle('is-on', !zhOn);
+  document.documentElement.lang = zhOn ? 'zh-CN' : 'en';
+}
+function applyStaticI18n() {
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  var ph = document.querySelectorAll('[data-i18n-ph]');
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute('placeholder', t(ph[j].getAttribute('data-i18n-ph')));
+  var aria = document.querySelectorAll('[data-i18n-aria]');
+  for (var k = 0; k < aria.length; k++) aria[k].setAttribute('aria-label', t(aria[k].getAttribute('data-i18n-aria')));
+  document.title = t('appName');
+  paintLangToggle();
+  if (!el('confirmOverlay').hidden) el('confirmMessage').textContent = t('deleteAsk');
+}
+function setLang(lang) {
+  state.lang = lang === 'en' ? 'en' : 'zh';
+  persistLang(state.lang);
+  applyStaticI18n();
+  renderHome();
+  renderGallery();
+  updateGenerateState();
+  updateRowButtons();
+  paintSaveTip();
+  paintCompareTip();
+  if (state.canvasMode === 'content') paintCanvas();
+  updateNavMode();
+  closeMenu();
+}
+function applyMode(mode) {
+  var text = String(mode == null ? '' : mode).replace(/^\uFEFF/, '').trim();
+  if ((text.charAt(0) === '"' && text.charAt(text.length - 1) === '"') || (text.charAt(0) === "'" && text.charAt(text.length - 1) === "'")) {
+    text = text.slice(1, -1).trim();
+  }
+  document.body.classList.toggle('theme-dark', text === '暗色');
+}
+function toast(message) {
+  var node = el('toast');
+  node.textContent = message;
+  node.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { node.hidden = true; }, 4200);
+}
+function closeMenu() {
+  var menu = el('mobileMenu');
+  if (menu) menu.hidden = true;
+  var btn = el('hamburgerBtn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+function updateNavMode() {
+  var root = document.documentElement;
+  var nav = el('topNav');
+  var row = el('navRow');
+  var brand = el('navBrand');
+  var actions = el('navActions');
+  root.classList.remove('pre-compact');
+  nav.classList.remove('is-compact');
+  var prev = brand.style.flex;
+  brand.style.flex = '0 0 auto';
+  var cs = window.getComputedStyle(row);
+  var pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+  var gap = parseFloat(cs.columnGap || cs.gap || '0');
+  if (!gap) gap = 0;
+  var available = row.clientWidth - pad;
+  var need = brand.offsetWidth + gap + actions.offsetWidth;
+  brand.style.flex = prev;
+  if (need > available + 1) nav.classList.add('is-compact');
+  else closeMenu();
+}
+function closeHost() {
+  try {
+    if (window.parent && typeof window.parent.closeFullHtml === 'function') window.parent.closeFullHtml(false);
+  } catch (err) {}
+}
+function switchPage(page, record) {
+  if (page !== 'home' && page !== 'workshop' && page !== 'gallery') return;
+  var changed = page !== state.currentPage;
+  if (record && changed) {
+    state.history.push({ page: state.currentPage, scroll: window.scrollY || document.documentElement.scrollTop || 0 });
+  }
+  state.currentPage = page;
+  var ids = { home: 'pageHome', workshop: 'pageWorkshop', gallery: 'pageGallery' };
+  var names = ['home', 'workshop', 'gallery'];
+  for (var i = 0; i < names.length; i++) {
+    var node = el(ids[names[i]]);
+    if (names[i] === page) node.classList.add('active');
+    else node.classList.remove('active');
+  }
+  var tabs = [['tabHome', 'home'], ['tabWorkshop', 'workshop'], ['tabGallery', 'gallery'], ['mobileTabHome', 'home'], ['mobileTabWorkshop', 'workshop'], ['mobileTabGallery', 'gallery']];
+  for (var j = 0; j < tabs.length; j++) {
+    var tab = el(tabs[j][0]);
+    var on = tabs[j][1] === page;
+    tab.classList.toggle('is-active', on);
+    if (on) tab.setAttribute('aria-current', 'page');
+    else tab.removeAttribute('aria-current');
+  }
+  if (record && changed) window.scrollTo(0, 0);
+  closeMenu();
+}
+function onTab(page) {
+  if (page === state.currentPage) { closeMenu(); return; }
+  switchPage(page, true);
+}
+function openOverlay(id) {
+  var node = el(id);
+  node.hidden = false;
+  var idx = popupStack.indexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  popupStack.push(id);
+}
+function closeOverlay(id) {
+  var node = el(id);
+  if (node) node.hidden = true;
+  var idx = popupStack.indexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  if (id === 'confirmOverlay' && confirmResolver) {
+    var fn = confirmResolver;
+    confirmResolver = null;
+    fn(false);
+  }
+}
+function askConfirm(message) {
+  return new Promise(function (resolve) {
+    confirmResolver = resolve;
+    el('confirmMessage').textContent = message;
+    openOverlay('confirmOverlay');
+  });
+}
+function airBack() {
+  if (popupStack.length) {
+    closeOverlay(popupStack[popupStack.length - 1]);
+    return 'false';
+  }
+  var menu = el('mobileMenu');
+  if (menu && !menu.hidden) {
+    closeMenu();
+    return 'false';
+  }
+  if (state.history.length) {
+    var entry = state.history.pop();
+    switchPage(entry.page, false);
+    var y = entry.scroll || 0;
+    requestAnimationFrame(function () { window.scrollTo(0, y); });
+    return 'false';
+  }
+  return 'true';
+}
+window.airBack = airBack;
+function readForm(formId) {
+  var form = el(formId);
+  var stage = '';
+  var radios = form.querySelectorAll('input[name="学段"]');
+  for (var i = 0; i < radios.length; i++) if (radios[i].checked) stage = radios[i].value;
+  return {
+    '学段': stage,
+    '化学疑问': String(form.querySelector('[name="化学疑问"]').value || '').trim(),
+    '已有想法': String(form.querySelector('[name="已有想法"]').value || '').trim()
+  };
+}
+function syncChips(form) {
+  var labels = form.querySelectorAll('.chip');
+  for (var i = 0; i < labels.length; i++) {
+    var input = labels[i].querySelector('input');
+    labels[i].classList.toggle('is-on', !!(input && input.checked));
+  }
+}
+function selectedStage(formId) {
+  var data = readForm(formId);
+  return data['学段'];
+}
+function hintFor(stage) {
+  if (stage === '尚未学习化学') return t('hintNone');
+  if (stage === '初中') return t('hintJunior');
+  if (stage === '高中') return t('hintSenior');
+  return t('hintPick');
+}
+function updateStageHints() {
+  el('stageHint').textContent = hintFor(selectedStage('formWorkshop'));
+  el('editStageHint').textContent = hintFor(selectedStage('formEdit'));
+}
+function formReady(formId) {
+  var data = readForm(formId);
+  return !!(data['学段'] && data['化学疑问']);
+}
+function updateGenerateState() {
+  var blocked = state.polling || state.submitting || state.rowLoading;
+  var ready = formReady('formWorkshop');
+  el('btnGenerate').disabled = blocked || !ready;
+  el('btnRetell').disabled = blocked || !ready;
+  var saveBtn = el('btnSave');
+  saveBtn.hidden = state.currentRow < 1;
+  saveBtn.disabled = blocked || !ready || state.currentRow < 1;
+  var editReady = formReady('formEdit');
+  el('btnEditSave').disabled = blocked || !editReady || state.editingRow < 1;
+  var hint = el('generateHint');
+  if (state.polling) { hint.hidden = false; hint.textContent = t('waiting'); }
+  else if (!ready) { hint.hidden = false; hint.textContent = t('needInput'); }
+  else { hint.hidden = true; hint.textContent = ''; }
+  var editHint = el('editHint');
+  var editOpen = !el('editPanel').hidden;
+  if (editOpen && state.polling) { editHint.hidden = false; editHint.textContent = t('waiting'); }
+  else if (editOpen && !editReady) { editHint.hidden = false; editHint.textContent = t('needInput'); }
+  else { editHint.hidden = true; editHint.textContent = ''; }
+  updateStageHints();
+}
+function fillForm(formId, stage, question, idea) {
+  var form = el(formId);
+  var radios = form.querySelectorAll('input[name="学段"]');
+  var found = false;
+  for (var i = 0; i < radios.length; i++) {
+    var on = stage === radios[i].value;
+    radios[i].checked = on;
+    if (on) found = true;
+  }
+  if (!found) for (var j = 0; j < radios.length; j++) radios[j].checked = false;
+  form.querySelector('[name="化学疑问"]').value = question == null ? '' : String(question);
+  form.querySelector('[name="已有想法"]').value = idea == null ? '' : String(idea);
+  syncChips(form);
+  updateGenerateState();
+}
+function paintSaveTip() {
+  var node = el('saveTip');
+  if (state.saveTipOn) { node.hidden = false; node.textContent = t('savedTip'); }
+  else node.hidden = true;
+}
+function paintCompareTip() {
+  var node = el('compareTip');
+  if (state.compareTipOn) { node.hidden = false; node.textContent = t('compareTip'); }
+  else node.hidden = true;
+}
+function paintCanvas() {
+  el('canvasWait').hidden = state.canvasMode !== 'wait';
+  el('canvasEmpty').hidden = state.canvasMode !== 'empty';
+  el('canvasTimeout').hidden = state.canvasMode !== 'timeout';
+  var body = el('canvasBody');
+  body.hidden = state.canvasMode !== 'content';
+  if (state.canvasMode === 'content') body.innerHTML = renderMarkdown(state.canvasMarkdown);
+  var stage = document.querySelector('.canvas-stage');
+  if (stage) stage.setAttribute('aria-busy', state.canvasMode === 'wait' ? 'true' : 'false');
+}
+function clearWorkshop() {
+  state.workshopToken++;
+  state.polling = false;
+  state.submitting = false;
+  state.rowLoading = false;
+  state.currentRow = 0;
+  state.editingRow = 0;
+  state.canvasMode = 'empty';
+  state.canvasMarkdown = '';
+  state.saveTipOn = false;
+  paintSaveTip();
+  paintCanvas();
+  el('editPanel').hidden = true;
+  el('galleryLayout').classList.remove('show-edit');
+  fillForm('formWorkshop', '', '', '');
+  fillForm('formEdit', '', '', '');
+  updateRowButtons();
+}
+function updateRowButtons() {
+  el('btnPrev').disabled = state.navBusy || state.currentRow <= 1;
+  el('btnNext').disabled = state.navBusy || state.recordCount === 0 || state.currentRow >= state.recordCount;
+  el('rowLabel').textContent = state.currentRow <= 0 ? t('rowEmpty') : (state.currentRow + ' / ' + state.recordCount);
+}
+function csvToRecords(csvText) {
+  var raw = csvText == null ? '' : String(csvText);
+  if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+  if (raw.trim() === '') return [];
+  var table = parseCSV(raw);
+  var list = [];
+  for (var i = 0; i < table.length; i++) {
+    var cols = table[i] || [];
+    list.push({
+      row: i + 1,
+      stage: cols[0] == null ? '' : String(cols[0]).trim(),
+      question: cols[1] == null ? '' : String(cols[1]),
+      idea: cols[2] == null ? '' : String(cols[2])
+    });
+  }
+  return list;
+}
+function countStage(stage) {
+  var n = 0;
+  for (var i = 0; i < state.records.length; i++) if (state.records[i].stage === stage) n++;
+  return n;
+}
+function renderHome() {
+  el('statTotalValue').textContent = state.countsReady ? String(state.recordCount) : '…';
+  el('statNoneValue').textContent = state.countsReady ? String(countStage('尚未学习化学')) : '…';
+  el('statJuniorValue').textContent = state.countsReady ? String(countStage('初中')) : '…';
+  el('statSeniorValue').textContent = state.countsReady ? String(countStage('高中')) : '…';
+  var wrap = el('recentList');
+  while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
+  el('recentLoading').hidden = state.countsReady;
+  if (!state.countsReady) { el('recentEmpty').hidden = true; return; }
+  if (!state.records.length) { el('recentEmpty').hidden = false; return; }
+  el('recentEmpty').hidden = true;
+  var n = state.records.length < 4 ? state.records.length : 4;
+  for (var i = 0; i < n; i++) wrap.appendChild(buildRecentCard(state.records[i]));
+}
+function buildRecentCard(rec) {
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'glass lift-card recent-card';
+  btn.setAttribute('data-recent', String(rec.row));
+  var badge = document.createElement('span');
+  badge.className = stageBadgeClass(rec.stage);
+  badge.textContent = stageLabel(rec.stage);
+  var title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = asDisplay(rec.question).trim() || '…';
+  var idea = document.createElement('div');
+  idea.className = 'idea-text';
+  idea.textContent = briefIdea(rec.idea);
+  btn.appendChild(badge);
+  btn.appendChild(title);
+  btn.appendChild(idea);
+  return btn;
+}
+function filteredRecords() {
+  var q = String(el('gallerySearch').value || '').trim().toLowerCase();
+  var f = state.galleryFilter;
+  var out = [];
+  for (var i = 0; i < state.records.length; i++) {
+    var rec = state.records[i];
+    if (f !== 'all' && !likeValue(rec.stage, f)) continue;
+    if (q && !likeValue(rec.question, q)) continue;
+    out.push(rec);
+  }
+  return out;
+}
+function syncFilterChips() {
+  var pairs = [['filterAll', 'all'], ['filterNone', '尚未学习化学'], ['filterJunior', '初中'], ['filterSenior', '高中']];
+  for (var i = 0; i < pairs.length; i++) el(pairs[i][0]).classList.toggle('is-on', state.galleryFilter === pairs[i][1]);
+}
+function renderGallery() {
+  syncFilterChips();
+  var list = el('galleryList');
+  while (list.firstChild) list.removeChild(list.firstChild);
+  el('galleryLoading').hidden = state.countsReady;
+  if (!state.countsReady) { el('galleryEmpty').hidden = true; return; }
+  var rows = filteredRecords();
+  if (!rows.length) { el('galleryEmpty').hidden = false; return; }
+  el('galleryEmpty').hidden = true;
+  for (var i = 0; i < rows.length; i++) list.appendChild(buildGalleryCard(rows[i]));
+}
+function miniBtn(act, icon, label, danger) {
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'mini-btn' + (danger ? ' danger' : '');
+  b.setAttribute('data-act', act);
+  var i = document.createElement('i');
+  i.className = 'fa-solid ' + icon;
+  i.setAttribute('aria-hidden', 'true');
+  var s = document.createElement('span');
+  s.textContent = label;
+  b.appendChild(i);
+  b.appendChild(s);
+  return b;
+}
+function buildGalleryCard(rec) {
+  var card = document.createElement('article');
+  card.className = 'glass lift-card record-card';
+  card.setAttribute('data-row', String(rec.row));
+  var main = document.createElement('button');
+  main.type = 'button';
+  main.className = 'record-main';
+  main.setAttribute('data-act', 'edit');
+  var badge = document.createElement('span');
+  badge.className = stageBadgeClass(rec.stage);
+  badge.textContent = stageLabel(rec.stage);
+  var title = document.createElement('div');
+  title.className = 'q-title';
+  title.textContent = asDisplay(rec.question).trim() || '…';
+  var idea = document.createElement('div');
+  idea.className = 'idea-text';
+  var shownIdea = asDisplay(rec.idea).trim();
+  idea.textContent = shownIdea || t('noIdea');
+  main.appendChild(badge);
+  main.appendChild(title);
+  main.appendChild(idea);
+  var actions = document.createElement('div');
+  actions.className = 'record-actions';
+  actions.appendChild(miniBtn('view', 'fa-eye', t('view'), false));
+  actions.appendChild(miniBtn('edit', 'fa-pen', t('edit'), false));
+  actions.appendChild(miniBtn('del', 'fa-trash', t('del'), true));
+  var box = document.createElement('div');
+  box.className = 'detail-box md-body';
+  box.id = 'detailBox-' + rec.row;
+  box.hidden = state.expandedRow !== rec.row;
+  if (state.expandedRow === rec.row) {
+    if (state.detailCache[String(rec.row)]) box.innerHTML = renderMarkdown(state.detailCache[String(rec.row)]);
+    else if (state.galleryTimeoutRow === rec.row) box.innerHTML = timeoutBlockHtml();
+    else box.innerHTML = waitingBlockHtml();
+  }
+  card.appendChild(main);
+  card.appendChild(actions);
+  card.appendChild(box);
+  return card;
+}
+function paintDetail(row) {
+  var box = el('detailBox-' + row);
+  if (!box) return;
+  box.hidden = false;
+  if (state.detailCache[String(row)]) box.innerHTML = renderMarkdown(state.detailCache[String(row)]);
+  else if (state.galleryTimeoutRow === row) box.innerHTML = timeoutBlockHtml();
+  else box.innerHTML = waitingBlockHtml();
+}
+async function refreshData() {
+  var countText = await callAppBridge({ type: 'GetRecordCount', data: '粒子讲解/默认表格' });
+  var n = parseInt(String(countText == null ? '' : countText).trim(), 10);
+  state.recordCount = isNaN(n) ? 0 : n;
+  var csvText = await callAppBridge({ type: 'GetTableCSV', data: '粒子讲解/默认表格', payload: '学段,化学疑问,已有想法' });
+  state.records = csvToRecords(csvText);
+  state.countsReady = true;
+  renderHome();
+  renderGallery();
+  updateRowButtons();
+}
+async function ensureCount() {
+  var countText = await callAppBridge({ type: 'GetRecordCount', data: '粒子讲解/默认表格' });
+  var n = parseInt(String(countText == null ? '' : countText).trim(), 10);
+  state.recordCount = isNaN(n) ? 0 : n;
+  updateRowButtons();
+}
+function invalidateDetails() {
+  state.galleryToken++;
+  state.galleryPollingRow = 0;
+  state.galleryTimeoutRow = 0;
+  state.expandedRow = 0;
+  state.detailCache = {};
+}
+async function pollWorkshop(row) {
+  var token = ++state.workshopToken;
+  state.polling = true;
+  updateGenerateState();
+  state.canvasMode = 'wait';
+  paintCanvas();
+  var started = Date.now();
+  while (Date.now() - started < 1800000) {
+    if (token !== state.workshopToken) return;
+    var tick = Date.now();
+    var text = '';
+    try {
+      text = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '粒子图解/' + row.toString() });
+    } catch (err) { text = ''; }
+    if (token !== state.workshopToken) return;
+    if (text && String(text).trim() !== '') {
+      state.polling = false;
+      state.canvasMarkdown = String(text);
+      state.canvasMode = 'content';
+      state.detailCache[String(row)] = String(text);
+      paintCanvas();
+      if (state.expandedRow === row) paintDetail(row);
+      updateGenerateState();
+      return;
+    }
+    var used = Date.now() - tick;
+    if (used < 1000) await delay(1000 - used);
+  }
+  if (token !== state.workshopToken) return;
+  state.polling = false;
+  state.canvasMode = 'timeout';
+  paintCanvas();
+  updateGenerateState();
+}
+async function loadRow(row, pollIfEmpty) {
+  var token = ++state.workshopToken;
+  state.polling = false;
+  state.rowLoading = true;
+  updateGenerateState();
+  state.currentRow = row;
+  updateRowButtons();
+  state.canvasMode = 'empty';
+  state.canvasMarkdown = '';
+  paintCanvas();
+  var stage = '';
+  var question = '';
+  var idea = '';
+  var pic = '';
+  try {
+    stage = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '学段/' + row.toString() });
+    if (token !== state.workshopToken) return;
+    question = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '化学疑问/' + row.toString() });
+    if (token !== state.workshopToken) return;
+    idea = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '已有想法/' + row.toString() });
+    if (token !== state.workshopToken) return;
+    pic = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '粒子图解/' + row.toString() });
+    if (token !== state.workshopToken) return;
+    fillForm('formWorkshop', asDisplay(stage).trim(), asDisplay(question), asDisplay(idea));
+    if (!el('editPanel').hidden) {
+      state.editingRow = row;
+      el('galleryLayout').classList.add('show-edit');
+      fillForm('formEdit', asDisplay(stage).trim(), asDisplay(question), asDisplay(idea));
+    }
+    updateRowButtons();
+    if (pic && String(pic).trim() !== '') {
+      state.canvasMarkdown = String(pic);
+      state.canvasMode = 'content';
+      state.detailCache[String(row)] = String(pic);
+      paintCanvas();
+      if (state.expandedRow === row) paintDetail(row);
+      return;
+    }
+    if (pollIfEmpty) {
+      state.rowLoading = false;
+      await pollWorkshop(row);
+      return;
+    }
+    state.canvasMode = 'empty';
+    paintCanvas();
+  } catch (err) {
+    if (token !== state.workshopToken) return;
+    toast(t('loadError'));
+  } finally {
+    if (token === state.workshopToken) {
+      state.rowLoading = false;
+      updateGenerateState();
+    }
+  }
+}
+async function submitNewFromWorkshop() {
+  if (state.polling || state.submitting) return;
+  if (!formReady('formWorkshop')) { updateGenerateState(); return; }
+  state.submitting = true;
+  updateGenerateState();
+  var data = readForm('formWorkshop');
+  var payloadObj = {};
+  payloadObj['学段'] = data['学段'];
+  payloadObj['化学疑问'] = data['化学疑问'];
+  payloadObj['已有想法'] = data['已有想法'] == null ? '' : data['已有想法'];
+  try {
+    await callAppBridge({ type: 'SubmitRecord', data: '粒子讲解', payload: JSON.stringify(payloadObj) });
+  } catch (err) {
+    state.submitting = false;
+    updateGenerateState();
+    toast(t('loadError'));
+    return;
+  }
+  state.currentRow = 1;
+  state.editingRow = 0;
+  el('editPanel').hidden = true;
+  el('galleryLayout').classList.remove('show-edit');
+  invalidateDetails();
+  state.workshopToken++;
+  state.submitting = false;
+  state.rowLoading = false;
+  state.polling = true;
+  updateRowButtons();
+  updateGenerateState();
+  try { await refreshData(); } catch (err2) {}
+  await pollWorkshop(1);
+}
+async function saveExisting(formId) {
+  var row = formId === 'formEdit' ? state.editingRow : state.currentRow;
+  if (state.polling || state.submitting) return;
+  if (!row || row < 1) return;
+  if (!formReady(formId)) { updateGenerateState(); return; }
+  state.submitting = true;
+  updateGenerateState();
+  var data = readForm(formId);
+  try {
+    await callAppBridge({ type: 'SetCellValue', data: '粒子讲解/默认表格', payload: '学段/' + row.toString() + '/' + data['学段'] });
+    await callAppBridge({ type: 'SetCellValue', data: '粒子讲解/默认表格', payload: '化学疑问/' + row.toString() + '/' + data['化学疑问'] });
+    await callAppBridge({ type: 'SetCellValue', data: '粒子讲解/默认表格', payload: '已有想法/' + row.toString() + '/' + data['已有想法'] });
+  } catch (err) {
+    state.submitting = false;
+    updateGenerateState();
+    toast(t('loadError'));
+    return;
+  }
+  fillForm('formWorkshop', data['学段'], data['化学疑问'], data['已有想法']);
+  if (!el('editPanel').hidden) fillForm('formEdit', data['学段'], data['化学疑问'], data['已有想法']);
+  state.currentRow = row;
+  state.saveTipOn = true;
+  paintSaveTip();
+  toast(t('savedTip'));
+  try { await refreshData(); } catch (err2) { toast(t('loadError')); }
+  state.submitting = false;
+  updateGenerateState();
+}
+async function onPrev() {
+  if (state.navBusy || state.currentRow <= 1) return;
+  state.navBusy = true;
+  updateRowButtons();
+  try {
+    await ensureCount();
+    if (state.currentRow <= 1) return;
+    await loadRow(state.currentRow - 1, true);
+  } catch (err) {
+    toast(t('loadError'));
+  } finally {
+    state.navBusy = false;
+    updateRowButtons();
+  }
+}
+async function onNext() {
+  if (state.navBusy) return;
+  state.navBusy = true;
+  updateRowButtons();
+  try {
+    await ensureCount();
+    if (state.recordCount === 0 || state.currentRow >= state.recordCount) return;
+    await loadRow(state.currentRow + 1, true);
+  } catch (err) {
+    toast(t('loadError'));
+  } finally {
+    state.navBusy = false;
+    updateRowButtons();
+  }
+}
+async function openRecent(row) {
+  if (state.currentPage !== 'workshop') switchPage('workshop', true);
+  try { await loadRow(row, true); } catch (err) { toast(t('loadError')); }
+}
+function goWorkshopClean() {
+  clearWorkshop();
+  if (state.currentPage !== 'workshop') switchPage('workshop', true);
+  else window.scrollTo(0, 0);
+}
+async function onStat(stage) {
+  state.galleryFilter = stage;
+  el('gallerySearch').value = '';
+  syncFilterChips();
+  renderGallery();
+  if (state.currentPage !== 'gallery') switchPage('gallery', true);
+  try { await refreshData(); } catch (err) { renderGallery(); toast(t('loadError')); }
+}
+async function onFilter(stage) {
+  state.galleryFilter = stage;
+  syncFilterChips();
+  renderGallery();
+  try { await refreshData(); } catch (err) { toast(t('loadError')); }
+}
+async function beginEdit(row) {
+  el('editPanel').hidden = false;
+  el('galleryLayout').classList.add('show-edit');
+  state.editingRow = row;
+  if (state.polling && state.currentRow === row) {
+    var cur = readForm('formWorkshop');
+    fillForm('formEdit', cur['学段'], cur['化学疑问'], cur['已有想法']);
+  } else {
+    try { await loadRow(row, false); } catch (err) { toast(t('loadError')); }
+  }
+  if (state.editingRow !== row && state.currentRow !== row) return;
+  try { el('editPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (err2) {}
+}
+async function onView(row) {
+  if (state.expandedRow === row) {
+    state.expandedRow = 0;
+    state.galleryToken++;
+    state.galleryPollingRow = 0;
+    renderGallery();
+    return;
+  }
+  state.expandedRow = row;
+  state.galleryTimeoutRow = 0;
+  state.galleryPollingRow = 0;
+  renderGallery();
+  if (state.detailCache[String(row)]) { paintDetail(row); return; }
+  var token = ++state.galleryToken;
+  var text = '';
+  try {
+    text = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '粒子图解/' + row.toString() });
+  } catch (err) {
+    if (state.expandedRow === row) toast(t('loadError'));
+    return;
+  }
+  if (token !== state.galleryToken || state.expandedRow !== row) return;
+  if (text && String(text).trim() !== '') {
+    state.detailCache[String(row)] = String(text);
+    paintDetail(row);
+    return;
+  }
+  await pollGallery(row, token);
+}
+async function pollGallery(row, token) {
+  state.galleryPollingRow = row;
+  state.galleryTimeoutRow = 0;
+  paintDetail(row);
+  var started = Date.now();
+  while (Date.now() - started < 1800000) {
+    if (token !== state.galleryToken || state.expandedRow !== row) return;
+    var tick = Date.now();
+    var text = '';
+    try {
+      text = await callAppBridge({ type: 'GetCellValue', data: '粒子讲解/默认表格', payload: '粒子图解/' + row.toString() });
+    } catch (err) { text = ''; }
+    if (token !== state.galleryToken || state.expandedRow !== row) return;
+    if (text && String(text).trim() !== '') {
+      state.detailCache[String(row)] = String(text);
+      state.galleryPollingRow = 0;
+      paintDetail(row);
+      return;
+    }
+    var used = Date.now() - tick;
+    if (used < 1000) await delay(1000 - used);
+  }
+  if (token !== state.galleryToken || state.expandedRow !== row) return;
+  state.galleryPollingRow = 0;
+  state.galleryTimeoutRow = row;
+  paintDetail(row);
+}
+async function onDelete(row) {
+  var ok = await askConfirm(t('deleteAsk'));
+  if (!ok) return;
+  try {
+    await callAppBridge({ type: 'DeleteRecord', data: '粒子讲解/默认表格', payload: row.toString() });
+  } catch (err) {
+    toast(t('loadError'));
+    return;
+  }
+  invalidateDetails();
+  var shifted = 0;
+  if (state.currentRow === row) clearWorkshop();
+  else if (state.currentRow > row) {
+    shifted = state.currentRow - 1;
+    state.currentRow = shifted;
+    if (!el('editPanel').hidden) state.editingRow = shifted;
+  }
+  try { await refreshData(); } catch (err2) { toast(t('loadError')); }
+  if (shifted > 0) {
+    try { await loadRow(shifted, false); } catch (err3) {}
+  }
+}
+function closeEditPanel() {
+  state.editingRow = 0;
+  el('editPanel').hidden = true;
+  el('galleryLayout').classList.remove('show-edit');
+  updateGenerateState();
+}
+function onCompare() {
+  state.compareTipOn = true;
+  paintCompareTip();
+  var box = el('draftRetell');
+  try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  catch (err) { box.scrollIntoView(true); }
+}
+function bindKeyboardGuard() {
+  document.addEventListener('focusin', function (e) {
+    var target = e.target;
+    if (!target || !target.matches || !target.matches('input, textarea, select')) return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+      catch (err) { target.scrollIntoView(true); }
+    }, 300);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      var gap = Math.max(0, window.innerHeight - window.visualViewport.height);
+      document.documentElement.style.setProperty('--keyboard-gap', (gap > 80 ? gap : 0) + 'px');
+      var active = document.activeElement;
+      if (active && active.matches && active.matches('input, textarea, select')) {
+        setTimeout(function () {
+          try { active.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (err) {}
+        }, 60);
+      }
+    });
+  }
+}
+function bindEvents() {
+  if (eventsBound) return;
+  eventsBound = true;
+  el('navBrand').addEventListener('click', closeHost);
+  var tabIds = ['tabHome', 'tabWorkshop', 'tabGallery', 'mobileTabHome', 'mobileTabWorkshop', 'mobileTabGallery'];
+  for (var i = 0; i < tabIds.length; i++) {
+    el(tabIds[i]).addEventListener('click', function (e) {
+      onTab(e.currentTarget.getAttribute('data-page'));
+    });
+  }
+  el('langToggle').addEventListener('click', function () { setLang(state.lang === 'en' ? 'zh' : 'en'); });
+  el('mobileLangZh').addEventListener('click', function () { setLang('zh'); });
+  el('mobileLangEn').addEventListener('click', function () { setLang('en'); });
+  el('hamburgerBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var menu = el('mobileMenu');
+    if (menu.hidden) {
+      menu.hidden = false;
+      el('hamburgerBtn').setAttribute('aria-expanded', 'true');
+    } else closeMenu();
+  });
+  document.addEventListener('click', function (e) {
+    var menu = el('mobileMenu');
+    if (!menu || menu.hidden) return;
+    if (menu.contains(e.target)) return;
+    if (el('hamburgerBtn').contains(e.target)) return;
+    closeMenu();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (popupStack.length) { closeOverlay(popupStack[popupStack.length - 1]); return; }
+    if (!el('mobileMenu').hidden) closeMenu();
+  });
+  el('btnStart').addEventListener('click', goWorkshopClean);
+  el('btnNew').addEventListener('click', goWorkshopClean);
+  el('btnEmptyGo').addEventListener('click', function () {
+    if (state.currentPage !== 'workshop') switchPage('workshop', true);
+  });
+  el('btnToGallery').addEventListener('click', function () {
+    if (state.currentPage !== 'gallery') switchPage('gallery', true);
+  });
+  el('statNone').addEventListener('click', function () { onStat('尚未学习化学'); });
+  el('statJunior').addEventListener('click', function () { onStat('初中'); });
+  el('statSenior').addEventListener('click', function () { onStat('高中'); });
+  el('recentList').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-recent]');
+    if (!btn) return;
+    openRecent(parseInt(btn.getAttribute('data-recent'), 10));
+  });
+  el('btnGenerate').addEventListener('click', function () { submitNewFromWorkshop(); });
+  el('btnRetell').addEventListener('click', function () { submitNewFromWorkshop(); });
+  el('btnClear').addEventListener('click', clearWorkshop);
+  el('btnSave').addEventListener('click', function () { saveExisting('formWorkshop'); });
+  el('btnPrev').addEventListener('click', function () { onPrev(); });
+  el('btnNext').addEventListener('click', function () { onNext(); });
+  el('btnCompare').addEventListener('click', onCompare);
+  el('formWorkshop').addEventListener('submit', function (e) { e.preventDefault(); });
+  el('formEdit').addEventListener('submit', function (e) { e.preventDefault(); });
+  document.addEventListener('change', function (e) {
+    var form = e.target && e.target.closest ? e.target.closest('form') : null;
+    if (!form || (form.id !== 'formWorkshop' && form.id !== 'formEdit')) return;
+    syncChips(form);
+    state.saveTipOn = false;
+    paintSaveTip();
+    updateGenerateState();
+  });
+  document.addEventListener('input', function (e) {
+    var form = e.target && e.target.closest ? e.target.closest('form') : null;
+    if (!form || (form.id !== 'formWorkshop' && form.id !== 'formEdit')) return;
+    state.saveTipOn = false;
+    paintSaveTip();
+    updateGenerateState();
+  });
+  el('gallerySearch').addEventListener('input', function () { renderGallery(); });
+  el('gallerySearch').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    refreshData().catch(function () { toast(t('loadError')); });
+  });
+  var filters = ['filterAll', 'filterNone', 'filterJunior', 'filterSenior'];
+  for (var f = 0; f < filters.length; f++) {
+    el(filters[f]).addEventListener('click', function (e) {
+      onFilter(e.currentTarget.getAttribute('data-filter'));
+    });
+  }
+  el('galleryList').addEventListener('click', function (e) {
+    var card = e.target.closest('.record-card');
+    if (!card) return;
+    if (e.target.closest('.detail-box') || e.target.closest('a')) return;
+    var row = parseInt(card.getAttribute('data-row'), 10);
+    var act = e.target.closest('[data-act]');
+    if (!act) {
+      if (e.target === card) beginEdit(row);
+      return;
+    }
+    var kind = act.getAttribute('data-act');
+    if (kind === 'view') onView(row);
+    else if (kind === 'edit') beginEdit(row);
+    else if (kind === 'del') onDelete(row);
+  });
+  el('btnEditSave').addEventListener('click', function () { saveExisting('formEdit'); });
+  el('btnEditClose').addEventListener('click', closeEditPanel);
+  el('confirmYes').addEventListener('click', function () {
+    var fn = confirmResolver;
+    confirmResolver = null;
+    closeOverlay('confirmOverlay');
+    if (fn) fn(true);
+  });
+  el('confirmNo').addEventListener('click', function () { closeOverlay('confirmOverlay'); });
+  el('confirmOverlay').addEventListener('click', function (e) {
+    if (e.target === el('confirmOverlay')) closeOverlay('confirmOverlay');
+  });
+  window.addEventListener('resize', updateNavMode);
+}
+function bindKeyboardOnce() { bindKeyboardGuard(); }
+
+async function initialize() {
+  state.lang = resolveLang();
+  applyStaticI18n();
+  bindEvents();
+  bindKeyboardOnce();
+  updateNavMode();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { updateNavMode(); });
+  try {
+    var mode = await callAppBridge({ type: '模式' });
+    applyMode(mode);
+  } catch (errMode) {
+    applyMode('亮色');
+  }
+  try {
+    await refreshData();
+  } catch (errData) {
+    toast(t('loadError'));
+  }
+  updateRowButtons();
+  updateGenerateState();
+  paintCanvas();
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

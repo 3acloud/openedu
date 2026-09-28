@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>历史论述题教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+<style>
+:root{--paper:#f6f0e4;--sheet:#fcf8ef;--ink:#1c1915;--muted:#675f54;--red:#b42318;--bronze:#3f6f64;--line:#bca982;--nav:#201d19;--shadow:0 12px 36px #24170a12;color-scheme:light}*{box-sizing:border-box}html{scroll-padding-top:90px}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,"Microsoft YaHei",sans-serif}body.dark{--paper:#201e1a;--sheet:#2b2823;--ink:#f2eadc;--muted:#bdb09e;--red:#eb786b;--bronze:#88b9a8;--line:#75694f;--nav:#141310;--shadow:0 12px 36px #0005;color-scheme:dark}button,input,select,textarea{font:inherit}input,select,textarea{box-sizing:border-box}button{cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}a{color:inherit}.topbar{position:relative;z-index:1001;position:sticky;top:0;background:var(--nav);color:#f6f0e4;box-shadow:0 2px 12px #0003}.navin{max-width:1320px;margin:auto;height:70px;padding:0 22px;display:flex;align-items:center;gap:20px}.brand{display:flex;align-items:center;gap:12px;border:0;background:none;color:inherit;white-space:nowrap;font-family:serif;font-weight:700;font-size:19px}.seal{display:inline-grid;place-items:center;background:#b42318;color:#fff0e8;border:2px solid #e2a094;width:38px;height:38px;font-size:24px;line-height:1}.tabs{display:flex;margin-left:auto;height:100%;align-items:center;gap:12px;white-space:nowrap}.tab{height:100%;padding:0 14px;color:inherit;background:none;border:0;position:relative}.tab.active:after{content:"";position:absolute;bottom:12px;left:30%;right:30%;height:3px;background:#d44738;border-radius:4px}.langbtn,.menuButton{border:1px solid #b7a892;background:none;color:inherit;border-radius:6px;padding:6px 10px}.menuButton{display:none;margin-left:auto}.mobileMenu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--nav);padding:12px 20px 18px;box-shadow:0 16px 20px #0004}.mobileMenu.open{display:grid;gap:4px}.mobileMenu button{border:0;background:none;color:#f6f0e4;text-align:left;padding:10px}.mobileMenu .active{border-left:3px solid #d44738}.shell{max-width:1320px;margin:auto;padding:35px 24px 110px}h1,h2,h3{font-family:"Noto Serif SC","Songti SC",SimSun,serif;line-height:1.25}h1{font-size:clamp(30px,4vw,51px);margin:0 0 14px}h2{font-size:23px;margin:0 0 15px}.intro{color:var(--muted);max-width:760px;margin:0 0 24px}.page{display:none}.page.active{display:block}.pageHead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:26px}.actions{display:flex;gap:10px;flex-wrap:wrap}.primary,.secondary,.textButton,.smallButton{border-radius:5px;padding:10px 17px;transition:.2s}.primary{background:var(--red);border:1px solid var(--red);color:white}.secondary{background:transparent;border:1px solid var(--bronze);color:var(--bronze)}.textButton{background:none;border:0;color:var(--bronze);padding:6px}.smallButton{background:transparent;border:1px solid var(--line);color:var(--ink);padding:5px 10px}.card{background:var(--sheet);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow)}.hoverCard{transition:transform .2s,border-color .2s}.hoverCard:hover{transform:translateY(-3px);border-color:var(--red)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}.stat{padding:22px;text-align:left;color:var(--ink);width:100%}.stat span{color:var(--muted);display:block}.stat strong{display:block;font:700 33px/1.3 Georgia,serif;margin-top:8px}.section{margin-top:28px;padding:24px}.stageBar{height:16px;border-radius:20px;overflow:hidden;display:flex;background:color-mix(in srgb,var(--line) 35%,transparent)}.stageBar i{height:100%;display:block}.stageLegend{display:flex;flex-wrap:wrap;gap:18px;margin-top:13px;color:var(--muted);font-size:14px}.recent,.archiveGrid{display:grid;gap:12px}.archiveGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.item{padding:18px;text-align:left;color:var(--ink);width:100%;border:1px solid var(--line);border-radius:6px;background:var(--sheet)}.item h3{font-size:18px;margin:9px 0}.item p{margin:3px 0;color:var(--muted);font-size:14px}.badge,.stamp{display:inline-block;font-size:12px;border:1px solid var(--bronze);color:var(--bronze);padding:2px 7px;border-radius:3px;margin-right:7px}.stamp.exam{color:var(--red);border-color:var(--red)}.itemFooter{margin-top:10px;color:var(--bronze);font-size:13px}.empty{text-align:center;color:var(--muted);padding:30px}.empty:before{content:"史";display:grid;place-items:center;margin:0 auto 12px;width:58px;height:58px;border:3px double var(--line);color:var(--line);font:32px serif;transform:rotate(-7deg)}.workLayout{display:grid;grid-template-columns:130px minmax(0,1.25fr) minmax(300px,.85fr);gap:18px;align-items:start}.steps{padding:18px;border-left:2px solid var(--line);color:var(--bronze);font-size:14px}.steps div{padding:12px 0}.answer,.feedback{padding:22px;min-width:0}.feedback{position:sticky;top:88px}.formGrid{display:grid;gap:16px}.field label{display:block;font-weight:700;margin-bottom:6px}.field textarea,.field input,.filters input,.filters select{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:10px 12px;outline-color:var(--red)}textarea{resize:vertical;min-height:100px}.longText{min-height:210px}.segments{display:flex;flex-wrap:wrap;gap:8px}.segments label{border:1px solid var(--line);border-radius:5px;padding:7px 10px;cursor:pointer}.segments label:has(input:checked){border-color:var(--red);color:var(--red);background:color-mix(in srgb,var(--red) 8%,transparent)}.segments input{accent-color:var(--red)}.switchLine{display:flex;align-items:center;gap:10px}.switchLine input{accent-color:var(--red);width:20px;height:20px}.examNotice{padding:11px 13px;border-left:4px solid var(--red);background:color-mix(in srgb,var(--red) 10%,var(--sheet));color:var(--red);display:none}.examNotice.show{display:block}.checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;color:var(--muted);font-size:14px}.checklist input{accent-color:var(--bronze)}.submitLine{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.quiet{font-size:13px;color:var(--bronze)}.feedbackTop{display:flex;justify-content:space-between;gap:8px;align-items:center}.feedbackBody{min-height:160px;color:var(--muted)}.rowNav{display:flex;align-items:center;gap:4px}.rowNav button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:4px;width:31px;height:31px}.filters{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:10px;margin:0 0 20px}.archiveActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.countLine{color:var(--muted);margin-top:15px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:3000;background:var(--nav);color:#fff;padding:10px 18px;border-radius:5px;box-shadow:var(--shadow);max-width:calc(100vw - 32px);display:none}.toast.show{display:block}.overlay{display:none;position:fixed;inset:0;z-index:2000;background:#0009;padding:24px;align-items:center;justify-content:center}.overlay.open{display:flex}.dialog{width:min(820px,100%);max-height:calc(100dvh - 48px);overflow:auto;background:var(--sheet);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:26px;box-shadow:0 20px 70px #0006}.dialogHead{display:flex;justify-content:space-between;align-items:start;gap:10px}.detailField{padding:12px 0;border-top:1px solid var(--line)}.detailField strong{display:block;color:var(--bronze)}.detailField div{white-space:pre-wrap;overflow-wrap:anywhere}.detailActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.markdown{color:var(--ink);overflow-wrap:anywhere}.markdown pre{overflow:auto;background:color-mix(in srgb,var(--ink) 8%,var(--sheet));padding:14px;border-radius:5px}.markdown blockquote{border-left:3px solid var(--bronze);margin-left:0;padding-left:15px}.markdown table{display:block;overflow-x:auto;border-collapse:collapse;max-width:100%}.markdown th,.markdown td{border:1px solid var(--line);padding:6px 10px}.markdown img{max-width:100%;height:auto}.markdown a{color:var(--bronze)}@media(max-width:1050px){.workLayout{grid-template-columns:1fr 1fr}.steps{grid-column:1/-1;display:flex;gap:18px;padding:0 16px}.steps div{padding:7px 0}.feedback{position:static}}@media(max-width:800px){.tabs,.langbtn{display:none}.menuButton{display:block}.workLayout{grid-template-columns:1fr}.archiveGrid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}.stats{grid-template-columns:repeat(2,1fr)}.pageHead{display:block}.pageHead .actions{margin-top:15px}}@media(max-width:520px){.shell{padding:23px 14px 170px}.navin{padding:0 14px}.brand{font-size:16px}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:26px}.section,.answer,.feedback{padding:17px}.checklist{grid-template-columns:1fr}.steps{flex-wrap:wrap;gap:5px 13px}.overlay.markdownOverlay{padding:0}.overlay.markdownOverlay .dialog{width:100%;height:100dvh;max-height:100dvh;border-radius:0;padding:18px 16px 45vh}.dialog{padding-bottom:45vh}.stageLegend{gap:7px 14px}}
+@media(max-width:520px){.answer{padding-bottom:45vh}.feedback{margin-bottom:15vh}}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"><div class="navin"><button class="brand" id="brand" type="button"><span class="seal">史</span><span data-i="app">历史论述题教练</span></button><nav class="tabs" id="tabs"><button class="tab active" data-page="home" data-i="home">首页</button><button class="tab" data-page="work" data-i="work">呈卷请批</button><button class="tab" data-page="archive" data-i="archive">习作档案</button></nav><button class="langbtn" id="langBtn" type="button">EN</button><button class="menuButton" id="menuButton" type="button" aria-label="Menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div><nav class="mobileMenu" id="mobileMenu"><button data-page="home" data-i="home">首页</button><button data-page="work" data-i="work">呈卷请批</button><button data-page="archive" data-i="archive">习作档案</button><button id="mobileLang" type="button">English</button></nav></header>
+<main class="shell"><section class="page active" id="homePage"><div class="pageHead"><div><h1 data-i="app">历史论述题教练</h1><p class="intro" data-i="homeIntro">依据题目材料，陪你审要求、炼观点、选史实、查表达。教练只追问和点评已写出的内容，不替你下笔。</p><div class="actions"><button class="primary" id="homeNew" data-i="present">呈上一题</button><button class="secondary" id="homeArchive" data-i="browse">翻阅习作</button></div></div></div><div class="stats"><button class="card stat hoverCard" data-retry="count"><span data-i="total">练习总数</span><strong id="statTotal">…</strong></button><button class="card stat hoverCard" data-retry="list"><span data-i="written">已成文</span><strong id="statWritten">…</strong></button><button class="card stat hoverCard" data-retry="list"><span data-i="thinking">尚在构思</span><strong id="statThinking">…</strong></button><button class="card stat hoverCard" data-retry="list"><span data-i="examReview">考后待复盘</span><strong id="statExam">…</strong></button></div><section class="card section"><h2 data-i="stages">阶段分布</h2><div class="stageBar" id="stageBar"></div><div class="stageLegend" id="stageLegend"></div></section><section class="card section"><h2 data-i="recent">最近习作</h2><div class="recent" id="recentList"></div></section></section>
+<section class="page" id="workPage"><div class="pageHead"><div><h1 data-i="work">呈卷请批</h1><p class="intro" data-i="workIntro">先把材料和你自己的话写清楚。未写完也可以呈上，教练只对已有文字给逐步提示。</p></div><div class="actions"><button class="secondary" id="workNew" data-i="newOne">新的一题</button><button class="secondary" id="workArchive" data-i="archive">习作档案</button></div></div><div class="workLayout"><aside class="steps card"><div data-i="step1">审要求</div><div data-i="step2">提炼观点</div><div data-i="step3">选史实</div><div data-i="step4">组织与检查</div></aside><section class="card answer"><h2 data-i="answerSheet">作答笺</h2><div class="examNotice" id="examNotice" data-i="examWarning">考试或测验进行中时，教练不讲解该题、不给提示，只约定考后复盘</div><form id="answerForm" class="formGrid"><div class="field"><label data-i="stage">学习阶段</label><div class="segments"><label><input type="radio" name="学习阶段" value="初中" checked><span data-i="junior">初中</span></label><label><input type="radio" name="学习阶段" value="高中合格性考试"><span data-i="qualifying">高中合格性考试</span></label><label><input type="radio" name="学习阶段" value="高中等级性考试"><span data-i="graded">高中等级性考试</span></label></div></div><div class="field"><label for="answerForm_exam" data-i="exam">是否正在考试</label><div class="switchLine"><input id="answerForm_exam" name="是否正在考试" type="checkbox"><span id="examValue">否</span></div></div><div class="field"><label for="answerForm_prompt" data-i="prompt">题目与材料</label><textarea id="answerForm_prompt" name="题目与材料" rows="5" required></textarea></div><div class="field"><label for="answerForm_thesis" data-i="thesis">我的观点</label><textarea id="answerForm_thesis" name="我的观点" rows="4"></textarea></div><div class="field"><label for="answerForm_essay" data-i="essay">我的论述</label><textarea id="answerForm_essay" name="我的论述" class="longText" rows="8"></textarea></div><div><strong data-i="selfCheck">呈上前自查</strong><div class="checklist" id="checklist"><label><input type="checkbox" name="check1"><span data-i="check1">观点是否已经用自己的话写明</span></label><label><input type="checkbox" name="check2"><span data-i="check2">所用史实是否写进论述</span></label><label><input type="checkbox" name="check3"><span data-i="check3">史实与观点是否互相说明</span></label><label><input type="checkbox" name="check4"><span data-i="check4">段落是否分得开</span></label></div></div><div class="submitLine"><button class="primary" id="submitBtn" type="submit" data-i="submit">呈上请批</button><button class="primary" id="saveBtn" type="button" data-i="save" hidden>保存修改</button><button class="secondary" id="cloneBtn" type="button" data-i="clone" hidden>按修改另呈一题</button><span class="quiet" id="checkDone"></span></div></form></section><aside class="card feedback"><div class="feedbackTop"><h2 data-i="feedback">朱批栏</h2><div class="rowNav"><button id="prevRow" type="button" aria-label="Previous">&lt;</button><span id="rowIndicator">0 / 0</span><button id="nextRow" type="button" aria-label="Next">&gt;</button></div></div><div class="feedbackBody" id="feedbackBody"></div><button class="smallButton" id="continuePoll" type="button" data-i="continue" hidden>继续等待</button></aside></div></section>
+<section class="page" id="archivePage"><div class="pageHead"><div><h1 data-i="archive">习作档案</h1><p class="intro" data-i="archiveIntro">回看自己的观点、论述和教练朱批。档案不是范文库。</p></div><button class="primary" id="archiveNew" data-i="newPlus">+ 新的一题</button></div><div class="filters"><input id="searchInput" type="search" data-placeholder="search" placeholder="搜索习作"><select id="stageFilter"><option value="" data-i="allStages">全部阶段</option><option value="初中" data-i="junior">初中</option><option value="高中合格性考试" data-i="qualifying">高中合格性考试</option><option value="高中等级性考试" data-i="graded">高中等级性考试</option></select><select id="examFilter"><option value="" data-i="allExam">全部状态</option><option value="是" data-i="yes">是</option><option value="否" data-i="no">否</option></select><select id="writtenFilter"><option value="" data-i="allWriting">全部成文状态</option><option value="written" data-i="written">已成文</option><option value="thinking" data-i="thinking">尚在构思</option></select></div><div class="archiveGrid" id="archiveList"></div><div class="countLine" id="archiveCount"></div></section></main>
+<div class="overlay" id="detailOverlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialogHead"><h2 id="detailTitle"></h2><button class="smallButton" id="detailClose" data-i="close">关闭</button></div><div id="detailContent"></div><div class="detailActions"><button class="secondary" id="detailEdit" data-i="editThis">修改本题</button><button class="smallButton" id="detailDelete" data-i="deleteThis">删除本题</button></div></div></div><div class="toast" id="toast" role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("42450973b4da214e_历史论述题教练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const originalCallAppBridge = callAppBridge;
+callAppBridge = async function(request) {
+    if ((window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview)) && !['CapturePhoto','FinishRecordVoice','StartRecordVoice','PauseRecordVoice','ContinueRecordVoice','CancelRecordVoice'].includes(request.type)) return await localAppBridge(request);
+    return await originalCallAppBridge(request);
+};
+const TABLE='论述练习/默认表格', FORM_TABLE='论述练习';
+const FIELDS=['学习阶段','是否正在考试','题目与材料','我的观点','我的论述','教练反馈'];
+const EDIT_FIELDS=FIELDS.slice(0,5);
+const I={cn:{app:'历史论述题教练',home:'首页',work:'呈卷请批',archive:'习作档案',homeIntro:'依据题目材料，陪你审要求、炼观点、选史实、查表达。教练只追问和点评已写出的内容，不替你下笔。',present:'呈上一题',browse:'翻阅习作',total:'练习总数',written:'已成文',thinking:'尚在构思',examReview:'考后待复盘',stages:'阶段分布',recent:'最近习作',workIntro:'先把材料和你自己的话写清楚。未写完也可以呈上，教练只对已有文字给逐步提示。',newOne:'新的一题',step1:'审要求',step2:'提炼观点',step3:'选史实',step4:'组织与检查',answerSheet:'作答笺',examWarning:'考试或测验进行中时，教练不讲解该题、不给提示，只约定考后复盘',stage:'学习阶段',junior:'初中',qualifying:'高中合格性考试',graded:'高中等级性考试',exam:'是否正在考试',prompt:'题目与材料',thesis:'我的观点',essay:'我的论述',selfCheck:'呈上前自查',check1:'观点是否已经用自己的话写明',check2:'所用史实是否写进论述',check3:'史实与观点是否互相说明',check4:'段落是否分得开',submit:'呈上请批',save:'保存修改',clone:'按修改另呈一题',feedback:'朱批栏',continue:'继续等待',archiveIntro:'回看自己的观点、论述和教练朱批。档案不是范文库。',newPlus:'+ 新的一题',search:'搜索题目、观点、论述',allStages:'全部阶段',allExam:'全部考试状态',allWriting:'全部成文状态',yes:'是',no:'否',close:'关闭',editThis:'修改本题',deleteThis:'删除本题',loadFailed:'未能读取',noRecent:'还没有习作，先呈上一题',noMatch:'没有相符的习作',clearFilters:'清除筛选',practice:'练习',inExam:'考中',hasFeedback:'已有朱批',generating:'生成中',noThesis:'尚未写出观点',noEssay:'尚未写出论述',waiting:'教练正在阅卷，朱批稍后呈现',stillWaiting:'批阅仍在生成，可稍后在习作档案刷新查看',refresh:'刷新批阅',detailWaiting:'教练仍在批阅',selfDone:'自查已齐',submitFailed:'未能呈上，请再试一次',saveDone:'修改已保存。原有朱批不会因此重写；若要重新批阅，请按修改另呈一题。',saveFailed:'修改未完全保存，请核对后重试',deleteFailed:'删除失败，请重试',deleteConfirm:'删除后不能恢复，确定删除吗？',examConfirm:'考中将不会获得本题提示，仍要呈上吗？',discard:'有未保存修改，确定放弃吗？',loadRowFailed:'读取习作失败，请重试',operationFailed:'操作失败，请重试',deleted:'已删除',countUnit:'条可见 / 共',countEnd:'条',retry:'重试'},en:{app:'History Essay Coach',home:'Home',work:'Submit for Review',archive:'Practice Archive',homeIntro:'Review the task, shape your own claim, choose evidence, and check your writing. The coach comments on what you wrote and does not write for you.',present:'Start a response',browse:'Browse practice',total:'Total practice',written:'Written',thinking:'Still planning',examReview:'Review after exam',stages:'Stage distribution',recent:'Recent practice',workIntro:'Write the source material and your own words. You may submit an unfinished response; the coach responds only to existing text.',newOne:'New response',step1:'Read the task',step2:'Shape a claim',step3:'Choose evidence',step4:'Organize and check',answerSheet:'Response sheet',examWarning:'During an exam or test, the coach gives no explanation or hints for this question. Return after the exam.',stage:'Study stage',junior:'Junior high',qualifying:'High school qualifying exam',graded:'High school graded exam',exam:'Currently taking an exam',prompt:'Question and materials',thesis:'My claim',essay:'My argument',selfCheck:'Self-check before submitting',check1:'Have I stated my claim in my own words?',check2:'Have I included historical evidence?',check3:'Does the evidence explain the claim?',check4:'Are paragraphs clear?',submit:'Submit for review',save:'Save changes',clone:'Submit as new response',feedback:'Coach feedback',continue:'Keep waiting',archiveIntro:'Review your own claims, arguments, and coach feedback. This is not a model-answer library.',newPlus:'+ New response',search:'Search question, claim, argument',allStages:'All stages',allExam:'All exam states',allWriting:'All writing states',yes:'Yes',no:'No',close:'Close',editThis:'Edit response',deleteThis:'Delete response',loadFailed:'Could not load',noRecent:'No practice yet. Start a response.',noMatch:'No matching practice',clearFilters:'Clear filters',practice:'Practice',inExam:'In exam',hasFeedback:'Feedback ready',generating:'Generating',noThesis:'No claim yet',noEssay:'No argument yet',waiting:'The coach is reviewing. Feedback will appear here.',stillWaiting:'Feedback is still being generated. Refresh it later in the archive.',refresh:'Refresh feedback',detailWaiting:'The coach is still reviewing',selfDone:'Self-check complete',submitFailed:'Could not submit. Please try again.',saveDone:'Changes saved. Earlier feedback will not be rewritten. Submit as a new response for another review.',saveFailed:'Some changes were not saved. Please check and retry.',deleteFailed:'Could not delete. Please retry.',deleteConfirm:'Deletion cannot be undone. Delete this response?',examConfirm:'No hints will be given during the exam. Submit anyway?',discard:'Discard unsaved changes?',loadRowFailed:'Could not load this response. Please retry.',operationFailed:'Operation failed. Please retry.',deleted:'Deleted',countUnit:'visible /',countEnd:'total',retry:'Retry'}};
+let lang='cn',currentPage='home',historyStack=[],currentRow=0,recordCount=0,records=[],dirty=false,busy=false,pollToken=0,detailRow=0,detailLoading=false,listsLoaded=false;
+const $=id=>document.getElementById(id), t=k=>I[lang][k]||k;
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function short(s,n){s=String(s??'').trim();return [...s].slice(0,n).join('')+([ ...s ].length>n?'…':'');}
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),4500);}
+function bridgeFailed(s){return /^(error|failed|失败|错误|false)$/i.test(String(s).trim());}
+async function api(req){const v=await callAppBridge(req);if(v==null||(!['GetCellValue','GetTableCSV'].includes(req.type)&&bridgeFailed(v)))throw Error(String(v));return String(v);}
+function pickLanguage(){const saved=localStorage.getItem('iThinkAir_UiLanguage');if(saved!==null&&saved!=='')return saved==='en'?'en':'cn';const u=new URLSearchParams(location.search).get('lang');if(u==='en'||u==='cn')return u;const langs=navigator.languages;if(!langs||!langs.length)return 'cn';return langs.some(x=>/^zh(?:-|$)/i.test(x))?'cn':'en';}
+function setLanguage(v){lang=v;document.documentElement.lang=v==='cn'?'zh-CN':'en';localStorage.setItem('iThinkAir_UiLanguage',v);document.querySelectorAll('[data-i]').forEach(el=>el.textContent=t(el.dataset.i));document.querySelectorAll('[data-placeholder]').forEach(el=>el.placeholder=t(el.dataset.placeholder));$('langBtn').textContent=v==='cn'?'EN':'中';$('mobileLang').textContent=v==='cn'?'English':'中文';updateExam();if(listsLoaded)renderAll();else updateWorkUI();}
+function showPage(page,push=true){if(page===currentPage)return;if(push)historyStack.push({page:currentPage,y:scrollY});currentPage=page;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page+'Page'));document.querySelectorAll('[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===page));closeMenu();scrollTo(0,0);if(page==='archive')loadList();if(page==='home')loadDashboard();}
+function closeMenu(){$('mobileMenu').classList.remove('open');$('menuButton').setAttribute('aria-expanded','false');}
+function clearForm(){pollToken++;currentRow=0;dirty=false;$('answerForm').reset();document.querySelectorAll('#checklist input').forEach(x=>x.checked=false);$('feedbackBody').textContent='';$('continuePoll').hidden=true;updateExam();updateWorkUI();}
+function newOne(){if(dirty&&!confirm(t('discard')))return;clearForm();showPage('work');}
+function updateExam(){$('examValue').textContent=$('answerForm_exam').checked?t('yes'):t('no');$('examNotice').classList.toggle('show',$('answerForm_exam').checked);}
+function updateWorkUI(){$('submitBtn').hidden=currentRow!==0;$('saveBtn').hidden=currentRow===0;$('cloneBtn').hidden=currentRow===0;$('submitBtn').disabled=busy||!$('answerForm_prompt').value.trim();$('saveBtn').disabled=busy;$('cloneBtn').disabled=busy||!$('answerForm_prompt').value.trim();$('prevRow').disabled=busy||currentRow<=1;$('nextRow').disabled=busy||recordCount===0||currentRow>=recordCount;$('rowIndicator').textContent=currentRow+' / '+recordCount;$('checkDone').textContent=[...document.querySelectorAll('#checklist input')].every(x=>x.checked)?t('selfDone'):'';}
+function formData(){return {'学习阶段':document.querySelector('input[name="学习阶段"]:checked').value,'是否正在考试':$('answerForm_exam').checked?'是':'否','题目与材料':$('answerForm_prompt').value,'我的观点':$('answerForm_thesis').value,'我的论述':$('answerForm_essay').value};}
+function fillForm(d){document.querySelectorAll('input[name="学习阶段"]').forEach(x=>x.checked=x.value===d['学习阶段']);if(!document.querySelector('input[name="学习阶段"]:checked'))document.querySelector('input[name="学习阶段"][value="初中"]').checked=true;$('answerForm_exam').checked=d['是否正在考试']==='是';$('answerForm_prompt').value=d['题目与材料']||'';$('answerForm_thesis').value=d['我的观点']||'';$('answerForm_essay').value=d['我的论述']||'';document.querySelectorAll('#checklist input').forEach(x=>x.checked=false);dirty=false;updateExam();updateWorkUI();}
+function recordFromRow(r,i){const d={row:i+1};FIELDS.forEach((f,j)=>d[f]=r[j]||'');return d;}
+async function loadCount(){try{const x=Number(await api({type:'GetRecordCount',data:TABLE}));if(!Number.isFinite(x)||x<0)throw Error('count');recordCount=x;$('statTotal').textContent=x;updateWorkUI();}catch(e){$('statTotal').textContent=t('loadFailed');toast(t('loadFailed'));}}
+async function loadList(){try{const csv=await api({type:'GetTableCSV',data:TABLE,payload:FIELDS.join(',')});records=(csv.trim()?parseCSV(csv):[]).filter(r=>r.length>1||String(r[0]||'').trim()).map(recordFromRow);listsLoaded=true;renderAll();}catch(e){$('statWritten').textContent=t('loadFailed');$('statThinking').textContent=t('loadFailed');$('statExam').textContent=t('loadFailed');$('recentList').innerHTML='<div class="empty">'+esc(t('loadFailed'))+'</div>';$('archiveList').innerHTML='<div class="empty">'+esc(t('loadFailed'))+'</div>';toast(t('loadFailed'));}}
+function renderAll(){renderDashboard();renderArchive();updateWorkUI();}
+function renderDashboard(){const a=records,n=a.length,w=a.filter(x=>x['我的论述'].trim()).length,e=a.filter(x=>x['是否正在考试']==='是').length;$('statWritten').textContent=w;$('statThinking').textContent=n-w;$('statExam').textContent=e;const stages=['初中','高中合格性考试','高中等级性考试'],colors=['#b42318','#3f6f64','#a88a4d'];$('stageBar').innerHTML=stages.map((s,i)=>'<i style="width:'+(n?100*a.filter(x=>x['学习阶段']===s).length/n:0)+'%;background:'+colors[i]+'"></i>').join('');$('stageLegend').innerHTML=stages.map((s,i)=>'<span><b style="color:'+colors[i]+'">●</b> '+esc(t(['junior','qualifying','graded'][i]))+' '+a.filter(x=>x['学习阶段']===s).length+' ('+(n?Math.round(100*a.filter(x=>x['学习阶段']===s).length/n):0)+'%)</span>').join('');$('recentList').innerHTML=a.length?a.slice(0,5).map(x=>'<button class="item hoverCard" data-detail="'+x.row+'">'+itemBody(x,false)+'</button>').join(''):'<div class="empty">'+esc(t('noRecent'))+'</div>';}
+function itemBody(x,essay){return '<span class="badge">'+esc(stageText(x['学习阶段']))+'</span><span class="stamp '+(x['是否正在考试']==='是'?'exam':'')+'">'+esc(x['是否正在考试']==='是'?t('inExam'):t('practice'))+'</span><h3>'+esc(short(x['题目与材料'],48))+'</h3><p>'+esc(short(x['我的观点'],24)||t('noThesis'))+'</p>'+(essay?'<p>'+esc(short(x['我的论述'],36)||t('noEssay'))+'</p>':'')+'<div class="itemFooter">'+esc(x['教练反馈'].trim()?t('hasFeedback'):t('generating'))+'</div>';}
+function stageText(s){const m={'初中':'junior','高中合格性考试':'qualifying','高中等级性考试':'graded'};return t(m[s]||s);}
+function renderArchive(){const q=$('searchInput').value.trim().toLocaleLowerCase(),stage=$('stageFilter').value,exam=$('examFilter').value,w=$('writtenFilter').value;const a=records.filter(x=>(!q||[x['题目与材料'],x['我的观点'],x['我的论述']].some(v=>v.toLocaleLowerCase().includes(q)))&&(!stage||x['学习阶段']===stage)&&(!exam||x['是否正在考试']===exam)&&(!w||(w==='written'?!!x['我的论述'].trim():!x['我的论述'].trim())));$('archiveList').innerHTML=a.length?a.map(x=>'<article class="item hoverCard" data-edit="'+x.row+'"><div>'+itemBody(x,true)+'</div><div class="archiveActions"><button class="smallButton" data-detail="'+x.row+'">'+esc(t('feedback'))+'</button><button class="smallButton" data-edit="'+x.row+'">'+esc(t('editThis'))+'</button><button class="smallButton" data-delete="'+x.row+'">'+esc(t('deleteThis'))+'</button></div></article>').join(''):'<div class="empty">'+esc(t('noMatch'))+'<br><button class="textButton" id="clearFilters">'+esc(t('clearFilters'))+'</button></div>';$('archiveCount').textContent=a.length+' '+t('countUnit')+' '+records.length+' '+t('countEnd');}
+async function loadDashboard(){await Promise.allSettled([loadCount(),loadList()]);}
+async function readRow(row){const d={};for(const f of FIELDS)d[f]=await api({type:'GetCellValue',data:TABLE,payload:f+'/'+row});return d;}
+async function goRow(row){if(dirty&&!confirm(t('discard')))return;pollToken++;busy=true;updateWorkUI();try{const d=await readRow(row);currentRow=row;fillForm(d);showFeedback(d['教练反馈']);showPage('work');}catch(e){toast(t('loadRowFailed'));}finally{busy=false;updateWorkUI();}}
+function markdown(text){if(!text.trim())return '';let html;if(window.marked)html=marked.parse(text,{gfm:true,breaks:true});else html='<pre>'+esc(text)+'</pre>';if(window.DOMPurify)html=DOMPurify.sanitize(html);else html='<pre>'+esc(text)+'</pre>';const box=document.createElement('div');box.innerHTML=html;box.querySelectorAll('img').forEach(img=>{const src=img.getAttribute('src')||'';if(src&&!/^https?:|^data:/i.test(src))img.src='http://' + window.location.hostname + ':3130/download/'+encodeURIComponent(src);img.style.cursor='pointer';});return box.innerHTML;}
+function showFeedback(text){$('feedbackBody').innerHTML=text.trim()?'<div class="markdown">'+markdown(text)+'</div>':'<p>'+esc(t('detailWaiting'))+'</p>';$('continuePoll').hidden=true;}
+async function pollFeedback(){const token=++pollToken;busy=true;updateWorkUI();$('feedbackBody').textContent=t('waiting');$('continuePoll').hidden=true;for(let n=0;n<30;n++){if(token!==pollToken)return;try{const v=await api({type:'GetCellValue',data:TABLE,payload:'教练反馈/'+currentRow});if(token!==pollToken)return;if(v.trim()){showFeedback(v);busy=false;updateWorkUI();await loadList();return;}}catch(e){if(n===29)toast(t('operationFailed'));}if(n<29)await new Promise(r=>setTimeout(r,2000));}if(token!==pollToken)return;busy=false;updateWorkUI();$('feedbackBody').textContent=t('stillWaiting');$('continuePoll').hidden=false;}
+async function submitNew(){if(busy||!$('answerForm_prompt').value.trim())return;if($('answerForm_exam').checked&&!confirm(t('examConfirm')))return;busy=true;updateWorkUI();try{await api({type:'SubmitRecord',data:FORM_TABLE,payload:JSON.stringify(formData())});currentRow=1;dirty=false;recordCount++;updateWorkUI();loadDashboard();pollFeedback();}catch(e){busy=false;updateWorkUI();toast(t('submitFailed'));}}
+async function saveExisting(){if(busy||!currentRow)return;busy=true;updateWorkUI();try{const d=formData();for(const f of EDIT_FIELDS)await api({type:'SetCellValue',data:TABLE,payload:f+'/'+String(currentRow)+'/'+d[f]});dirty=false;toast(t('saveDone'));await loadList();}catch(e){toast(t('saveFailed'));}finally{busy=false;updateWorkUI();}}
+async function deleteRow(row){if(!confirm(t('deleteConfirm')))return;try{await api({type:'DeleteRecord',data:TABLE,payload:row.toString()});if(detailRow)closeDetail();if(currentRow===row)clearForm();else if(currentRow>row)currentRow--;recordCount=Math.max(0,recordCount-1);toast(t('deleted'));await loadDashboard();}catch(e){toast(t('deleteFailed'));}}
+async function openDetail(row){detailRow=row;$('detailTitle').textContent=t('prompt');$('detailContent').textContent=t('loadFailed')==='未能读取'?'读取中…':'Loading…';$('detailOverlay').classList.add('open');$('detailOverlay').classList.add('markdownOverlay');detailLoading=true;try{const d=await readRow(row);if(detailRow!==row)return;$('detailTitle').textContent=short(d['题目与材料'],20)||t('prompt');$('detailContent').innerHTML=FIELDS.slice(0,5).map((f,i)=>'<div class="detailField"><strong>'+esc(t(['stage','exam','prompt','thesis','essay'][i]))+'</strong><div>'+esc(i===0?stageText(d[f]):i===1?(d[f]==='是'?t('yes'):t('no')):d[f])+'</div></div>').join('')+'<div class="detailField"><strong>'+esc(t('feedback'))+'</strong><div class="markdown" id="detailFeedback">'+(d['教练反馈'].trim()?markdown(d['教练反馈']):esc(t('detailWaiting')))+'</div>'+(!d['教练反馈'].trim()?'<button class="smallButton" id="refreshDetail">'+esc(t('refresh'))+'</button>':'')+'</div>'; }catch(e){$('detailContent').innerHTML='<p>'+esc(t('loadRowFailed'))+'</p><button class="smallButton" id="retryDetail">'+esc(t('retry'))+'</button>';}finally{detailLoading=false;}}
+async function refreshDetail(){if(detailLoading||!detailRow)return;detailLoading=true;const b=$('refreshDetail');if(b)b.disabled=true;try{const v=await api({type:'GetCellValue',data:TABLE,payload:'教练反馈/'+detailRow});$('detailFeedback').innerHTML=v.trim()?markdown(v):esc(t('detailWaiting'));if(v.trim()&&b)b.remove();}catch(e){toast(t('operationFailed'));if(b)b.disabled=false;}finally{detailLoading=false;}}
+function closeDetail(){$('detailOverlay').classList.remove('open','markdownOverlay');detailRow=0;}
+function airBack(){if($('detailOverlay').classList.contains('open')){closeDetail();return 'false';}if($('mobileMenu').classList.contains('open')){closeMenu();return 'false';}if(historyStack.length){const h=historyStack.pop();showPage(h.page,false);requestAnimationFrame(()=>scrollTo(0,h.y));return 'false';}return 'true';}
+window.airBack=airBack;
+function bind(){document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));$('menuButton').onclick=()=>{const open=$('mobileMenu').classList.toggle('open');$('menuButton').setAttribute('aria-expanded',String(open));};document.addEventListener('click',e=>{if(!$('topbar').contains(e.target))closeMenu();});$('langBtn').onclick=$('mobileLang').onclick=()=>{setLanguage(lang==='cn'?'en':'cn');closeMenu();};$('brand').onclick=()=>{try{parent.closeFullHtml(false);}catch(e){toast(t('operationFailed'));}};$('homeNew').onclick=newOne;$('workNew').onclick=newOne;$('archiveNew').onclick=newOne;$('homeArchive').onclick=$('workArchive').onclick=()=>showPage('archive');$('answerForm').addEventListener('input',e=>{if(!e.target.closest('#checklist'))dirty=true;updateExam();updateWorkUI();});$('answerForm').onsubmit=e=>{e.preventDefault();if(currentRow===0)submitNew();};$('saveBtn').onclick=saveExisting;$('cloneBtn').onclick=submitNew;$('continuePoll').onclick=pollFeedback;$('prevRow').onclick=()=>{if(currentRow>1)goRow(currentRow-1);};$('nextRow').onclick=()=>{if(currentRow<recordCount)goRow(currentRow+1);};['searchInput','stageFilter','examFilter','writtenFilter'].forEach(id=>$(id).addEventListener('input',renderArchive));$('detailClose').onclick=closeDetail;$('detailOverlay').onclick=e=>{if(e.target===$('detailOverlay'))closeDetail();};$('detailEdit').onclick=()=>{const r=detailRow;closeDetail();goRow(r);};$('detailDelete').onclick=()=>deleteRow(detailRow);document.addEventListener('click',e=>{const r=e.target.closest('[data-delete]');if(r){e.stopPropagation();deleteRow(Number(r.dataset.delete));return;}const d=e.target.closest('[data-detail]');if(d){e.stopPropagation();openDetail(Number(d.dataset.detail));return;}const ed=e.target.closest('[data-edit]');if(ed){goRow(Number(ed.dataset.edit));return;}if(e.target.id==='clearFilters'){$('searchInput').value='';$('stageFilter').value='';$('examFilter').value='';$('writtenFilter').value='';renderArchive();}if(e.target.id==='refreshDetail')refreshDetail();if(e.target.id==='retryDetail')openDetail(detailRow);const st=e.target.closest('[data-retry]');if(st){if(st.dataset.retry==='count')loadCount();else loadList();}});document.addEventListener('focusin',e=>{if(!/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),220);});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{const e=document.activeElement;if(e&&/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName))setTimeout(()=>e.scrollIntoView({block:'center',behavior:'smooth'}),100);});document.querySelectorAll('.markdown').forEach(x=>x.addEventListener('click',downloadImage));document.addEventListener('click',downloadImage);}
+function downloadImage(e){const img=e.target.closest('.markdown img');if(!img)return;let src=img.getAttribute('src')||'';if(!src)return;e.preventDefault();if(!/^https?:|^data:/i.test(src))src='http://' + window.location.hostname + ':3130/download/'+encodeURIComponent(src);const a=document.createElement('a');a.href=src;a.download='';document.body.appendChild(a);a.click();a.remove();}
+async function initialize(){lang=pickLanguage();bind();setLanguage(lang);try{const mode=await callAppBridge({type:'模式'});document.body.classList.toggle('dark',String(mode).trim()==='暗色');}catch(e){}await loadDashboard();}
+document.addEventListener('DOMContentLoaded', () => { (async () => { await initialize(); })(); });
+</script></body></html>

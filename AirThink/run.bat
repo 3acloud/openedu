@@ -1,0 +1,2 @@
+python startweb.py
+pause

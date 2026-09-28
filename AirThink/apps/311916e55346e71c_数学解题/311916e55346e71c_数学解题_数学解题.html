@@ -1,0 +1,3594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学解题教练</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231E2746'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='34' fill='%23E4B15A' font-family='serif'%3E%CE%A3%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+<style>
+:root, body.theme-light {
+  --paper: #F3EDE2;
+  --ink: #243044;
+  --card: #ffffff;
+  --sheet: #FBF7EF;
+  --muted: #5c6b7c;
+  --line: rgba(36, 48, 68, 0.12);
+  --grid: rgba(36, 48, 68, 0.06);
+  --shadow: 0 8px 24px rgba(36, 48, 68, 0.06);
+  --shadow-hover: 0 14px 32px rgba(36, 48, 68, 0.14);
+  --nav: #1E2746;
+  --serif: "Source Han Serif SC", "Songti SC", "Noto Serif SC", "STSong", serif;
+  --sans: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --kb: 0px;
+}
+body.theme-dark {
+  --paper: #121624;
+  --ink: #F3EDE2;
+  --card: #1B2238;
+  --sheet: #1A2034;
+  --muted: #C9C0B0;
+  --line: rgba(243, 237, 226, 0.14);
+  --grid: rgba(228, 177, 90, 0.06);
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0 16px 36px rgba(0, 0, 0, 0.45);
+  --nav: #0E1322;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--sans);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+}
+body.lock-scroll { overflow: hidden; }
+img { max-width: 100%; height: auto; }
+button, input, textarea, select { font-family: inherit; }
+input, select, textarea { box-sizing: border-box; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+.is-hidden { display: none !important; }
+#navWrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+#topNav {
+  background: var(--nav);
+  box-shadow: inset 0 -2px 0 #E4B15A;
+  color: #fff;
+}
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 64px;
+  padding: 0 14px;
+  flex-wrap: nowrap;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  padding: 6px 0;
+  min-width: 0;
+}
+.brand:hover { opacity: 0.86; }
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  color: #1E2746;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 20px;
+  flex: none;
+}
+.brand-name {
+  font-family: var(--serif);
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-spacer { flex: 1 1 auto; min-width: 8px; }
+#navTabs { display: flex; flex-wrap: nowrap; gap: 2px; flex: none; }
+.nav-tab, .lang-toggle, .burger {
+  background: transparent;
+  border: 0;
+  color: rgba(247, 241, 227, 0.86);
+  white-space: nowrap;
+}
+.nav-tab {
+  position: relative;
+  padding: 10px 12px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+}
+.nav-tab:hover, .lang-toggle:hover, .burger:hover { color: #E4B15A; }
+.nav-tab.is-active { color: #E4B15A; }
+.nav-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 2px;
+  background: #E4B15A;
+  border-radius: 2px;
+}
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(228, 177, 90, 0.45);
+  flex: none;
+}
+.lang-toggle [data-lang-opt].is-on { color: #E4B15A; font-weight: 700; }
+.burger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  font-size: 18px;
+  flex: none;
+  margin-left: 0;
+}
+.nav-mobile {
+  display: none;
+  border-top: 1px solid rgba(228, 177, 90, 0.35);
+  padding: 8px 10px 12px;
+  background: var(--nav);
+}
+.nav-mobile.is-open { display: block; }
+.nav-mobile .nav-tab {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 12px;
+}
+.nav-mobile .nav-tab.is-active::after { left: 12px; right: auto; width: 36px; bottom: 8px; }
+.mobile-lang { display: flex; gap: 8px; padding: 8px 4px 4px; }
+.mobile-lang button {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid rgba(228, 177, 90, 0.45);
+  background: transparent;
+  color: #fff;
+  padding: 10px 8px;
+}
+.mobile-lang button.is-on { color: #1E2746; background: #E4B15A; border-color: #E4B15A; }
+html[data-nav="compact"] #navTabs,
+html[data-nav="compact"] #langToggle { display: none !important; }
+html[data-nav="compact"] #navBurger { display: inline-flex !important; align-items: center; justify-content: center; }
+html[data-nav="wide"] #navBurger { display: none !important; }
+html[data-nav="wide"] #navTabs { display: flex !important; }
+html[data-nav="wide"] #langToggle { display: inline-flex !important; }
+@media (max-width: 820px) {
+  html:not([data-nav="wide"]) #navTabs,
+  html:not([data-nav="wide"]) #langToggle { display: none; }
+  html:not([data-nav="wide"]) #navBurger { display: inline-flex; align-items: center; justify-content: center; }
+}
+.wrap {
+  width: min(1120px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 18px 0 28px;
+}
+.page { display: none; }
+.page.is-active { display: block; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 650; line-height: 1.3; margin: 0; }
+h1 { font-size: 32px; }
+h2 { font-size: 22px; margin: 22px 0 10px; }
+.lead { font-size: 16px; line-height: 1.7; margin: 10px 0; }
+.fine { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 0 0 14px; }
+.sheet-head, .page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.page-head p, .sheet-head p { margin: 8px 0 0; color: var(--muted); line-height: 1.6; }
+.btn {
+  border-radius: 12px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  background: var(--card);
+  color: var(--ink);
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease, opacity .16s ease;
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:disabled { opacity: 0.45; }
+.btn-primary { background: #E4B15A; color: #1E2746; font-weight: 700; }
+.btn-primary:hover:not(:disabled) { background: #efc27a; }
+.btn-ghost { background: transparent; border-color: var(--line); }
+.btn-danger { background: #A34B3A; color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #b85a48; }
+.entry-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.entry-card, .stat-card, .mini-card, .book-card {
+  background: var(--card);
+  border-left: 4px solid #E4B15A;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.entry-card:hover, .stat-card:hover, .mini-card:hover, .book-card:hover,
+.choice:hover, .chip:hover, .icon-btn:hover, .preview-actions .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+.entry-card {
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+  color: var(--ink);
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.entry-band {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px;
+  font-weight: 700;
+}
+.entry-card[data-help="卡住了"] .entry-band { background: #E4B15A; color: #1E2746; }
+.entry-card[data-help="做错了"] .entry-band { background: #A34B3A; color: #fff; }
+.entry-card[data-help="不知道怎么列式"] .entry-band { background: #5E7384; color: #fff; }
+.entry-card[data-help="出同类题"] .entry-band { background: #3D4C86; color: #fff; }
+.entry-card[data-help="考前梳理"] .entry-band { background: #6B7C3A; color: #fff; }
+.entry-prompt { display: block; padding: 12px; font-size: 13px; line-height: 1.55; color: var(--muted); }
+.stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.stat-card { padding: 16px 16px 14px; }
+.stat-card strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.stat-card span { color: var(--muted); font-size: 14px; }
+.capsule-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+.capsule strong { font-family: var(--serif); font-size: 16px; }
+.card-list, .recent-list { display: flex; flex-direction: column; gap: 12px; }
+.mini-card {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  text-align: left;
+  color: inherit;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.mini-body, .book-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.card-title { font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+.card-sub { color: var(--muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.thumb {
+  display: inline-block;
+  width: 76px;
+  height: 76px;
+  border-radius: 10px;
+  flex: none;
+  overflow: hidden;
+  position: relative;
+  background: #F3EDE2;
+  vertical-align: top;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-empty {
+  background-color: #F3EDE2;
+  background-image:
+    linear-gradient(rgba(36, 48, 68, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 48, 68, 0.08) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.thumb-lg { display: block; width: 100%; height: 180px; }
+.desk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 16px;
+  align-items: start;
+}
+.sheet {
+  background-color: var(--sheet);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border-left: 4px solid #E4B15A;
+  border-radius: 16px;
+  padding: 18px 16px 8px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.field { margin: 0 0 14px; }
+.field > label, .field-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+input[type="text"], input[type="search"] {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-size: 16px;
+}
+.choice-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 12px;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.stage-row .choice {
+  flex: 1;
+  min-width: 120px;
+  border-radius: 12px;
+  padding: 14px 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.stage-row .choice.is-on { border-color: #E4B15A; background: rgba(228, 177, 90, 0.22); }
+.choice[data-value="卡住了"].is-on { background: #E4B15A; color: #1E2746; border-color: #E4B15A; }
+.choice[data-value="做错了"].is-on { background: #A34B3A; color: #fff; border-color: #A34B3A; }
+.choice[data-value="不知道怎么列式"].is-on { background: #5E7384; color: #fff; border-color: #5E7384; }
+.choice[data-value="出同类题"].is-on { background: #3D4C86; color: #fff; border-color: #3D4C86; }
+.choice[data-value="考前梳理"].is-on { background: #6B7C3A; color: #fff; border-color: #6B7C3A; }
+.preview-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.high-note {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(228, 177, 90, 0.18);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.board {
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(255, 255, 255, 0.06), transparent 42%),
+    #1E2746;
+  color: #F7F1E3;
+  border-radius: 16px;
+  min-height: 440px;
+  padding: 18px 16px 16px;
+  box-shadow: 0 16px 40px rgba(30, 39, 70, 0.22), inset 0 0 0 1px rgba(228, 177, 90, 0.35);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.board h2 { color: #E4B15A; font-size: 24px; }
+#boardBody { flex: 1; margin-top: 8px; }
+.board-msg {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.75;
+  color: #F7F1E3;
+  margin: 8px 0;
+}
+.board .fa-spinner { color: #E4B15A; }
+.board .btn-ghost { color: #F7F1E3; border-color: rgba(247, 241, 227, 0.4); background: transparent; }
+.tool-row { margin-bottom: 12px; }
+.search-wrap { position: relative; margin-bottom: 10px; }
+.search-wrap i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+.search-wrap input { padding-left: 38px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 7px 12px;
+  font-size: 13px;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.chip.is-on { background: #1E2746; color: #E4B15A; border-color: #1E2746; }
+.chip[data-value="卡住了"].is-on { background: #E4B15A; color: #1E2746; border-color: #E4B15A; }
+.chip[data-value="做错了"].is-on { background: #A34B3A; color: #fff; border-color: #A34B3A; }
+.chip[data-value="不知道怎么列式"].is-on { background: #5E7384; color: #fff; border-color: #5E7384; }
+.chip[data-value="出同类题"].is-on { background: #3D4C86; color: #fff; border-color: #3D4C86; }
+.chip[data-value="考前梳理"].is-on { background: #6B7C3A; color: #fff; border-color: #6B7C3A; }
+.book-card {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  align-items: stretch;
+}
+.book-card .book-main {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.book-actions { display: flex; flex-direction: column; gap: 8px; flex: none; }
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+}
+.icon-btn:hover { border-color: #E4B15A; color: #8A6416; }
+.icon-btn.danger:hover { border-color: #A34B3A; color: #A34B3A; }
+.book-card.is-current { box-shadow: 0 0 0 2px #E4B15A, var(--shadow); }
+.empty-box {
+  padding: 22px 8px 8px;
+  text-align: center;
+}
+.empty-box p { margin: 0 0 12px; color: var(--muted); }
+.error-line {
+  margin: 10px 0;
+  padding: 12px 14px;
+  border-left: 4px solid #A34B3A;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 12px;
+  line-height: 1.6;
+}
+button.error-line { width: 100%; text-align: left; font: inherit; cursor: pointer; }
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 39, 70, 0.4);
+}
+.backdrop.is-open { display: block; }
+#detailBackdrop { z-index: 1190; }
+.drawer {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: min(520px, calc(100vw - 32px));
+  z-index: 1200;
+  background: var(--sheet);
+  color: var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(30, 39, 70, 0.28);
+  transform: translateX(calc(100% + 32px));
+  transition: transform .28s ease;
+  overflow: auto;
+  border-left: 4px solid #E4B15A;
+}
+.drawer.is-open { transform: translateX(0); }
+.drawer-inner { padding: 18px 16px 12px; }
+.detail-photo { margin: 0 0 12px; }
+.detail-photo img { border-radius: 12px; display: block; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.modal-layer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  background: rgba(30, 39, 70, 0.46);
+  padding: 20px 16px;
+  overflow: auto;
+}
+.modal-layer.is-open { display: block; }
+.modal-card {
+  width: min(680px, 100%);
+  margin: 0 auto;
+  background: var(--sheet);
+  color: var(--ink);
+  border-radius: 18px;
+  border-left: 4px solid #E4B15A;
+  box-shadow: 0 20px 60px rgba(30, 39, 70, 0.32);
+  padding: 18px 16px 8px;
+}
+.modal-card h2 { margin-bottom: 8px; }
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 0 0 12px;
+}
+.confirm-layer { z-index: 1400; }
+.confirm-card { width: min(420px, 100%); padding: 20px 16px 16px; }
+.confirm-card p { font-size: 18px; font-family: var(--serif); line-height: 1.5; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.form-tail { height: 8px; }
+.drawer-tail { height: 12px; }
+.md-body { line-height: 1.75; overflow-wrap: anywhere; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4, .md-body h5, .md-body h6 {
+  font-family: var(--serif);
+  line-height: 1.35;
+  margin: 0.85em 0 0.4em;
+}
+.md-body h1 { font-size: 1.6em; }
+.md-body h2 { font-size: 1.35em; }
+.md-body h3 { font-size: 1.15em; }
+.md-body p { margin: 0.5em 0; }
+.md-body ul, .md-body ol { margin: 0.4em 0; padding-left: 1.3em; }
+.md-body blockquote {
+  margin: 0.7em 0;
+  padding: 0.2em 0 0.2em 12px;
+  border-left: 3px solid #E4B15A;
+}
+.md-body hr { border: 0; border-top: 1px solid currentColor; opacity: 0.35; margin: 1em 0; }
+.md-body code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.92em;
+  background: rgba(36, 48, 68, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+.md-body pre {
+  overflow-x: auto;
+  max-width: 100%;
+  background: rgba(36, 48, 68, 0.06);
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+.md-body pre code { background: transparent; padding: 0; white-space: pre; }
+.md-body a { color: #8A6416; }
+.md-body img { border-radius: 10px; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.md-body table { border-collapse: collapse; min-width: 280px; }
+.md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.md-body th { font-family: var(--serif); }
+.math-inline, .math-block { font-family: "Cambria Math", "Times New Roman", var(--serif); }
+.math-block {
+  display: block;
+  margin: 0.7em 0;
+  padding: 8px 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  border-left: 3px solid #E4B15A;
+  background: rgba(36, 48, 68, 0.04);
+}
+.board .md-body { color: #F7F1E3; }
+.board .md-body a { color: #E4B15A; }
+.board .md-body code, .board .md-body pre { background: rgba(0, 0, 0, 0.28); color: #F7F1E3; }
+.board .md-body th, .board .md-body td { border-color: rgba(247, 241, 227, 0.28); }
+.board .math-block { background: rgba(0, 0, 0, 0.22); }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #E4B15A;
+  outline-offset: 2px;
+}
+@media (max-width: 980px) {
+  .entry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .desk-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 28px; }
+}
+@media (max-width: 640px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .entry-grid { grid-template-columns: 1fr; }
+  .page-head, .sheet-head { flex-direction: column; }
+  .drawer {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    transform: translateX(100%);
+  }
+  .drawer.is-open { transform: translateX(0); }
+  body { padding-bottom: 88px; }
+  .form-tail, .drawer-tail { height: calc(46vh + var(--kb)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body class="theme-light">
+<div id="navWrap">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div class="nav-row" id="navRow">
+      <button type="button" class="brand" id="brandBtn">
+        <span class="brand-mark" aria-hidden="true">Σ</span>
+        <span class="brand-name" data-i18n="appName">数学解题教练</span>
+      </button>
+      <div class="nav-spacer"></div>
+      <div id="navTabs">
+        <button type="button" class="nav-tab is-active" id="tabHome" data-i18n="navHome">首页</button>
+        <button type="button" class="nav-tab" id="tabDesk" data-i18n="navDesk">解题台</button>
+        <button type="button" class="nav-tab" id="tabBook" data-i18n="navBook">辅导册</button>
+      </div>
+      <button type="button" class="lang-toggle" id="langToggle" aria-label="语言">
+        <span data-lang-opt="zh">中</span>
+        <span aria-hidden="true">/</span>
+        <span data-lang-opt="en">EN</span>
+      </button>
+      <button type="button" class="burger" id="navBurger" aria-expanded="false" data-i18n-aria="menuLabel" aria-label="菜单">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <button type="button" class="nav-tab is-active" id="mobileTabHome" data-i18n="navHome">首页</button>
+      <button type="button" class="nav-tab" id="mobileTabDesk" data-i18n="navDesk">解题台</button>
+      <button type="button" class="nav-tab" id="mobileTabBook" data-i18n="navBook">辅导册</button>
+      <div class="mobile-lang">
+        <button type="button" id="langCn" data-i18n="langZh">中文</button>
+        <button type="button" id="langEn" data-i18n="langEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main class="wrap" id="main">
+  <section class="page is-active" id="pageHome">
+    <h1 data-i18n="appName">数学解题教练</h1>
+    <p class="lead" data-i18n="homeLead">把卡住的那一步交给教练。先写出你的尝试，教练只推一把，不先甩答案。</p>
+    <p class="fine" data-i18n="homeFine">高中只陪伴高一预备知识与函数；正在考试或测验时，不要提交这道题。</p>
+    <button type="button" class="btn btn-primary" id="btnStart" data-i18n="btnStart">开始这道题</button>
+    <div class="entry-grid" id="helpEntries">
+      <button type="button" class="entry-card" data-help="卡住了" id="entryStuck">
+        <span class="entry-band"><i class="fa-solid fa-pencil" aria-hidden="true"></i><span data-i18n="helpStuck">卡住了</span></span>
+        <span class="entry-prompt" data-i18n="phStuck">你试到哪一步了？</span>
+      </button>
+      <button type="button" class="entry-card" data-help="做错了" id="entryWrong">
+        <span class="entry-band"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i><span data-i18n="helpWrong">做错了</span></span>
+        <span class="entry-prompt" data-i18n="phWrong">把步骤写出来，圈出最可疑的一步</span>
+      </button>
+      <button type="button" class="entry-card" data-help="不知道怎么列式" id="entrySetup">
+        <span class="entry-band"><i class="fa-solid fa-list-ol" aria-hidden="true"></i><span data-i18n="helpSetup">不知道怎么列式</span></span>
+        <span class="entry-prompt" data-i18n="phSetup">先写已知和要求</span>
+      </button>
+      <button type="button" class="entry-card" data-help="出同类题" id="entrySimilar">
+        <span class="entry-band"><i class="fa-solid fa-clone" aria-hidden="true"></i><span data-i18n="helpSimilar">出同类题</span></span>
+        <span class="entry-prompt" data-i18n="phSimilar">写出原题，或只写考查点</span>
+      </button>
+      <button type="button" class="entry-card" data-help="考前梳理" id="entryReview">
+        <span class="entry-band"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="helpReview">考前梳理</span></span>
+        <span class="entry-prompt" data-i18n="phReview">写要梳理的章节，和最没底的内容</span>
+      </button>
+    </div>
+    <button type="button" class="error-line is-hidden" id="homeError" data-i18n="errLoad">暂时没取到辅导册，请再试一次</button>
+    <p class="fine is-hidden" id="homeLoading" data-i18n="loading">正在翻开辅导册…</p>
+    <div class="stat-grid is-hidden" id="statRow">
+      <article class="stat-card"><strong id="statCount">0</strong><span data-i18n="statTotal">辅导次数</span></article>
+      <article class="stat-card"><strong id="statJunior">0</strong><span data-i18n="statJunior">初中题数</span></article>
+      <article class="stat-card"><strong id="statSenior">0</strong><span data-i18n="statSenior">高中题数</span></article>
+    </div>
+    <h2 data-i18n="distTitle">求助分布</h2>
+    <div class="capsule-row" id="helpDist"></div>
+    <h2 data-i18n="recentTitle">最近看过的题</h2>
+    <div class="recent-list" id="recentList"></div>
+    <div class="empty-box is-hidden" id="recentEmpty">
+      <p data-i18n="emptyBook">辅导册还是空白的</p>
+      <button type="button" class="btn btn-primary" id="btnFirst" data-i18n="btnFirst">去做第一题</button>
+    </div>
+  </section>
+
+  <section class="page" id="pageDesk">
+    <div class="desk-grid">
+      <div class="sheet" id="deskSheet">
+        <div class="sheet-head">
+          <div>
+            <h1 data-i18n="deskTitle">解题台</h1>
+            <p data-i18n="deskLead">一次只交一道题。题目文字和题目图片至少要有一个。</p>
+          </div>
+          <button type="button" class="btn btn-ghost" id="btnClear" data-i18n="btnClear">清空稿纸</button>
+        </div>
+        <form id="formDesk" action="javascript:void(0)" autocomplete="off" novalidate>
+          <div class="field">
+            <label for="formDesk_题目" data-i18n="fieldProblem">题目</label>
+            <textarea id="formDesk_题目" name="题目"></textarea>
+          </div>
+          <div class="field">
+            <div class="field-label" id="formDesk_题目图片_label" data-i18n="fieldImage">题目图片</div>
+            <div class="thumb thumb-lg thumb-empty" id="deskPreviewBox">
+              <img id="deskPreviewImg" alt="" class="is-hidden">
+            </div>
+            <input type="hidden" id="formDesk_题目图片" name="题目图片" value="">
+            <div class="preview-actions">
+              <button type="button" class="btn btn-ghost" id="btnDeskCapture"><i class="fa-solid fa-camera" aria-hidden="true"></i> <span data-i18n="btnCapture">拍题目</span></button>
+              <button type="button" class="btn btn-ghost" id="btnDeskAlbum"><i class="fa-solid fa-image" aria-hidden="true"></i> <span data-i18n="btnAlbum">从相册选</span></button>
+              <button type="button" class="btn btn-ghost" id="btnDeskClearImg" data-i18n="btnRemoveImg">去掉图片</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label" id="formDesk_学段_label" data-i18n="fieldStage">学段</div>
+            <input type="hidden" id="formDesk_学段" name="学段" value="初中">
+            <div class="choice-row stage-row" role="radiogroup" aria-labelledby="formDesk_学段_label">
+              <button type="button" class="choice is-on" data-choice="学段" data-value="初中" id="formDesk_学段_初中" role="radio" aria-checked="true" data-i18n="stageJunior">初中</button>
+              <button type="button" class="choice" data-choice="学段" data-value="高中" id="formDesk_学段_高中" role="radio" aria-checked="false" data-i18n="stageSenior">高中</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label" id="formDesk_求助_label" data-i18n="fieldHelp">求助</div>
+            <input type="hidden" id="formDesk_求助" name="求助" value="卡住了">
+            <div class="choice-row" role="radiogroup" aria-labelledby="formDesk_求助_label">
+              <button type="button" class="choice is-on" data-choice="求助" data-value="卡住了" id="formDesk_求助_卡住了" role="radio" aria-checked="true" data-i18n="helpStuck">卡住了</button>
+              <button type="button" class="choice" data-choice="求助" data-value="做错了" id="formDesk_求助_做错了" role="radio" aria-checked="false" data-i18n="helpWrong">做错了</button>
+              <button type="button" class="choice" data-choice="求助" data-value="不知道怎么列式" id="formDesk_求助_不知道怎么列式" role="radio" aria-checked="false" data-i18n="helpSetup">不知道怎么列式</button>
+              <button type="button" class="choice" data-choice="求助" data-value="出同类题" id="formDesk_求助_出同类题" role="radio" aria-checked="false" data-i18n="helpSimilar">出同类题</button>
+              <button type="button" class="choice" data-choice="求助" data-value="考前梳理" id="formDesk_求助_考前梳理" role="radio" aria-checked="false" data-i18n="helpReview">考前梳理</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="formDesk_已有思路" data-i18n="fieldThought">已有思路</label>
+            <textarea id="formDesk_已有思路" name="已有思路" placeholder="你试到哪一步了？"></textarea>
+          </div>
+          <button type="button" class="btn btn-primary" id="btnAsk" data-i18n="btnAsk" disabled>请教练看看</button>
+          <p class="error-line is-hidden" id="deskError" data-i18n="errLoad">暂时没取到辅导册，请再试一次</p>
+          <p class="high-note is-hidden" id="deskHighNote" data-i18n="highNote">高中只覆盖高一预备知识与函数。几何与代数、概率与统计、选择性必修，教练只会帮你整理已知、所求和卡点。</p>
+          <div class="form-tail"></div>
+        </form>
+      </div>
+      <aside class="board" id="coachBoard">
+        <h2 data-i18n="boardTitle">教练黑板</h2>
+        <div id="boardBody" class="board-msg">先写下你的尝试。教练不会在你开口前给出原题答案。</div>
+        <button type="button" class="btn btn-ghost" id="btnToBook" data-i18n="btnToBook" disabled>到辅导册看这一题</button>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page" id="pageBook">
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="bookTitle">辅导册</h1>
+        <p data-i18n="bookLead">每张卡片是一次提问。点卡片看教练怎么说，编辑只改题目信息，不会重写黑板。</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="btnAnother" data-i18n="btnAnother">+ 再问一题</button>
+    </div>
+    <div class="tool-row">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input id="bookSearch" name="bookSearch" type="text" placeholder="搜索题目或已有思路" data-i18n-ph="searchPh">
+      </div>
+      <div class="chip-row" id="filterBar">
+        <button type="button" class="chip is-on" data-filter="stage" data-value="" id="chipAll" data-i18n="chipAll">全部</button>
+        <button type="button" class="chip" data-filter="stage" data-value="初中" id="chipJunior" data-i18n="stageJunior">初中</button>
+        <button type="button" class="chip" data-filter="stage" data-value="高中" id="chipSenior" data-i18n="stageSenior">高中</button>
+        <button type="button" class="chip" data-filter="help" data-value="卡住了" id="chipHelpStuck" data-i18n="helpStuck">卡住了</button>
+        <button type="button" class="chip" data-filter="help" data-value="做错了" id="chipHelpWrong" data-i18n="helpWrong">做错了</button>
+        <button type="button" class="chip" data-filter="help" data-value="不知道怎么列式" id="chipHelpSetup" data-i18n="helpSetup">不知道怎么列式</button>
+        <button type="button" class="chip" data-filter="help" data-value="出同类题" id="chipHelpSimilar" data-i18n="helpSimilar">出同类题</button>
+        <button type="button" class="chip" data-filter="help" data-value="考前梳理" id="chipHelpReview" data-i18n="helpReview">考前梳理</button>
+      </div>
+    </div>
+    <p class="fine is-hidden" id="bookLoading" data-i18n="loading">正在翻开辅导册…</p>
+    <button type="button" class="error-line is-hidden" id="bookError" data-i18n="errLoad">暂时没取到辅导册，请再试一次</button>
+    <p class="error-line is-hidden" id="bookActionError" data-i18n="errLoad">暂时没取到辅导册，请再试一次</p>
+    <div class="card-list" id="bookList"></div>
+    <div class="empty-box is-hidden" id="bookEmpty">
+      <p id="bookEmptyText">辅导册还是空白的</p>
+      <button type="button" class="btn btn-ghost is-hidden" id="btnClearFilter" data-i18n="btnClearFilter">清空筛选</button>
+      <button type="button" class="btn btn-primary is-hidden" id="btnBookFirst" data-i18n="btnFirst">去做第一题</button>
+    </div>
+  </section>
+</main>
+
+<div class="backdrop" id="detailBackdrop"></div>
+<aside class="drawer" id="detailDrawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+  <div class="drawer-inner">
+    <div class="detail-photo is-hidden" id="detailImageWrap"></div>
+    <h2 id="detailTitle"></h2>
+    <div class="meta-row" id="detailMeta"></div>
+    <h3 data-i18n="fieldThought">已有思路</h3>
+    <p id="detailThought"></p>
+    <h3 data-i18n="coachTitle">解题辅导</h3>
+    <div id="detailCoach"></div>
+    <div class="detail-actions">
+      <button type="button" class="btn btn-primary" id="btnRevise" data-i18n="btnRevise" disabled>改一改再问</button>
+      <button type="button" class="btn btn-ghost" id="btnEditFromDetail" data-i18n="btnEditThis">编辑这条</button>
+      <button type="button" class="btn btn-danger" id="btnDeleteFromDetail" data-i18n="btnDeleteThis">删除这条</button>
+      <button type="button" class="btn btn-ghost" id="btnCloseDetail" data-i18n="btnClose">关闭</button>
+    </div>
+    <div class="drawer-tail"></div>
+  </div>
+</aside>
+
+<div class="modal-layer" id="editLayer">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editHeading">
+    <h2 id="editHeading" data-i18n="editTitle">编辑这条</h2>
+    <p class="hint" data-i18n="editHint">编辑不会重写教练黑板</p>
+    <form id="formEdit" action="javascript:void(0)" autocomplete="off" novalidate>
+      <div class="field">
+        <label for="formEdit_题目" data-i18n="fieldProblem">题目</label>
+        <textarea id="formEdit_题目" name="题目"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label" id="formEdit_题目图片_label" data-i18n="fieldImage">题目图片</div>
+        <div class="thumb thumb-lg thumb-empty" id="editPreviewBox">
+          <img id="editPreviewImg" alt="" class="is-hidden">
+        </div>
+        <input type="hidden" id="formEdit_题目图片" name="题目图片" value="">
+        <div class="preview-actions">
+          <button type="button" class="btn btn-ghost" id="btnEditCapture"><i class="fa-solid fa-camera" aria-hidden="true"></i> <span data-i18n="btnCapture">拍题目</span></button>
+          <button type="button" class="btn btn-ghost" id="btnEditAlbum"><i class="fa-solid fa-image" aria-hidden="true"></i> <span data-i18n="btnAlbum">从相册选</span></button>
+          <button type="button" class="btn btn-ghost" id="btnEditClearImg" data-i18n="btnRemoveImg">去掉图片</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label" id="formEdit_学段_label" data-i18n="fieldStage">学段</div>
+        <input type="hidden" id="formEdit_学段" name="学段" value="初中">
+        <div class="choice-row stage-row" role="radiogroup" aria-labelledby="formEdit_学段_label">
+          <button type="button" class="choice is-on" data-choice="学段" data-value="初中" id="formEdit_学段_初中" role="radio" aria-checked="true" data-i18n="stageJunior">初中</button>
+          <button type="button" class="choice" data-choice="学段" data-value="高中" id="formEdit_学段_高中" role="radio" aria-checked="false" data-i18n="stageSenior">高中</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label" id="formEdit_求助_label" data-i18n="fieldHelp">求助</div>
+        <input type="hidden" id="formEdit_求助" name="求助" value="卡住了">
+        <div class="choice-row" role="radiogroup" aria-labelledby="formEdit_求助_label">
+          <button type="button" class="choice is-on" data-choice="求助" data-value="卡住了" id="formEdit_求助_卡住了" role="radio" aria-checked="true" data-i18n="helpStuck">卡住了</button>
+          <button type="button" class="choice" data-choice="求助" data-value="做错了" id="formEdit_求助_做错了" role="radio" aria-checked="false" data-i18n="helpWrong">做错了</button>
+          <button type="button" class="choice" data-choice="求助" data-value="不知道怎么列式" id="formEdit_求助_不知道怎么列式" role="radio" aria-checked="false" data-i18n="helpSetup">不知道怎么列式</button>
+          <button type="button" class="choice" data-choice="求助" data-value="出同类题" id="formEdit_求助_出同类题" role="radio" aria-checked="false" data-i18n="helpSimilar">出同类题</button>
+          <button type="button" class="choice" data-choice="求助" data-value="考前梳理" id="formEdit_求助_考前梳理" role="radio" aria-checked="false" data-i18n="helpReview">考前梳理</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="formEdit_已有思路" data-i18n="fieldThought">已有思路</label>
+        <textarea id="formEdit_已有思路" name="已有思路"></textarea>
+      </div>
+      <p class="error-line is-hidden" id="editError" data-i18n="errLoad">暂时没取到辅导册，请再试一次</p>
+      <p class="high-note is-hidden" id="editHighNote" data-i18n="highNote">高中只覆盖高一预备知识与函数。几何与代数、概率与统计、选择性必修，教练只会帮你整理已知、所求和卡点。</p>
+      <div class="detail-actions">
+        <button type="button" class="btn btn-primary" id="btnSaveEdit" data-i18n="btnSave">保存修改</button>
+        <button type="button" class="btn btn-ghost" id="btnCancelEdit" data-i18n="btnCancelEdit">取消修改</button>
+      </div>
+      <div class="form-tail"></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-layer confirm-layer" id="confirmLayer">
+  <div class="modal-card confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmText">
+    <p id="confirmText" data-i18n="confirmText">从辅导册抽走这张卡片？</p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-ghost" id="btnCancelDelete" data-i18n="btnCancel">取消</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmDelete" data-i18n="btnConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("311916e55346e71c_数学解题")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+</script>
+<script>
+const DATA_SOURCE = "解题/默认表格";
+const TABLE_NAME = "解题";
+const ALL_FIELDS = "题目,题目图片,学段,求助,已有思路,解题辅导";
+const HELP_VALUES = ["卡住了", "做错了", "不知道怎么列式", "出同类题", "考前梳理"];
+const HELP_COLOR = {
+  "卡住了": "#E4B15A",
+  "做错了": "#A34B3A",
+  "不知道怎么列式": "#5E7384",
+  "出同类题": "#3D4C86",
+  "考前梳理": "#6B7C3A"
+};
+const STAGE_COLOR = { "初中": "#3E7A6D", "高中": "#2C3E6B" };
+const PH_KEY = {
+  "卡住了": "phStuck",
+  "做错了": "phWrong",
+  "不知道怎么列式": "phSetup",
+  "出同类题": "phSimilar",
+  "考前梳理": "phReview"
+};
+
+const I18N = {
+  zh: {
+    appName: "数学解题教练",
+    navHome: "首页",
+    navDesk: "解题台",
+    navBook: "辅导册",
+    homeLead: "把卡住的那一步交给教练。先写出你的尝试，教练只推一把，不先甩答案。",
+    homeFine: "高中只陪伴高一预备知识与函数；正在考试或测验时，不要提交这道题。",
+    btnStart: "开始这道题",
+    helpStuck: "卡住了",
+    helpWrong: "做错了",
+    helpSetup: "不知道怎么列式",
+    helpSimilar: "出同类题",
+    helpReview: "考前梳理",
+    phStuck: "你试到哪一步了？",
+    phWrong: "把步骤写出来，圈出最可疑的一步",
+    phSetup: "先写已知和要求",
+    phSimilar: "写出原题，或只写考查点",
+    phReview: "写要梳理的章节，和最没底的内容",
+    statTotal: "辅导次数",
+    statJunior: "初中题数",
+    statSenior: "高中题数",
+    distTitle: "求助分布",
+    recentTitle: "最近看过的题",
+    pictureProblem: "图片题",
+    emptyBook: "辅导册还是空白的",
+    btnFirst: "去做第一题",
+    errLoad: "暂时没取到辅导册，请再试一次",
+    loading: "正在翻开辅导册…",
+    deskTitle: "解题台",
+    deskLead: "一次只交一道题。题目文字和题目图片至少要有一个。",
+    btnClear: "清空稿纸",
+    fieldProblem: "题目",
+    fieldImage: "题目图片",
+    fieldStage: "学段",
+    fieldHelp: "求助",
+    fieldThought: "已有思路",
+    btnCapture: "拍题目",
+    btnAlbum: "从相册选",
+    btnRemoveImg: "去掉图片",
+    stageJunior: "初中",
+    stageSenior: "高中",
+    highNote: "高中只覆盖高一预备知识与函数。几何与代数、概率与统计、选择性必修，教练只会帮你整理已知、所求和卡点。",
+    btnAsk: "请教练看看",
+    boardTitle: "教练黑板",
+    boardWait: "教练在黑板另一侧看你的稿纸…",
+    boardIdle: "先写下你的尝试。教练不会在你开口前给出原题答案。",
+    btnToBook: "到辅导册看这一题",
+    pollTimeout: "这题还在批，可稍后到辅导册打开最新一条",
+    bookTitle: "辅导册",
+    bookLead: "每张卡片是一次提问。点卡片看教练怎么说，编辑只改题目信息，不会重写黑板。",
+    btnAnother: "+ 再问一题",
+    searchPh: "搜索题目或已有思路",
+    chipAll: "全部",
+    noMatch: "这叠卡片里没有这样的题",
+    btnClearFilter: "清空筛选",
+    coachTitle: "解题辅导",
+    coachEmpty: "教练还没写完",
+    btnRevise: "改一改再问",
+    btnEditThis: "编辑这条",
+    btnDeleteThis: "删除这条",
+    btnClose: "关闭",
+    editHint: "编辑不会重写教练黑板",
+    editTitle: "编辑这条",
+    btnSave: "保存修改",
+    btnCancelEdit: "取消修改",
+    confirmText: "从辅导册抽走这张卡片？",
+    btnConfirm: "确认",
+    btnCancel: "取消",
+    langZh: "中文",
+    langEn: "English",
+    menuLabel: "菜单"
+  },
+  en: {
+    appName: "Math Coach",
+    navHome: "Home",
+    navDesk: "Desk",
+    navBook: "Booklet",
+    homeLead: "Hand the step you are stuck on to the coach. Write your attempt first. The coach gives one nudge, and does not lead with the answer.",
+    homeFine: "Senior high covers only Grade 10 preparation and functions. Do not submit a problem during an exam or a quiz.",
+    btnStart: "Start this problem",
+    helpStuck: "Stuck",
+    helpWrong: "Got it wrong",
+    helpSetup: "Can't set it up",
+    helpSimilar: "A similar problem",
+    helpReview: "Review before a test",
+    phStuck: "How far did you get?",
+    phWrong: "Write the steps and mark the one that looks most suspicious",
+    phSetup: "Write the given information and what is asked",
+    phSimilar: "Write the original problem, or only the skill it tests",
+    phReview: "Write the chapter to review, and what feels least solid",
+    statTotal: "Sessions",
+    statJunior: "Junior-high problems",
+    statSenior: "Senior-high problems",
+    distTitle: "How you asked",
+    recentTitle: "Recently viewed",
+    pictureProblem: "Picture problem",
+    emptyBook: "The booklet is still blank",
+    btnFirst: "Try a first problem",
+    errLoad: "Couldn't load the booklet. Please try again.",
+    loading: "Opening the booklet…",
+    deskTitle: "Problem desk",
+    deskLead: "One problem at a time. Provide text or a picture — at least one.",
+    btnClear: "Clear the paper",
+    fieldProblem: "Problem",
+    fieldImage: "Picture",
+    fieldStage: "Level",
+    fieldHelp: "Ask for",
+    fieldThought: "What I've tried",
+    btnCapture: "Take a photo",
+    btnAlbum: "Choose from album",
+    btnRemoveImg: "Remove picture",
+    stageJunior: "Junior high",
+    stageSenior: "Senior high",
+    highNote: "Senior high covers only Grade 10 preparation and functions. For geometry and algebra, probability and statistics, and elective modules, the coach will only help you sort out the given, the goal, and where you are stuck.",
+    btnAsk: "Ask the coach",
+    boardTitle: "Coach's board",
+    boardWait: "The coach is reading your paper from the other side of the board…",
+    boardIdle: "Write down your attempt first. The coach will not give the original answer before you start.",
+    btnToBook: "Open this one in the booklet",
+    pollTimeout: "This one is still being marked. Open the latest card in the booklet later.",
+    bookTitle: "Booklet",
+    bookLead: "Each card is one question. Open a card to see what the coach said. Editing changes the problem only, and does not rewrite the board.",
+    btnAnother: "+ Ask another",
+    searchPh: "Search the problem or your notes",
+    chipAll: "All",
+    noMatch: "No card in this stack matches",
+    btnClearFilter: "Clear filters",
+    coachTitle: "Coaching",
+    coachEmpty: "The coach hasn't finished writing",
+    btnRevise: "Revise and ask again",
+    btnEditThis: "Edit this",
+    btnDeleteThis: "Delete this",
+    btnClose: "Close",
+    editHint: "Editing will not rewrite the coach's board",
+    editTitle: "Edit this",
+    btnSave: "Save changes",
+    btnCancelEdit: "Discard changes",
+    confirmText: "Pull this card out of the booklet?",
+    btnConfirm: "Confirm",
+    btnCancel: "Cancel",
+    langZh: "中文",
+    langEn: "English",
+    menuLabel: "Menu"
+  }
+};
+
+const state = {
+  lang: "zh",
+  page: "",
+  history: [],
+  currentRow: 0,
+  rows: [],
+  counts: null,
+  error: false,
+  loading: true,
+  query: "",
+  stageFilter: "",
+  helpFilter: "",
+  polling: false,
+  submitting: false,
+  saving: false,
+  menuOpen: false,
+  detailOpen: false,
+  detailRow: 0,
+  detailData: null,
+  detailToken: 0,
+  editOpen: false,
+  editRow: 0,
+  editToken: 0,
+  confirmOpen: false,
+  confirmRow: 0,
+  boardMode: "idle",
+  pollToken: 0
+};
+
+function t(key) {
+  const pack = I18N[state.lang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  return I18N.zh[key] != null ? I18N.zh[key] : key;
+}
+
+function labelHelp(value) {
+  const map = {
+    "卡住了": "helpStuck",
+    "做错了": "helpWrong",
+    "不知道怎么列式": "helpSetup",
+    "出同类题": "helpSimilar",
+    "考前梳理": "helpReview"
+  };
+  return map[value] ? t(map[value]) : value;
+}
+
+function labelStage(value) {
+  if (value === "初中") return t("stageJunior");
+  if (value === "高中") return t("stageSenior");
+  return value;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/'/g, "&#39;");
+}
+
+function toDownloadUrl(src) {
+  const text = String(src || "").trim();
+  if (!text) return "";
+  if (/^(https?:|data:|blob:)/i.test(text)) return text;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(text.replace(/^\/+/, ""));
+}
+
+function toLink(url) {
+  const text = String(url || "").trim();
+  if (/^\s*javascript:/i.test(text)) return "#";
+  if (/^(https?:|mailto:|#|data:|blob:)/i.test(text)) return text;
+  return toDownloadUrl(text);
+}
+
+function clipText(s, n) {
+  const arr = Array.from(String(s || ""));
+  if (arr.length <= n) return arr.join("");
+  return arr.slice(0, n).join("") + "…";
+}
+
+function holdToken(holders, html) {
+  const token = "\uE000" + holders.length + "\uE001";
+  holders.push(html);
+  return token;
+}
+
+function restoreTokens(s, holders) {
+  return s.replace(/\uE000(\d+)\uE001/g, function (_, n) {
+    return restoreTokens(holders[Number(n)], holders);
+  });
+}
+
+function applyEmphasis(s) {
+  let out = s;
+  out = out.replace(/\*\*\*([^*]+?)\*\*\*/g, "<strong><em>$1</em></strong>");
+  out = out.replace(/___([^_]+?)___/g, "<strong><em>$1</em></strong>");
+  out = out.replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>");
+  out = out.replace(/__([^_]+?)__/g, "<strong>$1</strong>");
+  out = out.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, "$1<em>$2</em>");
+  out = out.replace(/(^|[^\w])_([^_\n]+?)_(?=[^\w]|$)/g, "$1<em>$2</em>");
+  out = out.replace(/~~([^~\n]+?)~~/g, "<del>$1</del>");
+  return out;
+}
+
+function emphasisOnly(raw) {
+  return applyEmphasis(escapeHtml(raw));
+}
+
+function mdImage(alt, url) {
+  const href = toDownloadUrl(url);
+  const safe = /^\s*javascript:/i.test(href) ? "#" : href;
+  return '<a class="md-img-link" href="' + escapeAttr(safe) + '" target="_blank" rel="noopener"><img src="' + escapeAttr(safe) + '" alt="' + escapeAttr(alt) + '"></a>';
+}
+
+function inlineMarkdown(raw) {
+  const holders = [];
+  let src = String(raw == null ? "" : raw);
+  src = src.replace(/\\([\\`*_{}\[\]()#+\-.!|~>])/g, function (_, ch) {
+    return holdToken(holders, escapeHtml(ch));
+  });
+  src = src.replace(/(`+)([^\n]*?)\1/g, function (_, ticks, code) {
+    return holdToken(holders, "<code>" + escapeHtml(code) + "</code>");
+  });
+  src = src.replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g, function (_, alt, url) {
+    return holdToken(holders, mdImage(alt, url));
+  });
+  src = src.replace(/\[([^\]]+)\]\(\s*<?([^)\s>]+)>?(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g, function (_, text, url) {
+    const href = toLink(url);
+    return holdToken(holders, '<a href="' + escapeAttr(href) + '" target="_blank" rel="noopener">' + emphasisOnly(text) + "</a>");
+  });
+  src = escapeHtml(src);
+  src = applyEmphasis(src);
+  src = src.replace(/\$\$([^$]+)\$\$/g, function (_, m) {
+    return '<span class="math-block">' + m + "</span>";
+  });
+  src = src.replace(/(^|[^$\\])\$([^$\n]+?)\$/g, function (_, pre, m) {
+    return pre + '<span class="math-inline">' + m + "</span>";
+  });
+  src = src.replace(/\uE002 ?/g, "<br>");
+  src = src.replace(/(^|[\s(])(https?:\/\/[^\s<]+)/g, function (_, pre, url) {
+    let clean = url;
+    let tail = "";
+    const m = /[),.;:!?]+$/.exec(url);
+    if (m) {
+      tail = m[0];
+      clean = url.slice(0, url.length - tail.length);
+    }
+    return pre + '<a href="' + escapeAttr(clean) + '" target="_blank" rel="noopener">' + clean + "</a>" + tail;
+  });
+  return restoreTokens(src, holders);
+}
+
+function isHr(line) {
+  const compact = line.trim().replace(/\s+/g, "");
+  return /^([-*_])\1{2,}$/.test(compact) && /^ {0,3}([-*_]\s*){3,}$/.test(line);
+}
+
+function isFence(line) {
+  return /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+}
+
+function isTableSep(line) {
+  return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(line.trim());
+}
+
+function listInfo(line) {
+  if (isHr(line)) return null;
+  const m = /^(\s*)([-+*]|\d{1,9}[.)])\s+(.*)$/.exec(line);
+  if (!m) return null;
+  return {
+    indent: m[1].replace(/\t/g, "    ").length,
+    ordered: /\d/.test(m[2]),
+    text: m[3]
+  };
+}
+
+function splitCells(line) {
+  let s = line.trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  const cells = [];
+  let cur = "";
+  for (let i = 0; i < s.length; i++) {
+    if (s.charAt(i) === "\\" && s.charAt(i + 1) === "|") {
+      cur += "|";
+      i++;
+      continue;
+    }
+    if (s.charAt(i) === "|") {
+      cells.push(cur.trim());
+      cur = "";
+      continue;
+    }
+    cur += s.charAt(i);
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+function cellAlign(cell) {
+  const c = cell.trim();
+  const left = c.charAt(0) === ":";
+  const right = c.charAt(c.length - 1) === ":";
+  if (left && right) return "center";
+  if (right) return "right";
+  return "left";
+}
+
+function renderTable(header, aligns, rows) {
+  let html = '<div class="table-scroll"><table><thead><tr>';
+  for (let i = 0; i < header.length; i++) {
+    const align = aligns[i] || "left";
+    html += '<th style="text-align:' + align + '">' + inlineMarkdown(header[i]) + "</th>";
+  }
+  html += "</tr></thead><tbody>";
+  for (let r = 0; r < rows.length; r++) {
+    html += "<tr>";
+    for (let c = 0; c < header.length; c++) {
+      const align = aligns[c] || "left";
+      html += '<td style="text-align:' + align + '">' + inlineMarkdown(rows[r][c] || "") + "</td>";
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table></div>";
+  return html;
+}
+
+function parseList(lines, start) {
+  const first = listInfo(lines[start]);
+  if (!first) return null;
+  const base = first.indent;
+  const ordered = first.ordered;
+  const items = [];
+  let i = start;
+  while (i < lines.length) {
+    if (lines[i].trim() === "") {
+      let j = i + 1;
+      while (j < lines.length && lines[j].trim() === "") j++;
+      const nxt = j < lines.length ? listInfo(lines[j]) : null;
+      if (nxt && nxt.indent >= base) {
+        i = j;
+        continue;
+      }
+      break;
+    }
+    const info = listInfo(lines[i]);
+    if (!info || info.indent < base) break;
+    if (info.indent > base) {
+      if (!items.length) break;
+      const child = parseList(lines, i);
+      if (!child || child.next === i) break;
+      items[items.length - 1].child += child.html;
+      i = child.next;
+      continue;
+    }
+    if (info.ordered !== ordered) break;
+    let text = info.text;
+    let task = "";
+    const tm = /^\[([ xX])\]\s+(.*)$/.exec(text);
+    if (tm) {
+      task = tm[1] === "x" || tm[1] === "X" ? "x" : "o";
+      text = tm[2];
+    }
+    const item = { text: text, task: task, child: "" };
+    items.push(item);
+    i++;
+    while (i < lines.length && lines[i].trim() !== "") {
+      if (listInfo(lines[i]) || isFence(lines[i]) || isHr(lines[i]) || /^ {0,3}#{1,6}\s/.test(lines[i]) || lines[i].trim() === "$$") break;
+      if (lines[i].indexOf("|") !== -1 && i + 1 < lines.length && isTableSep(lines[i + 1])) break;
+      item.text += "\n" + lines[i].trim();
+      i++;
+    }
+  }
+  const tag = ordered ? "ol" : "ul";
+  let html = "<" + tag + ">";
+  for (let k = 0; k < items.length; k++) {
+    const it = items[k];
+    html += "<li>";
+    if (it.task) {
+      html += '<input type="checkbox" disabled' + (it.task === "x" ? " checked" : "") + "> ";
+    }
+    html += inlineMarkdown(it.text.replace(/\n+/g, " "));
+    html += it.child;
+    html += "</li>";
+  }
+  html += "</" + tag + ">";
+  return { html: html, next: i };
+}
+
+function isBlockStart(line, lines, idx) {
+  if (isHr(line) || isFence(line) || /^ {0,3}#{1,6}\s+/.test(line) || /^ {0,3}>/.test(line) || listInfo(line) || line.trim() === "$$") return true;
+  if (/^( {4}|\t)/.test(line)) return true;
+  if (idx + 1 < lines.length && line.trim() && /^(=+|-+)\s*$/.test(lines[idx + 1].trim()) && lines[idx + 1].indexOf("|") === -1 && !isHr(line)) return true;
+  if (idx + 1 < lines.length && line.indexOf("|") !== -1 && isTableSep(lines[idx + 1])) return true;
+  return false;
+}
+
+function paragraphHtml(buf) {
+  const bits = [];
+  for (let i = 0; i < buf.length; i++) {
+    let line = buf[i];
+    const br = / {2}$/.test(line);
+    if (br) line = line.replace(/ {2}$/, "\uE002");
+    bits.push(line);
+  }
+  const merged = bits.join("\n").replace(/[ \t]*\n/g, " ");
+  return "<p>" + inlineMarkdown(merged) + "</p>";
+}
+
+function renderMarkdown(src) {
+  const lines = String(src == null ? "" : src).replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const out = [];
+  let i = 0;
+  const n = lines.length;
+  while (i < n) {
+    const line = lines[i];
+    if (line.trim() === "") {
+      i++;
+      continue;
+    }
+    const fence = isFence(line);
+    if (fence) {
+      const marker = fence[1].charAt(0);
+      const size = fence[1].length;
+      i++;
+      const buf = [];
+      const closeRe = new RegExp("^ {0,3}" + marker + "{" + size + ",}\\s*$");
+      while (i < n && !closeRe.test(lines[i])) {
+        buf.push(lines[i]);
+        i++;
+      }
+      if (i < n) i++;
+      const lang = fence[2].trim();
+      out.push('<pre class="md-pre"><code' + (lang ? ' class="language-' + escapeAttr(lang.split(/\s/)[0]) + '"' : "") + ">" + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (line.trim() === "$$") {
+      i++;
+      const buf = [];
+      while (i < n && lines[i].trim() !== "$$") {
+        buf.push(lines[i]);
+        i++;
+      }
+      if (i < n) i++;
+      out.push('<div class="math-block">' + escapeHtml(buf.join("\n")) + "</div>");
+      continue;
+    }
+    if (isHr(line)) {
+      out.push("<hr>");
+      i++;
+      continue;
+    }
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) {
+      const level = heading[1].length;
+      out.push("<h" + level + ">" + inlineMarkdown(heading[2].trim()) + "</h" + level + ">");
+      i++;
+      continue;
+    }
+    if (i + 1 < n && line.trim() && /^=+\s*$/.test(lines[i + 1])) {
+      out.push("<h1>" + inlineMarkdown(line.trim()) + "</h1>");
+      i += 2;
+      continue;
+    }
+    if (i + 1 < n && line.trim() && /^-+$/.test(lines[i + 1].trim()) && lines[i + 1].indexOf("|") === -1) {
+      out.push("<h2>" + inlineMarkdown(line.trim()) + "</h2>");
+      i += 2;
+      continue;
+    }
+    if (line.indexOf("|") !== -1 && i + 1 < n && isTableSep(lines[i + 1])) {
+      const header = splitCells(line);
+      const sepCells = splitCells(lines[i + 1]);
+      const aligns = [];
+      for (let a = 0; a < sepCells.length; a++) aligns.push(cellAlign(sepCells[a]));
+      i += 2;
+      const rows = [];
+      while (i < n && lines[i].trim() !== "" && lines[i].indexOf("|") !== -1) {
+        rows.push(splitCells(lines[i]));
+        i++;
+      }
+      out.push(renderTable(header, aligns, rows));
+      continue;
+    }
+    if (/^ {0,3}>/.test(line)) {
+      const buf = [];
+      while (i < n && (/^ {0,3}>/.test(lines[i]) || (lines[i].trim() === "" && i + 1 < n && /^ {0,3}>/.test(lines[i + 1])))) {
+        buf.push(lines[i].replace(/^ {0,3}>\s?/, ""));
+        i++;
+      }
+      out.push("<blockquote>" + renderMarkdown(buf.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (listInfo(line)) {
+      const parsed = parseList(lines, i);
+      if (parsed) {
+        out.push(parsed.html);
+        i = parsed.next;
+        continue;
+      }
+    }
+    if (/^( {4}|\t)/.test(line)) {
+      const buf = [];
+      while (i < n) {
+        if (/^( {4}|\t)/.test(lines[i])) {
+          buf.push(lines[i].replace(/^( {4}|\t)/, ""));
+          i++;
+          continue;
+        }
+        if (lines[i].trim() === "") {
+          let j = i + 1;
+          while (j < n && lines[j].trim() === "") j++;
+          if (j < n && /^( {4}|\t)/.test(lines[j])) {
+            buf.push("");
+            i++;
+            continue;
+          }
+        }
+        break;
+      }
+      out.push("<pre class=\"md-pre\"><code>" + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    const buf = [];
+    while (i < n && lines[i].trim() !== "" && !isBlockStart(lines[i], lines, i)) {
+      buf.push(lines[i]);
+      i++;
+    }
+    if (!buf.length) {
+      buf.push(lines[i]);
+      i++;
+    }
+    out.push(paragraphHtml(buf));
+  }
+  return out.join("\n");
+}
+
+function resolveLanguage() {
+  let lang = "zh";
+  try {
+    const list = navigator.languages;
+    if (list && list.length) {
+      let hasZh = false;
+      for (let i = 0; i < list.length; i++) {
+        if (String(list[i] || "").toLowerCase().indexOf("zh") === 0) hasZh = true;
+      }
+      lang = hasZh ? "zh" : "en";
+    } else {
+      lang = "zh";
+    }
+  } catch (e) {
+    lang = "zh";
+  }
+  try {
+    const q = new URLSearchParams(window.location.search).get("lang");
+    if (q === "cn") lang = "zh";
+    else if (q === "en") lang = "en";
+  } catch (e2) {}
+  try {
+    const saved = localStorage.getItem("iThinkAir_UiLanguage");
+    if (saved !== null && saved !== "") lang = saved === "en" ? "en" : "zh";
+  } catch (e3) {}
+  return lang;
+}
+
+function applyI18n() {
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) {
+    nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  }
+  const ph = document.querySelectorAll("[data-i18n-ph]");
+  for (let i = 0; i < ph.length; i++) {
+    ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-ph")));
+  }
+  const aria = document.querySelectorAll("[data-i18n-aria]");
+  for (let i = 0; i < aria.length; i++) {
+    aria[i].setAttribute("aria-label", t(aria[i].getAttribute("data-i18n-aria")));
+  }
+  document.title = t("appName");
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+  const opts = document.querySelectorAll("[data-lang-opt]");
+  for (let i = 0; i < opts.length; i++) {
+    opts[i].classList.toggle("is-on", opts[i].getAttribute("data-lang-opt") === state.lang);
+  }
+  const cn = document.getElementById("langCn");
+  const en = document.getElementById("langEn");
+  if (cn) cn.classList.toggle("is-on", state.lang !== "en");
+  if (en) en.classList.toggle("is-on", state.lang === "en");
+  updateThoughtPlaceholder("formDesk");
+  updateThoughtPlaceholder("formEdit");
+  const emptyText = document.getElementById("bookEmptyText");
+  if (emptyText && !document.getElementById("bookEmpty").classList.contains("is-hidden")) {
+    renderBook();
+  }
+}
+
+function setLanguage(lang, persist) {
+  state.lang = lang === "en" ? "en" : "zh";
+  if (persist) {
+    try {
+      localStorage.setItem("iThinkAir_UiLanguage", state.lang === "en" ? "en" : "cn");
+    } catch (e) {}
+  }
+  applyI18n();
+  renderHome();
+  renderBook();
+  refreshBoardLanguage();
+  fitNav();
+}
+
+function refreshBoardLanguage() {
+  if (state.boardMode === "idle") showBoardIdle();
+  else if (state.boardMode === "wait") showBoardWait();
+  else if (state.boardMode === "timeout") showBoardTimeout();
+}
+
+async function applyMode() {
+  let mode = "亮色";
+  try {
+    const value = await callAppBridge({ type: "模式" });
+    const text = String(value == null ? "" : value).trim();
+    if (text === "暗色" || text === "亮色") mode = text;
+  } catch (e) {
+    mode = "亮色";
+  }
+  document.body.classList.toggle("theme-dark", mode === "暗色");
+  document.body.classList.toggle("theme-light", mode !== "暗色");
+}
+
+function syncNavPad() {
+  const row = document.getElementById("navRow");
+  if (!row) return;
+  document.body.style.paddingTop = row.offsetHeight + "px";
+}
+
+function closeMenu() {
+  state.menuOpen = false;
+  document.getElementById("navMobile").classList.remove("is-open");
+  document.getElementById("navBurger").setAttribute("aria-expanded", "false");
+}
+
+function openMenu() {
+  state.menuOpen = true;
+  document.getElementById("navMobile").classList.add("is-open");
+  document.getElementById("navBurger").setAttribute("aria-expanded", "true");
+}
+
+function fitNav() {
+  const row = document.getElementById("navRow");
+  const brand = document.getElementById("brandBtn");
+  const tabs = document.getElementById("navTabs");
+  const lang = document.getElementById("langToggle");
+  if (!row || !brand || !tabs || !lang) return;
+  document.documentElement.setAttribute("data-nav", "wide");
+  const name = brand.querySelector(".brand-name");
+  const nameWidth = name ? name.scrollWidth : 0;
+  const tabsWidth = tabs.scrollWidth;
+  const langWidth = lang.scrollWidth;
+  const available = row.clientWidth || window.innerWidth;
+  const need = 36 + 10 + nameWidth + tabsWidth + langWidth + 48;
+  let overflow = need > available;
+  if (!tabsWidth || !available) overflow = window.innerWidth < 860;
+  document.documentElement.setAttribute("data-nav", overflow ? "compact" : "wide");
+  if (!overflow) closeMenu();
+  syncNavPad();
+}
+
+function showPage(page, push) {
+  if (push !== false && state.page && state.page !== page) {
+    state.history.push({ page: state.page, scrollY: window.scrollY || window.pageYOffset || 0 });
+  }
+  state.page = page;
+  const ids = { home: "pageHome", desk: "pageDesk", book: "pageBook" };
+  const names = ["home", "desk", "book"];
+  for (let i = 0; i < names.length; i++) {
+    document.getElementById(ids[names[i]]).classList.toggle("is-active", names[i] === page);
+  }
+  const tabs = [
+    ["tabHome", "mobileTabHome", "home"],
+    ["tabDesk", "mobileTabDesk", "desk"],
+    ["tabBook", "mobileTabBook", "book"]
+  ];
+  for (let i = 0; i < tabs.length; i++) {
+    const on = tabs[i][2] === page;
+    document.getElementById(tabs[i][0]).classList.toggle("is-active", on);
+    document.getElementById(tabs[i][1]).classList.toggle("is-active", on);
+    document.getElementById(tabs[i][0]).setAttribute("aria-current", on ? "page" : "false");
+  }
+  if (push !== false) window.scrollTo(0, 0);
+  closeMenu();
+}
+
+function setOverlayLock() {
+  const locked = state.detailOpen || state.editOpen || state.confirmOpen;
+  document.body.classList.toggle("lock-scroll", locked);
+}
+
+function closeDetail() {
+  state.detailOpen = false;
+  state.detailToken++;
+  document.getElementById("detailBackdrop").classList.remove("is-open");
+  document.getElementById("detailDrawer").classList.remove("is-open");
+  setOverlayLock();
+  renderBook();
+}
+
+function closeEdit() {
+  state.editOpen = false;
+  state.editToken++;
+  document.getElementById("editLayer").classList.remove("is-open");
+  document.getElementById("editError").classList.add("is-hidden");
+  setOverlayLock();
+}
+
+function closeConfirm() {
+  state.confirmOpen = false;
+  state.confirmRow = 0;
+  document.getElementById("confirmLayer").classList.remove("is-open");
+  setOverlayLock();
+}
+
+function airBack() {
+  if (state.confirmOpen) {
+    closeConfirm();
+    return "false";
+  }
+  if (state.editOpen) {
+    closeEdit();
+    return "false";
+  }
+  if (state.detailOpen) {
+    closeDetail();
+    return "false";
+  }
+  if (state.menuOpen) {
+    closeMenu();
+    return "false";
+  }
+  if (state.history.length) {
+    const prev = state.history.pop();
+    showPage(prev.page, false);
+    window.scrollTo(0, prev.scrollY || 0);
+    return "false";
+  }
+  return "true";
+}
+
+function closeHost() {
+  try {
+    if (window.parent && typeof window.parent.closeFullHtml === "function") {
+      window.parent.closeFullHtml(false);
+    }
+  } catch (e) {}
+}
+
+function showBoardPlain(mode, message) {
+  state.boardMode = mode;
+  const box = document.getElementById("boardBody");
+  box.className = "board-msg";
+  box.textContent = "";
+  if (mode === "wait") {
+    const icon = document.createElement("i");
+    icon.className = "fa-solid fa-spinner fa-spin";
+    icon.setAttribute("aria-hidden", "true");
+    box.appendChild(icon);
+    box.appendChild(document.createTextNode(" " + message));
+  } else {
+    box.textContent = message;
+  }
+}
+
+function showBoardIdle() { showBoardPlain("idle", t("boardIdle")); }
+function showBoardWait() { showBoardPlain("wait", t("boardWait")); }
+function showBoardTimeout() { showBoardPlain("timeout", t("pollTimeout")); }
+
+function showBoardMarkdown(text) {
+  state.boardMode = "md";
+  const box = document.getElementById("boardBody");
+  box.className = "md-body";
+  box.innerHTML = renderMarkdown(text);
+}
+
+function updateToBookButton() {
+  document.getElementById("btnToBook").disabled = !(state.currentRow > 0);
+}
+
+function deskHasProblem() {
+  const text = document.getElementById("formDesk_题目").value.trim();
+  const img = document.getElementById("formDesk_题目图片").value.trim();
+  return text !== "" || img !== "";
+}
+
+function updateAskButton() {
+  const btn = document.getElementById("btnAsk");
+  btn.disabled = state.polling || state.submitting || !deskHasProblem();
+}
+
+function setChoice(formId, field, value) {
+  const hidden = document.getElementById(formId + "_" + field);
+  if (hidden) hidden.value = value;
+  const buttons = document.querySelectorAll("#" + formId + ' [data-choice="' + field + '"]');
+  for (let i = 0; i < buttons.length; i++) {
+    const on = buttons[i].getAttribute("data-value") === value;
+    buttons[i].classList.toggle("is-on", on);
+    buttons[i].setAttribute("aria-checked", on ? "true" : "false");
+  }
+}
+
+function updateThoughtPlaceholder(formId) {
+  const help = document.getElementById(formId + "_求助");
+  const area = document.getElementById(formId + "_已有思路");
+  if (!help || !area) return;
+  const key = PH_KEY[help.value] || "phStuck";
+  area.placeholder = t(key);
+}
+
+function setDeskStage(value) {
+  setChoice("formDesk", "学段", value || "初中");
+  document.getElementById("deskHighNote").classList.toggle("is-hidden", (value || "初中") !== "高中");
+}
+
+function setDeskHelp(value) {
+  setChoice("formDesk", "求助", value || "卡住了");
+  updateThoughtPlaceholder("formDesk");
+}
+
+function setEditStage(value) {
+  setChoice("formEdit", "学段", value || "初中");
+  document.getElementById("editHighNote") && document.getElementById("editHighNote").classList.toggle("is-hidden", value !== "高中");
+}
+
+function setEditHelp(value) {
+  setChoice("formEdit", "求助", value || "卡住了");
+  updateThoughtPlaceholder("formEdit");
+}
+
+function setPreview(which, name) {
+  const hiddenId = which === "desk" ? "formDesk_题目图片" : "formEdit_题目图片";
+  const img = document.getElementById(which === "desk" ? "deskPreviewImg" : "editPreviewImg");
+  const box = document.getElementById(which === "desk" ? "deskPreviewBox" : "editPreviewBox");
+  const file = String(name || "").trim();
+  document.getElementById(hiddenId).value = file;
+  if (!file) {
+    img.classList.add("is-hidden");
+    img.removeAttribute("src");
+    box.classList.add("thumb-empty");
+    return;
+  }
+  img.alt = t("fieldImage");
+  img.onload = function () {
+    img.classList.remove("is-hidden");
+    box.classList.remove("thumb-empty");
+  };
+  img.onerror = function () {
+    img.classList.add("is-hidden");
+    box.classList.add("thumb-empty");
+  };
+  img.src = toDownloadUrl(file);
+}
+
+function stopPoll() {
+  state.pollToken++;
+  state.polling = false;
+  updateAskButton();
+}
+
+function startPoll() {
+  state.pollToken++;
+  const token = state.pollToken;
+  state.polling = true;
+  updateAskButton();
+  showBoardWait();
+  let tries = 0;
+  async function tick() {
+    if (token !== state.pollToken) return;
+    tries++;
+    let text = "";
+    try {
+      text = await callAppBridge({ type: "GetCellValue", data: DATA_SOURCE, payload: "解题辅导/1" });
+    } catch (e) {
+      text = "";
+    }
+    if (token !== state.pollToken) return;
+    if (text != null && String(text).trim() !== "") {
+      state.polling = false;
+      updateAskButton();
+      showBoardMarkdown(String(text));
+      try {
+        await reloadAll({ silent: true });
+      } catch (e2) {}
+      if (state.detailOpen && state.detailRow === 1) {
+        try {
+          await openDetail(1);
+        } catch (e3) {}
+      }
+      return;
+    }
+    if (tries >= 40) {
+      state.polling = false;
+      updateAskButton();
+      showBoardTimeout();
+      try {
+        await reloadAll({ silent: true });
+      } catch (e4) {}
+      return;
+    }
+    setTimeout(tick, 2000);
+  }
+  setTimeout(tick, 2000);
+}
+
+function clearDesk() {
+  stopPoll();
+  document.getElementById("formDesk_题目").value = "";
+  document.getElementById("formDesk_已有思路").value = "";
+  setPreview("desk", "");
+  state.currentRow = 0;
+  updateAskButton();
+  updateToBookButton();
+  showBoardIdle();
+  document.getElementById("deskError").classList.add("is-hidden");
+}
+
+function showDeskError() {
+  const el = document.getElementById("deskError");
+  el.textContent = t("errLoad");
+  el.classList.remove("is-hidden");
+}
+
+async function askCoach() {
+  if (state.polling || state.submitting || !deskHasProblem()) return;
+  state.submitting = true;
+  updateAskButton();
+  document.getElementById("deskError").classList.add("is-hidden");
+  const payload = {
+    "题目": document.getElementById("formDesk_题目").value,
+    "题目图片": document.getElementById("formDesk_题目图片").value.trim(),
+    "学段": document.getElementById("formDesk_学段").value,
+    "求助": document.getElementById("formDesk_求助").value,
+    "已有思路": document.getElementById("formDesk_已有思路").value
+  };
+  try {
+    await callAppBridge({ type: "SubmitRecord", data: TABLE_NAME, payload: JSON.stringify(payload) });
+  } catch (e) {
+    state.submitting = false;
+    updateAskButton();
+    showDeskError();
+    return;
+  }
+  state.currentRow = 1;
+  updateToBookButton();
+  startPoll();
+  state.submitting = false;
+  updateAskButton();
+  if (window.matchMedia("(max-width: 860px)").matches) {
+    const board = document.getElementById("coachBoard");
+    try { board.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e2) {}
+  }
+  try {
+    await reloadAll({ silent: true });
+  } catch (e3) {}
+}
+
+function parseCount(text) {
+  const matched = String(text == null ? "" : text).match(/\d+/);
+  if (!matched) throw new Error("count");
+  return parseInt(matched[0], 10);
+}
+
+function firstColumn(csvText) {
+  if (csvText == null || String(csvText).trim() === "") return [];
+  const table = parseCSV(String(csvText));
+  const out = [];
+  let any = false;
+  for (let i = 0; i < table.length; i++) {
+    const value = String((table[i] && table[i][0]) || "").trim();
+    if (value) any = true;
+    out.push(value);
+  }
+  if (!any) return [];
+  return out;
+}
+
+function rowsFromCsv(csvText) {
+  if (csvText == null || String(csvText).trim() === "") return [];
+  const table = parseCSV(String(csvText));
+  let any = false;
+  for (let i = 0; i < table.length; i++) {
+    const row = table[i] || [];
+    for (let j = 0; j < row.length; j++) {
+      if (String(row[j] || "").trim() !== "") any = true;
+    }
+  }
+  if (!any) return [];
+  const rows = [];
+  for (let i = 0; i < table.length; i++) {
+    const row = table[i] || [];
+    rows.push({
+      row: i + 1,
+      "题目": row[0] || "",
+      "题目图片": row[1] || "",
+      "学段": row[2] || "",
+      "求助": row[3] || "",
+      "已有思路": row[4] || "",
+      "解题辅导": row[5] || ""
+    });
+  }
+  return rows;
+}
+
+let loadToken = 0;
+async function reloadAll(options) {
+  const silent = !!(options && options.silent);
+  const token = ++loadToken;
+  if (!silent) {
+    state.loading = true;
+    renderHome();
+    renderBook();
+  }
+  try {
+    const pack = await Promise.all([
+      callAppBridge({ type: "GetRecordCount", data: DATA_SOURCE }),
+      callAppBridge({ type: "GetTableCSV", data: DATA_SOURCE, payload: "学段" }),
+      callAppBridge({ type: "GetTableCSV", data: DATA_SOURCE, payload: "求助" }),
+      callAppBridge({ type: "GetTableCSV", data: DATA_SOURCE, payload: ALL_FIELDS })
+    ]);
+    if (token !== loadToken) return;
+    const total = parseCount(pack[0]);
+    const stages = firstColumn(pack[1]);
+    const helps = firstColumn(pack[2]);
+    let junior = 0;
+    let senior = 0;
+    for (let i = 0; i < stages.length; i++) {
+      if (stages[i] === "初中") junior++;
+      else if (stages[i] === "高中") senior++;
+    }
+    const helpCounts = {};
+    for (let i = 0; i < HELP_VALUES.length; i++) helpCounts[HELP_VALUES[i]] = 0;
+    for (let i = 0; i < helps.length; i++) {
+      if (Object.prototype.hasOwnProperty.call(helpCounts, helps[i])) helpCounts[helps[i]]++;
+    }
+    state.counts = { total: total, junior: junior, senior: senior, helps: helpCounts };
+    state.rows = rowsFromCsv(pack[3]);
+    state.error = false;
+    document.getElementById("bookActionError").classList.add("is-hidden");
+  } catch (e) {
+    if (token !== loadToken) return;
+    state.error = true;
+    state.rows = [];
+    state.counts = null;
+  }
+  state.loading = false;
+  renderHome();
+  renderBook();
+}
+
+function makeBadge(value, kind) {
+  const badge = document.createElement("span");
+  badge.className = "badge";
+  const color = kind === "stage" ? (STAGE_COLOR[value] || "#5E7384") : (HELP_COLOR[value] || "#5E7384");
+  badge.style.background = color;
+  badge.style.color = value === "卡住了" ? "#1E2746" : "#ffffff";
+  badge.textContent = kind === "stage" ? labelStage(value) : labelHelp(value);
+  return badge;
+}
+
+function makeThumb(filename) {
+  const wrap = document.createElement("span");
+  wrap.className = "thumb";
+  const file = String(filename || "").trim();
+  if (!file) {
+    wrap.classList.add("thumb-empty");
+    return wrap;
+  }
+  const img = document.createElement("img");
+  img.alt = "";
+  img.src = toDownloadUrl(file);
+  img.addEventListener("error", function () {
+    img.remove();
+    wrap.classList.add("thumb-empty");
+  });
+  wrap.appendChild(img);
+  return wrap;
+}
+
+function renderHome() {
+  const err = document.getElementById("homeError");
+  const loading = document.getElementById("homeLoading");
+  const statRow = document.getElementById("statRow");
+  const dist = document.getElementById("helpDist");
+  const recent = document.getElementById("recentList");
+  const empty = document.getElementById("recentEmpty");
+  recent.textContent = "";
+  dist.textContent = "";
+  if (state.loading) {
+    err.classList.add("is-hidden");
+    loading.classList.remove("is-hidden");
+    statRow.classList.add("is-hidden");
+    empty.classList.add("is-hidden");
+    return;
+  }
+  loading.classList.add("is-hidden");
+  if (state.error) {
+    err.classList.remove("is-hidden");
+    statRow.classList.add("is-hidden");
+    empty.classList.add("is-hidden");
+    return;
+  }
+  err.classList.add("is-hidden");
+  statRow.classList.remove("is-hidden");
+  document.getElementById("statCount").textContent = String(state.counts.total);
+  document.getElementById("statJunior").textContent = String(state.counts.junior);
+  document.getElementById("statSenior").textContent = String(state.counts.senior);
+  for (let i = 0; i < HELP_VALUES.length; i++) {
+    const cap = document.createElement("span");
+    cap.className = "capsule";
+    cap.style.borderColor = HELP_COLOR[HELP_VALUES[i]];
+    const name = document.createElement("span");
+    name.textContent = labelHelp(HELP_VALUES[i]);
+    const num = document.createElement("strong");
+    num.textContent = String(state.counts.helps[HELP_VALUES[i]] || 0);
+    num.style.color = HELP_COLOR[HELP_VALUES[i]];
+    cap.appendChild(name);
+    cap.appendChild(num);
+    dist.appendChild(cap);
+  }
+  const list = state.rows.slice(0, 5);
+  if (!list.length) {
+    empty.classList.remove("is-hidden");
+    return;
+  }
+  empty.classList.add("is-hidden");
+  for (let i = 0; i < list.length; i++) recent.appendChild(recentCard(list[i]));
+}
+
+function recentCard(row) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "mini-card";
+  btn.appendChild(makeThumb(row["题目图片"]));
+  const body = document.createElement("span");
+  body.className = "mini-body";
+  const title = document.createElement("span");
+  title.className = "card-title";
+  const problem = String(row["题目"] || "").trim();
+  title.textContent = problem ? problem : t("pictureProblem");
+  body.appendChild(title);
+  const meta = document.createElement("span");
+  meta.className = "meta-row";
+  if (String(row["学段"] || "").trim()) meta.appendChild(makeBadge(String(row["学段"]).trim(), "stage"));
+  if (String(row["求助"] || "").trim()) meta.appendChild(makeBadge(String(row["求助"]).trim(), "help"));
+  body.appendChild(meta);
+  const thought = String(row["已有思路"] || "").trim();
+  if (thought) {
+    const sub = document.createElement("span");
+    sub.className = "card-sub";
+    sub.textContent = clipText(thought, 36);
+    body.appendChild(sub);
+  }
+  btn.appendChild(body);
+  btn.addEventListener("click", function () {
+    showPage("book");
+    openDetail(row.row);
+  });
+  return btn;
+}
+
+function updateChipStates() {
+  const chips = document.querySelectorAll("#filterBar .chip");
+  for (let i = 0; i < chips.length; i++) {
+    const kind = chips[i].getAttribute("data-filter");
+    const value = chips[i].getAttribute("data-value");
+    const on = kind === "stage" ? value === state.stageFilter : value === state.helpFilter;
+    chips[i].classList.toggle("is-on", on);
+    chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+
+function rowVisible(row) {
+  if (state.stageFilter && String(row["学段"] || "").trim() !== state.stageFilter) return false;
+  if (state.helpFilter && String(row["求助"] || "").trim() !== state.helpFilter) return false;
+  const q = state.query.trim().toLowerCase();
+  if (!q) return true;
+  const hay = (String(row["题目"] || "") + "\n" + String(row["已有思路"] || "")).toLowerCase();
+  return hay.indexOf(q) !== -1;
+}
+
+function renderBook() {
+  const list = document.getElementById("bookList");
+  const empty = document.getElementById("bookEmpty");
+  const emptyText = document.getElementById("bookEmptyText");
+  const clearBtn = document.getElementById("btnClearFilter");
+  const firstBtn = document.getElementById("btnBookFirst");
+  const err = document.getElementById("bookError");
+  const loading = document.getElementById("bookLoading");
+  list.textContent = "";
+  updateChipStates();
+  if (state.loading) {
+    err.classList.add("is-hidden");
+    empty.classList.add("is-hidden");
+    loading.classList.remove("is-hidden");
+    return;
+  }
+  loading.classList.add("is-hidden");
+  if (state.error) {
+    err.classList.remove("is-hidden");
+    empty.classList.add("is-hidden");
+    return;
+  }
+  err.classList.add("is-hidden");
+  const shown = [];
+  for (let i = 0; i < state.rows.length; i++) {
+    if (rowVisible(state.rows[i])) shown.push(state.rows[i]);
+  }
+  if (!shown.length) {
+    empty.classList.remove("is-hidden");
+    if (!state.rows.length) {
+      emptyText.textContent = t("emptyBook");
+      clearBtn.classList.add("is-hidden");
+      firstBtn.classList.remove("is-hidden");
+    } else {
+      emptyText.textContent = t("noMatch");
+      clearBtn.classList.remove("is-hidden");
+      firstBtn.classList.add("is-hidden");
+    }
+    return;
+  }
+  empty.classList.add("is-hidden");
+  for (let i = 0; i < shown.length; i++) list.appendChild(bookCard(shown[i]));
+}
+
+function bookCard(row) {
+  const card = document.createElement("article");
+  card.className = "book-card";
+  if (state.detailOpen && state.detailRow === row.row) card.classList.add("is-current");
+  card.setAttribute("data-row", String(row.row));
+  const main = document.createElement("div");
+  main.className = "book-main";
+  main.setAttribute("data-act", "open");
+  main.setAttribute("role", "button");
+  main.tabIndex = 0;
+  main.appendChild(makeThumb(row["题目图片"]));
+  const text = document.createElement("span");
+  text.className = "mini-body";
+  const title = document.createElement("span");
+  title.className = "card-title";
+  const problem = String(row["题目"] || "").trim();
+  title.textContent = problem ? problem : t("pictureProblem");
+  text.appendChild(title);
+  const meta = document.createElement("span");
+  meta.className = "meta-row";
+  if (String(row["学段"] || "").trim()) meta.appendChild(makeBadge(String(row["学段"]).trim(), "stage"));
+  if (String(row["求助"] || "").trim()) meta.appendChild(makeBadge(String(row["求助"]).trim(), "help"));
+  text.appendChild(meta);
+  const thought = String(row["已有思路"] || "").trim();
+  if (thought) {
+    const sub = document.createElement("span");
+    sub.className = "card-sub";
+    sub.textContent = clipText(thought, 48);
+    text.appendChild(sub);
+  }
+  main.appendChild(text);
+  const actions = document.createElement("div");
+  actions.className = "book-actions";
+  const editBtn = document.createElement("button");
+  editBtn.type = "button";
+  editBtn.className = "icon-btn";
+  editBtn.setAttribute("data-act", "edit");
+  editBtn.setAttribute("aria-label", t("btnEditThis"));
+  editBtn.innerHTML = '<i class="fa-solid fa-pen" aria-hidden="true"></i>';
+  const delBtn = document.createElement("button");
+  delBtn.type = "button";
+  delBtn.className = "icon-btn danger";
+  delBtn.setAttribute("data-act", "delete");
+  delBtn.setAttribute("aria-label", t("btnDeleteThis"));
+  delBtn.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+  actions.appendChild(editBtn);
+  actions.appendChild(delBtn);
+  card.appendChild(main);
+  card.appendChild(actions);
+  return card;
+}
+
+function clearFilters() {
+  state.stageFilter = "";
+  state.helpFilter = "";
+  state.query = "";
+  document.getElementById("bookSearch").value = "";
+  renderBook();
+}
+
+async function fetchDetailFields(row) {
+  const fields = ["题目", "题目图片", "学段", "求助", "已有思路", "解题辅导"];
+  const data = { row: row };
+  for (let i = 0; i < fields.length; i++) {
+    const value = await callAppBridge({
+      type: "GetCellValue",
+      data: DATA_SOURCE,
+      payload: fields[i] + "/" + row
+    });
+    data[fields[i]] = value == null ? "" : String(value);
+  }
+  return data;
+}
+
+function renderDetailLoading() {
+  document.getElementById("detailImageWrap").classList.add("is-hidden");
+  document.getElementById("detailImageWrap").textContent = "";
+  document.getElementById("detailTitle").textContent = t("loading");
+  document.getElementById("detailMeta").textContent = "";
+  document.getElementById("detailThought").textContent = "";
+  const coach = document.getElementById("detailCoach");
+  coach.className = "";
+  coach.textContent = "";
+  document.getElementById("btnRevise").disabled = true;
+}
+
+function renderDetailError() {
+  document.getElementById("detailImageWrap").classList.add("is-hidden");
+  document.getElementById("detailTitle").textContent = "";
+  document.getElementById("detailMeta").textContent = "";
+  document.getElementById("detailThought").textContent = "";
+  const coach = document.getElementById("detailCoach");
+  coach.className = "error-line";
+  coach.textContent = t("errLoad");
+  document.getElementById("btnRevise").disabled = true;
+}
+
+function renderDetail(data) {
+  const imgWrap = document.getElementById("detailImageWrap");
+  imgWrap.textContent = "";
+  const file = String(data["题目图片"] || "").trim();
+  if (file) {
+    imgWrap.classList.remove("is-hidden");
+    const link = document.createElement("a");
+    link.href = toDownloadUrl(file);
+    link.target = "_blank";
+    link.rel = "noopener";
+    const img = document.createElement("img");
+    img.src = toDownloadUrl(file);
+    img.alt = String(data["题目"] || "").trim() || t("pictureProblem");
+    link.appendChild(img);
+    imgWrap.appendChild(link);
+  } else {
+    imgWrap.classList.add("is-hidden");
+  }
+  const problem = String(data["题目"] || "").trim();
+  document.getElementById("detailTitle").textContent = problem ? problem : t("pictureProblem");
+  const meta = document.getElementById("detailMeta");
+  meta.textContent = "";
+  if (String(data["学段"] || "").trim()) meta.appendChild(makeBadge(String(data["学段"]).trim(), "stage"));
+  if (String(data["求助"] || "").trim()) meta.appendChild(makeBadge(String(data["求助"]).trim(), "help"));
+  document.getElementById("detailThought").textContent = data["已有思路"] || "";
+  const coach = document.getElementById("detailCoach");
+  const md = data["解题辅导"] || "";
+  if (String(md).trim()) {
+    coach.className = "md-body";
+    coach.innerHTML = renderMarkdown(md);
+  } else {
+    coach.className = "";
+    coach.textContent = t("coachEmpty");
+  }
+  document.getElementById("btnRevise").disabled = false;
+}
+
+async function openDetail(row) {
+  state.currentRow = row;
+  state.detailRow = row;
+  state.detailToken++;
+  const token = state.detailToken;
+  state.detailOpen = true;
+  state.detailData = null;
+  document.getElementById("detailBackdrop").classList.add("is-open");
+  document.getElementById("detailDrawer").classList.add("is-open");
+  setOverlayLock();
+  renderDetailLoading();
+  renderBook();
+  try {
+    const data = await fetchDetailFields(row);
+    if (token !== state.detailToken) return;
+    state.detailData = data;
+    renderDetail(data);
+  } catch (e) {
+    if (token !== state.detailToken) return;
+    state.detailData = null;
+    renderDetailError();
+  }
+}
+
+function reviseFromDetail() {
+  const data = state.detailData;
+  if (!data) return;
+  stopPoll();
+  document.getElementById("formDesk_题目").value = data["题目"] || "";
+  document.getElementById("formDesk_已有思路").value = data["已有思路"] || "";
+  setPreview("desk", data["题目图片"] || "");
+  setDeskStage(String(data["学段"] || "").trim() || "初中");
+  setDeskHelp(String(data["求助"] || "").trim() || "卡住了");
+  state.currentRow = 0;
+  updateAskButton();
+  updateToBookButton();
+  showBoardIdle();
+  closeDetail();
+  showPage("desk");
+}
+
+function fillEdit(data) {
+  document.getElementById("formEdit_题目").value = data["题目"] || "";
+  document.getElementById("formEdit_已有思路").value = data["已有思路"] || "";
+  setPreview("edit", data["题目图片"] || "");
+  setEditStage(String(data["学段"] || "").trim() || "初中");
+  setEditHelp(String(data["求助"] || "").trim() || "卡住了");
+}
+
+async function openEdit(row) {
+  state.currentRow = row;
+  state.editRow = row;
+  state.editToken++;
+  const token = state.editToken;
+  state.editOpen = true;
+  document.getElementById("editError").classList.add("is-hidden");
+  document.getElementById("editLayer").classList.add("is-open");
+  setOverlayLock();
+  document.getElementById("formEdit_题目").value = "";
+  document.getElementById("formEdit_已有思路").value = "";
+  setPreview("edit", "");
+  try {
+    const data = await fetchDetailFields(row);
+    if (token !== state.editToken) return;
+    fillEdit(data);
+  } catch (e) {
+    if (token !== state.editToken) return;
+    const el = document.getElementById("editError");
+    el.textContent = t("errLoad");
+    el.classList.remove("is-hidden");
+  }
+}
+
+async function saveEdit() {
+  if (state.saving) return;
+  const row = state.editRow;
+  if (!(row > 0)) return;
+  state.saving = true;
+  document.getElementById("btnSaveEdit").disabled = true;
+  document.getElementById("editError").classList.add("is-hidden");
+  const fields = ["题目", "题目图片", "学段", "求助", "已有思路"];
+  try {
+    for (let i = 0; i < fields.length; i++) {
+      const value = document.getElementById("formEdit_" + fields[i]).value;
+      await callAppBridge({
+        type: "SetCellValue",
+        data: DATA_SOURCE,
+        payload: fields[i] + "/" + row + "/" + value
+      });
+    }
+  } catch (e) {
+    state.saving = false;
+    document.getElementById("btnSaveEdit").disabled = false;
+    const el = document.getElementById("editError");
+    el.textContent = t("errLoad");
+    el.classList.remove("is-hidden");
+    return;
+  }
+  state.saving = false;
+  document.getElementById("btnSaveEdit").disabled = false;
+  closeEdit();
+  try {
+    const data = await fetchDetailFields(row);
+    for (let i = 0; i < state.rows.length; i++) {
+      if (state.rows[i].row === row) {
+        state.rows[i]["题目"] = data["题目"];
+        state.rows[i]["题目图片"] = data["题目图片"];
+        state.rows[i]["学段"] = data["学段"];
+        state.rows[i]["求助"] = data["求助"];
+        state.rows[i]["已有思路"] = data["已有思路"];
+        state.rows[i]["解题辅导"] = data["解题辅导"];
+      }
+    }
+    state.detailData = data;
+    if (state.detailOpen && state.detailRow === row) renderDetail(data);
+    renderBook();
+    renderHome();
+    await reloadAll({ silent: true });
+    if (state.detailOpen && state.detailRow === row) {
+      const fresh = await fetchDetailFields(row);
+      state.detailData = fresh;
+      renderDetail(fresh);
+    }
+  } catch (e2) {
+    const el = document.getElementById("bookActionError");
+    el.textContent = t("errLoad");
+    el.classList.remove("is-hidden");
+  }
+}
+
+function requestDelete(row) {
+  state.currentRow = row;
+  state.confirmRow = row;
+  state.confirmOpen = true;
+  document.getElementById("confirmLayer").classList.add("is-open");
+  setOverlayLock();
+}
+
+async function doDelete() {
+  const row = state.confirmRow;
+  if (!(row > 0)) return;
+  document.getElementById("btnConfirmDelete").disabled = true;
+  try {
+    await callAppBridge({
+      type: "DeleteRecord",
+      data: DATA_SOURCE,
+      payload: row.toString()
+    });
+  } catch (e) {
+    document.getElementById("btnConfirmDelete").disabled = false;
+    closeConfirm();
+    const el = document.getElementById("bookActionError");
+    el.textContent = t("errLoad");
+    el.classList.remove("is-hidden");
+    return;
+  }
+  document.getElementById("btnConfirmDelete").disabled = false;
+  state.currentRow = 0;
+  updateToBookButton();
+  closeConfirm();
+  closeDetail();
+  closeEdit();
+  if (state.polling && row === 1) stopPoll();
+  try {
+    await reloadAll({ silent: true });
+  } catch (e2) {}
+}
+
+async function pickImage(which, kind) {
+  let name = "";
+  try {
+    name = await callAppBridge({ type: kind });
+  } catch (e) {
+    return;
+  }
+  name = name == null ? "" : String(name).trim();
+  if (!name) return;
+  setPreview(which, name);
+  if (which === "desk") updateAskButton();
+}
+
+function bindKeyboardGuard() {
+  function focusNow() {
+    const active = document.activeElement;
+    if (!active || !active.matches || !active.matches("input, textarea, select")) return;
+    setTimeout(function () {
+      try { active.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+    }, 80);
+  }
+  document.addEventListener("focusin", focusNow);
+  const vv = window.visualViewport;
+  if (!vv) return;
+  function onViewport() {
+    const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    const narrow = window.matchMedia("(max-width: 768px)").matches;
+    document.documentElement.style.setProperty("--kb", (narrow ? inset : 0) + "px");
+    focusNow();
+  }
+  vv.addEventListener("resize", onViewport);
+  vv.addEventListener("scroll", onViewport);
+}
+
+function bindEvents() {
+  document.getElementById("brandBtn").addEventListener("click", closeHost);
+  document.getElementById("tabHome").addEventListener("click", function () { showPage("home"); });
+  document.getElementById("tabDesk").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("tabBook").addEventListener("click", function () { showPage("book"); });
+  document.getElementById("mobileTabHome").addEventListener("click", function () { showPage("home"); });
+  document.getElementById("mobileTabDesk").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("mobileTabBook").addEventListener("click", function () { showPage("book"); });
+  document.getElementById("langToggle").addEventListener("click", function () {
+    setLanguage(state.lang === "en" ? "zh" : "en", true);
+  });
+  document.getElementById("langCn").addEventListener("click", function () {
+    setLanguage("zh", true);
+    closeMenu();
+  });
+  document.getElementById("langEn").addEventListener("click", function () {
+    setLanguage("en", true);
+    closeMenu();
+  });
+  document.getElementById("navBurger").addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (state.menuOpen) closeMenu();
+    else openMenu();
+  });
+  document.addEventListener("click", function (e) {
+    if (!state.menuOpen) return;
+    const mobile = document.getElementById("navMobile");
+    const burger = document.getElementById("navBurger");
+    if (mobile.contains(e.target) || burger.contains(e.target)) return;
+    closeMenu();
+  });
+  window.addEventListener("resize", fitNav);
+  document.getElementById("btnStart").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("btnFirst").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("btnBookFirst").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("helpEntries").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-help]");
+    if (!card) return;
+    setDeskHelp(card.getAttribute("data-help"));
+    showPage("desk");
+  });
+  document.getElementById("homeError").addEventListener("click", function () { reloadAll(); });
+  document.getElementById("bookError").addEventListener("click", function () { reloadAll(); });
+  document.getElementById("btnClear").addEventListener("click", clearDesk);
+  document.getElementById("formDesk").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-choice]");
+    if (!btn || !document.getElementById("formDesk").contains(btn)) return;
+    const field = btn.getAttribute("data-choice");
+    const value = btn.getAttribute("data-value");
+    if (field === "学段") setDeskStage(value);
+    if (field === "求助") setDeskHelp(value);
+  });
+  document.getElementById("formDesk").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formDesk_题目").addEventListener("input", updateAskButton);
+  document.getElementById("btnDeskCapture").addEventListener("click", function () { pickImage("desk", "CapturePhoto"); });
+  document.getElementById("btnDeskAlbum").addEventListener("click", function () { pickImage("desk", "SelectImage"); });
+  document.getElementById("btnDeskClearImg").addEventListener("click", function () {
+    setPreview("desk", "");
+    updateAskButton();
+  });
+  document.getElementById("btnAsk").addEventListener("click", askCoach);
+  document.getElementById("btnToBook").addEventListener("click", function () {
+    if (!(state.currentRow > 0)) return;
+    showPage("book");
+    openDetail(state.currentRow);
+  });
+  document.getElementById("btnAnother").addEventListener("click", function () {
+    clearDesk();
+    showPage("desk");
+  });
+  document.getElementById("bookSearch").addEventListener("input", function () {
+    state.query = this.value;
+    renderBook();
+  });
+  document.getElementById("filterBar").addEventListener("click", function (e) {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    const kind = chip.getAttribute("data-filter");
+    const value = chip.getAttribute("data-value");
+    if (kind === "stage") state.stageFilter = value;
+    if (kind === "help") state.helpFilter = state.helpFilter === value ? "" : value;
+    renderBook();
+  });
+  document.getElementById("btnClearFilter").addEventListener("click", clearFilters);
+  document.getElementById("bookList").addEventListener("click", function (e) {
+    const actEl = e.target.closest("[data-act]");
+    const card = e.target.closest("[data-row]");
+    if (!actEl || !card) return;
+    const row = parseInt(card.getAttribute("data-row"), 10);
+    const act = actEl.getAttribute("data-act");
+    if (act === "edit") openEdit(row);
+    else if (act === "delete") requestDelete(row);
+    else if (act === "open") openDetail(row);
+  });
+  document.getElementById("bookList").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const actEl = e.target.closest('[data-act="open"]');
+    if (!actEl) return;
+    e.preventDefault();
+    actEl.click();
+  });
+  document.getElementById("detailBackdrop").addEventListener("click", closeDetail);
+  document.getElementById("btnCloseDetail").addEventListener("click", closeDetail);
+  document.getElementById("btnRevise").addEventListener("click", reviseFromDetail);
+  document.getElementById("btnEditFromDetail").addEventListener("click", function () {
+    if (state.detailRow > 0) openEdit(state.detailRow);
+  });
+  document.getElementById("btnDeleteFromDetail").addEventListener("click", function () {
+    if (state.detailRow > 0) requestDelete(state.detailRow);
+  });
+  document.getElementById("formEdit").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formEdit").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-choice]");
+    if (!btn || !document.getElementById("formEdit").contains(btn)) return;
+    const field = btn.getAttribute("data-choice");
+    const value = btn.getAttribute("data-value");
+    if (field === "学段") setEditStage(value);
+    if (field === "求助") setEditHelp(value);
+  });
+  document.getElementById("btnEditCapture").addEventListener("click", function () { pickImage("edit", "CapturePhoto"); });
+  document.getElementById("btnEditAlbum").addEventListener("click", function () { pickImage("edit", "SelectImage"); });
+  document.getElementById("btnEditClearImg").addEventListener("click", function () { setPreview("edit", ""); });
+  document.getElementById("btnSaveEdit").addEventListener("click", saveEdit);
+  document.getElementById("btnCancelEdit").addEventListener("click", closeEdit);
+  document.getElementById("btnCancelDelete").addEventListener("click", closeConfirm);
+  document.getElementById("btnConfirmDelete").addEventListener("click", doDelete);
+  document.getElementById("confirmLayer").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("confirmLayer")) closeConfirm();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    const result = airBack();
+    if (result === "false") e.preventDefault();
+  });
+  bindKeyboardGuard();
+}
+
+async function initialize() {
+  bindEvents();
+  setLanguage(resolveLanguage(), false);
+  fitNav();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNav);
+  showPage("home", false);
+  showBoardIdle();
+  setDeskStage("初中");
+  setDeskHelp("卡住了");
+  updateAskButton();
+  updateToBookButton();
+  const modePromise = applyMode();
+  const dataPromise = reloadAll();
+  await modePromise;
+  await dataPromise;
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

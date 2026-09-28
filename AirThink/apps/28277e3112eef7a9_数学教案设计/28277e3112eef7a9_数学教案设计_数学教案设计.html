@@ -1,0 +1,3085 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数学教案设计</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+  --paper: #f4efe4;
+  --paper-deep: #ebe4d4;
+  --indigo: #1b2a4e;
+  --indigo-2: #24365f;
+  --amber: #c6922e;
+  --amber-2: #e0b15a;
+  --card: #fffdf8;
+  --line: #e3d7c4;
+  --ink: #1c2333;
+  --muted: #6e6558;
+  --field: #fffdf8;
+  --danger: #8d3b32;
+  --junior-bg: #e5f2f4;
+  --junior-ink: #1c5964;
+  --senior-bg: #f8ecdf;
+  --senior-ink: #8a3f1c;
+  --shadow: 0 12px 32px rgba(28, 35, 51, 0.06);
+  --nav-h: 64px;
+  --kb: 0px;
+  --sans: "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --serif: "Palatino Linotype", Palatino, "Songti SC", "STSong", "SimSun", serif;
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  --paper: #121722;
+  --paper-deep: #1a2130;
+  --indigo: #0e1528;
+  --indigo-2: #1a2744;
+  --amber: #e0b15a;
+  --amber-2: #f0cb86;
+  --card: #222838;
+  --line: #3a445c;
+  --ink: #f3eee4;
+  --muted: #c4b8a6;
+  --field: #1a2030;
+  --danger: #ffb4a8;
+  --junior-bg: #1a3a42;
+  --junior-ink: #b7e4ec;
+  --senior-bg: #3d2c22;
+  --senior-ink: #f3d0b0;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background:
+    radial-gradient(900px 420px at 8% -10%, rgba(224, 177, 90, 0.18), transparent 55%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  line-height: 1.55;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(27, 42, 78, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27, 42, 78, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
+}
+input, select, textarea { box-sizing: border-box; font: inherit; color: inherit; }
+button, input, textarea { font-family: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.48; }
+h1, h2, h3, .serif { font-family: var(--serif); font-weight: 650; letter-spacing: 0.01em; }
+h1 { font-size: 40px; line-height: 1.2; margin: 0 0 10px; }
+h2 { font-size: 28px; margin: 0 0 8px; }
+p { margin: 0; }
+#navDock {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1001;
+}
+#topNav { background: var(--indigo); color: #f6f1e6; }
+#navBar { min-height: 64px; }
+#navInner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 18px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 8px 0;
+  min-width: 0;
+}
+.brand span { white-space: nowrap; }
+.logo { width: 40px; height: 40px; display: inline-flex; flex: 0 0 auto; }
+.logo svg { width: 40px; height: 40px; display: block; }
+#brandName { font-family: var(--serif); font-size: 18px; }
+#navLinks { margin-left: auto; display: flex; flex-wrap: nowrap; align-items: stretch; gap: 2px; min-width: 0; overflow: hidden; }
+.nav-tab {
+  background: transparent;
+  border: 0;
+  color: rgba(246, 241, 230, 0.82);
+  padding: 20px 14px 16px;
+  white-space: nowrap;
+  font-size: 15px;
+  border-bottom: 2px solid transparent;
+}
+.nav-tab.is-active { color: #f8e7c4; border-bottom-color: var(--amber-2); }
+#langBtn {
+  border: 1px solid rgba(224, 177, 90, 0.55);
+  background: transparent;
+  color: #f8e7c4;
+  border-radius: 999px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+#navBurger {
+  display: none;
+  margin-left: auto;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(246, 241, 230, 0.25);
+  background: transparent;
+  color: #f6f1e6;
+  align-items: center;
+  justify-content: center;
+}
+.burger-lines, .burger-lines::before, .burger-lines::after {
+  display: block; width: 18px; height: 2px; background: #f6f1e6; position: relative; content: "";
+}
+.burger-lines::before { position: absolute; top: -6px; }
+.burger-lines::after { position: absolute; top: 6px; }
+#topNav.is-collapsed #navLinks, #topNav.is-collapsed #langBtn { display: none; }
+#topNav.is-collapsed #navBurger { display: inline-flex; }
+#mobileMenu {
+  position: absolute;
+  left: 0; right: 0; top: 100%;
+  background: var(--indigo-2);
+  border-top: 1px solid rgba(224, 177, 90, 0.35);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  z-index: 1002;
+}
+#mobileMenu[hidden] { display: none !important; }
+#mobileMenu button {
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: #f6f1e6;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+#mobileMenu button.is-active { color: #f8e7c4; box-shadow: inset 3px 0 0 var(--amber-2); }
+.menu-lang { display: flex; gap: 8px; padding: 8px; }
+.menu-lang button { flex: 1; text-align: center; border: 1px solid rgba(224, 177, 90, 0.4); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 28px 18px 12px; }
+.lede { color: var(--muted); font-size: 16px; max-width: 68ch; }
+.hero { margin-bottom: 22px; }
+.hero .btn { margin-top: 16px; }
+.page-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-bottom: 18px; }
+.stat-grid, .card-grid { display: grid; gap: 16px; }
+.stat-grid { grid-template-columns: repeat(3, 1fr); margin: 18px 0 26px; }
+.card-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.panel, .stat-card, .lesson-card, .modal-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.stat-card, .lesson-card, .panel { position: relative; }
+.lift { transition: transform .2s ease, box-shadow .2s ease; }
+.lift:hover { transform: translateY(-4px); box-shadow: 0 18px 36px rgba(28, 35, 51, 0.1); }
+.lift::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s ease;
+  background:
+    linear-gradient(128deg, transparent 42%, rgba(198, 146, 46, 0.35) 43.2%, transparent 44.6%),
+    linear-gradient(38deg, transparent 68%, rgba(27, 42, 78, 0.16) 69%, transparent 70.2%);
+}
+.lift:hover::before { opacity: 1; }
+.stat-card { padding: 16px 18px 14px; overflow: hidden; }
+.stat-label { color: var(--muted); font-size: 14px; }
+.stat-num { display: block; margin-top: 6px; font-family: var(--serif); font-size: 34px; }
+.block-title { margin: 6px 0 12px; }
+.lesson-card { display: flex; flex-direction: column; overflow: hidden; }
+.card-main {
+  width: 100%; text-align: left; background: transparent; border: 0; color: inherit;
+  padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 6px; font: inherit;
+}
+.card-title { font-family: var(--serif); font-size: 20px; line-height: 1.35; overflow-wrap: anywhere; }
+.meta { color: var(--muted); font-size: 13.5px; }
+.meta b { color: var(--ink); font-weight: 650; margin-right: 6px; }
+.situation { white-space: pre-wrap; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 16px 16px; }
+.tag { display: inline-flex; align-items: center; align-self: flex-start; width: auto; border-radius: 999px; padding: 2px 8px; font-size: 12px; font-family: var(--sans); }
+.tag-junior { background: var(--junior-bg); color: var(--junior-ink); }
+.tag-senior { background: var(--senior-bg); color: var(--senior-ink); }
+.tag-plain { background: var(--paper-deep); color: var(--muted); }
+.btn {
+  border-radius: 999px; border: 1px solid transparent; padding: 10px 16px;
+  background: var(--card); color: var(--ink); font-weight: 650;
+}
+.btn-primary { background: linear-gradient(180deg, var(--amber-2), var(--amber)); color: #1c2333; }
+html[data-theme="dark"] .btn-primary { color: #1b2436; }
+.btn-ghost { background: transparent; border-color: var(--line); }
+.btn-danger { background: transparent; border-color: #e4c4be; color: var(--danger); }
+.btn-small { padding: 7px 12px; font-size: 13.5px; }
+.desk-grid { display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.desk-form, .manuscript { min-width: 0; }
+.panel { padding: 16px; }
+.form-title { font-family: var(--serif); font-size: 22px; margin: 0 0 12px; }
+.field { margin-bottom: 12px; }
+.field label, .field .label { display: block; font-size: 14px; margin-bottom: 6px; font-weight: 650; }
+input[type="text"], input[type="number"], input[type="search"], textarea {
+  width: 100%; border: 1px solid var(--line); background: var(--field);
+  border-radius: 12px; padding: 10px 12px; outline: none;
+}
+textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+input:focus, textarea:focus, select:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(198, 146, 46, 0.25); }
+.seg { display: flex; gap: 8px; }
+.seg-opt { position: relative; }
+.seg-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.seg-opt span {
+  display: inline-block; min-width: 84px; text-align: center;
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; background: var(--field);
+}
+.seg-opt input:checked + span { background: var(--indigo); color: #f6e7c4; border-color: var(--indigo); }
+.seg-opt input:focus-visible + span { box-shadow: 0 0 0 3px rgba(198, 146, 46, 0.35); }
+.hint { margin-top: 8px; font-size: 13px; color: #7a5a20; background: rgba(224, 177, 90, 0.16); border-radius: 10px; padding: 8px 10px; }
+html[data-theme="dark"] .hint { color: #f0cb86; }
+.field-error { color: var(--danger); font-size: 12.5px; margin: 6px 0 0; }
+.form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.manuscript-head, .detail-head, .edit-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.row-nav { display: flex; gap: 6px; align-items: center; }
+.row-nav button, .icon-btn {
+  width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--field); color: var(--ink); font-size: 18px;
+}
+.row-label { font-size: 12px; color: var(--muted); min-width: 4.5em; text-align: center; }
+.verify {
+  margin: 10px 0; padding: 10px 12px; border-radius: 12px;
+  background: rgba(224, 177, 90, 0.16); border: 1px solid rgba(198, 146, 46, 0.45); font-size: 13.5px;
+}
+.manuscript-body {
+  margin-top: 8px; max-height: min(70vh, 760px); overflow: auto;
+  border-radius: 14px; border: 1px solid var(--line);
+  background-color: var(--field);
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(198, 146, 46, 0.18) 32px);
+  background-attachment: local;
+  box-shadow: inset 26px 0 0 rgba(27, 42, 78, 0.04), inset 28px 0 0 rgba(176, 64, 64, 0.28);
+  padding: 14px 14px 14px 42px;
+  min-height: 320px;
+}
+.outline-lead { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.outline { margin: 0; padding-left: 1.2em; }
+.outline li { margin: 4px 0; }
+.wait { padding: 12px 0; }
+.manuscript-actions, .modal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.search { flex: 1 1 240px; position: relative; }
+.search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.search input { padding-left: 34px; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filters button.is-on { background: var(--indigo); color: #f6e7c4; border-color: var(--indigo); }
+.empty { padding: 22px 8px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.alert { background: #f8ece8; color: #6e2c2c; border: 1px solid #e7c9c4; border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
+html[data-theme="dark"] .alert { background: #3a2424; color: #ffd0c8; border-color: #6a3a36; }
+.info-bar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+.info-item { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; background: var(--paper); }
+.info-item span { display: block; color: var(--muted); font-size: 12px; }
+.info-item strong { font-weight: 650; white-space: pre-wrap; word-break: break-word; }
+.modal { position: fixed; left: 0; right: 0; top: var(--vvtop, 0px); height: var(--vvh, 100%); z-index: 2000; }
+#editLayer { z-index: 2100; }
+#confirmLayer { z-index: 2200; }
+.modal[hidden] { display: none !important; }
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(18, 22, 34, 0.52);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-card {
+  position: relative; width: min(760px, 100%);
+  max-height: 100%; overflow: auto;
+  padding: 18px; background: var(--card); color: var(--ink);
+}
+#editLayer .modal-card { width: min(560px, calc(100vw - 32px)); }
+.confirm-card { width: min(420px, 100%); }
+#toast {
+  position: fixed; left: 50%; bottom: calc(20px + var(--kb)); transform: translateX(-50%);
+  z-index: 3000; background: var(--indigo); color: #f6f1e6;
+  padding: 12px 18px; border-radius: 999px; box-shadow: var(--shadow); max-width: calc(100vw - 32px);
+}
+.page-end-space { height: 28px; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+}
+.md-theme { font-size: 15.5px; line-height: 1.7; word-break: break-word; }
+.md-theme h1, .md-theme h2, .md-theme h3, .md-theme h4 { font-family: var(--serif); line-height: 1.3; margin: 1em 0 0.4em; }
+.md-theme h1 { font-size: 28px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.md-theme h2 { font-size: 22px; }
+.md-theme p { margin: 0.5em 0; }
+.md-theme ul, .md-theme ol { margin: 0.4em 0; padding-left: 1.3em; }
+.md-theme blockquote { margin: 0.6em 0; padding: 4px 0 4px 12px; border-left: 3px solid var(--amber); color: var(--muted); }
+.md-theme code { font-family: Consolas, "Courier New", monospace; background: rgba(27, 42, 78, 0.06); padding: 0 4px; border-radius: 4px; }
+.md-theme pre { overflow: auto; padding: 10px 12px; border-radius: 10px; background: var(--paper-deep); }
+.md-theme pre code { background: transparent; padding: 0; }
+.md-theme table { border-collapse: collapse; min-width: 100%; }
+.md-theme th, .md-theme td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.md-theme th { background: rgba(224, 177, 90, 0.15); }
+.table-scroll { overflow-x: auto; max-width: 100%; min-width: 0; margin: 8px 0; }
+.md-theme img { max-width: 100%; height: auto; border-radius: 8px; }
+.md-img-link { display: inline-block; cursor: pointer; }
+.md-theme hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
+.md-theme li.task, .md-theme input[type="checkbox"] { margin-right: 6px; }
+.note { color: var(--muted); font-size: 13.5px; margin-bottom: 10px; }
+@media (max-width: 960px) {
+  h1 { font-size: 32px; }
+  .desk-grid, .stat-grid { grid-template-columns: 1fr; }
+  .page-head { flex-direction: column; align-items: stretch; }
+  #formPrep, #formEdit { padding-bottom: calc(140px + var(--kb)); }
+}
+@media (max-width: 760px) {
+  .page-end-space { height: 108px; }
+  .manuscript-body { max-height: none; }
+  .modal-scroll, .modal-card { padding-bottom: calc(120px + var(--kb)); }
+  #detailLayer .modal-backdrop { padding: 0; }
+  #detailLayer .modal-card {
+    width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin: 0;
+  }
+  .info-bar { grid-template-columns: 1fr; }
+}
+@media print {
+  body * { visibility: hidden; }
+  body::before { display: none; }
+  body { padding: 0; background: white; }
+  #manuscript, #manuscript * { visibility: visible; }
+  #manuscript {
+    position: absolute; left: 0; top: 0; width: 100%;
+    box-shadow: none; border: none; background: white;
+  }
+  #manuscript .no-print, #manuscript .no-print * { visibility: hidden !important; display: none !important; }
+  .manuscript-body { max-height: none; overflow: visible; box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="navDock">
+  <nav id="topNav" style="position: relative;z-index: 1001;">
+    <div id="navBar">
+      <div id="navInner">
+        <button type="button" id="brandBtn" class="brand">
+          <span class="logo" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <rect x="1.2" y="1.2" width="45.6" height="45.6" rx="12" fill="none" stroke="#E0B15A" stroke-width="1.4"></rect>
+              <path d="M11 35 L11 14 L33 35 Z" fill="none" stroke="#F6F1E6" stroke-width="1.7"></path>
+              <path d="M15.5 35 V24 M20 35 V27.5 M24.5 35 V31" stroke="#E0B15A" stroke-width="1.15"></path>
+              <path d="M34 12 L27.5 33.5 M34 12 L40.5 33.5" stroke="#F6F1E6" stroke-width="1.6" stroke-linecap="round"></path>
+              <circle cx="34" cy="12" r="2.1" fill="#E0B15A"></circle>
+            </svg>
+          </span>
+          <span id="brandName" data-i18n="appName">数学教案设计</span>
+        </button>
+        <div id="navLinks">
+          <button type="button" class="nav-tab is-active" id="navHome"><span data-i18n="navHome">首页</span></button>
+          <button type="button" class="nav-tab" id="navDesk"><span data-i18n="navDesk">备课台</span></button>
+          <button type="button" class="nav-tab" id="navBox"><span data-i18n="navBox">教案匣</span></button>
+        </div>
+        <button type="button" id="langBtn">EN</button>
+        <button type="button" id="navBurger" aria-label="菜单"><span class="burger-lines"></span></button>
+      </div>
+    </div>
+    <div id="mobileMenu" hidden>
+      <button type="button" id="mobileHome"><span data-i18n="navHome">首页</span></button>
+      <button type="button" id="mobileDesk"><span data-i18n="navDesk">备课台</span></button>
+      <button type="button" id="mobileBox"><span data-i18n="navBox">教案匣</span></button>
+      <div class="menu-lang">
+        <button type="button" id="mobileLangZh">中文</button>
+        <button type="button" id="mobileLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<section id="pageHome" class="page">
+  <div class="wrap">
+    <header class="hero">
+      <h1 id="homeTitle" data-i18n="appName">数学教案设计</h1>
+      <p class="lede" id="homeDesc" data-i18n="homeDesc">把课题和班级学情交给备课台，生成待教师审定的教案草稿。草稿含概念建构、例题、变式、小结和错因预防，入库前请人工验算</p>
+      <button type="button" class="btn btn-primary" id="homeStart"><span data-i18n="startPrep">开始备课</span></button>
+    </header>
+    <div id="homeAlert" class="alert" hidden></div>
+    <div class="stat-grid">
+      <article class="stat-card lift" id="statTotal">
+        <span class="stat-label" data-i18n="statTotal">备课总数</span>
+        <strong class="stat-num" id="statTotalNum">…</strong>
+      </article>
+      <article class="stat-card lift" id="statJunior">
+        <span class="stat-label" data-i18n="statJunior">初中课题</span>
+        <strong class="stat-num" id="statJuniorNum">…</strong>
+      </article>
+      <article class="stat-card lift" id="statSenior">
+        <span class="stat-label" data-i18n="statSenior">高中课题</span>
+        <strong class="stat-num" id="statSeniorNum">…</strong>
+      </article>
+    </div>
+    <h2 class="block-title" id="recentTitle" data-i18n="recent">最近备课</h2>
+    <div id="recentList" class="card-grid"></div>
+    <div class="page-end-space"></div>
+  </div>
+</section>
+
+<section id="pageDesk" class="page" hidden>
+  <div class="wrap">
+    <h1 id="deskTitle" data-i18n="deskTitle">备课台</h1>
+    <p class="lede" id="deskDesc" data-i18n="deskDesc">填写课题与学情后生成待审教案。生成结果只作草稿，教师验算并审定后再使用</p>
+    <div id="deskAlert" class="alert" hidden></div>
+    <div class="desk-grid">
+      <div class="panel desk-form">
+        <h2 class="form-title" data-i18n="formTitle">数学备课</h2>
+        <form id="formPrep" action="javascript:void(0)">
+          <div class="field">
+            <label for="formPrep_课题" data-i18n="fTopic">课题</label>
+            <input id="formPrep_课题" name="课题" type="text" autocomplete="off" data-i18n-placeholder="phTopic">
+            <p class="field-error" id="formPrep_课题_error" hidden></p>
+          </div>
+          <div class="field" id="formPrep_学段">
+            <span class="label" data-i18n="fStage">学段</span>
+            <div class="seg" role="radiogroup">
+              <label class="seg-opt"><input type="radio" name="学段" id="formPrep_学段_初中" value="初中"><span data-i18n="stageJunior">初中</span></label>
+              <label class="seg-opt"><input type="radio" name="学段" id="formPrep_学段_高中" value="高中"><span data-i18n="stageSenior">高中</span></label>
+            </div>
+            <p class="hint" id="formPrep_stageHint" hidden data-i18n="hsHint">高中内容限定在高一预备知识与函数范围，年级建议填写高一</p>
+            <p class="field-error" id="formPrep_学段_error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="formPrep_年级" data-i18n="fGrade">年级</label>
+            <input id="formPrep_年级" name="年级" type="text" autocomplete="off" data-i18n-placeholder="phGrade">
+            <p class="field-error" id="formPrep_年级_error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="formPrep_教材版本" data-i18n="fBook">教材版本</label>
+            <input id="formPrep_教材版本" name="教材版本" type="text" autocomplete="off" data-i18n-placeholder="phBook">
+            <p class="field-error" id="formPrep_教材版本_error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="formPrep_课时分钟" data-i18n="fMinutes">课时分钟</label>
+            <input id="formPrep_课时分钟" name="课时分钟" type="number" min="0" step="any" inputmode="decimal" data-i18n-placeholder="phMinutes">
+            <p class="field-error" id="formPrep_课时分钟_error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="formPrep_班级学情" data-i18n="fContext">班级学情</label>
+            <textarea id="formPrep_班级学情" name="班级学情" data-i18n-placeholder="phContext"></textarea>
+            <p class="field-error" id="formPrep_班级学情_error" hidden></p>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="btnGenerate"><span id="btnGenerateLabel">生成教案草稿</span></button>
+            <button type="button" class="btn btn-ghost" id="btnClear"><span data-i18n="clear">清空</span></button>
+          </div>
+        </form>
+      </div>
+      <div class="panel manuscript" id="manuscript">
+        <div class="manuscript-head">
+          <h2 id="manuscriptTitle" data-i18n="draftTitle">待审教案草稿</h2>
+          <div class="row-nav no-print">
+            <button type="button" id="btnPrevRow" data-i18n-aria="prevRow">&lt;</button>
+            <span class="row-label" id="rowLabel"></span>
+            <button type="button" id="btnNextRow" data-i18n-aria="nextRow">&gt;</button>
+          </div>
+        </div>
+        <p class="verify" id="manuscriptNotice" data-i18n="verify">题目标有【AI 生成，入库前请人工验算】，请教师审定后再使用</p>
+        <div class="manuscript-body" id="manuscriptBody">
+          <div id="deskOutline"></div>
+          <div id="deskWait" class="wait" hidden><p id="deskWaitText">正在按概念建构四步组织教案，请稍候</p></div>
+          <div id="deskTimeout" hidden>
+            <p id="deskTimeoutText">草稿仍在生成</p>
+            <button type="button" class="btn btn-ghost" id="btnContinueDesk"><span id="btnContinueDeskLabel">继续等待</span></button>
+          </div>
+          <div id="deskMarkdown" class="md-body md-theme" hidden></div>
+        </div>
+        <div class="manuscript-actions no-print">
+          <button type="button" class="btn btn-ghost" id="btnCopy"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span id="btnCopyLabel">复制草稿</span></button>
+          <button type="button" class="btn btn-ghost" id="btnPrint"><i class="fa-solid fa-print" aria-hidden="true"></i> <span data-i18n="print">打印审阅</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="page-end-space"></div>
+  </div>
+</section>
+
+<section id="pageBox" class="page" hidden>
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <h1 id="boxTitle" data-i18n="boxTitle">教案匣</h1>
+        <p class="lede" id="boxDesc" data-i18n="boxDesc">回看已提交的备课记录。修改学情用保存，不会重新生成草稿；要新草稿请回备课台重新生成</p>
+      </div>
+      <button type="button" class="btn btn-primary" id="btnNewPrep"><span data-i18n="newPrep">新备课</span></button>
+    </div>
+    <div class="toolbar">
+      <label class="search">
+        <span class="sr-only" data-i18n="searchLabel">搜索</span>
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input id="boxSearch" name="boxSearch" type="search" data-i18n-placeholder="searchPh">
+      </label>
+      <div class="filters" id="filterGroup">
+        <button type="button" class="btn btn-small is-on" id="filterAll" data-filter="all"><span data-i18n="filterAll">全部</span></button>
+        <button type="button" class="btn btn-small" id="filterJunior" data-filter="初中"><span data-i18n="stageJunior">初中</span></button>
+        <button type="button" class="btn btn-small" id="filterSenior" data-filter="高中"><span data-i18n="stageSenior">高中</span></button>
+      </div>
+    </div>
+    <div id="boxAlert" class="alert" hidden></div>
+    <div id="boxList" class="card-grid"></div>
+    <div class="page-end-space"></div>
+  </div>
+</section>
+
+<div id="detailLayer" class="modal" hidden>
+  <div id="detailBackdrop" class="modal-backdrop">
+    <div class="modal-card" id="detailCard" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="detail-head">
+        <h2 id="detailTitle"></h2>
+        <button type="button" class="btn btn-ghost btn-small" id="btnDetailClose"><span data-i18n="close">关闭</span></button>
+      </div>
+      <div id="detailAlert" class="alert" hidden></div>
+      <div id="detailInfo" class="info-bar"></div>
+      <p class="verify" id="detailNotice" data-i18n="verify">题目标有【AI 生成，入库前请人工验算】，请教师审定后再使用</p>
+      <div id="detailWait" class="wait" hidden><p id="detailWaitText"></p></div>
+      <div id="detailEmpty" class="empty" hidden>
+        <p id="detailEmptyText">草稿尚未生成</p>
+      </div>
+      <div id="detailMarkdown" class="md-body md-theme"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="btnDetailWait"><span id="btnDetailWaitLabel">继续等待</span></button>
+        <button type="button" class="btn btn-primary" id="btnDetailEdit"><span data-i18n="goEdit">去编辑</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="editLayer" class="modal" hidden>
+  <div id="editBackdrop" class="modal-backdrop">
+    <div class="modal-card" id="editCard" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <div class="edit-head">
+        <h2 id="editTitle" data-i18n="editTitle">修改备课信息</h2>
+      </div>
+      <p class="note" data-i18n="editNote">保存后只改备课信息。教案草稿不会因此重新生成</p>
+      <div id="editAlert" class="alert" hidden></div>
+      <form id="formEdit" action="javascript:void(0)">
+        <div class="field">
+          <label for="formEdit_课题" data-i18n="fTopic">课题</label>
+          <input id="formEdit_课题" name="课题" type="text" autocomplete="off">
+          <p class="field-error" id="formEdit_课题_error" hidden></p>
+        </div>
+        <div class="field" id="formEdit_学段">
+          <span class="label" data-i18n="fStage">学段</span>
+          <div class="seg" role="radiogroup">
+            <label class="seg-opt"><input type="radio" name="学段" id="formEdit_学段_初中" value="初中"><span data-i18n="stageJunior">初中</span></label>
+            <label class="seg-opt"><input type="radio" name="学段" id="formEdit_学段_高中" value="高中"><span data-i18n="stageSenior">高中</span></label>
+          </div>
+          <p class="hint" id="formEdit_stageHint" hidden data-i18n="hsHint">高中内容限定在高一预备知识与函数范围，年级建议填写高一</p>
+          <p class="field-error" id="formEdit_学段_error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="formEdit_年级" data-i18n="fGrade">年级</label>
+          <input id="formEdit_年级" name="年级" type="text" autocomplete="off">
+          <p class="field-error" id="formEdit_年级_error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="formEdit_教材版本" data-i18n="fBook">教材版本</label>
+          <input id="formEdit_教材版本" name="教材版本" type="text" autocomplete="off">
+          <p class="field-error" id="formEdit_教材版本_error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="formEdit_课时分钟" data-i18n="fMinutes">课时分钟</label>
+          <input id="formEdit_课时分钟" name="课时分钟" type="number" min="0" step="any" inputmode="decimal">
+          <p class="field-error" id="formEdit_课时分钟_error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="formEdit_班级学情" data-i18n="fContext">班级学情</label>
+          <textarea id="formEdit_班级学情" name="班级学情" data-i18n-placeholder="phContext"></textarea>
+          <p class="field-error" id="formEdit_班级学情_error" hidden></p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" id="btnEditSave"><span id="btnEditSaveLabel">保存修改</span></button>
+          <button type="button" class="btn btn-ghost" id="btnEditCancel"><span data-i18n="cancel">取消</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="confirmLayer" class="modal" hidden>
+  <div id="confirmBackdrop" class="modal-backdrop">
+    <div class="modal-card confirm-card" id="confirmCard" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h2 id="confirmTitle" data-i18n="deleteTitle">删除这条备课记录？</h2>
+      <p id="confirmText" data-i18n="deleteWarn">删除后不能恢复</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-danger" id="btnConfirmOk"><span id="btnConfirmOkLabel">删除</span></button>
+        <button type="button" class="btn btn-ghost" id="btnConfirmCancel"><span data-i18n="cancel">取消</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" hidden></div>
+
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("28277e3112eef7a9_数学教案设计")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+const FIELDS = ["课题", "学段", "年级", "教材版本", "课时分钟", "班级学情"];
+const SOURCE = "数学备课/默认表格";
+const TABLE = "数学备课";
+const CSV_PAYLOAD = "课题,学段,年级,教材版本,课时分钟,班级学情";
+const POLL_MS = 2000;
+const POLL_LIMIT = 90000;
+const I18N = {
+  zh: {
+    appName: "数学教案设计",
+    navHome: "首页", navDesk: "备课台", navBox: "教案匣",
+    homeDesc: "把课题和班级学情交给备课台，生成待教师审定的教案草稿。草稿含概念建构、例题、变式、小结和错因预防，入库前请人工验算",
+    startPrep: "开始备课",
+    statTotal: "备课总数", statJunior: "初中课题", statSenior: "高中课题",
+    recent: "最近备课",
+    deskTitle: "备课台",
+    deskDesc: "填写课题与学情后生成待审教案。生成结果只作草稿，教师验算并审定后再使用",
+    formTitle: "数学备课",
+    fTopic: "课题", fStage: "学段", fGrade: "年级", fBook: "教材版本", fMinutes: "课时分钟", fContext: "班级学情",
+    stageJunior: "初中", stageSenior: "高中",
+    hsHint: "高中内容限定在高一预备知识与函数范围，年级建议填写高一",
+    phTopic: "例如：一次函数的图象与性质",
+    phGrade: "例如：八年级，高中建议填写高一",
+    phBook: "例如：人教版",
+    phMinutes: "例如：45",
+    phContext: "写明知识弱项和分层需求，例如哪些概念容易混淆，基础层与提高层分别需要什么",
+    needTopic: "请填写课题", needStage: "请选择初中或高中", needGrade: "请填写年级",
+    needBook: "请填写教材版本", needMinutes: "课时分钟需为正数", needContext: "请填写班级学情",
+    generate: "生成教案草稿", submitting: "正在提交…", generating: "正在生成…", clear: "清空",
+    draftTitle: "待审教案草稿",
+    verify: "题目标有【AI 生成，入库前请人工验算】，请教师审定后再使用",
+    outlineLead: "阅读提纲。下面只列出将出现的部分，不是教案正文。",
+    o1: "可观测目标", o2: "核心素养",
+    o3: "概念建构四步（情境引入、抽象概括、应用辨析、体系化）",
+    o4: "例题示范", o5: "变式训练", o6: "课堂小结", o7: "常见错因预防", o8: "提问链与各环节用时",
+    waiting: "正在按概念建构四步组织教案，请稍候",
+    loading: "正在读取…",
+    still: "草稿仍在生成",
+    keepWait: "继续等待",
+    copy: "复制草稿", copied: "已复制", print: "打印审阅",
+    prevRow: "上一行", nextRow: "下一行", rowEmpty: "新备课", rowN: "第 {n} 行",
+    boxTitle: "教案匣",
+    boxDesc: "回看已提交的备课记录。修改学情用保存，不会重新生成草稿；要新草稿请回备课台重新生成",
+    newPrep: "新备课", searchLabel: "搜索", searchPh: "搜索课题或教材版本",
+    filterAll: "全部", viewDraft: "查看草稿", edit: "编辑", del: "删除",
+    emptyRecent: "还没有备课记录。把课题和班级学情交给备课台，即可生成待教师审定的教案草稿。",
+    emptyBox: "教案匣还是空的。去备课台写下课题和班级学情，生成第一份待审草稿。",
+    noMatch: "没有符合条件的备课记录",
+    untitled: "（未命名课题）",
+    close: "关闭", goEdit: "去编辑",
+    draftEmpty: "草稿尚未生成",
+    editTitle: "修改备课信息",
+    editNote: "保存后只改备课信息。教案草稿不会因此重新生成",
+    save: "保存修改", saving: "正在保存…", cancel: "取消",
+    saved: "已保存。教案草稿不会因此重新生成",
+    deleteTitle: "删除这条备课记录？", deleteWarn: "删除后不能恢复",
+    confirmDelete: "删除", deleting: "正在删除…", deleted: "已删除",
+    cleared: "已清空", submitted: "已提交，正在等待教案草稿",
+    loadFail: "读取失败：", actionFail: "操作失败：", failUnknown: "未知错误",
+    copyFail: "复制失败，请手动选择草稿文本",
+    menu: "菜单", minUnit: " 分钟", none: "—"
+  },
+  en: {
+    appName: "Math Lesson Design",
+    navHome: "Home", navDesk: "Prep Desk", navBox: "Lesson Box",
+    homeDesc: "Send the topic and class context to the prep desk to produce a draft for the teacher to review. The draft includes concept building, examples, variations, a summary, and error prevention. Check every item before it is filed.",
+    startPrep: "Start preparing",
+    statTotal: "Total plans", statJunior: "Junior topics", statSenior: "Senior topics",
+    recent: "Recent preparations",
+    deskTitle: "Prep Desk",
+    deskDesc: "Fill in the topic and class context to generate a draft for review. The result is only a draft. Use it after you have checked and approved it.",
+    formTitle: "Math preparation",
+    fTopic: "Topic", fStage: "Stage", fGrade: "Grade", fBook: "Textbook", fMinutes: "Minutes", fContext: "Class context",
+    stageJunior: "Junior high", stageSenior: "Senior high",
+    hsHint: "Senior-high content is limited to Grade 10 preliminary knowledge and functions. Enter Grade 10 for the grade.",
+    phTopic: "Example: graphs and properties of linear functions",
+    phGrade: "Example: Grade 8, or Grade 10 for senior high",
+    phBook: "Example: PEP edition",
+    phMinutes: "Example: 45",
+    phContext: "Describe knowledge gaps and differentiation needs, including concepts students mix up and what the basic and advanced groups need.",
+    needTopic: "Enter a topic", needStage: "Choose junior high or senior high", needGrade: "Enter the grade",
+    needBook: "Enter the textbook edition", needMinutes: "Minutes must be a positive number", needContext: "Describe the class context",
+    generate: "Generate draft", submitting: "Submitting…", generating: "Generating…", clear: "Clear",
+    draftTitle: "Draft for review",
+    verify: "Items marked 【AI 生成，入库前请人工验算】 must be checked by the teacher before use.",
+    outlineLead: "Reading outline. This is not the lesson text. A generated draft will include these parts.",
+    o1: "Observable goals", o2: "Core competencies",
+    o3: "Four concept-building steps (situational lead-in, abstraction, application and discrimination, systematizing)",
+    o4: "Worked examples", o5: "Variation practice", o6: "Lesson close", o7: "Common error prevention", o8: "Question chain and timing of each part",
+    waiting: "Organizing the lesson by the four concept-building steps. Please wait.",
+    loading: "Loading…",
+    still: "The draft is still being generated",
+    keepWait: "Keep waiting",
+    copy: "Copy draft", copied: "Copied", print: "Print for review",
+    prevRow: "Previous row", nextRow: "Next row", rowEmpty: "New draft", rowN: "Row {n}",
+    boxTitle: "Lesson Box",
+    boxDesc: "Review submitted preparations. Saving changes does not regenerate the draft. For a new draft, return to the prep desk and generate again.",
+    newPrep: "New preparation", searchLabel: "Search", searchPh: "Search topic or textbook",
+    filterAll: "All", viewDraft: "View draft", edit: "Edit", del: "Delete",
+    emptyRecent: "No preparations yet. Send a topic and class context to the prep desk to produce a draft for review.",
+    emptyBox: "The lesson box is empty. Write a topic and class context on the prep desk to generate the first draft.",
+    noMatch: "No matching preparation records",
+    untitled: "(Untitled topic)",
+    close: "Close", goEdit: "Edit this",
+    draftEmpty: "The draft has not been generated yet",
+    editTitle: "Edit preparation",
+    editNote: "Saving updates the preparation only. The lesson draft will not be regenerated.",
+    save: "Save changes", saving: "Saving…", cancel: "Cancel",
+    saved: "Saved. The lesson draft will not be regenerated.",
+    deleteTitle: "Delete this preparation?", deleteWarn: "This cannot be undone.",
+    confirmDelete: "Delete", deleting: "Deleting…", deleted: "Deleted",
+    cleared: "Cleared", submitted: "Submitted. Waiting for the lesson draft.",
+    loadFail: "Could not load: ", actionFail: "Action failed: ", failUnknown: "Unknown error",
+    copyFail: "Could not copy. Select the draft text manually.",
+    menu: "Menu", minUnit: " min", none: "—"
+  }
+};
+
+const state = {
+  lang: "zh",
+  page: "",
+  history: [],
+  layers: [],
+  records: [],
+  count: 0,
+  loaded: false,
+  currentRow: 0,
+  detailRow: 0,
+  deskMarkdown: "",
+  manuscriptMode: "outline",
+  query: "",
+  filter: "all",
+  waiting: false,
+  submitting: false,
+  saving: false,
+  deleting: false,
+  editLoading: false,
+  rowBusy: false,
+  copyLock: false,
+  pollTimer: 0,
+  pollToken: 0,
+  pollTarget: "",
+  pollRow: 0,
+  pendingDelete: 0,
+  loadToken: 0,
+  actionEpoch: 0
+};
+
+function t(key) {
+  const pack = I18N[state.lang] || I18N.zh;
+  return pack[key] != null ? pack[key] : key;
+}
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function errText(err) {
+  if (err == null || err === "") return t("failUnknown");
+  if (typeof err === "string") return err;
+  if (err && err.message) return String(err.message);
+  return String(err);
+}
+
+function hasKeys(obj) {
+  for (const k in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, k)) return true;
+  }
+  return false;
+}
+
+function clipText(s, n) {
+  const arr = Array.from(String(s || ""));
+  if (arr.length <= n) return String(s || "");
+  return arr.slice(0, n).join("") + "…";
+}
+
+function parseCount(text) {
+  const m = String(text == null ? "" : text).trim().match(/-?\d+/);
+  if (!m) return 0;
+  const n = parseInt(m[0], 10);
+  if (!Number.isFinite(n) || n < 0) return 0;
+  return n;
+}
+
+function parseMinutes(v) {
+  const s = String(v == null ? "" : v).trim();
+  if (!/^\d+(\.\d+)?$/.test(s)) return null;
+  const n = Number(s);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return n;
+}
+
+function stageLabel(stage) {
+  if (stage === "初中") return t("stageJunior");
+  if (stage === "高中") return t("stageSenior");
+  return stage || t("none");
+}
+
+function stageClass(stage) {
+  if (stage === "初中") return "tag tag-junior";
+  if (stage === "高中") return "tag tag-senior";
+  return "tag tag-plain";
+}
+
+function minutesText(v) {
+  const s = String(v == null ? "" : v).trim();
+  if (!s) return t("none");
+  return s + t("minUnit");
+}
+
+function readInitialLanguage() {
+  let lang = "zh";
+  try {
+    const list = navigator.languages;
+    if (!list || !list.length) lang = "zh";
+    else {
+      let hasZh = false;
+      for (let i = 0; i < list.length; i++) {
+        const item = String(list[i] || "").toLowerCase();
+        if (item === "zh" || item.indexOf("zh-") === 0) hasZh = true;
+      }
+      lang = hasZh ? "zh" : "en";
+    }
+  } catch (e) {
+    lang = "zh";
+  }
+  try {
+    const q = new URLSearchParams(window.location.search).get("lang");
+    if (q === "cn") lang = "zh";
+    else if (q === "en") lang = "en";
+  } catch (e2) {}
+  try {
+    const saved = localStorage.getItem("iThinkAir_UiLanguage");
+    if (saved !== null && saved !== "") lang = saved === "en" ? "en" : "zh";
+  } catch (e3) {}
+  return lang;
+}
+
+function setLanguage(lang) {
+  state.lang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", state.lang === "en" ? "en" : "cn"); } catch (e) {}
+  applyI18n();
+  closeMobileMenu();
+}
+
+function applyI18n() {
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  const ph = document.querySelectorAll("[data-i18n-placeholder]");
+  for (let i = 0; i < ph.length; i++) ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-placeholder")));
+  const aria = document.querySelectorAll("[data-i18n-aria]");
+  for (let i = 0; i < aria.length; i++) aria[i].setAttribute("aria-label", t(aria[i].getAttribute("data-i18n-aria")));
+  const langBtn = document.getElementById("langBtn");
+  langBtn.textContent = state.lang === "en" ? "中文" : "EN";
+  document.getElementById("navBurger").setAttribute("aria-label", t("menu"));
+  document.getElementById("mobileLangZh").classList.toggle("is-on", state.lang !== "en");
+  document.getElementById("mobileLangEn").classList.toggle("is-on", state.lang === "en");
+  renderOutline();
+  setManuscriptMode(state.manuscriptMode);
+  updateGenerateBtn();
+  updateEditSaveBtn();
+  updateRowNav();
+  syncConfirmLabel();
+  renderHome();
+  renderBox();
+  updateNavMode();
+}
+
+function csvToRecords(csvText) {
+  let text = csvText == null ? "" : String(csvText);
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  if (text.trim() === "") return [];
+  const rows = parseCSV(text);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i] || [];
+    const rec = { row: i + 1 };
+    let any = false;
+    for (let c = 0; c < FIELDS.length; c++) {
+      const value = r[c] == null ? "" : String(r[c]).trim();
+      rec[FIELDS[c]] = value;
+      if (value) any = true;
+    }
+    if (any) out.push(rec);
+  }
+  return out;
+}
+
+function validateData(data) {
+  const errors = {};
+  if (!data.课题) errors.课题 = "needTopic";
+  if (data.学段 !== "初中" && data.学段 !== "高中") errors.学段 = "needStage";
+  if (!data.年级) errors.年级 = "needGrade";
+  if (!data.教材版本) errors.教材版本 = "needBook";
+  if (data.课时分钟 == null) errors.课时分钟 = "needMinutes";
+  if (!data.班级学情) errors.班级学情 = "needContext";
+  return errors;
+}
+
+function readForm(formId) {
+  const form = document.getElementById(formId);
+  const stageEl = form.querySelector('input[name="学段"]:checked');
+  return {
+    课题: form.querySelector('[name="课题"]').value.trim(),
+    学段: stageEl ? stageEl.value : "",
+    年级: form.querySelector('[name="年级"]').value.trim(),
+    教材版本: form.querySelector('[name="教材版本"]').value.trim(),
+    课时分钟: parseMinutes(form.querySelector('[name="课时分钟"]').value),
+    班级学情: form.querySelector('[name="班级学情"]').value.trim()
+  };
+}
+
+function writeForm(formId, values) {
+  const form = document.getElementById(formId);
+  form.querySelector('[name="课题"]').value = values.课题 == null ? "" : String(values.课题);
+  form.querySelector('[name="年级"]').value = values.年级 == null ? "" : String(values.年级);
+  form.querySelector('[name="教材版本"]').value = values.教材版本 == null ? "" : String(values.教材版本);
+  form.querySelector('[name="班级学情"]').value = values.班级学情 == null ? "" : String(values.班级学情);
+  form.querySelector('[name="课时分钟"]').value = values.课时分钟 == null ? "" : String(values.课时分钟).trim();
+  const stage = values.学段 == null ? "" : String(values.学段).trim();
+  const radios = form.querySelectorAll('input[name="学段"]');
+  for (let i = 0; i < radios.length; i++) radios[i].checked = radios[i].value === stage;
+  updateStageHint(formId);
+}
+
+function clearForm(formId) {
+  writeForm(formId, { 课题: "", 学段: "", 年级: "", 教材版本: "", 课时分钟: "", 班级学情: "" });
+  renderFieldErrors(formId, validateData(readForm(formId)));
+}
+
+function renderFieldErrors(formId, errors) {
+  for (let i = 0; i < FIELDS.length; i++) {
+    const f = FIELDS[i];
+    const el = document.getElementById(formId + "_" + f + "_error");
+    if (!el) continue;
+    if (errors[f]) {
+      el.hidden = false;
+      el.textContent = t(errors[f]);
+    } else {
+      el.hidden = true;
+      el.textContent = "";
+    }
+  }
+}
+
+function updateStageHint(formId) {
+  const form = document.getElementById(formId);
+  const selected = form.querySelector('input[name="学段"]:checked');
+  const hint = document.getElementById(formId + "_stageHint");
+  if (hint) hint.hidden = !(selected && selected.value === "高中");
+}
+
+function updateGenerateBtn() {
+  const errors = validateData(readForm("formPrep"));
+  renderFieldErrors("formPrep", errors);
+  const btn = document.getElementById("btnGenerate");
+  btn.disabled = state.submitting || state.waiting || hasKeys(errors);
+  const label = document.getElementById("btnGenerateLabel");
+  if (state.submitting) label.textContent = t("submitting");
+  else if (state.waiting) label.textContent = t("generating");
+  else label.textContent = t("generate");
+  document.getElementById("btnClear").disabled = !!state.submitting;
+}
+
+function updateEditSaveBtn() {
+  const btn = document.getElementById("btnEditSave");
+  const label = document.getElementById("btnEditSaveLabel");
+  if (!btn || !label) return;
+  if (state.editLoading) {
+    btn.disabled = true;
+    label.textContent = t("loading");
+    renderFieldErrors("formEdit", {});
+    return;
+  }
+  if (state.saving) {
+    btn.disabled = true;
+    label.textContent = t("saving");
+    return;
+  }
+  const errors = validateData(readForm("formEdit"));
+  renderFieldErrors("formEdit", errors);
+  btn.disabled = hasKeys(errors);
+  label.textContent = t("save");
+}
+
+function updateRowNav() {
+  const prev = document.getElementById("btnPrevRow");
+  const next = document.getElementById("btnNextRow");
+  prev.disabled = state.rowBusy || state.submitting || state.currentRow <= 1;
+  next.disabled = state.rowBusy || state.submitting || state.count === 0 || state.currentRow >= state.count;
+  const label = document.getElementById("rowLabel");
+  label.textContent = state.currentRow > 0 ? t("rowN").replace("{n}", String(state.currentRow)) : t("rowEmpty");
+}
+
+function showAlert(id, err) {
+  const el = document.getElementById(id);
+  el.hidden = false;
+  el.textContent = t("actionFail") + errText(err);
+}
+
+function hideAlert(id) {
+  const el = document.getElementById(id);
+  if (el) el.hidden = true;
+}
+
+let toastTimer = 0;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  el.hidden = false;
+  el.textContent = msg;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 3200);
+}
+
+function recordVisible(rec) {
+  if (state.filter === "初中" && rec.学段 !== "初中") return false;
+  if (state.filter === "高中" && rec.学段 !== "高中") return false;
+  const q = String(state.query || "").trim();
+  if (!q) return true;
+  const topic = rec.课题 || "";
+  const book = rec.教材版本 || "";
+  const ql = q.toLowerCase();
+  return topic.toLowerCase().indexOf(ql) !== -1 || book.toLowerCase().indexOf(ql) !== -1 || topic.indexOf(q) !== -1 || book.indexOf(q) !== -1;
+}
+
+function cardHtml(rec, mode) {
+  const row = String(rec.row);
+  const situation = mode === "home" ? clipText(rec.班级学情, 48) : rec.班级学情;
+  let actions = '<button type="button" class="btn btn-small" data-act="view" data-row="' + row + '">' + esc(t("viewDraft")) + "</button>";
+  if (mode === "box") {
+    actions += '<button type="button" class="btn btn-small btn-ghost" data-act="edit" data-row="' + row + '"><i class="fa-solid fa-pen" aria-hidden="true"></i> ' + esc(t("edit")) + "</button>";
+    actions += '<button type="button" class="btn btn-small btn-danger" data-act="delete" data-row="' + row + '"><i class="fa-solid fa-trash" aria-hidden="true"></i> ' + esc(t("del")) + "</button>";
+  }
+  return '<article class="lesson-card lift">' +
+    '<button type="button" class="card-main" data-act="view" data-row="' + row + '">' +
+      '<span class="' + stageClass(rec.学段) + '">' + esc(stageLabel(rec.学段)) + "</span>" +
+      '<span class="card-title">' + esc(rec.课题 || t("untitled")) + "</span>" +
+      '<span class="meta"><b>' + esc(t("fGrade")) + "</b>" + esc(rec.年级 || t("none")) + "</span>" +
+      '<span class="meta"><b>' + esc(t("fBook")) + "</b>" + esc(rec.教材版本 || t("none")) + "</span>" +
+      '<span class="meta"><b>' + esc(t("fMinutes")) + "</b>" + esc(minutesText(rec.课时分钟)) + "</span>" +
+      '<span class="meta situation"><b>' + esc(t("fContext")) + "</b>" + esc(situation || t("none")) + "</span>" +
+    "</button>" +
+    '<div class="card-actions">' + actions + "</div></article>";
+}
+
+function renderHome() {
+  document.getElementById("statTotalNum").textContent = state.loaded ? String(state.count) : "…";
+  let junior = 0;
+  let senior = 0;
+  if (state.loaded) {
+    for (let i = 0; i < state.records.length; i++) {
+      if (state.records[i].学段 === "初中") junior += 1;
+      else if (state.records[i].学段 === "高中") senior += 1;
+    }
+  }
+  document.getElementById("statJuniorNum").textContent = state.loaded ? String(junior) : "…";
+  document.getElementById("statSeniorNum").textContent = state.loaded ? String(senior) : "…";
+  const host = document.getElementById("recentList");
+  if (!state.loaded) {
+    host.innerHTML = '<div class="empty"><p>' + esc(t("loading")) + "</p></div>";
+    return;
+  }
+  const list = state.records.slice(0, 5);
+  if (!list.length) {
+    host.innerHTML = '<div class="empty"><p>' + esc(t("emptyRecent")) + '</p><button type="button" class="btn btn-primary" data-act="start">' + esc(t("startPrep")) + "</button></div>";
+    return;
+  }
+  let html = "";
+  for (let i = 0; i < list.length; i++) html += cardHtml(list[i], "home");
+  host.innerHTML = html;
+}
+
+function renderBox() {
+  const host = document.getElementById("boxList");
+  if (!state.loaded) {
+    host.innerHTML = '<div class="empty"><p>' + esc(t("loading")) + "</p></div>";
+    return;
+  }
+  const visible = [];
+  for (let i = 0; i < state.records.length; i++) {
+    if (recordVisible(state.records[i])) visible.push(state.records[i]);
+  }
+  const filtering = String(state.query || "").trim() !== "" || state.filter !== "all";
+  if (!visible.length) {
+    if (!state.records.length && !filtering) {
+      host.innerHTML = '<div class="empty"><p>' + esc(t("emptyBox")) + '</p><button type="button" class="btn btn-primary" data-act="start">' + esc(t("newPrep")) + "</button></div>";
+    } else {
+      host.innerHTML = '<div class="empty"><p>' + esc(t("noMatch")) + "</p></div>";
+    }
+    return;
+  }
+  let html = "";
+  for (let i = 0; i < visible.length; i++) html += cardHtml(visible[i], "box");
+  host.innerHTML = html;
+}
+
+function renderOutline() {
+  const keys = ["o1", "o2", "o3", "o4", "o5", "o6", "o7", "o8"];
+  let lis = "";
+  for (let i = 0; i < keys.length; i++) lis += "<li>" + esc(t(keys[i])) + "</li>";
+  document.getElementById("deskOutline").innerHTML = '<p class="outline-lead">' + esc(t("outlineLead")) + '</p><ol class="outline">' + lis + "</ol>";
+}
+
+function setManuscriptMode(mode) {
+  state.manuscriptMode = mode;
+  document.getElementById("deskOutline").hidden = mode !== "outline";
+  document.getElementById("deskWait").hidden = !(mode === "wait" || mode === "loading");
+  document.getElementById("deskTimeout").hidden = mode !== "timeout";
+  document.getElementById("deskMarkdown").hidden = mode !== "draft";
+  const waitText = document.getElementById("deskWaitText");
+  if (mode === "loading") waitText.textContent = t("loading");
+  if (mode === "wait") waitText.textContent = t("waiting");
+  document.getElementById("deskTimeoutText").textContent = t("still");
+  document.getElementById("btnContinueDeskLabel").textContent = t("keepWait");
+  const copyBtn = document.getElementById("btnCopy");
+  copyBtn.disabled = mode !== "draft" || !String(state.deskMarkdown || "").trim();
+  if (!state.copyLock) document.getElementById("btnCopyLabel").textContent = t("copy");
+  if (mode === "draft") mountMarkdown(document.getElementById("deskMarkdown"), state.deskMarkdown);
+  const body = document.getElementById("manuscript");
+  if (body) body.setAttribute("aria-busy", mode === "wait" || mode === "loading" ? "true" : "false");
+}
+
+function imageDownloadUrl(src) {
+  const s = String(src || "").trim();
+  if (!s) return "";
+  if (/^https?:\/\//i.test(s)) return s;
+  if (/^data:image\//i.test(s)) return s;
+  const name = s.replace(/^\.\//, "");
+  const parts = name.split("/");
+  const enc = [];
+  for (let i = 0; i < parts.length; i++) enc.push(encodeURIComponent(parts[i]));
+  return "https://www.ithinkair.com:3031/download/" + enc.join("/");
+}
+
+function safeHref(href) {
+  const h = String(href || "").trim();
+  if (/^https?:\/\//i.test(h)) return h;
+  if (/^mailto:/i.test(h)) return h;
+  return "";
+}
+
+let mdRefs = {};
+
+function extractRefs(text) {
+  const refs = {};
+  const lines = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const kept = [];
+  for (let i = 0; i < lines.length; i++) {
+    const m = /^ {0,3}\[([^\]]+)\]:\s+<?(\S+)>?(?:\s+["']([^"']*)["'])?\s*$/.exec(lines[i]);
+    if (m) refs[m[1].toLowerCase()] = { href: m[2], title: m[3] || "" };
+    else kept.push(lines[i]);
+  }
+  return { text: kept.join("\n"), refs: refs };
+}
+
+function inlineMd(raw) {
+  let s = String(raw == null ? "" : raw);
+  const tokens = [];
+  function hold(html) {
+    tokens.push(html);
+    return "\u0000" + String(tokens.length - 1) + "\u0000";
+  }
+  s = s.replace(/\\([\\`*_{}\[\]()#+\-.!|>~])/g, function (_m, ch) { return hold(esc(ch)); });
+  s = s.replace(/`([^`\n]+)`/g, function (_m, c) { return hold("<code>" + esc(c) + "</code>"); });
+  s = s.replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?(?:\s+["']([^"']*)["'])?\s*\)/g, function (_m, alt, href, title) {
+    const url = imageDownloadUrl(href);
+    const titleAttr = title ? ' title="' + esc(title) + '"' : "";
+    return hold('<a class="md-img-link" href="' + esc(url) + '" download target="_blank" rel="noopener"><img src="' + esc(url) + '" alt="' + esc(alt) + '"' + titleAttr + "></a>");
+  });
+  s = s.replace(/\[([^\]]+)\]\(\s*<?([^)\s>]+)>?(?:\s+["']([^"']*)["'])?\s*\)/g, function (_m, text, href, title) {
+    const safe = safeHref(href);
+    if (!safe) return hold(esc(text));
+    const titleAttr = title ? ' title="' + esc(title) + '"' : "";
+    return hold('<a href="' + esc(safe) + '" target="_blank" rel="noopener"' + titleAttr + ">" + inlineMd(text) + "</a>");
+  });
+  s = s.replace(/\[([^\]]+)\]\[([^\]]*)\]/g, function (m, text, id) {
+    const ref = mdRefs[(id || text).toLowerCase()];
+    if (!ref) return m;
+    const safe = safeHref(ref.href) || imageDownloadUrl(ref.href);
+    if (!safe) return m;
+    return hold('<a href="' + esc(safe) + '" target="_blank" rel="noopener">' + inlineMd(text) + "</a>");
+  });
+  s = s.replace(/!\[([^\]]*)\]\[([^\]]*)\]/g, function (m, alt, id) {
+    const ref = mdRefs[(id || alt).toLowerCase()];
+    if (!ref) return m;
+    const url = imageDownloadUrl(ref.href);
+    return hold('<a class="md-img-link" href="' + esc(url) + '" download target="_blank" rel="noopener"><img src="' + esc(url) + '" alt="' + esc(alt) + '"></a>');
+  });
+  s = s.replace(/<((?:https?:\/\/|mailto:)[^>\s]+)>/g, function (_m, href) {
+    const safe = safeHref(href);
+    if (!safe) return hold(esc(href));
+    return hold('<a href="' + esc(safe) + '" target="_blank" rel="noopener">' + esc(href) + "</a>");
+  });
+  s = esc(s);
+  s = s.replace(/\u0001/g, "<br>");
+  s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_\n]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>");
+  s = s.replace(/(^|[^A-Za-z0-9])_([^_\n]+)_(?![A-Za-z0-9])/g, "$1<em>$2</em>");
+  s = s.replace(/\u0000(\d+)\u0000/g, function (_m, n) { return tokens[Number(n)] || ""; });
+  return s;
+}
+
+function isBlank(line) { return /^\s*$/.test(line); }
+function isHr(line) { return /^ {0,3}(?:(?:-\s*){3,}|(?:\*\s*){3,}|(?:_\s*){3,})\s*$/.test(line); }
+function isTableSep(line) { return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(String(line || "").trim()); }
+function listMarker(line) {
+  const m = /^( *)([-*+]|\d{1,9}[.)]) +(.+)$/.exec(line);
+  if (!m) return null;
+  const ordered = /\d/.test(m[2]);
+  return { indent: m[1].length, ordered: ordered, start: ordered ? parseInt(m[2], 10) : 1, text: m[3] };
+}
+function isBlockStart(line) {
+  if (isBlank(line)) return true;
+  if (/^ {0,3}(`{3,}|~{3,})/.test(line)) return true;
+  if (/^ {0,3}#{1,6}(\s|$)/.test(line)) return true;
+  if (isHr(line)) return true;
+  if (/^ {0,3}>/.test(line)) return true;
+  const mark = listMarker(line);
+  if (mark && mark.indent <= 3) return true;
+  return false;
+}
+function splitRow(line) {
+  let s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  const parts = s.split("|");
+  const out = [];
+  for (let i = 0; i < parts.length; i++) out.push(parts[i].trim());
+  return out;
+}
+function alignOf(cell) {
+  const s = String(cell || "").trim();
+  const left = s.charAt(0) === ":";
+  const right = s.charAt(s.length - 1) === ":";
+  if (left && right) return "center";
+  if (right) return "right";
+  if (left) return "left";
+  return "";
+}
+function joinLines(buf) {
+  const parts = [];
+  for (let i = 0; i < buf.length; i++) {
+    let line = buf[i];
+    let br = false;
+    if (/  $/.test(line)) { br = true; line = line.replace(/  $/, ""); }
+    else if (/\\$/.test(line)) { br = true; line = line.slice(0, -1); }
+    parts.push(line);
+    if (br) parts.push("\u0001");
+    else if (i !== buf.length - 1) parts.push(" ");
+  }
+  return parts.join("");
+}
+
+function renderMarkdown(src) {
+  const extracted = extractRefs(src);
+  const prev = mdRefs;
+  mdRefs = extracted.refs;
+  const html = renderMarkdownInner(extracted.text);
+  mdRefs = prev;
+  return html;
+}
+
+function renderMarkdownInner(src) {
+  const lines = String(src == null ? "" : src).replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const blocks = [];
+  let i = 0;
+  while (i < lines.length) {
+    if (isBlank(lines[i])) { i += 1; continue; }
+    const fence = tryFence(lines, i);
+    if (fence) { blocks.push(fence.html); i = fence.next; continue; }
+    const atx = tryAtx(lines, i);
+    if (atx) { blocks.push(atx.html); i = atx.next; continue; }
+    const setext = trySetext(lines, i);
+    if (setext) { blocks.push(setext.html); i = setext.next; continue; }
+    if (isHr(lines[i])) { blocks.push("<hr>"); i += 1; continue; }
+    const table = tryTable(lines, i);
+    if (table) { blocks.push(table.html); i = table.next; continue; }
+    const quote = tryQuote(lines, i);
+    if (quote) { blocks.push(quote.html); i = quote.next; continue; }
+    const list = tryList(lines, i);
+    if (list) { blocks.push(list.html); i = list.next; continue; }
+    const code = tryIndentCode(lines, i);
+    if (code) { blocks.push(code.html); i = code.next; continue; }
+    const para = tryPara(lines, i);
+    blocks.push(para.html);
+    i = para.next;
+  }
+  return blocks.join("\n");
+}
+
+function tryFence(lines, index) {
+  const m = /^( {0,3})(`{3,}|~{3,})(.*)$/.exec(lines[index]);
+  if (!m) return null;
+  const ch = m[2].charAt(0);
+  const n = m[2].length;
+  const lang = (m[3] || "").trim().split(/\s/)[0] || "";
+  const buf = [];
+  let i = index + 1;
+  const closeRe = new RegExp("^ {0,3}" + ch + "{" + n + ",}\\s*$");
+  while (i < lines.length && !closeRe.test(lines[i])) { buf.push(lines[i]); i += 1; }
+  if (i < lines.length) i += 1;
+  const cls = lang ? ' class="language-' + esc(lang) + '"' : "";
+  return { html: "<pre><code" + cls + ">" + esc(buf.join("\n")) + "</code></pre>", next: i };
+}
+function tryAtx(lines, index) {
+  const m = /^(#{1,6})(?:\s+(.*?))?\s*#*\s*$/.exec(lines[index].trim());
+  if (!m) return null;
+  if (m[2] == null && lines[index].trim() !== m[1]) return null;
+  const d = m[1].length;
+  const text = m[2] ? inlineMd(m[2].trim()) : "";
+  return { html: "<h" + d + ">" + text + "</h" + d + ">", next: index + 1 };
+}
+function trySetext(lines, index) {
+  if (index + 1 >= lines.length) return null;
+  if (isHr(lines[index]) || listMarker(lines[index]) || /^ {0,3}#/.test(lines[index]) || /^ {0,3}>/.test(lines[index])) return null;
+  if (/^ {0,3}=+\s*$/.test(lines[index + 1])) return { html: "<h1>" + inlineMd(lines[index].trim()) + "</h1>", next: index + 2 };
+  if (/^ {0,3}-+\s*$/.test(lines[index + 1])) return { html: "<h2>" + inlineMd(lines[index].trim()) + "</h2>", next: index + 2 };
+  return null;
+}
+function tryTable(lines, index) {
+  if (index + 1 >= lines.length) return null;
+  if (lines[index].indexOf("|") === -1) return null;
+  if (!isTableSep(lines[index + 1])) return null;
+  const header = splitRow(lines[index]);
+  const alignCells = splitRow(lines[index + 1]);
+  const align = [];
+  for (let i = 0; i < header.length; i++) align.push(alignOf(alignCells[i] || ""));
+  const rows = [];
+  let i = index + 2;
+  while (i < lines.length && !isBlank(lines[i]) && lines[i].indexOf("|") !== -1 && !isBlockStart(lines[i])) {
+    rows.push(splitRow(lines[i]));
+    i += 1;
+  }
+  let html = '<div class="table-scroll"><table><thead><tr>';
+  for (let c = 0; c < header.length; c++) {
+    const a = align[c] ? ' align="' + align[c] + '"' : "";
+    html += "<th" + a + ">" + inlineMd(header[c]) + "</th>";
+  }
+  html += "</tr></thead><tbody>";
+  for (let r = 0; r < rows.length; r++) {
+    html += "<tr>";
+    for (let c = 0; c < header.length; c++) {
+      const a = align[c] ? ' align="' + align[c] + '"' : "";
+      html += "<td" + a + ">" + inlineMd(rows[r][c] || "") + "</td>";
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table></div>";
+  return { html: html, next: i };
+}
+function tryQuote(lines, index) {
+  if (!/^ {0,3}>/.test(lines[index])) return null;
+  const buf = [];
+  let i = index;
+  while (i < lines.length && (/^ {0,3}>/.test(lines[i]) || (isBlank(lines[i]) && i + 1 < lines.length && /^ {0,3}>/.test(lines[i + 1])))) {
+    buf.push(lines[i].replace(/^ {0,3}>\s?/, ""));
+    i += 1;
+  }
+  return { html: "<blockquote>" + renderMarkdownInner(buf.join("\n")) + "</blockquote>", next: i };
+}
+function tryIndentCode(lines, index) {
+  if (!/^(?: {4}|\t)/.test(lines[index])) return null;
+  const buf = [];
+  let i = index;
+  while (i < lines.length && (/^(?: {4}|\t)/.test(lines[i]) || isBlank(lines[i]))) {
+    if (isBlank(lines[i]) && (i + 1 >= lines.length || !/^(?: {4}|\t)/.test(lines[i + 1]))) break;
+    buf.push(lines[i].replace(/^(?: {4}|\t)/, ""));
+    i += 1;
+  }
+  if (!buf.length) return null;
+  return { html: "<pre><code>" + esc(buf.join("\n")) + "</code></pre>", next: i };
+}
+function tryPara(lines, index) {
+  const buf = [lines[index]];
+  let i = index + 1;
+  while (i < lines.length && !isBlank(lines[i]) && !isBlockStart(lines[i])) {
+    if (i + 1 < lines.length && isTableSep(lines[i + 1]) && lines[i].indexOf("|") !== -1) break;
+    if (i + 1 < lines.length && /^ {0,3}(=+|-+)\s*$/.test(lines[i + 1]) && !isHr(lines[i])) break;
+    buf.push(lines[i]);
+    i += 1;
+  }
+  return { html: "<p>" + inlineMd(joinLines(buf)) + "</p>", next: i };
+}
+function tryList(lines, index) {
+  const first = listMarker(lines[index]);
+  if (!first || first.indent > 3) return null;
+  return parseListAt(lines, index, first.indent);
+}
+function parseListAt(lines, index, indent) {
+  const first = listMarker(lines[index]);
+  if (!first || first.indent !== indent) return null;
+  const ordered = first.ordered;
+  const startNum = first.start;
+  const items = [];
+  let i = index;
+  while (i < lines.length) {
+    if (isBlank(lines[i])) {
+      if (i + 1 < lines.length) {
+        const peek = listMarker(lines[i + 1]);
+        if (peek && peek.indent === indent && peek.ordered === ordered) { i += 1; continue; }
+      }
+      break;
+    }
+    const mark = listMarker(lines[i]);
+    if (!mark || mark.indent !== indent || mark.ordered !== ordered) break;
+    const chunks = [mark.text];
+    i += 1;
+    while (i < lines.length) {
+      if (isBlank(lines[i])) {
+        if (i + 1 < lines.length && listMarker(lines[i + 1]) && listMarker(lines[i + 1]).indent > indent) {
+          chunks.push(lines[i]);
+          i += 1;
+          continue;
+        }
+        break;
+      }
+      const m2 = listMarker(lines[i]);
+      if (m2 && m2.indent <= indent) break;
+      chunks.push(lines[i]);
+      i += 1;
+    }
+    items.push(chunks.join("\n"));
+  }
+  let html = ordered ? "<ol" + (startNum > 1 ? ' start="' + startNum + '"' : "") + ">" : "<ul>";
+  for (let k = 0; k < items.length; k++) html += "<li>" + renderItem(items[k], indent) + "</li>";
+  html += ordered ? "</ol>" : "</ul>";
+  return { html: html, next: i };
+}
+function renderItem(chunk, parentIndent) {
+  const lines = chunk.split("\n");
+  let first = lines[0];
+  let task = "";
+  const tm = /^\[([ xX])\] +(.*)$/.exec(first);
+  if (tm) {
+    task = '<input type="checkbox" disabled' + (tm[1].toLowerCase() === "x" ? " checked" : "") + "> ";
+    first = tm[2];
+  }
+  const rest = [];
+  const strip = parentIndent + 2;
+  for (let i = 1; i < lines.length; i++) {
+    rest.push(lines[i].replace(new RegExp("^ {0," + strip + "}"), ""));
+  }
+  let body = task + inlineMd(first);
+  if (rest.length) body += renderMarkdownInner(rest.join("\n"));
+  return body;
+}
+
+function mountMarkdown(el, markdown) {
+  el.innerHTML = renderMarkdown(markdown);
+  const imgs = el.querySelectorAll("img");
+  for (let i = 0; i < imgs.length; i++) {
+    const img = imgs[i];
+    const url = imageDownloadUrl(img.getAttribute("src") || "");
+    img.setAttribute("src", url);
+    let parent = img.parentNode;
+    if (!parent || parent.tagName !== "A") {
+      const link = document.createElement("a");
+      parent.insertBefore(link, img);
+      link.appendChild(img);
+      parent = link;
+    }
+    parent.setAttribute("href", url);
+    parent.setAttribute("download", "");
+    parent.setAttribute("target", "_blank");
+    parent.setAttribute("rel", "noopener");
+    parent.classList.add("md-img-link");
+  }
+}
+
+async function loadRecords() {
+  const token = ++state.loadToken;
+  const countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+  if (token !== state.loadToken) return false;
+  const csv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: CSV_PAYLOAD });
+  if (token !== state.loadToken) return false;
+  state.count = parseCount(countText);
+  state.records = csvToRecords(csv);
+  state.loaded = true;
+  return true;
+}
+
+async function refreshAll(alertId) {
+  try {
+    const ok = await loadRecords();
+    if (!ok) return;
+    hideAlert("homeAlert");
+    hideAlert("boxAlert");
+    renderHome();
+    renderBox();
+    updateRowNav();
+  } catch (err) {
+    const el = document.getElementById(alertId);
+    el.hidden = false;
+    el.textContent = t("loadFail") + errText(err);
+    if (!state.loaded) {
+      document.getElementById("statTotalNum").textContent = t("none");
+      document.getElementById("statJuniorNum").textContent = t("none");
+      document.getElementById("statSeniorNum").textContent = t("none");
+    }
+  }
+}
+
+async function refreshDeskMeta() {
+  try {
+    const countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    state.count = parseCount(countText);
+    updateRowNav();
+  } catch (err) {
+    showAlert("deskAlert", err);
+  }
+}
+
+function showPage(page, opts) {
+  opts = opts || {};
+  if (page !== state.page) {
+    if (opts.push !== false && state.page) state.history.push({ page: state.page, y: window.scrollY || 0 });
+    state.page = page;
+    document.getElementById("pageHome").hidden = page !== "home";
+    document.getElementById("pageDesk").hidden = page !== "desk";
+    document.getElementById("pageBox").hidden = page !== "box";
+    document.getElementById("navHome").classList.toggle("is-active", page === "home");
+    document.getElementById("navDesk").classList.toggle("is-active", page === "desk");
+    document.getElementById("navBox").classList.toggle("is-active", page === "box");
+    document.getElementById("mobileHome").classList.toggle("is-active", page === "home");
+    document.getElementById("mobileDesk").classList.toggle("is-active", page === "desk");
+    document.getElementById("mobileBox").classList.toggle("is-active", page === "box");
+    closeMobileMenu();
+    if (opts.y != null) window.scrollTo(0, opts.y);
+    else window.scrollTo(0, 0);
+  }
+  if (!opts.deferRefresh) {
+    if (page === "home") refreshAll("homeAlert");
+    else if (page === "box") refreshAll("boxAlert");
+    else if (page === "desk") refreshDeskMeta();
+  }
+}
+
+function closeMobileMenu() {
+  document.getElementById("mobileMenu").hidden = true;
+}
+
+function pushLayer(id) {
+  document.getElementById(id).hidden = false;
+  if (state.layers[state.layers.length - 1] !== id) state.layers.push(id);
+  document.body.style.overflow = "hidden";
+}
+
+function closeLayer(id) {
+  const el = document.getElementById(id);
+  if (el) el.hidden = true;
+  const next = [];
+  for (let i = 0; i < state.layers.length; i++) if (state.layers[i] !== id) next.push(state.layers[i]);
+  state.layers = next;
+  if (!state.layers.length) document.body.style.overflow = "";
+}
+
+function stopPoll() {
+  state.pollToken += 1;
+  if (state.pollTimer) {
+    clearTimeout(state.pollTimer);
+    state.pollTimer = 0;
+  }
+  state.waiting = false;
+  state.pollTarget = "";
+}
+
+function startPoll(row, target) {
+  stopPoll();
+  const token = state.pollToken;
+  state.waiting = true;
+  state.pollTarget = target;
+  state.pollRow = row;
+  const started = Date.now();
+  updateGenerateBtn();
+  if (target === "desk") setManuscriptMode("wait");
+  if (target === "detail") {
+    document.getElementById("detailEmpty").hidden = true;
+    document.getElementById("detailWait").hidden = false;
+    document.getElementById("detailWaitText").textContent = t("waiting");
+    document.getElementById("btnDetailWait").disabled = true;
+    document.getElementById("btnDetailWaitLabel").textContent = t("generating");
+  }
+  const tick = async function () {
+    if (token !== state.pollToken) return;
+    let text = "";
+    try {
+      text = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "教案草稿/" + String(row) });
+    } catch (err) {
+      if (token !== state.pollToken) return;
+      state.waiting = false;
+      state.pollTarget = "";
+      updateGenerateBtn();
+      if (target === "desk") showAlert("deskAlert", err);
+      if (target === "detail") showAlert("detailAlert", err);
+      document.getElementById("btnDetailWait").disabled = false;
+      document.getElementById("btnDetailWaitLabel").textContent = t("keepWait");
+      return;
+    }
+    if (token !== state.pollToken) return;
+    if (String(text || "").trim() !== "") {
+      state.waiting = false;
+      state.pollTimer = 0;
+      state.pollTarget = "";
+      updateGenerateBtn();
+      applyDraftText(row, String(text), target);
+      return;
+    }
+    if (Date.now() - started >= POLL_LIMIT) {
+      state.waiting = false;
+      state.pollTimer = 0;
+      state.pollTarget = "";
+      updateGenerateBtn();
+      if (target === "desk") setManuscriptMode("timeout");
+      if (target === "detail" && state.detailRow === row) {
+        document.getElementById("detailWait").hidden = true;
+        document.getElementById("detailEmpty").hidden = false;
+        document.getElementById("detailEmptyText").textContent = t("still");
+        document.getElementById("btnDetailWait").disabled = false;
+        document.getElementById("btnDetailWaitLabel").textContent = t("keepWait");
+      }
+      return;
+    }
+    state.pollTimer = setTimeout(tick, POLL_MS);
+  };
+  tick();
+}
+
+function applyDraftText(row, text, target) {
+  if (target === "desk" || state.currentRow === row) {
+    state.deskMarkdown = text;
+    if (state.currentRow === row || target === "desk") setManuscriptMode("draft");
+  }
+  if (state.detailRow === row && !document.getElementById("detailLayer").hidden) {
+    document.getElementById("detailWait").hidden = true;
+    document.getElementById("detailEmpty").hidden = true;
+    document.getElementById("detailMarkdown").hidden = false;
+    mountMarkdown(document.getElementById("detailMarkdown"), text);
+    document.getElementById("btnDetailWait").hidden = true;
+    document.getElementById("btnDetailWait").disabled = false;
+    document.getElementById("btnDetailWaitLabel").textContent = t("keepWait");
+  }
+}
+
+function clearPrep(silent) {
+  state.actionEpoch += 1;
+  stopPoll();
+  state.currentRow = 0;
+  state.deskMarkdown = "";
+  state.submitting = false;
+  state.waiting = false;
+  clearForm("formPrep");
+  hideAlert("deskAlert");
+  setManuscriptMode("outline");
+  updateGenerateBtn();
+  updateRowNav();
+  if (!silent) showToast(t("cleared"));
+}
+
+function beginNewPrep() {
+  clearPrep(true);
+  showPage("desk");
+}
+
+async function generateDraft() {
+  const data = readForm("formPrep");
+  const errors = validateData(data);
+  renderFieldErrors("formPrep", errors);
+  if (hasKeys(errors) || state.waiting || state.submitting) return;
+  state.actionEpoch += 1;
+  const epoch = state.actionEpoch;
+  state.submitting = true;
+  updateGenerateBtn();
+  hideAlert("deskAlert");
+  try {
+    const payload = {
+      课题: data.课题,
+      学段: data.学段,
+      年级: data.年级,
+      教材版本: data.教材版本,
+      课时分钟: data.课时分钟,
+      班级学情: data.班级学情
+    };
+    await callAppBridge({ type: "SubmitRecord", data: TABLE, payload: JSON.stringify(payload) });
+    if (epoch !== state.actionEpoch) {
+      state.submitting = false;
+      updateGenerateBtn();
+      refreshAll("homeAlert");
+      return;
+    }
+    state.currentRow = 1;
+    state.submitting = false;
+    state.waiting = true;
+    state.deskMarkdown = "";
+    setManuscriptMode("wait");
+    updateGenerateBtn();
+    updateRowNav();
+    showToast(t("submitted"));
+    try { await refreshAll("deskAlert"); } catch (refreshErr) { showAlert("deskAlert", refreshErr); }
+    if (epoch !== state.actionEpoch) return;
+    startPoll(1, "desk");
+  } catch (err) {
+    state.submitting = false;
+    if (epoch !== state.actionEpoch) {
+      updateGenerateBtn();
+      return;
+    }
+    state.waiting = false;
+    updateGenerateBtn();
+    showAlert("deskAlert", err);
+  }
+}
+
+async function loadDeskRow(row) {
+  stopPoll();
+  state.deskMarkdown = "";
+  setManuscriptMode("loading");
+  updateGenerateBtn();
+  const names = ["课题", "学段", "年级", "教材版本", "课时分钟", "班级学情", "教案草稿"];
+  const values = {};
+  try {
+    for (let i = 0; i < names.length; i++) {
+      values[names[i]] = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: names[i] + "/" + String(row) });
+    }
+  } catch (err) {
+    setManuscriptMode("outline");
+    updateGenerateBtn();
+    showAlert("deskAlert", err);
+    return;
+  }
+  writeForm("formPrep", values);
+  updateGenerateBtn();
+  const draft = values["教案草稿"] == null ? "" : String(values["教案草稿"]);
+  if (draft.trim() === "") {
+    state.deskMarkdown = "";
+    startPoll(row, "desk");
+  } else {
+    state.deskMarkdown = draft;
+    state.waiting = false;
+    setManuscriptMode("draft");
+    updateGenerateBtn();
+  }
+}
+
+async function stepRow(delta) {
+  if (state.rowBusy || state.submitting) return;
+  state.actionEpoch += 1;
+  state.rowBusy = true;
+  updateRowNav();
+  hideAlert("deskAlert");
+  try {
+    const countText = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    state.count = parseCount(countText);
+    if (delta < 0 && state.currentRow <= 1) return;
+    if (delta > 0 && (state.count === 0 || state.currentRow >= state.count)) return;
+    const target = state.currentRow + delta;
+    if (target < 1 || target > state.count) return;
+    state.currentRow = target;
+    updateRowNav();
+    await loadDeskRow(target);
+  } catch (err) {
+    showAlert("deskAlert", err);
+  } finally {
+    state.rowBusy = false;
+    updateRowNav();
+  }
+}
+
+async function writeClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch (err) {}
+  }
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "readonly");
+  ta.style.position = "fixed";
+  ta.style.top = "0";
+  ta.style.left = "0";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { ta.setSelectionRange(0, ta.value.length); } catch (err) {}
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+  document.body.removeChild(ta);
+  if (!ok) throw new Error(t("copyFail"));
+}
+
+async function copyDraft() {
+  const text = state.deskMarkdown || "";
+  if (!String(text).trim()) return;
+  try {
+    await writeClipboard(text);
+    state.copyLock = true;
+    document.getElementById("btnCopyLabel").textContent = t("copied");
+    setTimeout(function () {
+      state.copyLock = false;
+      document.getElementById("btnCopyLabel").textContent = t("copy");
+    }, 1600);
+  } catch (err) {
+    showAlert("deskAlert", err);
+  }
+}
+
+async function openDetail(row) {
+  state.detailRow = row;
+  hideAlert("detailAlert");
+  document.getElementById("detailTitle").textContent = t("loading");
+  document.getElementById("detailInfo").innerHTML = "";
+  document.getElementById("detailMarkdown").innerHTML = "";
+  document.getElementById("detailMarkdown").hidden = true;
+  document.getElementById("detailEmpty").hidden = true;
+  document.getElementById("detailWait").hidden = false;
+  document.getElementById("detailWaitText").textContent = t("loading");
+  document.getElementById("btnDetailWait").hidden = true;
+  pushLayer("detailLayer");
+  const names = ["课题", "学段", "年级", "教材版本", "课时分钟", "班级学情", "教案草稿"];
+  const values = {};
+  try {
+    for (let i = 0; i < names.length; i++) {
+      values[names[i]] = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: names[i] + "/" + String(row) });
+    }
+  } catch (err) {
+    document.getElementById("detailWait").hidden = true;
+    showAlert("detailAlert", err);
+    return;
+  }
+  if (state.detailRow !== row || document.getElementById("detailLayer").hidden) return;
+  renderDetail(values);
+}
+
+function renderDetail(values) {
+  document.getElementById("detailTitle").textContent = String(values.课题 || t("untitled"));
+  let info = "";
+  for (let i = 0; i < FIELDS.length; i++) {
+    const f = FIELDS[i];
+    let shown = values[f] == null ? "" : String(values[f]);
+    if (f === "学段") shown = stageLabel(shown.trim());
+    if (f === "课时分钟") shown = minutesText(shown);
+    info += '<div class="info-item"><span>' + esc(t(f === "课题" ? "fTopic" : f === "学段" ? "fStage" : f === "年级" ? "fGrade" : f === "教材版本" ? "fBook" : f === "课时分钟" ? "fMinutes" : "fContext")) + "</span><strong>" + esc(shown || t("none")) + "</strong></div>";
+  }
+  document.getElementById("detailInfo").innerHTML = info;
+  document.getElementById("detailWait").hidden = true;
+  const draft = values["教案草稿"] == null ? "" : String(values["教案草稿"]);
+  if (draft.trim() === "") {
+    document.getElementById("detailMarkdown").hidden = true;
+    document.getElementById("detailEmpty").hidden = false;
+    document.getElementById("detailEmptyText").textContent = t("draftEmpty");
+    document.getElementById("btnDetailWait").hidden = false;
+    document.getElementById("btnDetailWait").disabled = false;
+    document.getElementById("btnDetailWaitLabel").textContent = t("keepWait");
+  } else {
+    document.getElementById("detailEmpty").hidden = true;
+    document.getElementById("btnDetailWait").hidden = true;
+    document.getElementById("detailMarkdown").hidden = false;
+    mountMarkdown(document.getElementById("detailMarkdown"), draft);
+  }
+}
+
+function closeDetail() {
+  if (state.pollTarget === "detail") stopPoll();
+  updateGenerateBtn();
+  state.detailRow = 0;
+  closeLayer("detailLayer");
+}
+
+async function openFromHome(row) {
+  showPage("box", { deferRefresh: true });
+  await refreshAll("boxAlert");
+  await openDetail(row);
+}
+
+async function openEdit(row) {
+  state.currentRow = row;
+  updateRowNav();
+  closeDetail();
+  state.editLoading = true;
+  clearForm("formEdit");
+  hideAlert("editAlert");
+  updateEditSaveBtn();
+  pushLayer("editLayer");
+  const values = {};
+  try {
+    for (let i = 0; i < FIELDS.length; i++) {
+      values[FIELDS[i]] = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: FIELDS[i] + "/" + String(row) });
+    }
+  } catch (err) {
+    state.editLoading = false;
+    updateEditSaveBtn();
+    showAlert("editAlert", err);
+    return;
+  }
+  if (document.getElementById("editLayer").hidden || state.currentRow !== row) return;
+  writeForm("formEdit", values);
+  state.editLoading = false;
+  updateEditSaveBtn();
+}
+
+function closeEdit() {
+  state.editLoading = false;
+  state.saving = false;
+  closeLayer("editLayer");
+}
+
+async function saveEdit() {
+  if (state.saving || state.editLoading) return;
+  const data = readForm("formEdit");
+  const errors = validateData(data);
+  renderFieldErrors("formEdit", errors);
+  if (hasKeys(errors)) return;
+  const row = state.currentRow;
+  state.saving = true;
+  updateEditSaveBtn();
+  hideAlert("editAlert");
+  try {
+    for (let i = 0; i < FIELDS.length; i++) {
+      const f = FIELDS[i];
+      const value = f === "课时分钟" ? String(data[f]) : data[f];
+      await callAppBridge({ type: "SetCellValue", data: SOURCE, payload: f + "/" + String(row) + "/" + value });
+    }
+    state.saving = false;
+    closeEdit();
+    showToast(t("saved"));
+    await refreshAll("boxAlert");
+  } catch (err) {
+    state.saving = false;
+    updateEditSaveBtn();
+    showAlert("editAlert", err);
+  }
+}
+
+function syncConfirmLabel() {
+  const label = document.getElementById("btnConfirmOkLabel");
+  label.textContent = state.deleting ? t("deleting") : t("confirmDelete");
+  document.getElementById("btnConfirmOk").disabled = !!state.deleting;
+}
+
+function askDelete(row) {
+  state.pendingDelete = row;
+  state.deleting = false;
+  document.getElementById("confirmText").textContent = t("deleteWarn");
+  syncConfirmLabel();
+  pushLayer("confirmLayer");
+}
+
+function cancelDelete() {
+  state.pendingDelete = 0;
+  state.deleting = false;
+  closeLayer("confirmLayer");
+}
+
+async function doDelete() {
+  const row = state.pendingDelete;
+  if (!row || state.deleting) return;
+  state.deleting = true;
+  syncConfirmLabel();
+  hideAlert("boxAlert");
+  try {
+    await callAppBridge({ type: "DeleteRecord", data: SOURCE, payload: row.toString() });
+    state.deleting = false;
+    state.pendingDelete = 0;
+    closeLayer("confirmLayer");
+    if (state.detailRow === row) closeDetail();
+    showToast(t("deleted"));
+    await refreshAll("boxAlert");
+    updateRowNav();
+  } catch (err) {
+    state.deleting = false;
+    syncConfirmLabel();
+    showAlert("boxAlert", err);
+  }
+}
+
+function onListClick(e) {
+  const el = e.target.closest ? e.target.closest("[data-act]") : null;
+  if (!el) return;
+  const act = el.getAttribute("data-act");
+  if (act === "start") { beginNewPrep(); return; }
+  const row = parseInt(el.getAttribute("data-row"), 10);
+  if (!row) return;
+  if (act === "view") {
+    if (state.page === "home") openFromHome(row);
+    else openDetail(row);
+  } else if (act === "edit") openEdit(row);
+  else if (act === "delete") askDelete(row);
+}
+
+function updateNavMode() {
+  const nav = document.getElementById("topNav");
+  const links = document.getElementById("navLinks");
+  const inner = document.getElementById("navInner");
+  const brand = document.getElementById("brandBtn");
+  const lang = document.getElementById("langBtn");
+  const was = nav.classList.contains("is-collapsed");
+  nav.classList.remove("is-collapsed");
+  const gap = 12;
+  const available = inner.clientWidth - brand.offsetWidth - lang.offsetWidth - gap * 4;
+  const collapse = links.scrollWidth > available;
+  nav.classList.toggle("is-collapsed", collapse);
+  if (!collapse) closeMobileMenu();
+  else if (!was) closeMobileMenu();
+  const bar = document.getElementById("navBar");
+  document.documentElement.style.setProperty("--nav-h", bar.offsetHeight + "px");
+}
+
+function bindViewport() {
+  const applyKb = function () {
+    const vv = window.visualViewport;
+    let kb = 0;
+    if (vv) {
+      kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      document.documentElement.style.setProperty("--vvh", vv.height + "px");
+      document.documentElement.style.setProperty("--vvtop", vv.offsetTop + "px");
+    }
+    document.documentElement.style.setProperty("--kb", kb + "px");
+    const ae = document.activeElement;
+    if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) {
+      try { ae.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+    }
+  };
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", applyKb);
+    window.visualViewport.addEventListener("scroll", applyKb);
+  }
+  document.addEventListener("focusin", function (e) {
+    const target = e.target;
+    if (!target || !target.tagName) return;
+    if (!/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) {}
+    }, 280);
+  });
+}
+
+function bindEvents() {
+  document.getElementById("brandBtn").addEventListener("click", function () {
+    closeMobileMenu();
+    try { parent.closeFullHtml(false); } catch (err) {}
+  });
+  document.getElementById("navHome").addEventListener("click", function () { showPage("home"); });
+  document.getElementById("navDesk").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("navBox").addEventListener("click", function () { showPage("box"); });
+  document.getElementById("mobileHome").addEventListener("click", function () { showPage("home"); });
+  document.getElementById("mobileDesk").addEventListener("click", function () { showPage("desk"); });
+  document.getElementById("mobileBox").addEventListener("click", function () { showPage("box"); });
+  document.getElementById("langBtn").addEventListener("click", function () { setLanguage(state.lang === "en" ? "zh" : "en"); });
+  document.getElementById("mobileLangZh").addEventListener("click", function () { setLanguage("zh"); });
+  document.getElementById("mobileLangEn").addEventListener("click", function () { setLanguage("en"); });
+  document.getElementById("navBurger").addEventListener("click", function () {
+    const menu = document.getElementById("mobileMenu");
+    menu.hidden = !menu.hidden;
+  });
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("mobileMenu");
+    if (menu.hidden) return;
+    if (menu.contains(e.target)) return;
+    if (document.getElementById("navBurger").contains(e.target)) return;
+    menu.hidden = true;
+  });
+  document.getElementById("homeStart").addEventListener("click", beginNewPrep);
+  document.getElementById("btnNewPrep").addEventListener("click", beginNewPrep);
+  document.getElementById("btnClear").addEventListener("click", function () { clearPrep(false); });
+  document.getElementById("btnGenerate").addEventListener("click", function () { generateDraft(); });
+  document.getElementById("btnPrevRow").addEventListener("click", function () { stepRow(-1); });
+  document.getElementById("btnNextRow").addEventListener("click", function () { stepRow(1); });
+  document.getElementById("btnContinueDesk").addEventListener("click", function () {
+    if (state.currentRow > 0) startPoll(state.currentRow, "desk");
+  });
+  document.getElementById("btnCopy").addEventListener("click", function () { copyDraft(); });
+  document.getElementById("btnPrint").addEventListener("click", function () { window.print(); });
+  document.getElementById("formPrep").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formEdit").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("formPrep").addEventListener("input", function () { updateStageHint("formPrep"); updateGenerateBtn(); });
+  document.getElementById("formPrep").addEventListener("change", function () { updateStageHint("formPrep"); updateGenerateBtn(); });
+  document.getElementById("formEdit").addEventListener("input", function () { updateStageHint("formEdit"); updateEditSaveBtn(); });
+  document.getElementById("formEdit").addEventListener("change", function () { updateStageHint("formEdit"); updateEditSaveBtn(); });
+  document.getElementById("recentList").addEventListener("click", onListClick);
+  document.getElementById("boxList").addEventListener("click", onListClick);
+  document.getElementById("boxSearch").addEventListener("input", function (e) {
+    state.query = e.target.value || "";
+    renderBox();
+  });
+  const filters = document.querySelectorAll("#filterGroup [data-filter]");
+  for (let i = 0; i < filters.length; i++) {
+    filters[i].addEventListener("click", function () {
+      state.filter = this.getAttribute("data-filter");
+      for (let j = 0; j < filters.length; j++) filters[j].classList.toggle("is-on", filters[j] === this);
+      renderBox();
+    });
+  }
+  document.getElementById("detailBackdrop").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("detailBackdrop")) closeDetail();
+  });
+  document.getElementById("btnDetailClose").addEventListener("click", closeDetail);
+  document.getElementById("btnDetailEdit").addEventListener("click", function () {
+    if (state.detailRow) openEdit(state.detailRow);
+  });
+  document.getElementById("btnDetailWait").addEventListener("click", function () {
+    if (state.detailRow) startPoll(state.detailRow, "detail");
+  });
+  document.getElementById("btnEditCancel").addEventListener("click", closeEdit);
+  document.getElementById("btnEditSave").addEventListener("click", function () { saveEdit(); });
+  document.getElementById("btnConfirmCancel").addEventListener("click", cancelDelete);
+  document.getElementById("btnConfirmOk").addEventListener("click", function () { doDelete(); });
+  document.getElementById("confirmBackdrop").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("confirmBackdrop")) cancelDelete();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (state.layers.length) airBack();
+    else closeMobileMenu();
+  });
+  window.addEventListener("resize", updateNavMode);
+}
+
+async function initTheme() {
+  try {
+    let mode = await callAppBridge({ type: "模式" });
+    mode = String(mode == null ? "" : mode).trim();
+    if ((mode.charAt(0) === '"' && mode.charAt(mode.length - 1) === '"') || (mode.charAt(0) === "'" && mode.charAt(mode.length - 1) === "'")) {
+      mode = mode.slice(1, -1);
+    }
+    document.documentElement.setAttribute("data-theme", mode === "暗色" ? "dark" : "light");
+  } catch (err) {
+    document.documentElement.setAttribute("data-theme", "light");
+    showAlert("homeAlert", err);
+  }
+}
+
+function airBack() {
+  if (state.layers.length) {
+    const id = state.layers[state.layers.length - 1];
+    if (id === "confirmLayer") cancelDelete();
+    else if (id === "editLayer") closeEdit();
+    else if (id === "detailLayer") closeDetail();
+    else closeLayer(id);
+    return "false";
+  }
+  if (state.history.length) {
+    const prev = state.history.pop();
+    showPage(prev.page, { push: false, y: prev.y });
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+async function initialize() {
+  state.lang = readInitialLanguage();
+  bindEvents();
+  bindViewport();
+  applyI18n();
+  updateNavMode();
+  await initTheme();
+  showPage("home", { push: false });
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>排课与课时记忆</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script><script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+<style>
+:root{--paper:#F3EEE4;--ink:#1E3A4C;--gold:#C6A15B;--card:#FFFCF7;--line:#E4D9C8;--danger:#A33B3B;--text:#253947;--muted:#6d716f;--shadow:0 10px 30px #1e3a4c12}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--text);font:15px/1.65 system-ui,-apple-system,'Microsoft YaHei',sans-serif}body.dark{--paper:#14252d;--ink:#10232f;--card:#223740;--line:#45535a;--text:#f1eadf;--muted:#c0b9ad;--shadow:0 10px 30px #0004}h1,h2,h3,.brand{font-family:'Noto Serif SC','Songti SC',serif}button,input,select,textarea{font:inherit}input,select,textarea{box-sizing:border-box;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}textarea{min-height:96px;resize:vertical}button{cursor:pointer;border:0}button:disabled{opacity:.45;cursor:not-allowed}.btn{background:var(--ink);color:#fff;border-radius:10px;padding:10px 16px;transition:transform .18s,box-shadow .18s;white-space:nowrap}.btn:hover:not(:disabled),.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.gold{background:var(--gold);color:#182d38}.btn.danger{background:var(--danger)}.small{font-size:12px;padding:6px 9px}.muted{color:var(--muted)}.danger-text{color:var(--danger);font-weight:700}.topbar{position:relative;z-index:1001;position:sticky;top:0;background:var(--ink);border-bottom:2px solid var(--gold);color:#fff}.nav-inner{max-width:1440px;margin:auto;padding:10px 24px;display:flex;align-items:center;gap:22px}.brand{display:flex;align-items:center;gap:10px;color:#fff;background:none;font-size:19px;font-weight:700;white-space:nowrap}.brand i{color:var(--gold)}.nav-tabs{display:flex;gap:4px;margin-left:auto;white-space:nowrap}.nav-tabs button,.langbtn,.hamb{background:none;color:#fff;padding:9px 11px}.nav-tabs button.active{color:#e6c886;border-bottom:2px solid var(--gold)}.hamb{display:none;margin-left:auto;font-size:20px}.mobile-menu{display:none;position:absolute;right:16px;top:100%;min-width:210px;background:var(--ink);border:1px solid var(--gold);border-radius:0 0 12px 12px;box-shadow:var(--shadow);padding:8px}.mobile-menu.open{display:grid}.mobile-menu button{text-align:left;background:none;color:white;padding:10px}.shell{max-width:1440px;margin:auto;padding:30px 24px 120px}.page{display:none}.page.active{display:block}.hero{background:linear-gradient(110deg,var(--ink),#315568);color:#fff;border-radius:22px;padding:32px;margin-bottom:24px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(28px,4vw,44px);margin:0}.hero p{color:#e0e2dd}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.pagehead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.pagehead h1{margin:0}.pagehead p{margin:3px 0;color:var(--muted)}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:28px}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 8px #1e3a4c0a}.card{padding:18px;transition:transform .18s,box-shadow .18s}.card h3{margin:0 0 8px}.card .num{font:700 32px Georgia,serif;color:var(--ink)}.section-title{border-bottom:1px solid var(--line);padding-bottom:9px;margin:28px 0 15px}.filters{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:10px;margin:18px 0}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:14px}.fieldline{display:flex;gap:10px;border-top:1px dashed var(--line);padding:5px 0;overflow-wrap:anywhere}.fieldline b{min-width:94px;color:var(--muted);font-weight:500}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.stamp{display:inline-block;border:1px solid currentColor;border-radius:5px;padding:1px 7px;font-size:12px;font-weight:700}.progress{height:7px;background:var(--line);border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--gold)}.empty{padding:28px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}.week-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}.week-grid{display:grid;grid-template-columns:repeat(7,minmax(165px,1fr));gap:8px;overflow-x:auto}.week-day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;min-height:260px}.week-day h3{font-size:14px;margin:0 0 10px}.slot{margin-bottom:8px;padding:9px;border-left:4px solid var(--gold);background:var(--paper);border-radius:7px;cursor:pointer}.slot.conflict{border-color:var(--danger);color:var(--danger)}.workspace{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{padding:20px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{min-width:0}.field.wide{grid-column:1/-1}.field label{display:block;font-weight:650;margin-bottom:4px}.field small{color:var(--muted)}.segments{display:flex;flex-wrap:wrap;gap:6px}.segments button{background:var(--paper);border:1px solid var(--line);color:var(--text);padding:6px 9px;border-radius:8px}.segments button.active{background:var(--ink);color:white}.markdown{line-height:1.75;overflow-wrap:anywhere}.markdown img{max-width:100%;height:auto}.markdown pre{overflow:auto;background:#14252d;color:#f8f4ed;padding:13px;border-radius:8px}.markdown blockquote{border-left:3px solid var(--gold);padding-left:12px}.markdown table{border-collapse:collapse;display:block;overflow:auto}.markdown th,.markdown td{border:1px solid var(--line);padding:6px}.overlay{display:none;position:fixed;inset:0;background:#0c1d27aa;z-index:2000;align-items:center;justify-content:center;padding:22px}.overlay.open{display:flex}.dialog{background:var(--card);color:var(--text);width:min(700px,100%);max-height:calc(100dvh - 44px);overflow:auto;border-radius:18px;padding:24px;box-shadow:0 20px 60px #0005}.dialog.wide{width:min(850px,100%)}.dialog header{display:flex;justify-content:space-between;gap:10px;align-items:center}.dialog h2{margin:0 0 12px}.close{background:none;color:var(--text);font-size:24px}.error{padding:14px;background:#a33b3b15;color:var(--danger);border-radius:10px}.notice{padding:12px;background:#c6a15b24;border-radius:10px;margin:12px 0}#toast{position:fixed;right:18px;bottom:18px;z-index:3000;background:var(--ink);color:#fff;padding:11px 16px;border-radius:10px;display:none}body.compact .nav-tabs,body.compact .langbtn{display:none}body.compact .hamb{display:block}@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.workspace,.two{grid-template-columns:1fr}}@media(max-width:600px){.shell{padding:18px 14px 150px}.nav-inner{padding:8px 14px}.brand{font-size:16px}.stats{gap:9px}.card{padding:14px}.filters{grid-template-columns:1fr 1fr}.filters input:first-child{grid-column:1/-1}.fields{grid-template-columns:1fr}.hero{padding:24px}.pagehead{display:block}.pagehead .btn{margin-top:12px}.overlay{padding:10px}.dialog{max-height:calc(100dvh - 20px);padding:17px 17px 320px}.dialog.markdown-dialog{width:100%;height:100dvh;max-height:none;border-radius:0}.overlay:has(.markdown-dialog){padding:0}}
+</style></head><body>
+<nav class="topbar" id="topbar"><div class="nav-inner"><button class="brand" id="brand"><i class="fa-solid fa-book-open"></i><i class="fa-regular fa-clock"></i><span data-i="app">排课与课时记忆</span></button><div class="nav-tabs" id="navTabs"></div><button class="langbtn" id="langButton">EN</button><button class="hamb" id="hamb" aria-label="Menu"><i class="fa-solid fa-bars"></i></button></div><div class="mobile-menu" id="mobileMenu"></div></nav>
+<main class="shell"><section class="page active" id="homePage"><div class="hero"><h1 data-i="app">排课与课时记忆</h1><p data-i="hero">把可上课时间、课节和课时包放在同一本书里，确认之后才动课表。</p><div class="row"><button class="btn gold" id="homeStudent" data-i="register">登记学员</button><button class="btn alt" id="homeSchedule" data-i="arrange">安排课程</button><button class="btn alt" id="homeWeek" data-i="openWeek">打开本周课表</button></div></div><div class="grid stats" id="stats"></div><h2 class="section-title" data-i="attention">需要关注的学员</h2><div class="cards" id="attentionCards"></div><h2 class="section-title" data-i="upcoming">即将到来的课节</h2><div class="cards" id="upcomingCards"></div></section>
+<section class="page" id="studentsPage"><div class="pagehead"><div><h1 data-i="students">学员档案</h1><p data-i="studentsDesc">登记化名、学段、可上课时间和课时包。</p></div><button class="btn" id="newStudent">+ 登记学员</button></div><div class="filters"><input id="studentSearch" placeholder="搜索学员化名"><select id="studentStage"><option value="">全部学段</option></select><select id="studentStatus"><option value="">全部状态</option></select><select id="studentRisk"><option value="">全部</option><option value="soon">14天内到期</option><option value="expired">已过期</option><option value="low">剩余课时不足</option></select></div><div class="cards" id="studentCards"></div></section>
+<section class="page" id="lessonsPage"><div class="pagehead"><div><h1 data-i="lessons">课节台账</h1><p data-i="lessonsDesc">这里只记录已经确认的课节，建议阶段的请求不在这里出现。</p></div><button class="btn" id="newLesson">+ 补记课节</button></div><div class="filters"><input id="lessonSearch" placeholder="搜索学员化名或科目"><select id="lessonStatus"><option value="">全部状态</option></select><select id="lessonStage"><option value="">全部学段</option></select><input type="date" id="lessonFrom"><input type="date" id="lessonTo"></div><div class="cards" id="lessonCards"></div></section>
+<section class="page" id="weekPage"><div class="pagehead"><div><h1 data-i="week">周课表</h1><p data-i="weekDesc">一周的课铺在同一张桌面上，冲突直接染红。</p></div><button class="btn" id="weekArrange">为这一周排课</button></div><div class="week-controls"><button class="btn alt" id="prevWeek"></button><strong id="weekTitle"></strong><button class="btn alt" id="nextWeek"></button><button class="btn alt" id="thisWeek">回到本周</button><select id="weekStudent" style="max-width:200px"><option value="">全部学员</option></select><label><input type="checkbox" id="showCancelled" style="width:auto"> 显示已取消</label></div><div class="fields"><div class="field"><label for="weekUnavailable">老师不可用时间段</label><textarea id="weekUnavailable" placeholder="周六 14:00-17:00；周日 09:00-12:00"></textarea></div><div class="panel" id="weekStudentInfo"></div></div><div class="week-grid" id="weekGrid"></div></section>
+<section class="page" id="deskPage"><div class="pagehead"><div><h1 data-i="desk">排课工作台</h1><p data-i="deskDesc">先形成处理建议，教师和学员确认前不动课表、不扣课时。</p></div><button class="btn" id="newRequest">+ 新的请求</button></div><div class="workspace"><div class="panel"><h2>排课请求</h2><div class="fields" id="requestFields"></div><div id="requestStudentInfo" class="notice"></div><div class="actions"><button class="btn gold" id="generateAdvice">生成处理建议</button><button class="btn alt" id="saveRequest" style="display:none">保存旧请求输入</button></div></div><div class="panel"><div class="row between"><h2>处理建议</h2><div class="row"><button class="btn alt small" id="olderRequest"></button><span id="requestPosition">—</span><button class="btn alt small" id="newerRequest"></button></div></div><div class="markdown" id="adviceView"><div class="empty">提交请求后，这一页会显示处理建议。</div></div><div class="actions"><button class="btn alt" id="refreshAdvice">刷新建议</button><button class="btn alt" id="continueAdvice" style="display:none">继续等待</button><button class="btn alt" id="openAdviceWeek" style="display:none">在周视图打开</button></div><div id="writeControls" style="display:none"><div class="notice" id="conflictReport"></div><label><input type="checkbox" id="studentConfirmed" style="width:auto"> 学员已确认</label><br><label id="manualWrap" style="display:none"><input type="checkbox" id="manualChecked" style="width:auto"> 我已人工核对可上课时间</label><div class="actions"><button class="btn gold" id="writeSchedule">确认写入课表</button></div></div></div></div><h2 class="section-title">已有请求</h2><div class="cards" id="requestCards"></div></section></main>
+<div class="overlay" id="formOverlay"><div class="dialog wide"><header><h2 id="formTitle"></h2><button class="close" data-close="formOverlay">×</button></header><form id="recordForm"><div class="fields" id="recordFields"></div><div class="actions"><button class="btn gold" type="submit">保存</button><button class="btn alt" type="button" data-close="formOverlay">取消</button></div></form></div></div>
+<div class="overlay" id="detailOverlay"><div class="dialog" id="detailDialog"><header><h2 id="detailTitle"></h2><button class="close" data-close="detailOverlay">×</button></header><div id="detailBody"></div><div class="actions" id="detailActions"></div></div></div>
+<div class="overlay" id="confirmOverlay"><div class="dialog"><header><h2 id="confirmTitle">确认操作</h2><button class="close" data-close="confirmOverlay">×</button></header><div id="confirmBody"></div><div class="actions"><button class="btn danger" id="confirmYes">确认</button><button class="btn alt" data-close="confirmOverlay">取消</button></div></div></div><div id="toast"></div>
+<script>
+const STUDENTS=['学员化名','学段','可上课时间段','记录状态','课时包总课时','剩余课时','待确认课时','课时包到期日'];
+const LESSONS=['开始时间','学员化名','科目','时长分钟','状态'];
+const REQUESTS=['操作','学员化名','目标时间','原课时间','时长分钟','科目','老师不可用时间段','处理建议'];
+const schema={student:{table:'学员信息',fields:STUDENTS},lesson:{table:'课节记录',fields:LESSONS},request:{table:'排课请求',fields:REQUESTS}};
+const stages=['小学中段','小学高段','初中','高中'],statuses=['在读','暂停记录','已结课'],lessonStatuses=['已排课','已完成','已调课','补课','已取消','请假','试听'],operations=['排课','查看周课表','冲突检测','请假','补课','调课','查询课时','查询下一节课'];
+const colors={'已排课':'#1E3A4C','已完成':'#2F6B4F','已调课':'#8A8175','补课':'#C6A15B','已取消':'#B9B2A8','请假':'#A33B3B','试听':'#3E7C8A'};
+const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const state={data:{student:[],lesson:[],request:[]},count:{student:0,request:0},row:{student:0,lesson:0,request:0},page:'home',history:[],dirty:false,formType:null,weekStart:null,waiting:false,advice:'',studentSort:'',lang:'cn',requestLoaded:null};
+const dict={cn:{app:'排课与课时记忆',home:'首页',students:'学员档案',lessons:'课节台账',week:'周课表',desk:'排课工作台',hero:'把可上课时间、课节和课时包放在同一本书里，确认之后才动课表。',register:'登记学员',arrange:'安排课程',openWeek:'打开本周课表',attention:'需要关注的学员',upcoming:'即将到来的课节',studentsDesc:'登记化名、学段、可上课时间和课时包。',lessonsDesc:'这里只记录已经确认的课节，建议阶段的请求不在这里出现。',weekDesc:'一周的课铺在同一张桌面上，冲突直接染红。',deskDesc:'先形成处理建议，教师和学员确认前不动课表、不扣课时。'},en:{app:'Lesson Planner & Credit Ledger',home:'Home',students:'Students',lessons:'Lessons',week:'Weekly timetable',desk:'Scheduling desk',hero:'Keep availability, lessons, and credits together. Change the timetable only after confirmation.',register:'Add student',arrange:'Arrange lesson',openWeek:'Open this week',attention:'Students needing attention',upcoming:'Upcoming lessons',studentsDesc:'Record aliases, stage, availability, and credits.',lessonsDesc:'Only confirmed lessons are recorded here.',weekDesc:'See the week and spot conflicts.',deskDesc:'Get advice first; update the timetable only after both confirmations.'}};
+function language(){let q=new URLSearchParams(location.search).get('lang'),saved=localStorage.getItem('iThinkAir_UiLanguage');state.lang=saved?(saved==='en'?'en':'cn'):q==='cn'||q==='en'?q:(!navigator.languages?'cn':navigator.languages.some(x=>/^zh/i.test(x))?'cn':'en');document.documentElement.lang=state.lang==='cn'?'zh-CN':'en';document.querySelectorAll('[data-i]').forEach(el=>el.textContent=dict[state.lang][el.dataset.i]);$('langButton').textContent=state.lang==='cn'?'EN':'中文';renderNav()}
+function renderNav(){let names=['home','students','lessons','week','desk'];$('navTabs').innerHTML=names.map(n=>`<button data-page="${n}" class="${state.page===n?'active':''}">${dict[state.lang][n]}</button>`).join('');$('mobileMenu').innerHTML=names.map(n=>`<button data-page="${n}">${dict[state.lang][n]}</button>`).join('')+`<button id="mobileLang">${state.lang==='cn'?'English':'中文'}</button>`;$('mobileLang').onclick=toggleLang;document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));fitNav()}
+function fitNav(){document.body.classList.toggle('compact',window.innerWidth<940||$('topbar').scrollWidth>window.innerWidth)}
+function toggleLang(){localStorage.setItem('iThinkAir_UiLanguage',state.lang==='cn'?'en':'cn');language()}
+function showPage(page,push=true){if(state.dirty&&!confirm('表单有未保存改动，确定离开？'))return;let old=state.page;if(push&&old!==page)state.history.push({page:old,y:scrollY});state.page=page;document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===page+'Page'));$('mobileMenu').classList.remove('open');renderNav();scrollTo(0,0);if(page==='week')renderWeek();if(page==='desk')renderDesk()}
+function toast(msg){let el=$('toast');el.textContent=msg;el.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display='none',4200)}
+function dateString(d,withTime=false){let p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`+(withTime?` ${p(d.getHours())}:${p(d.getMinutes())}`:'')}
+function parseTime(s){if(!s)return null;let d=new Date(String(s).replace(' ','T'));return isNaN(d)?null:d}
+function monday(d){let x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-(x.getDay()+6)%7);return x}
+function source(t){return schema[t].table+'/默认表格'}
+async function bridge(type,data,payload){let req={type};if(data!==undefined)req.data=data;if(payload!==undefined)req.payload=payload;let r=await callAppBridge(req);if(r===undefined||r===null||String(r).startsWith('Error:'))throw Error('数据暂时没有读取成功');return String(r)}
+async function load(t){let s=schema[t],raw=await bridge('GetTableCSV',source(t),s.fields.join(','));state.data[t]=raw?parseCSV(raw).filter(r=>r.length===s.fields.length).map((r,i)=>Object.fromEntries([...s.fields.map((f,j)=>[f,r[j]]),['_row',i+1]])):[]}
+async function loadAll(){try{await load('student');await load('lesson');await load('request');state.count.student=Number(await bridge('GetRecordCount',source('student')))||0;state.count.request=Number(await bridge('GetRecordCount',source('request')))||0;renderAll()}catch(e){showFailure(e)}}
+function showFailure(e){console.error(e);toast('数据暂时没有读取成功');let active=document.querySelector('.page.active');if(active){let old=active.querySelector('.load-error');if(old)old.remove();let div=document.createElement('div');div.className='error load-error';div.innerHTML='数据暂时没有读取成功 <button class="btn small" id="retryLoad">重试</button>';active.prepend(div);$('retryLoad').onclick=loadAll}}
+function renderAll(){document.querySelectorAll('.load-error').forEach(x=>x.remove());fillFilters();renderHome();renderStudents();renderLessons();renderWeek();renderDesk()}
+function fillSelect(id,items,first){let el=$(id),val=el.value;el.innerHTML=`<option value="">${first}</option>`+items.map(x=>`<option>${esc(x)}</option>`).join('');el.value=val}
+function fillFilters(){fillSelect('studentStage',stages,'全部学段');fillSelect('studentStatus',statuses,'全部状态');fillSelect('lessonStatus',lessonStatuses,'全部状态');fillSelect('lessonStage',stages,'全部学段');fillSelect('weekStudent',state.data.student.map(x=>x['学员化名']),'全部学员')}
+function studentFor(alias){return state.data.student.find(x=>x['学员化名']===alias)}
+function daysUntil(s){let d=parseTime(s);return d?Math.ceil((d-new Date())/86400000):Infinity}
+function risk(s){if(s['记录状态']!=='在读')return '';let days=daysUntil(s['课时包到期日']);return days<0?'已过期':days<14?'临近到期':Number(s['剩余课时'])<=2?'课时不足':''}
+function fieldRows(obj,fields){return fields.map(f=>`<div class="fieldline"><b>${esc(f)}</b><span>${esc(obj[f]||'—')}</span></div>`).join('')}
+function card(t,obj,opts={}){let s=schema[t],stamp=t==='lesson'?`<span class="stamp" style="color:${colors[obj['状态']]||'var(--ink)'}">${esc(obj['状态'])}</span>`:t==='student'&&risk(obj)?`<span class="stamp" style="color:var(--danger)">${risk(obj)}</span>`:'';let extra=t==='student'&&Number(obj['课时包总课时'])>0?`<div class="progress"><span style="width:${Math.max(0,Math.min(100,Number(obj['剩余课时'])/Number(obj['课时包总课时'])*100))}%"></span></div>`:'';let assoc=t==='lesson'?`<p class="muted">${studentFor(obj['学员化名'])?esc(studentFor(obj['学员化名'])['学段']+' · '+studentFor(obj['学员化名'])['剩余课时']+'课时 · '+studentFor(obj['学员化名'])['可上课时间段']):'未关联到学员'}</p>`:'';let lines=fieldRows(obj,s.fields);if(t==='request')lines=lines.replace(/(<b>处理建议<\/b><span>)([\s\S]*?)(<\/span>)/,(_,a,b,c)=>a+`<span style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden">${b}</span>`+c);return `<article class="card" data-type="${t}" data-row="${obj._row}" tabindex="0"><div class="row between"><h3>${esc(obj[s.fields[0]]||'未填写')}</h3>${stamp}</div>${assoc}${lines}${extra}<div class="actions">${actions(t,obj)}</div></article>`}
+function actions(t,o){let b=(a,label)=>`<button class="btn alt small" data-action="${a}" data-type="${t}" data-row="${o._row}">${label}</button>`;if(t==='student')return b('detail','查看详情')+b('edit','编辑')+b('delete','删除')+b('arrange','安排课程')+b('studentLessons','查看课节');if(t==='lesson')return b('detail','查看详情')+b('edit','编辑')+b('delete','删除')+b('complete','确认完成')+b('leave','登记请假')+b('cancel','标记取消');return b('viewRequest','查看建议')+b('copyRequest','复制为新请求')}
+function renderHome(){let ss=state.data.student,ls=state.data.lesson,now=new Date(),start=monday(now),end=new Date(start);end.setDate(end.getDate()+7);let reading=ss.filter(x=>x['记录状态']==='在读'),week=ls.filter(x=>{let d=parseTime(x['开始时间']);return d&&d>=start&&d<end&&x['状态']!=='已取消'}),due=reading.filter(x=>daysUntil(x['课时包到期日'])<14),expired=due.filter(x=>daysUntil(x['课时包到期日'])<0);let vals=[['在读学员',reading.length,`全部学员 ${state.count.student}`,'students'],['本周课节',week.length,'未取消课节','week'],['待确认课时',reading.reduce((a,x)=>a+Number(x['待确认课时']||0),0),'在读学员合计','students'],['临近到期',due.length,`已过期 ${expired.length}`,'students']];$('stats').innerHTML=vals.map((v,i)=>`<article class="card" data-stat="${i}"><div>${v[0]}</div><div class="num">${v[1]}</div><small class="${i===3?'danger-text':'muted'}">${v[2]}</small></article>`).join('');let attention=reading.filter(x=>risk(x)).sort((a,b)=>daysUntil(a['课时包到期日'])-daysUntil(b['课时包到期日'])||Number(a['剩余课时'])-Number(b['剩余课时'])).slice(0,5);$('attentionCards').innerHTML=attention.length?attention.map(x=>card('student',x)).join(''):'<div class="empty">手帐空页 · 暂无需要关注的学员</div>';let upcoming=ls.filter(x=>{let d=parseTime(x['开始时间']);return d&&d>=now&&['已排课','补课','试听'].includes(x['状态'])}).sort((a,b)=>parseTime(a['开始时间'])-parseTime(b['开始时间'])).slice(0,5);$('upcomingCards').innerHTML=upcoming.length?upcoming.map(x=>card('lesson',x)).join(''):'<div class="empty">手帐空页 · 暂无即将到来的课节</div>'}
+function renderStudents(){let q=$('studentSearch').value.trim().toLowerCase(),stage=$('studentStage').value,status=$('studentStatus').value,r=$('studentRisk').value;let list=state.data.student.filter(x=>(!q||x['学员化名'].toLowerCase().includes(q))&&(!stage||x['学段']===stage)&&(!status||x['记录状态']===status)&&(!r||r==='soon'&&daysUntil(x['课时包到期日'])>=0&&daysUntil(x['课时包到期日'])<14||r==='expired'&&daysUntil(x['课时包到期日'])<0||r==='low'&&Number(x['剩余课时'])<=2));if(state.studentSort==='pending')list.sort((a,b)=>Number(b['待确认课时'])-Number(a['待确认课时']));$('studentCards').innerHTML=list.length?list.map(x=>card('student',x)).join(''):'<div class="empty">手帐空页 · 没有符合条件的学员</div>'}
+function renderLessons(){let q=$('lessonSearch').value.trim().toLowerCase(),s=$('lessonStatus').value,stage=$('lessonStage').value,from=$('lessonFrom').value,to=$('lessonTo').value;let list=state.data.lesson.filter(x=>(!q||(x['学员化名']+' '+x['科目']).toLowerCase().includes(q))&&(!s||x['状态']===s)&&(!stage||studentFor(x['学员化名'])?.['学段']===stage)&&(!from||x['开始时间'].slice(0,10)>=from)&&(!to||x['开始时间'].slice(0,10)<=to)).sort((a,b)=>(parseTime(b['开始时间'])||0)-(parseTime(a['开始时间'])||0));$('lessonCards').innerHTML=list.length?list.map(x=>card('lesson',x)).join(''):'<div class="empty">手帐空页 · 没有符合条件的课节</div>'}
+function intervals(raw){if(!raw?.trim())return [];let out=[];let parts=raw.split(/[；;\n]+/).map(x=>x.trim()).filter(Boolean);for(let part of parts){let m=part.match(/(?:周|星期)([一二三四五六日天])\s*(\d{1,2}):(\d{2})\s*[-—–~至]\s*(\d{1,2}):(\d{2})/);if(!m)return null;let day='一二三四五六日'.indexOf(m[1]==='天'?'日':m[1]);let a=+m[2]*60+ +m[3],b=+m[4]*60+ +m[5];if(day<0||a>=b||b>1440)return null;out.push({day,a,b})}return out}
+function inIntervals(raw,time,duration){let ranges=intervals(raw);if(ranges===null)return null;if(!ranges.length)return true;let day=(time.getDay()+6)%7,a=time.getHours()*60+time.getMinutes(),b=a+Number(duration);return ranges.some(x=>x.day===day&&a>=x.a&&b<=x.b)}
+function unavailableHit(raw,time,duration){let ranges=intervals(raw);if(ranges===null)return null;let day=(time.getDay()+6)%7,a=time.getHours()*60+time.getMinutes(),b=a+Number(duration);return ranges.some(x=>x.day===day&&a<x.b&&b>x.a)}
+function overlaps(time,duration,exclude=0){let a=time.getTime(),b=a+Number(duration)*60000;return state.data.lesson.some(x=>{if(x._row===exclude||x['状态']==='已取消')return false;let d=parseTime(x['开始时间']);return d&&a<d.getTime()+Number(x['时长分钟'])*60000&&b>d.getTime()})}
+function conflictFor(l){let d=parseTime(l['开始时间']);if(!d)return ['时间无法解析'];let bad=[];if(overlaps(d,l['时长分钟'],l._row)||unavailableHit($('weekUnavailable').value,d,l['时长分钟']))bad.push('时间重叠');let st=studentFor(l['学员化名']);if(st){let ok=inIntervals(st['可上课时间段'],d,l['时长分钟']);if(ok===false)bad.push('超出可上课时间');if(ok===null)bad.push('未能自动解析：'+st['可上课时间段'])}return bad}
+function renderWeek(){if(!state.weekStart)state.weekStart=monday(new Date());let start=state.weekStart,end=new Date(start);end.setDate(end.getDate()+6);$('weekTitle').textContent=`${start.getFullYear()}年${start.getMonth()+1}月${start.getDate()}日—${end.getMonth()+1}月${end.getDate()}日`;let alias=$('weekStudent').value,selected=studentFor(alias);$('weekStudentInfo').innerHTML=selected?fieldRows(selected,['学段','记录状态','可上课时间段','剩余课时','待确认课时','课时包到期日']):'<span class="muted">选择学员，查看课时包与可上课时间。</span>';let days=['周一','周二','周三','周四','周五','周六','周日'];$('weekGrid').innerHTML=days.map((name,i)=>{let day=new Date(start);day.setDate(day.getDate()+i);let key=dateString(day),items=state.data.lesson.filter(x=>x['开始时间'].slice(0,10)===key&&(!alias||x['学员化名']===alias)&&($('showCancelled').checked||x['状态']!=='已取消')).sort((a,b)=>xTime(a)-xTime(b));return `<div class="week-day"><h3>${name} ${key.slice(5)}</h3>${items.length?items.map(x=>{let bad=conflictFor(x);return `<div class="slot ${bad.length?'conflict':''}" data-week-row="${x._row}"><b>${esc(x['开始时间'].slice(11))}</b> ${esc(x['学员化名'])}<br>${esc(x['科目'])} · ${esc(x['时长分钟'])}分钟<br><span class="stamp" style="color:${colors[x['状态']]}">${esc(x['状态'])}</span>${bad.map(y=>`<br><small>${esc(y)}</small>`).join('')}</div>`}).join(''):'<div class="muted">这一天还没有课</div>'}</div>`}).join('')}
+function xTime(x){return parseTime(x['开始时间'])||0}
+function formId(t,f){return `form_${t}_${schema[t].fields.indexOf(f)}`}
+function formField(t,f,value=''){let id=formId(t,f),input='',opts=f==='学段'?stages:f==='记录状态'?statuses:f==='状态'?lessonStatuses:[];if(f==='学员化名'&&t!=='student')opts=state.data.student.filter(s=>t!=='request'||!['排课','补课','调课'].includes(getRequestValue('操作'))||s['记录状态']==='在读').map(s=>s['学员化名']);if(opts.length){input=`<select id="${id}" name="${f}"><option value=""></option>${opts.map(o=>`<option value="${esc(o)}" ${o===value?'selected':''}>${esc(o)}${f==='学员化名'?' · '+esc(studentFor(o)?.['学段']||''):''}</option>`).join('')}</select>`}else if(['可上课时间段','老师不可用时间段'].includes(f))input=`<textarea id="${id}" name="${f}" placeholder="周六 14:00-17:00；周日 09:00-12:00">${esc(value)}</textarea>`;else{let type=['课时包总课时','剩余课时','待确认课时','时长分钟'].includes(f)?'number':f==='课时包到期日'?'date':f.includes('时间')?'datetime-local':'text';let v=type==='datetime-local'?String(value).replace(' ','T'):value;input=`<input id="${id}" name="${f}" type="${type}" ${type==='number'?'step="any"':''} value="${esc(v)}">`}return `<div class="field ${['可上课时间段','老师不可用时间段'].includes(f)?'wide':''}"><label for="${id}">${f}</label>${input}</div>`}
+function formValues(t){let obj={};for(let f of schema[t].fields){if(f==='处理建议')continue;let el=$(formId(t,f));obj[f]=el?el.value.replace('T',' '):''}return obj}
+function openForm(t,row=0){state.formType=t;state.row[t]=row;let obj=row?state.data[t].find(x=>x._row===row):null;state.dirty=false;$('formTitle').textContent=(row?'编辑 ':'新建 ')+schema[t].table;$('recordFields').innerHTML=schema[t].fields.filter(f=>f!=='处理建议').map(f=>formField(t,f,obj?.[f]??(f==='状态'?'已排课':f==='时长分钟'?'60':''))).join('');openOverlay('formOverlay')}
+async function editForm(t,row){try{let obj=await readRow(t,row);state.data[t][row-1]={...obj,_row:row};openForm(t,row)}catch(e){showFailure(e)}}
+async function readRow(t,row){let obj={};for(let f of schema[t].fields)obj[f]=await bridge('GetCellValue',source(t),`${f}/${row}`);return obj}
+function validate(t,o){if(t==='student'){if(!o['学员化名'])return '请填写学员化名';for(let f of ['课时包总课时','剩余课时','待确认课时'])if(o[f]!==''&&Number(o[f])<0)return f+'不能为负数'}if(t==='lesson'){if(!o['开始时间']||!o['学员化名']||!o['科目']||Number(o['时长分钟'])<=0)return '请填写开始时间、学员、科目和有效时长';let st=studentFor(o['学员化名']);if(state.row.lesson===0&&['已排课','补课'].includes(o['状态'])&&st?.['记录状态']!=='在读')return '该学员当前不可排课'}return ''}
+async function saveForm(e){e.preventDefault();let t=state.formType,o=formValues(t),msg=validate(t,o);if(msg)return toast(msg);if(t==='lesson'&&state.row.lesson===0&&!confirm('此课节已在课外确认？保存将写入课节台账。'))return;try{if(state.row[t]===0){await bridge('SubmitRecord',schema[t].table,JSON.stringify(o));state.row[t]=1}else for(let f of schema[t].fields){if(f!=='处理建议')await bridge('SetCellValue',source(t),`${f}/${state.row[t]}/${o[f]}`)}closeOverlay('formOverlay');state.dirty=false;await loadAll();toast('已保存')}catch(err){showFailure(err)}}
+function openOverlay(id){$(id).classList.add('open');document.body.style.overflow='hidden'}function closeOverlay(id){$(id).classList.remove('open');if(!document.querySelector('.overlay.open'))document.body.style.overflow='';if(id==='formOverlay')state.dirty=false}
+function confirmDialog(title,html,onYes){$('confirmTitle').textContent=title;$('confirmBody').innerHTML=html;$('confirmYes').onclick=async()=>{try{let result=await onYes();if(result!==false)closeOverlay('confirmOverlay')}catch(e){showFailure(e)}};openOverlay('confirmOverlay')}
+async function detail(t,row,week=false){try{let o=await readRow(t,row);state.row[t]=row;$('detailTitle').textContent=schema[t].table+'详情';$('detailBody').innerHTML=fieldRows(o,schema[t].fields);$('detailActions').innerHTML=week?'<button class="btn" id="detailEdit">编辑课节</button><button class="btn alt" id="detailMove">调课</button><button class="btn alt" id="detailLeave">请假</button><button class="btn alt" id="detailMakeup">补课</button>':`<button class="btn" id="detailEdit">编辑</button>`;$('detailEdit').onclick=()=>{closeOverlay('detailOverlay');showPage(t==='student'?'students':'lessons');editForm(t,row)};if(week){for(let [id,op] of [['detailMove','调课'],['detailLeave','请假'],['detailMakeup','补课']])$(id).onclick=()=>{closeOverlay('detailOverlay');presetRequest({操作:op,学员化名:o['学员化名'],原课时间:o['开始时间'],科目:o['科目'],时长分钟:o['时长分钟']})}}openOverlay('detailOverlay')}catch(e){showFailure(e)}}
+async function removeRecord(t,row){let o=state.data[t].find(x=>x._row===row);if(t==='student'){try{await load('lesson')}catch(e){return showFailure(e)}}let linked=t==='student'&&state.data.lesson.some(x=>x['学员化名']===o['学员化名']);let warn=linked?'此学员已有课节记录。删除学员不会删除这些课节。':'';if(t==='lesson')warn=`${['已排课','补课','试听'].includes(o['状态'])?'此课节尚未完成。':''} 删除本身不自动回滚课时。`;confirmDialog('确认删除',`<p class="danger-text">${warn}</p><p>确定删除这条记录？</p>`,async()=>{await bridge('DeleteRecord',source(t),row.toString());await loadAll();toast('已删除')})}
+async function updateStudent(alias,changes){let st=studentFor(alias);if(!st)throw Error('未关联到学员');for(let [f,v] of Object.entries(changes))await bridge('SetCellValue',source('student'),`${f}/${st._row}/${v}`)}
+function completeLesson(row){let l=state.data.lesson.find(x=>x._row===row);if(!['已排课','补课','试听'].includes(l?.['状态']))return toast('当前状态不能确认完成');let st=studentFor(l['学员化名']);if(!st)return toast('未关联到学员');let def=l['状态']==='试听'?0:1;confirmDialog('确认完成',`<p>剩余课时：${esc(st['剩余课时'])}；待确认课时：${esc(st['待确认课时'])}</p><label>本次扣减课时 <input id="deductAmount" type="number" step="any" value="${def}" ${l['状态']==='试听'?'disabled':''}></label><p id="deductResult"></p><label><input id="allowNegative" type="checkbox" style="width:auto"> 已知悉课时不足仍要扣减</label>`,async()=>{let amount=l['状态']==='试听'?0:Number($('deductAmount').value);if(!Number.isFinite(amount)||amount<0)throw Error('扣减数无效');let remain=Number(st['剩余课时'])-amount;if(remain<0&&!$('allowNegative').checked){toast('请勾选课时不足确认');return false}let pending=Number(st['待确认课时'])-(['已排课','补课'].includes(l['状态'])?1:0);await bridge('SetCellValue',source('lesson'),`状态/${row}/已完成`);await updateStudent(l['学员化名'],{'剩余课时':remain,'待确认课时':pending});await loadAll();toast('已确认完成')});$('deductAmount').oninput=()=>{$('deductResult').textContent='计算后剩余课时：'+(Number(st['剩余课时'])-Number($('deductAmount').value))};$('deductAmount').oninput()}
+function cancelLesson(row){let l=state.data.lesson.find(x=>x._row===row);if(!['已排课','补课','试听'].includes(l?.['状态']))return toast('当前状态不能取消');confirmDialog('标记取消','<p>取消后不会扣减剩余课时。</p>',async()=>{await bridge('SetCellValue',source('lesson'),`状态/${row}/已取消`);if(['已排课','补课'].includes(l['状态'])){let s=studentFor(l['学员化名']);if(s)await updateStudent(l['学员化名'],{'待确认课时':Number(s['待确认课时'])-1})}await loadAll()})}
+function getRequestValue(f){return $(formId('request',f))?.value?.replace('T',' ')||''}
+function setRequestValues(o){for(let f of REQUESTS){if(f==='处理建议')continue;let el=$(formId('request',f));if(el)el.value=f.includes('时间')?String(o[f]||'').replace(' ','T'):(o[f]||'')}renderSegments();renderRequestStudent()}
+function renderRequestFields(o={}){$('requestFields').innerHTML=`<div class="field wide"><label>操作</label><div class="segments" id="operationSegments"></div><input type="hidden" id="${formId('request','操作')}" name="操作"></div>`+REQUESTS.slice(1,-1).map(f=>formField('request',f,o[f]??(f==='时长分钟'?'60':''))).join('');$(formId('request','操作')).value=o['操作']||'排课';renderSegments();$(formId('request','学员化名')).onchange=renderRequestStudent;$(formId('request','目标时间')).onchange=renderWriteControls;$(formId('request','时长分钟')).onchange=renderWriteControls;$(formId('request','老师不可用时间段')).onchange=renderWriteControls;renderRequestStudent()}
+function renderSegments(){let op=getRequestValue('操作');$('operationSegments').innerHTML=operations.map(x=>`<button type="button" class="${x===op?'active':''}" data-op="${x}">${x}</button>`).join('');document.querySelectorAll('[data-op]').forEach(x=>x.onclick=()=>{$(formId('request','操作')).value=x.dataset.op;renderSegments();renderRequestStudent();renderWriteControls()});let required={排课:'学员化名、目标时间、时长分钟、科目',查看周课表:'目标时间（留空使用现在）',冲突检测:'学员化名、目标时间、时长分钟',请假:'学员化名、原课时间',补课:'学员化名、目标时间、时长分钟、科目',调课:'学员化名、原课时间、目标时间、时长分钟、科目',查询课时:'学员化名',查询下一节课:'学员化名'};let old=$('requiredHint');if(old)old.remove();$('operationSegments').insertAdjacentHTML('afterend',`<small id="requiredHint" class="muted">必填：${required[op]}</small>`)}
+function renderRequestStudent(){let s=studentFor(getRequestValue('学员化名'));if(!s){$('requestStudentInfo').innerHTML='选择学员，核对档案与课时包。';renderWriteControls();return}$('requestStudentInfo').innerHTML=fieldRows(s,STUDENTS.slice(1))+(['暂停记录','已结课'].includes(s['记录状态'])?'<p class="danger-text">此学员当前不可排课、补课或调课。</p>':'')+(Number(s['剩余课时'])<=0?'<p class="danger-text">剩余课时不足</p>':'')+(daysUntil(s['课时包到期日'])<14?`<p class="danger-text">${daysUntil(s['课时包到期日'])<0?'课时包已过期':'课时包临近到期'}</p>`:'');renderWriteControls()}
+function resetRequest(o={}){state.row.request=0;state.advice='';state.requestLoaded=null;renderRequestFields(o);$('adviceView').innerHTML='<div class="empty">提交请求后，这一页会显示处理建议。</div>';$('studentConfirmed').checked=false;$('manualChecked').checked=false;renderDesk()}
+function presetRequest(o){showPage('desk');resetRequest(o)}
+function markdown(text){let html=window.marked?marked.parse(text||''):esc(text||'').replace(/\n/g,'<br>');html=window.DOMPurify?DOMPurify.sanitize(html):html.replace(/<script[\s\S]*?<\/script>/gi,'');let wrap=document.createElement('div');wrap.innerHTML=html;wrap.querySelectorAll('img').forEach(img=>{let a=document.createElement('a');a.href=img.src.startsWith('http')?img.src:'http://' + window.location.hostname + ':3130/download/'+encodeURIComponent(img.getAttribute('src'));a.download='';img.replaceWith(a);a.append(img)});return wrap.innerHTML}
+function renderAdvice(){let a=state.advice;$('adviceView').innerHTML=a?markdown(a):'<div class="empty">尚未生成处理建议</div>';renderWriteControls()}
+function renderDesk(){$('requestCards').innerHTML=state.data.request.length?state.data.request.map(x=>card('request',x)).join(''):'<div class="empty">手帐空页 · 尚无排课请求</div>';$('requestPosition').textContent=state.row.request?`${state.row.request} / ${state.count.request}`:'—';$('olderRequest').disabled=state.row.request<=1;$('newerRequest').disabled=!state.row.request||state.row.request>=state.count.request;$('saveRequest').style.display=state.row.request?'inline-block':'none';renderWriteControls()}
+function requestValidation(o){let req={排课:['学员化名','目标时间','时长分钟','科目'],冲突检测:['学员化名','目标时间','时长分钟'],请假:['学员化名','原课时间'],补课:['学员化名','目标时间','时长分钟','科目'],调课:['学员化名','原课时间','目标时间','时长分钟','科目'],查询课时:['学员化名'],查询下一节课:['学员化名']};for(let f of req[o['操作']]||[])if(!o[f])return '请填写'+f;if(o['时长分钟']&&Number(o['时长分钟'])<=0)return '时长分钟必须大于0';if(['排课','补课','调课'].includes(o['操作'])&&studentFor(o['学员化名'])?.['记录状态']!=='在读')return '此学员当前不可排课';return ''}
+async function generateAdvice(){if(state.waiting)return;let o=formValues('request');if(o['操作']==='查看周课表'&&!o['目标时间'])o['目标时间']=dateString(new Date(),true);let err=requestValidation(o);if(err)return toast(err);try{state.waiting=true;$('generateAdvice').disabled=true;await bridge('SubmitRecord','排课请求',JSON.stringify(o));state.row.request=1;state.advice='';state.requestLoaded={...o};$('adviceView').innerHTML='<div class="notice">正在生成处理建议...</div>';await load('request');state.count.request=Number(await bridge('GetRecordCount',source('request')))||0;renderDesk();await pollAdvice()}catch(e){showFailure(e)}finally{state.waiting=false;$('generateAdvice').disabled=false}}
+async function pollAdvice(){let row=state.row.request,deadline=Date.now()+60000;$('continueAdvice').style.display='none';while(Date.now()<deadline&&state.row.request===row){let text=await bridge('GetCellValue',source('request'),`处理建议/${row}`);if(text.trim()){state.advice=text;renderAdvice();await load('request');renderDesk();return}await new Promise(r=>setTimeout(r,1000))}if(state.row.request===row){$('adviceView').innerHTML='<div class="notice">等待超时。可以继续等待处理建议。</div>';$('continueAdvice').style.display='inline-block'}}
+async function loadRequest(row){try{let o=await readRow('request',row);state.row.request=row;state.requestLoaded=o;state.advice=o['处理建议']||'';renderRequestFields(o);renderAdvice();$('studentConfirmed').checked=false;$('manualChecked').checked=false;renderDesk()}catch(e){showFailure(e)}}
+async function refreshAdvice(){if(!state.row.request)return toast('请先选择请求');try{state.advice=await bridge('GetCellValue',source('request'),`处理建议/${state.row.request}`);renderAdvice()}catch(e){showFailure(e)}}
+function writeCheck(){let o=formValues('request'),st=studentFor(o['学员化名']),op=o['操作'],reasons=[];if(!state.advice.trim())reasons.push('处理建议尚未生成');if(!$('studentConfirmed').checked)reasons.push('学员尚未确认');if(!st||st['记录状态']!=='在读')reasons.push('学员不是在读状态');let d=parseTime(o['目标时间']),dur=Number(o['时长分钟']||0),old=state.data.lesson.find(x=>x['学员化名']===o['学员化名']&&x['开始时间']===o['原课时间']);if(['排课','补课','调课'].includes(op)){if(!d||dur<=0)reasons.push('目标时间或时长无效');else{if(overlaps(d,dur,op==='调课'?old?._row:0))reasons.push('课节时间重叠');let free=inIntervals(st?.['可上课时间段'],d,dur);if(free===false)reasons.push('超出可上课时间');if(free===null&&!$('manualChecked').checked)reasons.push('可上课时间未能解析，需要人工核对');if(unavailableHit(o['老师不可用时间段'],d,dur))reasons.push('落入老师不可用时间段')}}if(['请假','调课'].includes(op)&&!old)reasons.push('找不到原课');return {o,st,old,reasons,manual:!!st&&intervals(st['可上课时间段'])===null}}
+function renderWriteControls(){if(!$(formId('request','操作')))return;let op=getRequestValue('操作'),canWrite=['排课','补课','调课','请假'].includes(op);$('writeControls').style.display=canWrite?'block':'none';$('openAdviceWeek').style.display=op==='查看周课表'?'inline-block':'none';if(!canWrite)return;let check=writeCheck();$('manualWrap').style.display=check.manual?'block':'none';$('conflictReport').innerHTML=check.reasons.length?check.reasons.map(x=>`<div class="danger-text">${esc(x)}</div>`).join(''):'可以核对摘要并确认写入。';$('writeSchedule').disabled=check.reasons.length>0||state.waiting}
+async function writeSchedule(){let {o,st,old,reasons}=writeCheck();if(reasons.length)return toast(reasons.join('；'));let op=o['操作'],summary=`<p>学员：${esc(o['学员化名'])}；操作：${op}</p><p>目标：${esc(o['目标时间'])||'—'}；原课：${esc(o['原课时间'])||'—'}；${esc(o['科目'])} ${esc(o['时长分钟'])} 分钟</p><p><b>本次不扣剩余课时。</b></p>`+(op==='调课'&&old?.['状态']==='已完成'?'<p class="danger-text">原课已完成，不自动退回课时。</p>':'');confirmDialog('确认写入课表',summary,async()=>{let pending=Number(st['待确认课时']);if(op==='排课'||op==='补课'){await bridge('SubmitRecord','课节记录',JSON.stringify({'开始时间':o['目标时间'],'学员化名':o['学员化名'],'科目':o['科目'],'时长分钟':o['时长分钟'],'状态':op==='排课'?'已排课':'补课'}));await updateStudent(o['学员化名'],{'待确认课时':pending+1})}else if(op==='请假'){await bridge('SetCellValue',source('lesson'),`状态/${old._row}/请假`);if(['已排课','补课'].includes(old['状态']))await updateStudent(o['学员化名'],{'待确认课时':pending-1})}else if(op==='调课'){await bridge('SetCellValue',source('lesson'),`状态/${old._row}/已调课`);await bridge('SubmitRecord','课节记录',JSON.stringify({'开始时间':o['目标时间'],'学员化名':o['学员化名'],'科目':o['科目'],'时长分钟':o['时长分钟'],'状态':'已排课'}));if(!['已排课','补课'].includes(old['状态']))await updateStudent(o['学员化名'],{'待确认课时':pending+1})}await loadAll();$('studentConfirmed').checked=false;toast('课表已更新')})}
+async function saveOldRequest(){if(!state.row.request)return;let o=formValues('request');let err=requestValidation(o);if(err)return toast(err);confirmDialog('保存旧请求','<p>输入字段会更新，但处理建议不会因此重新生成。若需要新建议，请生成一条新请求。</p>',async()=>{for(let f of REQUESTS.slice(0,-1))await bridge('SetCellValue',source('request'),`${f}/${state.row.request}/${o[f]}`);await loadAll();toast('已保存输入字段')})}
+function onCardClick(e){let btn=e.target.closest('[data-action]');if(btn){e.stopPropagation();let t=btn.dataset.type,row=Number(btn.dataset.row),o=state.data[t].find(x=>x._row===row),a=btn.dataset.action;if(a==='detail')detail(t,row);if(a==='edit')editForm(t,row);if(a==='delete')removeRecord(t,row);if(a==='arrange')presetRequest({操作:'排课',学员化名:o['学员化名']});if(a==='studentLessons'){$('lessonSearch').value=o['学员化名'];showPage('lessons');renderLessons()}if(a==='complete')completeLesson(row);if(a==='cancel')cancelLesson(row);if(a==='leave')presetRequest({操作:'请假',学员化名:o['学员化名'],原课时间:o['开始时间'],科目:o['科目'],时长分钟:o['时长分钟']});if(a==='viewRequest')loadRequest(row);if(a==='copyRequest'){let copy={...o};delete copy['处理建议'];presetRequest(copy)}return}let c=e.target.closest('[data-type][data-row]');if(c){let t=c.dataset.type,row=Number(c.dataset.row);if(t==='request'){showPage('desk');loadRequest(row)}else if(t==='lesson'&&c.closest('#upcomingCards')){showPage('lessons');editForm('lesson',row)}else detail(t,row)}}
+function bind(){window.addEventListener('resize',fitNav);$('brand').onclick=()=>{try{parent.closeFullHtml(false)}catch(e){}};$('hamb').onclick=e=>{e.stopPropagation();$('mobileMenu').classList.toggle('open')};document.addEventListener('click',e=>{if(!e.target.closest('#topbar'))$('mobileMenu').classList.remove('open')});$('langButton').onclick=toggleLang;$('homeStudent').onclick=()=>{showPage('students');openForm('student')};$('homeSchedule').onclick=()=>presetRequest({操作:'排课'});$('homeWeek').onclick=()=>{state.weekStart=monday(new Date());showPage('week')};$('newStudent').onclick=()=>openForm('student');$('newLesson').onclick=()=>openForm('lesson');$('newRequest').onclick=()=>resetRequest();$('recordForm').onsubmit=saveForm;$('recordForm').oninput=()=>state.dirty=true;document.querySelectorAll('[data-close]').forEach(x=>x.onclick=()=>closeOverlay(x.dataset.close));document.querySelectorAll('.overlay').forEach(x=>x.onclick=e=>{if(e.target===x&&x.id==='detailOverlay')closeOverlay(x.id)});for(let id of ['attentionCards','upcomingCards','studentCards','lessonCards','requestCards'])$(id).onclick=onCardClick;$('stats').onclick=e=>{let c=e.target.closest('[data-stat]');if(!c)return;let i=Number(c.dataset.stat);if(i===0){$('studentStatus').value='在读';showPage('students');renderStudents()}if(i===1)showPage('week');if(i===2){state.studentSort='pending';showPage('students');renderStudents()}if(i===3){$('studentRisk').value='soon';showPage('students');renderStudents()}};for(let id of ['studentSearch','studentStage','studentStatus','studentRisk'])$(id).oninput=renderStudents;for(let id of ['lessonSearch','lessonStatus','lessonStage','lessonFrom','lessonTo'])$(id).oninput=renderLessons;$('prevWeek').onclick=()=>{state.weekStart.setDate(state.weekStart.getDate()-7);renderWeek()};$('nextWeek').onclick=()=>{state.weekStart.setDate(state.weekStart.getDate()+7);renderWeek()};$('thisWeek').onclick=()=>{state.weekStart=monday(new Date());renderWeek()};for(let id of ['weekStudent','showCancelled','weekUnavailable'])$(id).oninput=renderWeek;$('weekGrid').onclick=e=>{let x=e.target.closest('[data-week-row]');if(x)detail('lesson',Number(x.dataset.weekRow),true)};$('weekArrange').onclick=()=>{let now=new Date(),d=new Date(state.weekStart);d.setHours(now.getHours()+1,0,0,0);presetRequest({操作:'排课',目标时间:dateString(d,true),'老师不可用时间段':$('weekUnavailable').value})};$('generateAdvice').onclick=generateAdvice;$('refreshAdvice').onclick=refreshAdvice;$('continueAdvice').onclick=pollAdvice;$('olderRequest').onclick=()=>loadRequest(state.row.request-1);$('newerRequest').onclick=()=>loadRequest(state.row.request+1);$('saveRequest').onclick=saveOldRequest;$('studentConfirmed').onchange=renderWriteControls;$('manualChecked').onchange=renderWriteControls;$('writeSchedule').onclick=writeSchedule;$('openAdviceWeek').onclick=()=>{let d=parseTime(getRequestValue('目标时间'));state.weekStart=monday(d||new Date());$('weekUnavailable').value=getRequestValue('老师不可用时间段');showPage('week')};document.addEventListener('focusin',e=>{if(e.target.matches('input,textarea,select'))setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),300)})}
+function airBack(){let open=[...document.querySelectorAll('.overlay.open')].pop();if(open){closeOverlay(open.id);return 'false'}let h=state.history.pop();if(h){showPage(h.page,false);setTimeout(()=>scrollTo(0,h.y),40);return 'false'}return 'true'}window.airBack=airBack;
+async function initialize(){language();try{let m=await callAppBridge({type:'模式'});document.body.classList.toggle('dark',m==='暗色')}catch(e){}bind();state.weekStart=monday(new Date());renderRequestFields();await loadAll()}
++        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("6478f2deb84d7b99_排课与课时记忆")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+document.addEventListener('DOMContentLoaded',()=>{(async()=>{await initialize()})()});
+</script>
+</body></html>

@@ -1,0 +1,4392 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英语听力教学设计</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+  --nav: #1E3A5F;
+  --nav-ink: #F7F4EE;
+  --bg: #F4EFE6;
+  --card: #FFFCF7;
+  --accent: #E07A3D;
+  --accent-ink: #2A160C;
+  --teal: #3D8B8B;
+  --teal-ink: #062424;
+  --text: #1E2A32;
+  --muted: #5C675F;
+  --line: rgba(30, 58, 95, 0.14);
+  --line-strong: rgba(30, 58, 95, 0.28);
+  --input: #FFFFFF;
+  --blue: #24557F;
+  --danger: #8E2F2A;
+  --shadow: 0 10px 28px rgba(30, 58, 95, 0.08);
+  --ok: #1F7A4D;
+  --kb: 0px;
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  --nav: #10243C;
+  --nav-ink: #F4EFE6;
+  --bg: #141210;
+  --card: #26211C;
+  --accent: #E07A3D;
+  --accent-ink: #1A100A;
+  --teal: #3D8B8B;
+  --teal-ink: #E7F6F6;
+  --text: #F4EFE6;
+  --muted: #CDBFAE;
+  --line: rgba(244, 239, 230, 0.14);
+  --line-strong: rgba(244, 239, 230, 0.32);
+  --input: #1B1815;
+  --blue: #8FB4D6;
+  --danger: #F0A8A2;
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  --ok: #8DDBB4;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { overflow-x: hidden; }
+body {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(1100px 420px at 0% -10%, rgba(224, 122, 61, 0.14), transparent 55%),
+    radial-gradient(900px 380px at 100% 0%, rgba(61, 139, 139, 0.12), transparent 50%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+input, select, textarea {
+  box-sizing: border-box;
+  width: 100%;
+  background: var(--input);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  padding: 10px 12px;
+  scroll-margin-top: 88px;
+  scroll-margin-bottom: 180px;
+}
+textarea { min-height: 88px; resize: vertical; }
+button { cursor: pointer; }
+button:disabled { opacity: 0.48; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+#appNav { background: var(--nav); color: var(--nav-ink); }
+.nav-row {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+  background: transparent;
+  color: var(--nav-ink);
+  border: 0;
+  padding: 4px 0;
+  text-align: left;
+}
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  flex: none;
+}
+.brand-mark .fa-headphones { font-size: 18px; }
+.brand-mark .fa-wave-square {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  font-size: 10px;
+  color: #F0B48A;
+}
+.brand-text { min-width: 0; }
+.brand-text strong, .brand-text small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-text strong { font-size: 16px; letter-spacing: 0.04em; }
+.brand-text small { opacity: 0.78; font-size: 12px; }
+.nav-cluster { display: flex; align-items: center; gap: 8px; flex: none; min-width: 0; }
+#todayDate {
+  font-size: 13px;
+  opacity: 0.88;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.nav-tabs { display: flex; flex-wrap: nowrap; gap: 4px; }
+.nav-tab, #langBtn, #hamburgerBtn, .mobile-menu button {
+  white-space: nowrap;
+}
+.nav-tab {
+  background: transparent;
+  color: var(--nav-ink);
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 12px;
+  opacity: 0.82;
+}
+.nav-tab.is-active { background: rgba(255, 255, 255, 0.16); opacity: 1; }
+#langBtn, #hamburgerBtn {
+  background: transparent;
+  color: var(--nav-ink);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+#langBtn .is-on { font-weight: 700; }
+#langBtn .is-off { opacity: 0.55; }
+.is-collapsed { display: none !important; }
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 12px 12px;
+  background: var(--nav);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.mobile-menu[hidden] { display: none !important; }
+.mobile-menu button {
+  width: 100%;
+  text-align: left;
+  color: var(--nav-ink);
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mobile-menu button.is-active, .mobile-menu button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.14); }
+.lang-row { display: flex; gap: 8px; }
+.lang-row button { flex: 1; justify-content: center; border: 1px solid rgba(255,255,255,0.25); }
+.shell { padding-top: 84px; }
+.page { display: none; }
+.page.is-active { display: block; }
+.wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+.page-head, .hero, .toolbar, .section-card, .stat-grid, .review-grid { margin-bottom: 16px; }
+.page-head, .hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+}
+.page-head h1, .hero h1 { margin: 0 0 6px; font-size: 30px; line-height: 1.25; letter-spacing: 0.01em; }
+.lede { margin: 0; color: var(--muted); max-width: 720px; }
+.hero {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.hero::after, .section-card::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 7px;
+  opacity: 0.35;
+  background: repeating-linear-gradient(90deg, transparent 0 8px, var(--accent) 8px 9px, transparent 9px 16px, var(--teal) 16px 17px, transparent 17px 24px);
+}
+.section-card { position: relative; overflow: hidden; }
+h2 { margin: 0 0 8px; font-size: 20px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  padding: 10px 14px;
+  background: var(--card);
+  color: var(--text);
+  text-decoration: none;
+  min-height: 42px;
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.btn-teal { background: var(--teal); color: #F4FFFE; font-weight: 700; }
+.btn-ghost { background: transparent; border-color: var(--line-strong); }
+.btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+.btn-small { min-height: 36px; padding: 7px 10px; border-radius: 10px; font-size: 14px; }
+.stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat-card, .card, .section-card, .side-card, .md-panel, .banner {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.stat-card {
+  border: 0;
+  text-align: left;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  min-height: 112px;
+}
+.stat-card .wave-line, .card .wave-line {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  height: 6px;
+  opacity: 0;
+  transform: scaleX(0.35);
+  transform-origin: left center;
+  background: repeating-linear-gradient(90deg, transparent 0 7px, var(--accent) 7px 8px, transparent 8px 14px, var(--teal) 14px 15px, transparent 15px 22px);
+}
+@media (hover: hover) {
+  .stat-card:hover, .card:hover { transform: translateY(-4px); }
+  .stat-card:hover .wave-line, .card:hover .wave-line { opacity: 0.95; transform: scaleX(1); }
+}
+.stat-card, .card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.stat-k { color: var(--muted); font-size: 14px; display: flex; gap: 8px; align-items: center; }
+.stat-num { display: block; margin-top: 8px; font-size: 34px; letter-spacing: 0.02em; }
+.section-card { padding: 16px 16px 22px; }
+.chip-row, .toolbar, .card-actions, .review-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip, .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+}
+.chip.is-on, .chip.is-covered {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+.chip.is-hollow { background: transparent; }
+.tag-stage-primary { background: var(--teal); color: #F4FFFE; border-color: transparent; }
+.tag-stage-junior { background: var(--blue); color: #F4FAFF; border-color: transparent; }
+.tag-stage-senior { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.tag-copy-ok { background: rgba(61, 139, 139, 0.16); color: var(--text); }
+.tag-copy-adapt { background: rgba(36, 85, 127, 0.16); color: var(--text); }
+.tag-copy-public { background: rgba(224, 122, 61, 0.16); color: var(--text); }
+.tag-copy-index { background: #E4DDD4; color: #4E463E; }
+html[data-theme="dark"] .tag-copy-index { background: #3A342C; color: #E7DDD0; }
+.toolbar .search, .toolbar select { width: auto; min-width: 0; }
+.search { flex: 1 1 220px; }
+.toolbar select { flex: 1 1 140px; }
+.list { display: grid; gap: 12px; }
+.card { padding: 16px 16px 20px; position: relative; overflow: hidden; }
+.card h3 { margin: 0 0 6px; font-size: 18px; }
+.meta { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+.kv { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 4px 8px; font-size: 14px; margin: 8px 0; }
+.kv b { font-weight: 600; }
+.summary { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+.empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+.empty i { font-size: 28px; display: block; margin-bottom: 8px; color: var(--accent); }
+.banner {
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+}
+.banner-ai { border-color: rgba(224, 122, 61, 0.45); }
+.banner-warn, .warn-bar {
+  background: #F8E7C3;
+  color: #5C430C;
+  border: 1px solid #E2C48A;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+html[data-theme="dark"] .banner-warn, html[data-theme="dark"] .warn-bar {
+  background: #3A3018;
+  color: #F6E6C0;
+  border-color: #6A5424;
+}
+.review-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.side-card, .md-panel { padding: 16px; }
+.md-body { line-height: 1.75; word-break: break-word; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4 { line-height: 1.35; margin: 1em 0 0.4em; }
+.md-body p { margin: 0.6em 0; }
+.md-body pre {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(30, 58, 95, 0.06);
+}
+html[data-theme="dark"] .md-body pre { background: rgba(255, 255, 255, 0.06); }
+.md-body code { font-family: Consolas, "Courier New", monospace; font-size: 0.92em; }
+.md-body table { border-collapse: collapse; width: max-content; min-width: 100%; }
+.md-scroll { overflow-x: auto; max-width: 100%; }
+.md-body th, .md-body td { border: 1px solid var(--line-strong); padding: 6px 8px; vertical-align: top; }
+.md-body img { max-width: 100%; height: auto; border-radius: 8px; }
+.md-body blockquote { margin: 0.6em 0; padding-left: 12px; border-left: 3px solid var(--accent); color: var(--muted); }
+.md-body ul, .md-body ol { padding-left: 1.2em; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(16, 18, 24, 0.56);
+}
+.modal-overlay[hidden] { display: none !important; }
+.modal-panel {
+  width: min(920px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  background: var(--card);
+  color: var(--text);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.modal-narrow { width: min(480px, 100%); }
+.modal-head, .modal-body, .modal-foot { padding: 16px 18px; }
+.modal-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; position: sticky; top: 0; background: var(--card); z-index: 1; }
+.modal-head h2 { margin: 0; font-size: 20px; }
+.modal-foot { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.form-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px); gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.field span { font-size: 14px; font-weight: 650; }
+.req::after { content: " *"; color: var(--accent); }
+.hint { color: var(--danger); min-height: 1.2em; margin: 0 0 8px; }
+.ok-hint { color: var(--ok); }
+.recorder, .material-box { border: 1px dashed var(--line-strong); border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+audio { width: 100%; margin-top: 8px; }
+.wave-wait { display: flex; align-items: flex-end; gap: 4px; height: 36px; margin-bottom: 8px; }
+.wave-wait i {
+  display: block;
+  width: 4px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--accent);
+  animation: wave 1s ease-in-out infinite;
+}
+.wave-wait i:nth-child(2n) { background: var(--teal); animation-delay: 0.12s; }
+.wave-wait i:nth-child(3n) { animation-delay: 0.24s; }
+@keyframes wave {
+  0%, 100% { height: 8px; }
+  50% { height: 32px; }
+}
+.toast-wrap {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 4000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(420px, calc(100% - 32px));
+}
+.toast {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 12px;
+  border-left: 4px solid var(--teal);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.toast-error { border-left-color: var(--danger); }
+.toast-success { border-left-color: var(--ok); }
+.toast span { flex: 1; }
+.page-alert {
+  width: min(1120px, calc(100% - 32px));
+  margin: 12px auto 0;
+  background: var(--card);
+  border-left: 4px solid var(--danger);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.page-alert[hidden] { display: none !important; }
+.page-end-space { height: 72px; }
+.html-frame { width: 100%; height: min(70dvh, 720px); border: 0; background: white; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+@media (max-width: 900px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .review-grid, .form-grid, .page-head, .hero { grid-template-columns: 1fr; display: grid; }
+  .page-head, .hero { display: flex; flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 720px) {
+  .wrap { width: min(1120px, calc(100% - 20px)); }
+  .page-head h1, .hero h1 { font-size: 24px; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .page-end-space { height: 150px; }
+  .modal-overlay { padding: 12px; }
+  .modal-overlay.edge-mobile { padding: 0; }
+  .modal-overlay.edge-mobile .modal-panel {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  .modal-body { padding-bottom: calc(var(--kb) + 180px); }
+  #pageReview { padding-bottom: 24px; }
+  #pageReview .wrap { width: 100%; }
+  #pageReview .page-head, #pageReview .review-actions, #pageReview .banner { margin-left: 12px; margin-right: 12px; }
+  #pageReview .md-panel, #pageReview .side-card { border-radius: 0; }
+  button, .chip, select, input { min-height: 44px; }
+  .toast-wrap { right: 10px; left: 10px; width: auto; bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media print {
+  .app-header, .toast-wrap, .modal-overlay, .no-print, .page-end-space, .page-alert { display: none !important; }
+  .page { display: none !important; }
+  #pageReview { display: block !important; }
+  body, html, #pageReview, .side-card, .md-panel, .banner {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+  }
+  .shell { padding-top: 0; }
+  .wrap { width: 100%; }
+  .review-grid { display: block; }
+  .side-card, .md-panel { margin-bottom: 12px; }
+  a { color: #111; }
+}
+</style>
+</head>
+<body>
+<header id="appHeader" class="app-header">
+  <nav id="appNav" style="position: relative; z-index: 1001;">
+    <div id="navRow" class="nav-row">
+      <button type="button" id="brandBtn" class="brand">
+        <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-headphones"></i><i class="fa-solid fa-wave-square"></i></span>
+        <span class="brand-text">
+          <strong id="brandName">听境工坊</strong>
+          <small id="brandSub">英语听力教学设计</small>
+        </span>
+      </button>
+      <div class="nav-cluster">
+        <div id="todayDate"></div>
+        <div id="navTabs" class="nav-tabs">
+          <button type="button" class="nav-tab is-active" id="navHome" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="navHome">首页</span></button>
+          <button type="button" class="nav-tab" id="navClass" data-page="class"><i class="fa-solid fa-users" aria-hidden="true"></i> <span data-i18n="navClass">班级档案</span></button>
+          <button type="button" class="nav-tab" id="navDesign" data-page="design"><i class="fa-solid fa-ear-listen" aria-hidden="true"></i> <span data-i18n="navDesign">听力设计</span></button>
+          <button type="button" class="nav-tab" id="navReview" data-page="review"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> <span data-i18n="navReview">方案审阅</span></button>
+        </div>
+        <button type="button" id="langBtn" aria-label="中文 / EN"><span id="langZhPart">中文</span> / <span id="langEnPart">EN</span></button>
+        <button type="button" id="hamburgerBtn" class="is-collapsed" aria-expanded="false" aria-controls="mobileMenu"><i class="fa-solid fa-bars" aria-hidden="true"></i> <span data-i18n="menu">菜单</span></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <button type="button" id="mNavHome" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="navHome">首页</span></button>
+      <button type="button" id="mNavClass" data-page="class"><i class="fa-solid fa-users" aria-hidden="true"></i> <span data-i18n="navClass">班级档案</span></button>
+      <button type="button" id="mNavDesign" data-page="design"><i class="fa-solid fa-ear-listen" aria-hidden="true"></i> <span data-i18n="navDesign">听力设计</span></button>
+      <button type="button" id="mNavReview" data-page="review"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> <span data-i18n="navReview">方案审阅</span></button>
+      <div class="lang-row">
+        <button type="button" id="langZhBtn">中文</button>
+        <button type="button" id="langEnBtn">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<div id="pageAlert" class="page-alert" hidden></div>
+<main class="shell">
+  <section id="pageHome" class="page is-active">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <h1 data-i18n="homeTitle">英语听力教学设计</h1>
+          <p class="lede" data-i18n="homeLede">按学段与班级情况，帮英语老师选定听力材料、目标和微技能，生成可审定的听前、听中、听后训练方案。</p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-teal" id="homeAddClass"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> <span data-i18n="registerClass">登记班级</span></button>
+          <button type="button" class="btn btn-primary" id="homeNewDesign"><i class="fa-solid fa-circle-plus" aria-hidden="true"></i> <span data-i18n="designLesson">设计听力课</span></button>
+        </div>
+      </div>
+      <div class="stat-grid" id="statGrid">
+        <button type="button" class="stat-card" id="statClassBtn"><span class="stat-k"><i class="fa-solid fa-users" aria-hidden="true"></i> <span data-i18n="statClass">班级数</span></span><strong class="stat-num" id="statClassNum">—</strong><span class="wave-line"></span></button>
+        <button type="button" class="stat-card" id="statDesignBtn"><span class="stat-k"><i class="fa-solid fa-list" aria-hidden="true"></i> <span data-i18n="statDesign">方案数</span></span><strong class="stat-num" id="statDesignNum">—</strong><span class="wave-line"></span></button>
+        <button type="button" class="stat-card" id="statReadyBtn"><span class="stat-k"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> <span data-i18n="statReady">已生成</span></span><strong class="stat-num" id="statReadyNum">—</strong><span class="wave-line"></span></button>
+        <button type="button" class="stat-card" id="statPendingBtn"><span class="stat-k"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> <span data-i18n="statPending">待生成</span></span><strong class="stat-num" id="statPendingNum">—</strong><span class="wave-line"></span></button>
+      </div>
+      <div class="section-card">
+        <h2 data-i18n="skillTitle">微技能覆盖</h2>
+        <p class="meta" data-i18n="skillHint">已出现的技能为陶橙实心。点已覆盖的技能去筛选，点未覆盖的技能去新建并预选。</p>
+        <div class="chip-row" id="skillCoverage"></div>
+      </div>
+      <div class="section-card">
+        <h2 data-i18n="recentTitle">最近方案</h2>
+        <div class="list" id="recentList"></div>
+        <div class="empty" id="recentEmpty" hidden></div>
+      </div>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+  <section id="pageClass" class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="classTitle">班级档案</h1>
+          <p class="lede" data-i18n="classLede">先有班级，听力方案才能按学段、年级和课时生成</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="classCreateBtn"><i class="fa-solid fa-plus" aria-hidden="true"></i> <span data-i18n="addClass">添加班级</span></button>
+      </div>
+      <div class="toolbar">
+        <input id="classSearch" class="search" type="search" autocomplete="off" data-i18n-placeholder="classSearchPh">
+        <select id="classFilterStage"></select>
+        <select id="classFilterGrade"></select>
+        <button type="button" class="btn btn-ghost" id="classClearFilter"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> <span data-i18n="clearFilter">清除筛选</span></button>
+      </div>
+      <p class="meta" id="classListMeta"></p>
+      <div class="list" id="classList"></div>
+      <div class="empty" id="classEmpty" hidden></div>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+  <section id="pageDesign" class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="designTitle">听力设计</h1>
+          <p class="lede" data-i18n="designLede">选定班级、材料与微技能，提交后由后台生成可审定的Markdown方案</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="designCreateBtn" data-mode="new-design"><i class="fa-solid fa-plus" aria-hidden="true"></i> <span data-i18n="newDesign">新建听力设计</span></button>
+      </div>
+      <div class="toolbar">
+        <input id="designSearch" class="search" type="search" autocomplete="off" data-i18n-placeholder="designSearchPh">
+        <select id="designFilterClass"></select>
+        <select id="designFilterType"></select>
+        <select id="designFilterLevel"></select>
+        <select id="designFilterCopy"></select>
+        <select id="designFilterTask"></select>
+      </div>
+      <div class="chip-row" id="designSkillFilters"></div>
+      <div class="chip-row" id="designExtraFilters"></div>
+      <div class="actions" style="margin:8px 0 12px">
+        <button type="button" class="btn btn-ghost" id="designClearFilter"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> <span data-i18n="clearFilter">清除筛选</span></button>
+      </div>
+      <p class="meta" id="designListMeta"></p>
+      <div class="list" id="designList"></div>
+      <div class="empty" id="designEmpty" hidden></div>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+  <section id="pageReview" class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="reviewTitle">方案审阅</h1>
+          <p class="lede" data-i18n="reviewLede">生成稿供老师审定后再用，正文应保留【AI 生成，入库前请人工验算】</p>
+        </div>
+      </div>
+      <div class="review-actions no-print" id="reviewActions">
+        <button type="button" class="btn btn-ghost" id="reviewPrev">&lt;</button>
+        <button type="button" class="btn btn-ghost" id="reviewNext">&gt;</button>
+        <button type="button" class="btn btn-ghost" id="reviewRefresh"><i class="fa-solid fa-rotate" aria-hidden="true"></i> <span data-i18n="refresh">刷新</span></button>
+        <button type="button" class="btn btn-ghost" id="reviewCopy"><i class="fa-solid fa-copy" aria-hidden="true"></i> <span data-i18n="copyPlan">复制方案</span></button>
+        <button type="button" class="btn btn-ghost" id="reviewDownload"><i class="fa-solid fa-download" aria-hidden="true"></i> <span data-i18n="downloadPlan">下载方案</span></button>
+        <button type="button" class="btn btn-ghost" id="reviewPrint"><i class="fa-solid fa-print" aria-hidden="true"></i> <span data-i18n="print">打印</span></button>
+        <button type="button" class="btn btn-ghost" id="reviewEdit"><i class="fa-solid fa-pen" aria-hidden="true"></i> <span data-i18n="editThis">编辑本条</span></button>
+        <button type="button" class="btn btn-danger" id="reviewDelete"><i class="fa-solid fa-trash" aria-hidden="true"></i> <span data-i18n="deleteThis">删除本条</span></button>
+        <button type="button" class="btn btn-primary" id="reviewNew"><i class="fa-solid fa-plus" aria-hidden="true"></i> <span data-i18n="newItem">新建</span></button>
+      </div>
+      <p class="meta no-print" id="reviewPos"></p>
+      <div class="banner banner-ai" id="reviewAiBanner">【AI 生成，入库前请人工验算】</div>
+      <div class="banner banner-warn" id="reviewCopyBanner" hidden>本条只应有出处，请勿把受版权保护的正文粘进页面</div>
+      <div class="review-grid">
+        <div class="side-card" id="reviewSide">
+          <h2 data-i18n="conditions">本条条件</h2>
+          <div class="kv" id="reviewFacts"></div>
+          <div class="actions" style="margin-top:8px">
+            <button type="button" class="btn btn-small btn-ghost" id="reviewViewClass"><i class="fa-solid fa-users" aria-hidden="true"></i> <span data-i18n="viewClass">查看班级</span></button>
+          </div>
+          <h2 style="margin-top:16px" data-i18n="materialZone">材料</h2>
+          <p class="file-name" id="reviewFileName"></p>
+          <div class="actions">
+            <button type="button" class="btn btn-small btn-teal" id="reviewListen"><i class="fa-solid fa-play" aria-hidden="true"></i> <span data-i18n="listen">试听</span></button>
+            <button type="button" class="btn btn-small btn-ghost" id="reviewOpen"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i> <span data-i18n="openFile">在浏览器打开</span></button>
+            <button type="button" class="btn btn-small btn-ghost" id="reviewFileDownload"><i class="fa-solid fa-download" aria-hidden="true"></i> <span data-i18n="download">下载</span></button>
+          </div>
+          <div id="reviewRhythm" class="no-print" style="margin-top:16px"></div>
+        </div>
+        <div class="md-panel">
+          <h2 data-i18n="planPreview">方案预览</h2>
+          <div id="reviewWait" hidden>
+            <div class="wave-wait" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <p id="reviewWaitText"></p>
+          </div>
+          <div class="empty" id="reviewEmpty" hidden></div>
+          <div class="md-body" id="reviewMarkdown"></div>
+        </div>
+      </div>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+</main>
+<div id="classModal" class="modal-overlay" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="classModalTitle">
+    <div class="modal-head">
+      <div>
+        <h2 id="classModalTitle">班级信息</h2>
+        <p class="meta" id="classModalMode"></p>
+      </div>
+      <button type="button" class="btn btn-ghost" id="classModalClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i> <span data-i18n="close">关闭</span></button>
+    </div>
+    <form id="formClass">
+      <div class="modal-body" id="classFormBody"></div>
+      <div class="modal-foot">
+        <p class="hint" id="formClassHint" style="flex:1"></p>
+        <button type="button" class="btn btn-ghost" id="formClassCancel"><span data-i18n="cancel">取消</span></button>
+        <button type="submit" class="btn btn-primary" id="formClassSubmit"><span data-i18n="submit">提交</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="designModal" class="modal-overlay" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="designModalTitle">
+    <div class="modal-head">
+      <div>
+        <h2 id="designModalTitle">听力设计</h2>
+        <p class="meta" id="designModalMode"></p>
+      </div>
+      <button type="button" class="btn btn-ghost" id="designModalClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i> <span data-i18n="close">关闭</span></button>
+    </div>
+    <form id="formDesign">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div id="designFormMain"></div>
+          <aside class="side-card" id="designSide">
+            <h2 data-i18n="classSnapshot">班级情况</h2>
+            <div class="kv" id="designSideFacts"></div>
+            <p class="meta" id="designStageHint"></p>
+          </aside>
+        </div>
+        <div id="designWait" hidden>
+          <div class="wave-wait" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p id="designWaitText"></p>
+          <button type="button" class="btn btn-teal" id="gotoReviewBtn" hidden><i class="fa-solid fa-file-lines" aria-hidden="true"></i> <span data-i18n="openReview">打开方案审阅</span></button>
+        </div>
+        <div id="designPlanBox" hidden>
+          <h2 data-i18n="planPreview">方案预览</h2>
+          <div class="actions no-print" style="margin-bottom:8px">
+            <button type="button" class="btn btn-small btn-ghost" id="openPlanFull"><i class="fa-solid fa-expand" aria-hidden="true"></i> <span data-i18n="viewFull">查看全文</span></button>
+          </div>
+          <div class="md-body" id="designPlanPreview"></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <p class="hint" id="formDesignHint" style="flex:1"></p>
+        <button type="button" class="btn btn-ghost" id="designGoAddClass" hidden><i class="fa-solid fa-user-plus" aria-hidden="true"></i> <span data-i18n="goAddClass">去添加班级</span></button>
+        <button type="button" class="btn btn-ghost" id="formDesignCancel"><span data-i18n="cancel">取消</span></button>
+        <button type="submit" class="btn btn-primary" id="formDesignSubmit"><span data-i18n="submit">提交</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="confirmModal" class="modal-overlay" hidden>
+  <div class="modal-panel modal-narrow" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-head"><h2 id="confirmTitle" data-i18n="pleaseConfirm">请确认</h2></div>
+    <div class="modal-body"><p id="confirmMessage"></p></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" id="confirmCancel"><span data-i18n="cancel">取消</span></button>
+      <button type="button" class="btn btn-primary" id="confirmOk"><span data-i18n="ok">确定</span></button>
+    </div>
+  </div>
+</div>
+<div id="noticeModal" class="modal-overlay" hidden>
+  <div class="modal-panel modal-narrow" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+    <div class="modal-head"><h2 id="noticeTitle" data-i18n="notice">提示</h2></div>
+    <div class="modal-body"><p id="noticeMessage"></p></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-primary" id="noticeOk"><span data-i18n="gotIt">知道了</span></button>
+    </div>
+  </div>
+</div>
+<div id="playerModal" class="modal-overlay" data-close-outside="true" hidden>
+  <div class="modal-panel modal-narrow" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+    <div class="modal-head">
+      <h2 id="playerTitle" data-i18n="listen">试听</h2>
+      <button type="button" class="btn btn-ghost" id="playerClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i> <span data-i18n="close">关闭</span></button>
+    </div>
+    <div class="modal-body">
+      <p class="file-name" id="playerFileName"></p>
+      <audio id="playerAudio" controls></audio>
+      <div class="actions" style="margin-top:12px">
+        <button type="button" class="btn btn-ghost" id="playerOpen"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i> <span data-i18n="openFile">在浏览器打开</span></button>
+        <button type="button" class="btn btn-ghost" id="playerDownload"><i class="fa-solid fa-download" aria-hidden="true"></i> <span data-i18n="download">下载</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="htmlModal" class="modal-overlay edge-mobile" data-close-outside="true" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="htmlTitle">
+    <div class="modal-head">
+      <h2 id="htmlTitle" data-i18n="browseHtml">浏览 HTML</h2>
+      <button type="button" class="btn btn-ghost" id="htmlClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i> <span data-i18n="close">关闭</span></button>
+    </div>
+    <div class="modal-body" style="padding-top:0">
+      <iframe id="htmlFrame" class="html-frame" title="HTML"></iframe>
+    </div>
+  </div>
+</div>
+<div id="mdModal" class="modal-overlay edge-mobile" data-close-outside="true" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+    <div class="modal-head">
+      <h2 id="mdTitle" data-i18n="planPreview">方案预览</h2>
+      <button type="button" class="btn btn-ghost" id="mdClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i> <span data-i18n="close">关闭</span></button>
+    </div>
+    <div class="modal-body"><div class="md-body" id="mdFull"></div></div>
+  </div>
+</div>
+<div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("c19107af403a50ce_英语听力教学设计")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const SRC_CLASS = "班级信息/默认表格";
+const SRC_DESIGN = "听力设计/默认表格";
+const TABLE_CLASS = "班级信息";
+const TABLE_DESIGN = "听力设计";
+const CLASS_FIELDS = ["班级名称", "学段", "年级", "班额", "课时分钟", "教材版本"];
+const DESIGN_FIELDS = ["班级", "主题", "材料类型", "材料来源", "版权状态", "学员层次", "微技能", "听后任务", "材料文件", "听力方案"];
+const DESIGN_EDIT_FIELDS = ["班级", "主题", "材料类型", "材料来源", "版权状态", "学员层次", "微技能", "听后任务", "材料文件"];
+const STAGES = ["小学高段", "初中", "高中"];
+const GRADES = ["五年级", "六年级", "七年级", "八年级", "九年级", "高一", "高二", "高三"];
+const GRADE_BY_STAGE = { "小学高段": ["五年级", "六年级"], "初中": ["七年级", "八年级", "九年级"], "高中": ["高一", "高二", "高三"] };
+const MINUTES = ["30分钟", "35分钟", "40分钟", "45分钟", "60分钟", "90分钟"];
+const MATERIAL_TYPES = ["短对话", "长对话", "独白/短文", "信息型", "故事", "影视片段"];
+const SOURCES = ["教材音频", "公开媒体", "影视材料", "播客音频", "自制音频"];
+const COPYRIGHTS = ["自有", "改编", "公开可引用", "仅存索引"];
+const LEVELS = ["基础层", "中等层", "提升层"];
+const SKILLS = ["抓主旨", "抓细节", "抓数字/时间", "抓转折", "抓连接", "抓语气", "推断", "记笔记"];
+const TASKS = ["复述", "讨论", "写"];
+const AUDIO_EXT = ["mp3", "wav", "m4a", "ogg", "aac"];
+const PAGE_ID = { home: "pageHome", class: "pageClass", design: "pageDesign", review: "pageReview" };
+const WAIT_TEXT = "正在按学段与微技能生成听力方案，生成后请老师审定";
+
+const UI = {
+  docTitle: { zh: "英语听力教学设计", en: "English Listening Lesson Design" },
+  brand: { zh: "听境工坊", en: "Listen Atelier" },
+  brandSub: { zh: "英语听力教学设计", en: "English Listening Lesson Design" },
+  navHome: { zh: "首页", en: "Home" },
+  navClass: { zh: "班级档案", en: "Classes" },
+  navDesign: { zh: "听力设计", en: "Designs" },
+  navReview: { zh: "方案审阅", en: "Review" },
+  menu: { zh: "菜单", en: "Menu" },
+  homeTitle: { zh: "英语听力教学设计", en: "English Listening Lesson Design" },
+  homeLede: { zh: "按学段与班级情况，帮英语老师选定听力材料、目标和微技能，生成可审定的听前、听中、听后训练方案。", en: "Choose materials, goals, and micro-skills for a class, then review a generated pre-, while-, and post-listening plan." },
+  registerClass: { zh: "登记班级", en: "Register a class" },
+  designLesson: { zh: "设计听力课", en: "Design a listening lesson" },
+  statClass: { zh: "班级数", en: "Classes" },
+  statDesign: { zh: "方案数", en: "Plans" },
+  statReady: { zh: "已生成", en: "Generated" },
+  statPending: { zh: "待生成", en: "Waiting" },
+  skillTitle: { zh: "微技能覆盖", en: "Micro-skill coverage" },
+  skillHint: { zh: "已出现的技能为陶橙实心。点已覆盖的技能去筛选，点未覆盖的技能去新建并预选。", en: "Filled terracotta chips are already used. A filled chip filters designs. An empty chip starts a new design with that skill selected." },
+  recentTitle: { zh: "最近方案", en: "Recent plans" },
+  classTitle: { zh: "班级档案", en: "Class records" },
+  classLede: { zh: "先有班级，听力方案才能按学段、年级和课时生成", en: "A class record lets the plan follow stage, grade, and period length." },
+  addClass: { zh: "添加班级", en: "Add class" },
+  classSearchPh: { zh: "搜索班级名称或教材版本", en: "Search class name or textbook" },
+  clearFilter: { zh: "清除筛选", en: "Clear filters" },
+  designTitle: { zh: "听力设计", en: "Listening designs" },
+  designLede: { zh: "选定班级、材料与微技能，提交后由后台生成可审定的Markdown方案", en: "Choose a class, material, and micro-skills. After submit, the service writes a Markdown plan for review." },
+  newDesign: { zh: "新建听力设计", en: "New listening design" },
+  goAddClass: { zh: "去添加班级", en: "Add a class first" },
+  designSearchPh: { zh: "搜索主题或班级名称", en: "Search topic or class name" },
+  skillFilterHint: { zh: "微技能（包含所选任一项即可）", en: "Micro-skills (a plan matches if it contains any selected skill)" },
+  reviewTitle: { zh: "方案审阅", en: "Plan review" },
+  reviewLede: { zh: "生成稿供老师审定后再用，正文应保留【AI 生成，入库前请人工验算】", en: "Review the generated draft before use. Keep the line 【AI 生成，入库前请人工验算】 in the text." },
+  refresh: { zh: "刷新", en: "Refresh" },
+  copyPlan: { zh: "复制方案", en: "Copy plan" },
+  downloadPlan: { zh: "下载方案", en: "Download plan" },
+  print: { zh: "打印", en: "Print" },
+  editThis: { zh: "编辑本条", en: "Edit this" },
+  deleteThis: { zh: "删除本条", en: "Delete this" },
+  newItem: { zh: "新建", en: "New" },
+  conditions: { zh: "本条条件", en: "Conditions" },
+  viewClass: { zh: "查看班级", en: "View class" },
+  materialZone: { zh: "材料", en: "Material" },
+  listen: { zh: "试听", en: "Listen" },
+  openFile: { zh: "在浏览器打开", en: "Open in browser" },
+  download: { zh: "下载", en: "Download" },
+  planPreview: { zh: "方案预览", en: "Plan preview" },
+  close: { zh: "关闭", en: "Close" },
+  cancel: { zh: "取消", en: "Cancel" },
+  submit: { zh: "提交", en: "Submit" },
+  save: { zh: "保存修改", en: "Save changes" },
+  ok: { zh: "确定", en: "Confirm" },
+  gotIt: { zh: "知道了", en: "Got it" },
+  pleaseConfirm: { zh: "请确认", en: "Please confirm" },
+  notice: { zh: "提示", en: "Notice" },
+  edit: { zh: "编辑", en: "Edit" },
+  classPlans: { zh: "本班方案", en: "Plans for this class" },
+  delete: { zh: "删除", en: "Delete" },
+  reviewBtn: { zh: "审阅方案", en: "Review plan" },
+  classSnapshot: { zh: "班级情况", en: "Class snapshot" },
+  openReview: { zh: "打开方案审阅", en: "Open review" },
+  viewFull: { zh: "查看全文", en: "View full text" },
+  browseHtml: { zh: "浏览 HTML", en: "Browse HTML" },
+  all: { zh: "全部", en: "All" },
+  stage: { zh: "学段", en: "Stage" },
+  grade: { zh: "年级", en: "Grade" },
+  loading: { zh: "正在读取…", en: "Loading…" },
+  readFail: { zh: "读取失败", en: "Could not load data" },
+  noRecent: { zh: "还没有听力方案", en: "No listening plans yet" },
+  noClass: { zh: "还没有班级", en: "No classes yet" },
+  noDesign: { zh: "还没有听力设计", en: "No listening designs yet" },
+  noFilterHit: { zh: "没有符合筛选的记录", en: "Nothing matches these filters" },
+  classGone: { zh: "班级已删除", en: "Class was deleted" },
+  pickFirst: { zh: "请先从列表选择一条", en: "Choose a design from the list first" },
+  pendingTag: { zh: "待生成", en: "Waiting" },
+  readyTag: { zh: "已生成", en: "Generated" },
+  people: { zh: "{n}人", en: "{n} students" },
+  showing: { zh: "显示 {n} / {t} 条", en: "Showing {n} / {t}" },
+  modeUnknown: { zh: "未能识别显示模式，已使用亮色。返回：", en: "Display mode was not recognized. Light mode is on. Returned: " },
+  modeFail: { zh: "读取显示模式失败，已使用亮色。", en: "Could not read display mode. Light mode is on. " },
+  closeFail: { zh: "关闭页面失败。", en: "Could not close this page. " },
+  closeUnavailable: { zh: "当前环境没有 closeFullHtml，无法关闭页面。", en: "closeFullHtml is not available here, so the page stays open." },
+  dupClass: { zh: "班级名称去空格后与已有班级重复，不能提交。", en: "This class name matches an existing one after spaces are removed." },
+  saved: { zh: "已保存。", en: "Saved." },
+  deleted: { zh: "已删除。", en: "Deleted." },
+  partialSave: { zh: "写入中断，请重新打开这条记录核对。字段：", en: "Saving stopped. Reopen the record and check this field: " },
+  cascadeFail: { zh: "班级已保存，但部分听力设计的班级名称未能更新。", en: "The class was saved, but some listening designs still have the old name." },
+  needClass: { zh: "请先添加班级", en: "Add a class first" },
+  needName: { zh: "请填写班级名称", en: "Enter a class name" },
+  needStage: { zh: "请选择学段", en: "Choose a stage" },
+  needGrade: { zh: "请选择年级", en: "Choose a grade" },
+  gradeStage: { zh: "年级与学段不匹配", en: "That grade does not belong to the selected stage" },
+  needSize: { zh: "班额须为 1 到 200 的整数", en: "Class size must be a whole number from 1 to 200" },
+  needMinutes: { zh: "请选择课时分钟", en: "Choose a period length" },
+  needTopic: { zh: "请填写主题", en: "Enter a topic" },
+  needType: { zh: "请选择材料类型", en: "Choose a material type" },
+  needSource: { zh: "请选择材料来源", en: "Choose a material source" },
+  needCopy: { zh: "请选择版权状态", en: "Choose a copyright status" },
+  needLevel: { zh: "请选择学员层次", en: "Choose a learner level" },
+  needSkill: { zh: "请至少选择一项微技能", en: "Select at least one micro-skill" },
+  needTask: { zh: "请选择听后任务", en: "Choose a post-listening task" },
+  needClassPick: { zh: "请选择班级", en: "Choose a class" },
+  renameConfirm: { zh: "班级名称将从「{old}」改为「{next}」。仍指向旧名称的听力设计会把「班级」更新为新名称。", en: "The class name will change from \"{old}\" to \"{next}\". Listening designs that still use the old name will be updated." },
+  keepPlan: { zh: "已生成方案不会因改条件自动重写；要按新条件出方案，请新建一条。", en: "An existing plan is not rewritten when you change the conditions. Create a new design if you need a plan for the new conditions." },
+  deleteClassAsk: { zh: "确定删除班级「{name}」？删除后不能恢复。", en: "Delete class \"{name}\"? This cannot be undone." },
+  classInUse: { zh: "已有 {n} 条听力方案引用班级「{name}」。请先修改这些方案的班级，或先删除方案。本次不删除班级。", en: "{n} listening design(s) still cite \"{name}\". Change those designs or delete them first. The class was not deleted." },
+  deleteDesignAsk: { zh: "确定删除听力设计「{name}」？删除后不能恢复。", en: "Delete the listening design \"{name}\"? This cannot be undone." },
+  newMode: { zh: "新建", en: "New" },
+  editMode: { zh: "修改", en: "Edit" },
+  submittedMode: { zh: "已提交，正在等待方案", en: "Submitted, waiting for the plan" },
+  noFile: { zh: "未选择文件。", en: "No file was selected." },
+  fileCleared: { zh: "已清除材料文件。", en: "Material file cleared." },
+  recIdle: { zh: "未在录音", en: "Not recording" },
+  recOn: { zh: "录音中", en: "Recording" },
+  recPause: { zh: "已暂停", en: "Paused" },
+  recBusy: { zh: "当前状态不能做这个录音操作。", en: "That recording action does not fit the current state." },
+  recCancelled: { zh: "已取消录音，材料文件保持不变。", en: "Recording cancelled. The material file is unchanged." },
+  recEmpty: { zh: "没有得到录音文件。", en: "No recording file was returned." },
+  recStart: { zh: "开始录入", en: "Start recording" },
+  recPauseBtn: { zh: "暂停", en: "Pause" },
+  recResume: { zh: "继续", en: "Resume" },
+  recCancel: { zh: "取消", en: "Cancel" },
+  recFinish: { zh: "完成", en: "Finish" },
+  pickMaterial: { zh: "选择材料", en: "Choose material" },
+  clearMaterial: { zh: "清除材料", en: "Clear material" },
+  indexWarn: { zh: "生成方案只会写出处，不会复制材料正文", en: "The plan will cite the source only and will not copy the material text." },
+  copyExtra: { zh: "本条只应有出处，请勿把受版权保护的正文粘进页面", en: "This item should contain the source only. Do not paste copyrighted text into the page." },
+  aiLine: { zh: "【AI 生成，入库前请人工验算】", en: "【AI 生成，入库前请人工验算】" },
+  aiGloss: { zh: "", en: " AI-generated. Check it before you keep it." },
+  hintJunior: { zh: "将按中考听力四节安排题型", en: "Question types will follow the four sections of the junior-high listening exam." },
+  hintSenior: { zh: "将按课标语篇类型安排", en: "Tasks will follow the curriculum discourse types." },
+  hintPrimary: { zh: "语速与任务按高段课堂", en: "Pace and tasks follow the upper-primary classroom." },
+  notInTable: { zh: "这些内容只在界面上参考，不会写入听力设计表。", en: "Shown only as a guide. Nothing here is written to the design table." },
+  rhythmNote: { zh: "仅界面参考，以方案正文为准", en: "Interface guide only. The plan text is the source of truth." },
+  rhythmLine: { zh: "听前约 {a} 分钟（20%） · 听中约 {b} 分钟（50%） · 听后约 {c} 分钟（30%） · 共 {t} 分钟", en: "Pre ~{a} min (20%) · While ~{b} min (50%) · Post ~{c} min (30%) · {t} min total" },
+  rhythmMissing: { zh: "没有可用的课时分钟，不能换算参考节奏。", en: "No period length is available, so the timing guide stays blank." },
+  noRow: { zh: "没有可操作的记录。", en: "There is no record to use." },
+  noPlan: { zh: "当前没有可使用的听力方案文本。", en: "There is no plan text to use yet." },
+  copied: { zh: "方案已复制到剪贴板。", en: "The plan is on the clipboard." },
+  copyFail: { zh: "复制失败，请重试。", en: "Copy failed. Try again." },
+  downloaded: { zh: "已写入文件并打开下载。", en: "The file was written and the download link was opened." },
+  pollTimeout: { zh: "方案仍未生成。可稍后在方案审阅中刷新。请不要再次提交同一条。", en: "The plan is still empty. Refresh later from Review. Do not submit this item again." },
+  planReady: { zh: "听力方案已生成，可在方案审阅中查看。", en: "The listening plan is ready in Review." },
+  waitEn: { zh: WAIT_TEXT, en: "Generating a listening plan from the stage and micro-skills. Please review it when it appears." },
+  badCount: { zh: "记录数无效：", en: "Record count was invalid:" },
+  rowShift: { zh: "这条记录已经不在当前范围内，请重新选择。", en: "That row is no longer in range. Choose again." },
+  submitting: { zh: "正在提交…", en: "Submitting…" },
+  saving: { zh: "正在保存…", en: "Saving…" },
+  unknownSkill: { zh: "记录里有可选项之外的微技能，保存时只保留八个可选项中的已选技能。", en: "This record has micro-skills outside the allowed list. Saving keeps only the allowed skills you select." },
+  filterStage: { zh: "学段", en: "Stage" },
+  filterGrade: { zh: "年级", en: "Grade" },
+  filterClass: { zh: "班级", en: "Class" },
+  filterType: { zh: "材料类型", en: "Material type" },
+  filterLevel: { zh: "学员层次", en: "Learner level" },
+  filterCopy: { zh: "版权状态", en: "Copyright" },
+  filterTask: { zh: "听后任务", en: "Post-listening task" },
+  pendingOnly: { zh: "只看待生成", en: "Waiting only" },
+  field_班级名称: { zh: "班级名称", en: "Class name" },
+  field_学段: { zh: "学段", en: "Stage" },
+  field_年级: { zh: "年级", en: "Grade" },
+  field_班额: { zh: "班额", en: "Class size" },
+  field_课时分钟: { zh: "课时分钟", en: "Period length" },
+  field_教材版本: { zh: "教材版本", en: "Textbook" },
+  field_班级: { zh: "班级", en: "Class" },
+  field_主题: { zh: "主题", en: "Topic" },
+  field_材料类型: { zh: "材料类型", en: "Material type" },
+  field_材料来源: { zh: "材料来源", en: "Source" },
+  field_版权状态: { zh: "版权状态", en: "Copyright" },
+  field_学员层次: { zh: "学员层次", en: "Learner level" },
+  field_微技能: { zh: "微技能", en: "Micro-skills" },
+  field_听后任务: { zh: "听后任务", en: "Post-listening task" },
+  field_材料文件: { zh: "材料文件", en: "Material file" },
+  field_听力方案: { zh: "听力方案", en: "Listening plan" },
+  opt_小学高段: { zh: "小学高段", en: "Upper primary" },
+  opt_初中: { zh: "初中", en: "Junior high" },
+  opt_高中: { zh: "高中", en: "Senior high" },
+  opt_五年级: { zh: "五年级", en: "Grade 5" },
+  opt_六年级: { zh: "六年级", en: "Grade 6" },
+  opt_七年级: { zh: "七年级", en: "Grade 7" },
+  opt_八年级: { zh: "八年级", en: "Grade 8" },
+  opt_九年级: { zh: "九年级", en: "Grade 9" },
+  opt_高一: { zh: "高一", en: "Senior 1" },
+  opt_高二: { zh: "高二", en: "Senior 2" },
+  opt_高三: { zh: "高三", en: "Senior 3" },
+  opt_30分钟: { zh: "30分钟", en: "30 min" },
+  opt_35分钟: { zh: "35分钟", en: "35 min" },
+  opt_40分钟: { zh: "40分钟", en: "40 min" },
+  opt_45分钟: { zh: "45分钟", en: "45 min" },
+  opt_60分钟: { zh: "60分钟", en: "60 min" },
+  opt_90分钟: { zh: "90分钟", en: "90 min" },
+  opt_短对话: { zh: "短对话", en: "Short dialogue" },
+  opt_长对话: { zh: "长对话", en: "Long dialogue" },
+  "opt_独白/短文": { zh: "独白/短文", en: "Monologue / passage" },
+  opt_信息型: { zh: "信息型", en: "Informational" },
+  opt_故事: { zh: "故事", en: "Story" },
+  opt_影视片段: { zh: "影视片段", en: "Film clip" },
+  opt_教材音频: { zh: "教材音频", en: "Textbook audio" },
+  opt_公开媒体: { zh: "公开媒体", en: "Public media" },
+  opt_影视材料: { zh: "影视材料", en: "Film / TV" },
+  opt_播客音频: { zh: "播客音频", en: "Podcast" },
+  opt_自制音频: { zh: "自制音频", en: "Teacher-made audio" },
+  opt_自有: { zh: "自有", en: "Owned" },
+  opt_改编: { zh: "改编", en: "Adapted" },
+  opt_公开可引用: { zh: "公开可引用", en: "Publicly citable" },
+  opt_仅存索引: { zh: "仅存索引", en: "Index only" },
+  opt_基础层: { zh: "基础层", en: "Foundation" },
+  opt_中等层: { zh: "中等层", en: "Intermediate" },
+  opt_提升层: { zh: "提升层", en: "Advanced" },
+  opt_抓主旨: { zh: "抓主旨", en: "Gist" },
+  opt_抓细节: { zh: "抓细节", en: "Details" },
+  "opt_抓数字/时间": { zh: "抓数字/时间", en: "Numbers / time" },
+  opt_抓转折: { zh: "抓转折", en: "Turns" },
+  opt_抓连接: { zh: "抓连接", en: "Connectors" },
+  opt_抓语气: { zh: "抓语气", en: "Tone" },
+  opt_推断: { zh: "推断", en: "Inference" },
+  opt_记笔记: { zh: "记笔记", en: "Note-taking" },
+  opt_复述: { zh: "复述", en: "Retell" },
+  opt_讨论: { zh: "讨论", en: "Discuss" },
+  opt_写: { zh: "写", en: "Write" },
+  posNone: { zh: "未选择记录", en: "No row selected" },
+  posLine: { zh: "第 {r} / {n} 条", en: "Row {r} / {n}" },
+  dismiss: { zh: "关闭提示", en: "Dismiss" },
+  retry: { zh: "重试", en: "Retry" },
+  planFileFallback: { zh: "听力方案", en: "listening-plan" },
+  sideEmpty: { zh: "选择班级后，这里显示学段、年级、班额、课时和教材，这些不会写入听力设计。", en: "After you choose a class, stage, grade, size, period, and textbook appear here. They are not saved on the design." },
+  generatedNote: { zh: "提交后由后台生成，无需填写。", en: "The service writes this after you submit. Leave it blank." },
+  noMaterial: { zh: "没有材料文件", en: "No material file" },
+  classReadFail: { zh: "暂时无法读取班级信息。", en: "The class record could not be read." }
+};
+
+let uiLang = "zh";
+const navHistory = [];
+const popupStack = [];
+const appState = {
+  page: "",
+  classRow: 0,
+  designRow: 0,
+  classCount: null,
+  designCount: 0,
+  classes: [],
+  designs: [],
+  classMode: "new",
+  designMode: "new",
+  classOriginalName: "",
+  classSaving: false,
+  designSaving: false,
+  polling: false,
+  pollToken: 0,
+  viewToken: 0,
+  formToken: 0,
+  pendingOnly: false,
+  designSkillFilter: [],
+  review: null,
+  planText: "",
+  reviewClassRow: 0,
+  recState: "idle",
+  homeFlags: { classOk: false, designOk: false },
+  confirmResolver: null,
+  noticeResolver: null
+};
+
+function t(key) {
+  const item = UI[key];
+  if (!item) return key;
+  return uiLang === "en" ? item.en : item.zh;
+}
+function tf(key, vars) {
+  let s = t(key);
+  const keys = Object.keys(vars);
+  for (let i = 0; i < keys.length; i++) {
+    s = s.split("{" + keys[i] + "}").join(String(vars[keys[i]]));
+  }
+  return s;
+}
+function optLabel(value) {
+  const item = UI["opt_" + value];
+  if (!item) return value;
+  return uiLang === "en" ? item.en : item.zh;
+}
+function fieldLabel(name) {
+  return t("field_" + name);
+}
+function detectLang() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const q = String(params.get("lang") || "").toLowerCase();
+    if (q === "cn") return "zh";
+    if (q === "en") return "en";
+  } catch (err) {}
+  try {
+    const stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored !== null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (err) {}
+  try {
+    const list = navigator.languages;
+    if (!list || typeof list.length !== "number") return "zh";
+    if (!list.length) return "zh";
+    for (let i = 0; i < list.length; i++) {
+      if (/^zh/i.test(String(list[i] || ""))) return "zh";
+    }
+    return "en";
+  } catch (err) {
+    return "zh";
+  }
+}
+function pad2(n) { return (n < 10 ? "0" : "") + n; }
+function formatDate(d) {
+  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+}
+function formatDateTime(d) {
+  return formatDate(d) + " " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()) + ":" + pad2(d.getSeconds());
+}
+function setToday() {
+  const d = new Date();
+  const week = uiLang === "en" ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()] : ("周" + "日一二三四五六"[d.getDay()]);
+  const node = document.getElementById("todayDate");
+  if (node) node.textContent = formatDate(d) + " " + week;
+}
+function isBlank(v) { return String(v == null ? "" : v).trim() === ""; }
+function normalizeName(v) { return String(v || "").replace(/\s+/g, ""); }
+function sleep(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function downloadUrl(name) { return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(name); }
+function privateUrl(name) { return "https://www.ithinkair.com:3031/private/" + encodeURIComponent(name); }
+function fileBase(name) {
+  const parts = String(name || "").split(/[\\/]/);
+  return parts[parts.length - 1] || String(name || "");
+}
+function extOf(name) {
+  const m = String(name || "").toLowerCase().match(/\.([a-z0-9]+)$/);
+  return m ? m[1] : "";
+}
+function isAudioName(name) { return AUDIO_EXT.indexOf(extOf(name)) >= 0; }
+function isHtmlName(name) { return extOf(name) === "html" || extOf(name) === "htm"; }
+function splitSkills(value) {
+  const parts = String(value || "").split(/[,，]/);
+  const out = [];
+  for (let i = 0; i < parts.length; i++) {
+    const s = parts[i].trim();
+    if (s) out.push(s);
+  }
+  return out;
+}
+function joinSkills(selected) {
+  const out = [];
+  for (let i = 0; i < SKILLS.length; i++) {
+    if (selected.indexOf(SKILLS[i]) >= 0) out.push(SKILLS[i]);
+  }
+  return out.join(",");
+}
+function clipText(s, n) {
+  const arr = Array.from(String(s || ""));
+  if (arr.length <= n) return arr.join("");
+  return arr.slice(0, n).join("") + "…";
+}
+function plainSummary(md) {
+  let s = String(md || "");
+  s = s.replace(/```[\s\S]*?```/g, " ");
+  s = s.replace(/!\[[^\]]*\]\([^)]*\)/g, " ");
+  s = s.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+  s = s.replace(/[#>*_~`|]/g, " ");
+  s = s.replace(/\s+/g, " ").trim();
+  return s;
+}
+function parseRowNumber(text) {
+  const m = String(text == null ? "" : text).trim().match(/^\d+$/);
+  if (!m) return 0;
+  const n = parseInt(m[0], 10);
+  return n > 0 ? n : 0;
+}
+function visit(url) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+async function bridge(request) {
+  try {
+    const res = await callAppBridge(request);
+    return res == null ? "" : String(res);
+  } catch (err) {
+    throw new Error(err && err.message ? err.message : String(err));
+  }
+}
+function isShortError(text) {
+  const s = String(text || "").trim();
+  return !!s && s.length <= 220 && /(失败|错误|异常|Error|Exception)/i.test(s);
+}
+async function loadCsv(source, fields) {
+  let text = await bridge({ type: "GetTableCSV", data: source, payload: fields.join(",") });
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const trimmed = text.trim();
+  if (/^<!DOCTYPE|^<html/i.test(trimmed)) throw new Error(trimmed.slice(0, 180));
+  const rows = parseCSV(text);
+  const list = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i] || [];
+    const rec = { _row: i + 1 };
+    for (let c = 0; c < fields.length; c++) rec[fields[c]] = row[c] == null ? "" : String(row[c]);
+    list.push(rec);
+  }
+  while (list.length) {
+    const last = list[list.length - 1];
+    let empty = true;
+    for (let c = 0; c < fields.length; c++) {
+      if (String(last[fields[c]] || "").trim() !== "") { empty = false; break; }
+    }
+    if (!empty) break;
+    list.pop();
+  }
+  return list;
+}
+async function fetchCount(source) {
+  const text = await bridge({ type: "GetRecordCount", data: source });
+  const s = String(text || "").trim();
+  if (!/^\d+$/.test(s)) throw new Error(t("badCount") + " " + s);
+  return parseInt(s, 10);
+}
+async function getCell(source, field, row) {
+  return await bridge({ type: "GetCellValue", data: source, payload: field + "/" + String(row) });
+}
+async function setCell(source, field, row, value) {
+  const sent = String(value);
+  const res = await bridge({ type: "SetCellValue", data: source, payload: field + "/" + String(row) + "/" + sent });
+  const s = String(res || "").trim();
+  if (isShortError(s) && s !== sent && sent.indexOf(s) === -1) throw new Error(s);
+  return res;
+}
+async function submitRecord(table, obj) {
+  const payload = JSON.stringify(obj);
+  const res = await bridge({ type: "SubmitRecord", data: table, payload: payload });
+  const s = String(res || "").trim();
+  if (isShortError(s)) throw new Error(s);
+  return res;
+}
+async function deleteRecord(source, row) {
+  const res = await bridge({ type: "DeleteRecord", data: source, payload: String(row) });
+  const s = String(res || "").trim();
+  if (isShortError(s)) throw new Error(s);
+  return res;
+}
+function findClass(name) {
+  for (let i = 0; i < appState.classes.length; i++) {
+    if (appState.classes[i]["班级名称"] === name) return appState.classes[i];
+  }
+  return null;
+}
+function classDisplay(name) {
+  if (isBlank(name)) return t("classGone");
+  return findClass(name) ? name : t("classGone");
+}
+function notify(message, kind) {
+  const text = String(message || "").trim();
+  if (!text) return;
+  const wrap = document.getElementById("toastWrap");
+  const item = document.createElement("div");
+  item.className = "toast" + (kind === "error" ? " toast-error" : kind === "success" ? " toast-success" : "");
+  const span = document.createElement("span");
+  span.textContent = text;
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "btn btn-small btn-ghost";
+  close.textContent = t("dismiss");
+  close.addEventListener("click", function () { item.remove(); });
+  item.appendChild(span);
+  item.appendChild(close);
+  wrap.appendChild(item);
+  while (wrap.children.length > 4) wrap.removeChild(wrap.firstChild);
+  if (kind === "error") {
+    const alert = document.getElementById("pageAlert");
+    alert.hidden = false;
+    alert.textContent = "";
+    const msg = document.createElement("span");
+    msg.textContent = text;
+    msg.style.flex = "1";
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "btn btn-small btn-ghost";
+    retry.textContent = t("retry");
+    retry.addEventListener("click", function () { showPage(appState.page || "home", { skipHistory: true, keepScroll: true }); });
+    const dismiss = document.createElement("button");
+    dismiss.type = "button";
+    dismiss.className = "btn btn-small btn-ghost";
+    dismiss.textContent = t("dismiss");
+    dismiss.addEventListener("click", function () { alert.hidden = true; });
+    alert.appendChild(msg);
+    alert.appendChild(retry);
+    alert.appendChild(dismiss);
+  }
+  if (kind !== "error") setTimeout(function () { if (item.parentNode) item.remove(); }, 6000);
+}
+function pushPopup(el) {
+  el.hidden = false;
+  if (popupStack.lastIndexOf(el) < 0) popupStack.push(el);
+  el.style.zIndex = String(2100 + popupStack.length);
+  document.body.classList.add("modal-open");
+}
+function closePopupElement(el) {
+  const idx = popupStack.lastIndexOf(el);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  el.hidden = true;
+  if (!popupStack.length) document.body.classList.remove("modal-open");
+  el.dispatchEvent(new CustomEvent("popup-closed"));
+}
+function closeTopPopup() {
+  if (!popupStack.length) return false;
+  closePopupElement(popupStack[popupStack.length - 1]);
+  return true;
+}
+function airBack() {
+  const menu = document.getElementById("mobileMenu");
+  if (menu && !menu.hidden) {
+    closeMobileMenu();
+    return "false";
+  }
+  if (popupStack.length) {
+    closeTopPopup();
+    return "false";
+  }
+  if (!navHistory.length) return "true";
+  const prev = navHistory.pop();
+  showPage(prev.page, { skipHistory: true, scroll: prev.scroll });
+  return "false";
+}
+function openConfirm(message) {
+  const modal = document.getElementById("confirmModal");
+  document.getElementById("confirmMessage").textContent = message;
+  document.getElementById("confirmOk").textContent = t("ok");
+  document.getElementById("confirmCancel").textContent = t("cancel");
+  return new Promise(function (resolve) {
+    appState.confirmResolver = resolve;
+    pushPopup(modal);
+  });
+}
+function settleConfirm(val) {
+  const fn = appState.confirmResolver;
+  appState.confirmResolver = null;
+  closePopupElement(document.getElementById("confirmModal"));
+  if (fn) fn(val);
+}
+function openNotice(message) {
+  document.getElementById("noticeMessage").textContent = message;
+  document.getElementById("noticeOk").textContent = t("gotIt");
+  const modal = document.getElementById("noticeModal");
+  return new Promise(function (resolve) {
+    appState.noticeResolver = resolve;
+    pushPopup(modal);
+  });
+}
+function settleNotice() {
+  const fn = appState.noticeResolver;
+  appState.noticeResolver = null;
+  closePopupElement(document.getElementById("noticeModal"));
+  if (fn) fn();
+}
+function renderInline(raw) {
+  const codes = [];
+  const tokens = [];
+  let s = String(raw == null ? "" : raw);
+  s = s.replace(/`([^`]*)`/g, function (_, c) {
+    const token = "\u0000C" + codes.length + "\u0000";
+    codes.push("<code>" + escapeHtml(c) + "</code>");
+    return token;
+  });
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function (_, alt, url) {
+    const token = "\u0000H" + tokens.length + "\u0000";
+    tokens.push(markdownImage(alt, url));
+    return token;
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function (_, label, url) {
+    const token = "\u0000H" + tokens.length + "\u0000";
+    tokens.push(markdownLink(label, url));
+    return token;
+  });
+  s = s.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+    const token = "\u0000H" + tokens.length + "\u0000";
+    const safe = /^https?:\/\//i.test(url) ? url : "";
+    tokens.push(safe ? '<a href="' + escapeHtml(safe) + '" target="_blank" rel="noopener">' + escapeHtml(url) + "</a>" : escapeHtml(url));
+    return token;
+  });
+  s = escapeHtml(s);
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  s = s.replace(/(^|[\s(])_([^_\n]+)_(?=$|[\s).,;:!?])/g, "$1<em>$2</em>");
+  s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  s = s.replace(/\u0000H(\d+)\u0000/g, function (_, n) { return tokens[Number(n)] || ""; });
+  s = s.replace(/\u0000C(\d+)\u0000/g, function (_, n) { return codes[Number(n)] || ""; });
+  return s;
+}
+function markdownImage(alt, url) {
+  const raw = String(url || "").trim();
+  let href = "";
+  let src = "";
+  if (/^https?:\/\//i.test(raw) || /^data:image\//i.test(raw)) {
+    href = raw;
+    src = raw;
+  } else {
+    const name = raw.replace(/^\.\//, "");
+    href = downloadUrl(name);
+    src = href;
+  }
+  return '<a class="md-img-link" href="' + escapeHtml(href) + '" target="_blank" rel="noopener"><img alt="' + escapeHtml(alt) + '" src="' + escapeHtml(src) + '"><span class="sr-only">' + escapeHtml(t("download")) + "</span></a>";
+}
+function markdownLink(label, url) {
+  const raw = String(url || "").trim();
+  if (/^https?:\/\//i.test(raw) || /^mailto:/i.test(raw)) {
+    return '<a href="' + escapeHtml(raw) + '" target="_blank" rel="noopener">' + escapeHtml(label) + "</a>";
+  }
+  return escapeHtml(label);
+}
+function isTableSep(line) {
+  const cells = splitTableRow(line);
+  if (!cells.length) return false;
+  for (let i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i])) return false;
+  }
+  return true;
+}
+function splitTableRow(line) {
+  let s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  const parts = s.split("|");
+  for (let i = 0; i < parts.length; i++) parts[i] = parts[i].trim();
+  return parts;
+}
+function renderMarkdown(md) {
+  const lines = String(md || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const html = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim() === "") { i++; continue; }
+    const fence = line.match(/^```(.*)$/);
+    if (fence) {
+      const buf = [];
+      i++;
+      while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i++; }
+      if (i < lines.length) i++;
+      html.push("<pre><code>" + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) { html.push("<hr>"); i++; continue; }
+    const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      const level = heading[1].length;
+      html.push("<h" + level + ">" + renderInline(heading[2]) + "</h" + level + ">");
+      i++;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i++; }
+      html.push("<blockquote>" + renderMarkdown(buf.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (line.indexOf("|") >= 0 && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+      const head = splitTableRow(line);
+      i += 2;
+      const body = [];
+      while (i < lines.length && lines[i].trim() && lines[i].indexOf("|") >= 0) { body.push(splitTableRow(lines[i])); i++; }
+      let table = "<div class=\"md-scroll\"><table><thead><tr>";
+      for (let c = 0; c < head.length; c++) table += "<th>" + renderInline(head[c]) + "</th>";
+      table += "</tr></thead><tbody>";
+      for (let r = 0; r < body.length; r++) {
+        table += "<tr>";
+        for (let c = 0; c < head.length; c++) table += "<td>" + renderInline(body[r][c] || "") + "</td>";
+        table += "</tr>";
+      }
+      table += "</tbody></table></div>";
+      html.push(table);
+      continue;
+    }
+    if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+      const parsed = parseList(lines, i);
+      html.push(parsed.html);
+      i = parsed.next;
+      continue;
+    }
+    const buf = [line];
+    i++;
+    while (i < lines.length && lines[i].trim() !== "" && !isBlockStart(lines[i])) { buf.push(lines[i]); i++; }
+    const parts = [];
+    for (let p = 0; p < buf.length; p++) parts.push(renderInline(buf[p]));
+    html.push("<p>" + parts.join("<br>") + "</p>");
+  }
+  return html.join("\n");
+}
+function isBlockStart(line) {
+  return /^(#{1,6}\s+|```|>\s?|(-{3,}|\*{3,}|_{3,})\s*$)/.test(line) || /^\s*([-*+]|\d+\.)\s+/.test(line) || (line.indexOf("|") >= 0 && /\|?\s*:?-{3,}/.test(line));
+}
+function parseList(lines, start) {
+  const first = lines[start].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+  const base = first ? first[1].length : 0;
+  const ordered = first ? /^\d+\.$/.test(first[2]) : false;
+  const items = [];
+  let i = start;
+  while (i < lines.length) {
+    const m = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+    if (!m || m[1].length !== base) break;
+    if (/^\d+\.$/.test(m[2]) !== ordered && items.length) break;
+    let content = m[3];
+    let task = "";
+    const tm = content.match(/^\[( |x|X)\]\s+(.*)$/);
+    if (tm) { task = tm[1].toLowerCase() === "x" ? "1" : "0"; content = tm[2]; }
+    i++;
+    while (i < lines.length && lines[i].trim() && /^\s+/.test(lines[i]) && !/^(\s*)([-*+]|\d+\.)\s+/.test(lines[i])) {
+      content += " " + lines[i].trim();
+      i++;
+    }
+    let inner = renderInline(content);
+    if (i < lines.length) {
+      const nm = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+/);
+      if (nm && nm[1].length > base) {
+        const nested = parseList(lines, i);
+        inner += nested.html;
+        i = nested.next;
+      }
+    }
+    if (task) {
+      items.push('<li><label><input type="checkbox" disabled' + (task === "1" ? " checked" : "") + "> " + inner + "</label></li>");
+    } else items.push("<li>" + inner + "</li>");
+  }
+  const tag = ordered ? "ol" : "ul";
+  return { html: "<" + tag + ">" + items.join("") + "</" + tag + ">", next: i };
+}
+function fillSelect(select, options, placeholder, current) {
+  const keep = current != null ? current : select.value;
+  select.innerHTML = "";
+  const ph = document.createElement("option");
+  ph.value = "";
+  ph.textContent = placeholder;
+  select.appendChild(ph);
+  for (let i = 0; i < options.length; i++) {
+    const o = document.createElement("option");
+    o.value = options[i];
+    o.textContent = optLabel(options[i]);
+    select.appendChild(o);
+  }
+  select.value = options.indexOf(keep) >= 0 ? keep : "";
+}
+function gradesForStage(stage) {
+  if (GRADE_BY_STAGE[stage]) return GRADE_BY_STAGE[stage].slice();
+  return GRADES.slice();
+}
+function iconBtn(icon, label, cls) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = cls || "btn btn-small btn-ghost";
+  const i = document.createElement("i");
+  i.className = icon;
+  i.setAttribute("aria-hidden", "true");
+  b.appendChild(i);
+  b.appendChild(document.createTextNode(" " + label));
+  return b;
+}
+function makeField(formId, name, kind, options, required) {
+  const wrap = document.createElement("label");
+  wrap.className = "field";
+  const span = document.createElement("span");
+  span.dataset.i18n = "field_" + name;
+  span.textContent = fieldLabel(name);
+  if (required) span.className = "req";
+  wrap.appendChild(span);
+  let input;
+  if (kind === "select") {
+    input = document.createElement("select");
+    fillSelect(input, options || [], t("all") === "All" && uiLang === "en" ? "Choose" : "请选择", "");
+    fillSelect(input, options || [], uiLang === "en" ? "Choose" : "请选择", "");
+  } else if (kind === "number") {
+    input = document.createElement("input");
+    input.type = "number";
+    input.min = "1";
+    input.max = "200";
+    input.step = "1";
+    input.inputMode = "numeric";
+  } else {
+    input = document.createElement("input");
+    input.type = "text";
+    input.autocomplete = "off";
+  }
+  input.id = formId + "_" + name;
+  input.name = name;
+  wrap.appendChild(input);
+  return wrap;
+}
+function buildForms() {
+  const classBody = document.getElementById("classFormBody");
+  classBody.innerHTML = "";
+  const classSpec = [
+    ["班级名称", "text", null, true],
+    ["学段", "select", STAGES, true],
+    ["年级", "select", GRADES, true],
+    ["班额", "number", null, true],
+    ["课时分钟", "select", MINUTES, true],
+    ["教材版本", "text", null, false]
+  ];
+  for (let i = 0; i < classSpec.length; i++) {
+    classBody.appendChild(makeField("formClass", classSpec[i][0], classSpec[i][1], classSpec[i][2], classSpec[i][3]));
+  }
+  const main = document.getElementById("designFormMain");
+  main.innerHTML = "";
+  main.appendChild(makeField("formDesign", "班级", "select", [], true));
+  main.appendChild(makeField("formDesign", "主题", "text", null, true));
+  main.appendChild(makeField("formDesign", "材料类型", "select", MATERIAL_TYPES, true));
+  main.appendChild(makeField("formDesign", "材料来源", "select", SOURCES, true));
+  main.appendChild(makeField("formDesign", "版权状态", "select", COPYRIGHTS, true));
+  const warn = document.createElement("div");
+  warn.id = "copyrightWarn";
+  warn.className = "warn-bar";
+  warn.hidden = true;
+  warn.textContent = t("indexWarn");
+  main.appendChild(warn);
+  main.appendChild(makeField("formDesign", "学员层次", "select", LEVELS, true));
+  const skillWrap = document.createElement("div");
+  skillWrap.className = "field";
+  const skillLabel = document.createElement("span");
+  skillLabel.className = "req";
+  skillLabel.dataset.i18n = "field_微技能";
+  skillLabel.textContent = fieldLabel("微技能");
+  skillWrap.appendChild(skillLabel);
+  const chips = document.createElement("div");
+  chips.className = "chip-row";
+  chips.id = "designSkillChips";
+  skillWrap.appendChild(chips);
+  const hidden = document.createElement("input");
+  hidden.type = "hidden";
+  hidden.id = "formDesign_微技能";
+  hidden.name = "微技能";
+  skillWrap.appendChild(hidden);
+  main.appendChild(skillWrap);
+  for (let i = 0; i < SKILLS.length; i++) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.dataset.skill = SKILLS[i];
+    chip.textContent = optLabel(SKILLS[i]);
+    chip.setAttribute("aria-pressed", "false");
+    chips.appendChild(chip);
+  }
+  main.appendChild(makeField("formDesign", "听后任务", "select", TASKS, true));
+  const fileWrap = document.createElement("div");
+  fileWrap.className = "field";
+  const fileLabel = document.createElement("span");
+  fileLabel.dataset.i18n = "field_材料文件";
+  fileLabel.textContent = fieldLabel("材料文件");
+  fileWrap.appendChild(fileLabel);
+  const fileHidden = document.createElement("input");
+  fileHidden.type = "hidden";
+  fileHidden.id = "formDesign_材料文件";
+  fileHidden.name = "材料文件";
+  fileWrap.appendChild(fileHidden);
+  const fileActions = document.createElement("div");
+  fileActions.className = "actions";
+  const pick = iconBtn("fa-solid fa-file-arrow-up", t("pickMaterial"), "btn btn-small btn-teal");
+  pick.id = "pickMaterialBtn";
+  const clear = iconBtn("fa-solid fa-eraser", t("clearMaterial"), "btn btn-small btn-ghost");
+  clear.id = "clearMaterialBtn";
+  fileActions.appendChild(pick);
+  fileActions.appendChild(clear);
+  fileWrap.appendChild(fileActions);
+  const info = document.createElement("div");
+  info.id = "materialInfo";
+  info.className = "material-box";
+  info.hidden = true;
+  info.innerHTML = '<p class="file-name" id="materialFileLabel"></p><audio id="designAudio" controls hidden></audio><div class="actions"><button type="button" class="btn btn-small btn-ghost" id="designFileOpen"></button><button type="button" class="btn btn-small btn-ghost" id="designFileDownload"></button></div>';
+  fileWrap.appendChild(info);
+  const rec = document.createElement("div");
+  rec.id = "recorderBox";
+  rec.className = "recorder";
+  rec.hidden = true;
+  rec.innerHTML = '<p id="recStatus"></p><div class="actions"><button type="button" class="btn btn-small btn-teal" id="recStart"></button><button type="button" class="btn btn-small btn-ghost" id="recPause"></button><button type="button" class="btn btn-small btn-ghost" id="recResume"></button><button type="button" class="btn btn-small btn-ghost" id="recCancel"></button><button type="button" class="btn btn-small btn-primary" id="recFinish"></button></div>';
+  fileWrap.appendChild(rec);
+  main.appendChild(fileWrap);
+  const note = document.createElement("p");
+  note.className = "meta";
+  note.id = "planFieldNote";
+  note.textContent = t("generatedNote");
+  main.appendChild(note);
+  buildSkillFilter();
+  refreshFilterSelects();
+}
+function buildSkillFilter() {
+  const box = document.getElementById("designSkillFilters");
+  box.innerHTML = "";
+  const label = document.createElement("span");
+  label.className = "meta";
+  label.id = "skillFilterLabel";
+  label.textContent = t("skillFilterHint");
+  box.appendChild(label);
+  for (let i = 0; i < SKILLS.length; i++) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.dataset.filterSkill = SKILLS[i];
+    chip.textContent = optLabel(SKILLS[i]);
+    box.appendChild(chip);
+  }
+}
+function refreshFilterSelects() {
+  fillSelect(document.getElementById("classFilterStage"), STAGES, t("filterStage"), document.getElementById("classFilterStage").value);
+  const stage = document.getElementById("classFilterStage").value;
+  fillSelect(document.getElementById("classFilterGrade"), gradesForStage(stage), t("filterGrade"), document.getElementById("classFilterGrade").value);
+  fillSelect(document.getElementById("designFilterType"), MATERIAL_TYPES, t("filterType"), document.getElementById("designFilterType").value);
+  fillSelect(document.getElementById("designFilterLevel"), LEVELS, t("filterLevel"), document.getElementById("designFilterLevel").value);
+  fillSelect(document.getElementById("designFilterCopy"), COPYRIGHTS, t("filterCopy"), document.getElementById("designFilterCopy").value);
+  fillSelect(document.getElementById("designFilterTask"), TASKS, t("filterTask"), document.getElementById("designFilterTask").value);
+  refillDesignClassFilter();
+}
+function refreshOpenFormSelects() {
+  const choose = uiLang === "en" ? "Choose" : "请选择";
+  const stage = document.getElementById("formClass_学段");
+  if (stage) fillSelect(stage, STAGES, choose, stage.value);
+  const grade = document.getElementById("formClass_年级");
+  if (grade) fillSelect(grade, gradesForStage(stage ? stage.value : ""), choose, grade.value);
+  const minutes = document.getElementById("formClass_课时分钟");
+  if (minutes) fillSelect(minutes, MINUTES, choose, minutes.value);
+  const pairs = [
+    ["formDesign_材料类型", MATERIAL_TYPES],
+    ["formDesign_材料来源", SOURCES],
+    ["formDesign_版权状态", COPYRIGHTS],
+    ["formDesign_学员层次", LEVELS],
+    ["formDesign_听后任务", TASKS]
+  ];
+  for (let i = 0; i < pairs.length; i++) {
+    const node = document.getElementById(pairs[i][0]);
+    if (node) fillSelect(node, pairs[i][1], choose, node.value);
+  }
+  if (document.getElementById("formDesign_班级")) refillDesignClassChoices();
+}
+function refillDesignClassFilter() {
+  const select = document.getElementById("designFilterClass");
+  const keep = select.value;
+  select.innerHTML = "";
+  const ph = document.createElement("option");
+  ph.value = "";
+  ph.textContent = t("filterClass");
+  select.appendChild(ph);
+  const seen = {};
+  for (let i = 0; i < appState.classes.length; i++) {
+    const name = appState.classes[i]["班级名称"];
+    if (!name || seen[name]) continue;
+    seen[name] = true;
+    const o = document.createElement("option");
+    o.value = name;
+    o.textContent = name;
+    select.appendChild(o);
+  }
+  if (keep && !seen[keep]) {
+    const o = document.createElement("option");
+    o.value = keep;
+    o.textContent = keep;
+    select.appendChild(o);
+  }
+  select.value = keep;
+}
+function refillDesignClassChoices(selected) {
+  const select = document.getElementById("formDesign_班级");
+  const keep = selected != null ? selected : (select ? select.value : "");
+  if (!select) return;
+  select.innerHTML = "";
+  const ph = document.createElement("option");
+  ph.value = "";
+  ph.textContent = uiLang === "en" ? "Choose" : "请选择";
+  select.appendChild(ph);
+  for (let i = 0; i < appState.classes.length; i++) {
+    const rec = appState.classes[i];
+    const name = rec["班级名称"];
+    if (!name) continue;
+    const o = document.createElement("option");
+    o.value = name;
+    const sub = [optLabel(rec["学段"]), optLabel(rec["年级"]), optLabel(rec["课时分钟"])].filter(Boolean).join(" · ");
+    o.textContent = sub ? name + " — " + sub : name;
+    select.appendChild(o);
+  }
+  if (keep && !findClass(keep)) {
+    const o = document.createElement("option");
+    o.value = keep;
+    o.textContent = keep + " — " + t("classGone");
+    select.appendChild(o);
+  }
+  select.value = keep || "";
+}
+function applyI18n(opts) {
+  document.documentElement.lang = uiLang === "en" ? "en" : "zh-CN";
+  document.title = t("docTitle");
+  document.getElementById("brandName").textContent = t("brand");
+  document.getElementById("brandSub").textContent = t("brandSub");
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].dataset.i18n);
+  const ph = document.querySelectorAll("[data-i18n-placeholder]");
+  for (let i = 0; i < ph.length; i++) ph[i].placeholder = t(ph[i].dataset.i18nPlaceholder);
+  setToday();
+  updateLangButtons();
+  refreshFilterSelects();
+  refreshOpenFormSelects();
+  const chips = document.querySelectorAll("#designSkillChips .chip");
+  for (let i = 0; i < chips.length; i++) chips[i].textContent = optLabel(chips[i].dataset.skill);
+  const filters = document.querySelectorAll("#designSkillFilters .chip");
+  for (let i = 0; i < filters.length; i++) filters[i].textContent = optLabel(filters[i].dataset.filterSkill);
+  const skillLabel = document.getElementById("skillFilterLabel");
+  if (skillLabel) skillLabel.textContent = t("skillFilterHint");
+  const warn = document.getElementById("copyrightWarn");
+  if (warn) warn.textContent = t("indexWarn");
+  const note = document.getElementById("planFieldNote");
+  if (note) note.textContent = t("generatedNote");
+  setBtnLabel("pickMaterialBtn", "fa-solid fa-file-arrow-up", t("pickMaterial"));
+  setBtnLabel("clearMaterialBtn", "fa-solid fa-eraser", t("clearMaterial"));
+  setBtnLabel("designFileOpen", "fa-solid fa-up-right-from-square", t("openFile"));
+  setBtnLabel("designFileDownload", "fa-solid fa-download", t("download"));
+  setBtnLabel("recStart", "", t("recStart"));
+  setBtnLabel("recPause", "", t("recPauseBtn"));
+  setBtnLabel("recResume", "", t("recResume"));
+  setBtnLabel("recCancel", "", t("recCancel"));
+  setBtnLabel("recFinish", "", t("recFinish"));
+  renderRecStatus();
+  updateCreateDesignButton();
+  updateClassValidity();
+  updateDesignValidity();
+  syncDesignSide();
+  const ai = document.getElementById("reviewAiBanner");
+  if (ai) ai.textContent = t("aiLine") + t("aiGloss");
+  const copyBanner = document.getElementById("reviewCopyBanner");
+  if (copyBanner) copyBanner.textContent = t("copyExtra");
+  if (!opts || opts.lists !== false) {
+    if (appState.page === "home") renderHome();
+    if (appState.page === "class") renderClassList();
+    if (appState.page === "design") renderDesignList();
+    if (appState.page === "review") renderReview();
+  }
+  layoutNav();
+}
+function setBtnLabel(id, icon, label) {
+  const node = document.getElementById(id);
+  if (!node) return;
+  node.textContent = "";
+  if (icon) {
+    const i = document.createElement("i");
+    i.className = icon;
+    i.setAttribute("aria-hidden", "true");
+    node.appendChild(i);
+    node.appendChild(document.createTextNode(" " + label));
+  } else node.textContent = label;
+}
+function updateLangButtons() {
+  document.getElementById("langZhPart").className = uiLang === "zh" ? "is-on" : "is-off";
+  document.getElementById("langEnPart").className = uiLang === "en" ? "is-on" : "is-off";
+  document.getElementById("langZhBtn").setAttribute("aria-pressed", uiLang === "zh" ? "true" : "false");
+  document.getElementById("langEnBtn").setAttribute("aria-pressed", uiLang === "en" ? "true" : "false");
+}
+function setLang(lang) {
+  uiLang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", uiLang === "en" ? "en" : "cn"); } catch (err) {}
+  applyI18n();
+}
+function closeMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  const ham = document.getElementById("hamburgerBtn");
+  menu.hidden = true;
+  ham.setAttribute("aria-expanded", "false");
+}
+function layoutNav() {
+  const row = document.getElementById("navRow");
+  const tabs = document.getElementById("navTabs");
+  const langBtn = document.getElementById("langBtn");
+  const ham = document.getElementById("hamburgerBtn");
+  const date = document.getElementById("todayDate");
+  tabs.classList.remove("is-collapsed");
+  langBtn.classList.remove("is-collapsed");
+  ham.classList.add("is-collapsed");
+  date.classList.remove("is-collapsed");
+  if (row.scrollWidth > row.clientWidth + 1) {
+    tabs.classList.add("is-collapsed");
+    langBtn.classList.add("is-collapsed");
+    ham.classList.remove("is-collapsed");
+    if (row.scrollWidth > row.clientWidth + 1) date.classList.add("is-collapsed");
+  } else closeMobileMenu();
+  const header = document.getElementById("appHeader");
+  document.documentElement.style.setProperty("--nav-h", header.offsetHeight + "px");
+  document.querySelector(".shell").style.paddingTop = (header.offsetHeight + 12) + "px";
+}
+function updateNavActive() {
+  const ids = [["home", "navHome", "mNavHome"], ["class", "navClass", "mNavClass"], ["design", "navDesign", "mNavDesign"], ["review", "navReview", "mNavReview"]];
+  for (let i = 0; i < ids.length; i++) {
+    const on = appState.page === ids[i][0];
+    document.getElementById(ids[i][1]).classList.toggle("is-active", on);
+    document.getElementById(ids[i][2]).classList.toggle("is-active", on);
+    if (on) document.getElementById(ids[i][1]).setAttribute("aria-current", "page");
+    else document.getElementById(ids[i][1]).removeAttribute("aria-current");
+  }
+}
+async function showPage(page, opts) {
+  opts = opts || {};
+  try {
+    if (!opts.skipHistory && appState.page && page !== appState.page) {
+      navHistory.push({ page: appState.page, scroll: window.scrollY || 0 });
+      if (navHistory.length > 40) navHistory.shift();
+    }
+    appState.page = page;
+    const pages = document.querySelectorAll(".page");
+    for (let i = 0; i < pages.length; i++) pages[i].classList.remove("is-active");
+    document.getElementById(PAGE_ID[page]).classList.add("is-active");
+    updateNavActive();
+    closeMobileMenu();
+    await loadPage(page);
+    if (opts.scroll != null) window.scrollTo(0, opts.scroll);
+    else if (!opts.keepScroll) window.scrollTo(0, 0);
+    if (opts.after) await opts.after();
+  } catch (err) {
+    notify(err && err.message ? err.message : String(err), "error");
+  }
+}
+async function loadPage(page) {
+  if (page === "home") await loadHome();
+  else if (page === "class") await loadClass();
+  else if (page === "design") await loadDesign();
+  else if (page === "review") await loadReview();
+}
+function renderHome() {
+  document.getElementById("statClassNum").textContent = appState.homeFlags.classOk ? String(appState.classCount) : "—";
+  document.getElementById("statDesignNum").textContent = appState.homeFlags.designOk ? String(appState.designCount) : "—";
+  let ready = 0;
+  let pending = 0;
+  if (appState.homeFlags.listOk) {
+    for (let i = 0; i < appState.designs.length; i++) {
+      if (isBlank(appState.designs[i]["听力方案"])) pending++;
+      else ready++;
+    }
+    document.getElementById("statReadyNum").textContent = String(ready);
+    document.getElementById("statPendingNum").textContent = String(pending);
+  } else {
+    document.getElementById("statReadyNum").textContent = "—";
+    document.getElementById("statPendingNum").textContent = "—";
+  }
+  const covered = {};
+  const coverSource = appState.homeFlags.listOk ? appState.designs : [];
+  for (let i = 0; i < coverSource.length; i++) {
+    const parts = splitSkills(coverSource[i]["微技能"]);
+    for (let j = 0; j < parts.length; j++) covered[parts[j]] = true;
+  }
+  const box = document.getElementById("skillCoverage");
+  box.innerHTML = "";
+  for (let i = 0; i < SKILLS.length; i++) {
+    const on = !!covered[SKILLS[i]];
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip " + (on ? "is-covered" : "is-hollow");
+    chip.dataset.skill = SKILLS[i];
+    chip.dataset.covered = on ? "1" : "0";
+    chip.textContent = optLabel(SKILLS[i]);
+    box.appendChild(chip);
+  }
+  const list = document.getElementById("recentList");
+  const empty = document.getElementById("recentEmpty");
+  list.innerHTML = "";
+  if (!appState.homeFlags.listOk) {
+    empty.hidden = false;
+    empty.textContent = "";
+    const failed = !!appState.homeFlags.settled;
+    empty.appendChild(iconPara(failed ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-spinner", failed ? t("readFail") : t("loading")));
+    return;
+  }
+  const recent = appState.designs.slice(0, 5);
+  empty.hidden = recent.length > 0;
+  if (!recent.length) {
+    empty.textContent = "";
+    empty.appendChild(iconPara("fa-solid fa-headphones", t("noRecent")));
+    return;
+  }
+  for (let i = 0; i < recent.length; i++) list.appendChild(recentCard(recent[i]));
+}
+function iconPara(icon, text) {
+  const frag = document.createDocumentFragment();
+  const i = document.createElement("i");
+  i.className = icon;
+  i.setAttribute("aria-hidden", "true");
+  const p = document.createElement("div");
+  p.textContent = text;
+  frag.appendChild(i);
+  frag.appendChild(p);
+  return frag;
+}
+function recentCard(rec) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.dataset.act = "review";
+  card.dataset.row = String(rec._row);
+  const h = document.createElement("h3");
+  h.textContent = rec["主题"] || "—";
+  const meta = document.createElement("p");
+  meta.className = "meta";
+  const cls = findClass(rec["班级"]);
+  const bits = [classDisplay(rec["班级"])];
+  if (cls) {
+    if (cls["学段"]) bits.push(optLabel(cls["学段"]));
+    if (cls["年级"]) bits.push(optLabel(cls["年级"]));
+  }
+  meta.textContent = bits.join(" · ");
+  card.appendChild(h);
+  card.appendChild(meta);
+  const tags = document.createElement("div");
+  tags.className = "chip-row";
+  tags.appendChild(tagNode(optLabel(rec["材料类型"])));
+  tags.appendChild(tagNode(optLabel(rec["学员层次"])));
+  tags.appendChild(copyrightTag(rec["版权状态"]));
+  const skills = splitSkills(rec["微技能"]);
+  for (let i = 0; i < skills.length; i++) tags.appendChild(tagNode(optLabel(skills[i])));
+  card.appendChild(tags);
+  const sum = document.createElement("p");
+  sum.className = "summary";
+  if (isBlank(rec["听力方案"])) sum.textContent = t("pendingTag");
+  else {
+    const plain = plainSummary(rec["听力方案"]);
+    sum.textContent = plain ? clipText(plain, 80) : t("readyTag");
+  }
+  card.appendChild(sum);
+  card.appendChild(wave());
+  return card;
+}
+function tagNode(text, cls) {
+  const s = document.createElement("span");
+  s.className = "tag" + (cls ? " " + cls : "");
+  s.textContent = text || "—";
+  return s;
+}
+function stageTag(stage) {
+  const cls = stage === "小学高段" ? "tag-stage-primary" : stage === "初中" ? "tag-stage-junior" : stage === "高中" ? "tag-stage-senior" : "";
+  return tagNode(optLabel(stage), cls);
+}
+function copyrightTag(value) {
+  const cls = value === "自有" ? "tag-copy-ok" : value === "改编" ? "tag-copy-adapt" : value === "公开可引用" ? "tag-copy-public" : value === "仅存索引" ? "tag-copy-index" : "";
+  const node = tagNode(optLabel(value) || "—", cls);
+  if (value === "仅存索引") {
+    const i = document.createElement("i");
+    i.className = "fa-solid fa-triangle-exclamation";
+    i.setAttribute("aria-hidden", "true");
+    node.textContent = "";
+    node.appendChild(i);
+    node.appendChild(document.createTextNode(" " + (optLabel(value) || "—")));
+  }
+  return node;
+}
+function wave() {
+  const s = document.createElement("span");
+  s.className = "wave-line";
+  s.setAttribute("aria-hidden", "true");
+  return s;
+}
+function kvRow(key, value) {
+  const k = document.createElement("b");
+  k.textContent = key;
+  const v = document.createElement("span");
+  v.textContent = value || "—";
+  return [k, v];
+}
+function renderClassList() {
+  const q = document.getElementById("classSearch").value.trim().toLowerCase();
+  const stage = document.getElementById("classFilterStage").value;
+  const grade = document.getElementById("classFilterGrade").value;
+  const list = document.getElementById("classList");
+  const empty = document.getElementById("classEmpty");
+  list.innerHTML = "";
+  const shown = [];
+  for (let i = 0; i < appState.classes.length; i++) {
+    const rec = appState.classes[i];
+    if (q && rec["班级名称"].toLowerCase().indexOf(q) < 0 && String(rec["教材版本"] || "").toLowerCase().indexOf(q) < 0) continue;
+    if (stage && rec["学段"] !== stage) continue;
+    if (grade && rec["年级"] !== grade) continue;
+    shown.push(rec);
+  }
+  document.getElementById("classListMeta").textContent = tf("showing", { n: shown.length, t: appState.classes.length });
+  empty.hidden = shown.length > 0;
+  if (!shown.length) {
+    empty.textContent = "";
+    empty.appendChild(iconPara("fa-solid fa-users", appState.classes.length ? t("noFilterHit") : t("noClass")));
+  }
+  for (let i = 0; i < shown.length; i++) list.appendChild(classCard(shown[i]));
+}
+function classCard(rec) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.dataset.act = "edit";
+  card.dataset.row = String(rec._row);
+  const h = document.createElement("h3");
+  h.textContent = rec["班级名称"] || "—";
+  card.appendChild(h);
+  const tags = document.createElement("div");
+  tags.className = "chip-row";
+  tags.appendChild(stageTag(rec["学段"]));
+  card.appendChild(tags);
+  const grid = document.createElement("div");
+  grid.className = "kv";
+  const pairs = [
+    [fieldLabel("年级"), optLabel(rec["年级"])],
+    [fieldLabel("班额"), rec["班额"] ? tf("people", { n: rec["班额"] }) : "—"],
+    [fieldLabel("课时分钟"), optLabel(rec["课时分钟"])],
+    [fieldLabel("教材版本"), rec["教材版本"] || "—"]
+  ];
+  for (let i = 0; i < pairs.length; i++) {
+    const nodes = kvRow(pairs[i][0], pairs[i][1]);
+    grid.appendChild(nodes[0]);
+    grid.appendChild(nodes[1]);
+  }
+  card.appendChild(grid);
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(actionBtn("fa-solid fa-pen", t("edit"), "edit", rec._row, "btn btn-small btn-ghost"));
+  actions.appendChild(actionBtn("fa-solid fa-ear-listen", t("classPlans"), "plans", rec._row, "btn btn-small btn-teal"));
+  actions.appendChild(actionBtn("fa-solid fa-trash", t("delete"), "delete", rec._row, "btn btn-small btn-danger"));
+  card.appendChild(actions);
+  card.appendChild(wave());
+  return card;
+}
+function actionBtn(icon, label, act, row, cls) {
+  const b = iconBtn(icon, label, cls);
+  b.dataset.act = act;
+  b.dataset.row = String(row);
+  return b;
+}
+function renderDesignList() {
+  const q = document.getElementById("designSearch").value.trim().toLowerCase();
+  const className = document.getElementById("designFilterClass").value;
+  const type = document.getElementById("designFilterType").value;
+  const level = document.getElementById("designFilterLevel").value;
+  const copy = document.getElementById("designFilterCopy").value;
+  const task = document.getElementById("designFilterTask").value;
+  const skills = appState.designSkillFilter;
+  const list = document.getElementById("designList");
+  const empty = document.getElementById("designEmpty");
+  list.innerHTML = "";
+  const shown = [];
+  for (let i = 0; i < appState.designs.length; i++) {
+    const rec = appState.designs[i];
+    if (q && String(rec["主题"] || "").toLowerCase().indexOf(q) < 0 && String(rec["班级"] || "").toLowerCase().indexOf(q) < 0) continue;
+    if (className && rec["班级"] !== className) continue;
+    if (type && rec["材料类型"] !== type) continue;
+    if (level && rec["学员层次"] !== level) continue;
+    if (copy && rec["版权状态"] !== copy) continue;
+    if (task && rec["听后任务"] !== task) continue;
+    if (appState.pendingOnly && !isBlank(rec["听力方案"])) continue;
+    if (skills.length) {
+      const has = splitSkills(rec["微技能"]);
+      let hit = false;
+      for (let s = 0; s < skills.length; s++) {
+        if (has.indexOf(skills[s]) >= 0 || String(rec["微技能"] || "").indexOf(skills[s]) >= 0) { hit = true; break; }
+      }
+      if (!hit) continue;
+    }
+    shown.push(rec);
+  }
+  document.getElementById("designListMeta").textContent = tf("showing", { n: shown.length, t: appState.designs.length });
+  renderExtraFilters();
+  empty.hidden = shown.length > 0;
+  if (!shown.length) {
+    empty.textContent = "";
+    empty.appendChild(iconPara("fa-solid fa-ear-listen", appState.designs.length ? t("noFilterHit") : t("noDesign")));
+  }
+  for (let i = 0; i < shown.length; i++) list.appendChild(designCard(shown[i]));
+  const filterChips = document.querySelectorAll("#designSkillFilters .chip");
+  for (let i = 0; i < filterChips.length; i++) {
+    const on = appState.designSkillFilter.indexOf(filterChips[i].dataset.filterSkill) >= 0;
+    filterChips[i].classList.toggle("is-on", on);
+    filterChips[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+function renderExtraFilters() {
+  const box = document.getElementById("designExtraFilters");
+  box.innerHTML = "";
+  if (!appState.pendingOnly) return;
+  const chip = document.createElement("button");
+  chip.type = "button";
+  chip.className = "chip is-on";
+  chip.id = "pendingChip";
+  chip.textContent = t("pendingOnly") + " ×";
+  box.appendChild(chip);
+}
+function designCard(rec) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.dataset.act = "edit";
+  card.dataset.row = String(rec._row);
+  const h = document.createElement("h3");
+  h.textContent = rec["主题"] || "—";
+  const meta = document.createElement("p");
+  meta.className = "meta";
+  meta.textContent = classDisplay(rec["班级"]);
+  card.appendChild(h);
+  card.appendChild(meta);
+  const tags = document.createElement("div");
+  tags.className = "chip-row";
+  tags.appendChild(tagNode(optLabel(rec["材料类型"])));
+  tags.appendChild(tagNode(optLabel(rec["材料来源"])));
+  tags.appendChild(tagNode(optLabel(rec["学员层次"])));
+  tags.appendChild(tagNode(optLabel(rec["听后任务"])));
+  tags.appendChild(copyrightTag(rec["版权状态"]));
+  const skills = splitSkills(rec["微技能"]);
+  for (let i = 0; i < skills.length; i++) tags.appendChild(tagNode(optLabel(skills[i])));
+  card.appendChild(tags);
+  const grid = document.createElement("div");
+  grid.className = "kv";
+  const file = fileBase(rec["材料文件"]);
+  const pairs = [[fieldLabel("材料文件"), file || t("noMaterial")]];
+  for (let i = 0; i < pairs.length; i++) {
+    const nodes = kvRow(pairs[i][0], pairs[i][1]);
+    grid.appendChild(nodes[0]);
+    grid.appendChild(nodes[1]);
+  }
+  card.appendChild(grid);
+  const sum = document.createElement("p");
+  sum.className = "summary";
+  if (isBlank(rec["听力方案"])) sum.textContent = fieldLabel("听力方案") + "：" + t("pendingTag");
+  else {
+    const plain = plainSummary(rec["听力方案"]);
+    sum.textContent = fieldLabel("听力方案") + "：" + (plain ? clipText(plain, 80) : t("readyTag"));
+  }
+  card.appendChild(sum);
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(actionBtn("fa-solid fa-pen", t("edit"), "edit", rec._row, "btn btn-small btn-ghost"));
+  actions.appendChild(actionBtn("fa-solid fa-file-lines", t("reviewBtn"), "review", rec._row, "btn btn-small btn-teal"));
+  const listen = actionBtn("fa-solid fa-play", t("listen"), "listen", rec._row, "btn btn-small btn-ghost");
+  if (isBlank(rec["材料文件"])) listen.disabled = true;
+  actions.appendChild(listen);
+  actions.appendChild(actionBtn("fa-solid fa-trash", t("delete"), "delete", rec._row, "btn btn-small btn-danger"));
+  card.appendChild(actions);
+  card.appendChild(wave());
+  return card;
+}
+function resetDesignFilters() {
+  document.getElementById("designSearch").value = "";
+  document.getElementById("designFilterClass").value = "";
+  document.getElementById("designFilterType").value = "";
+  document.getElementById("designFilterLevel").value = "";
+  document.getElementById("designFilterCopy").value = "";
+  document.getElementById("designFilterTask").value = "";
+  appState.designSkillFilter = [];
+  appState.pendingOnly = false;
+}
+function resetClassFilters() {
+  document.getElementById("classSearch").value = "";
+  document.getElementById("classFilterStage").value = "";
+  fillSelect(document.getElementById("classFilterGrade"), GRADES, t("filterGrade"), "");
+}
+async function loadHome() {
+  const token = ++appState.viewToken;
+  appState.homeFlags = { classOk: false, designOk: false, listOk: false, settled: false };
+  renderHome();
+  let classCount = null;
+  let designCount = null;
+  let classes = null;
+  let designs = null;
+  try { classCount = await fetchCount(SRC_CLASS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { designCount = await fetchCount(SRC_DESIGN); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { classes = await loadCsv(SRC_CLASS, CLASS_FIELDS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { designs = await loadCsv(SRC_DESIGN, DESIGN_FIELDS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  if (classCount != null) { appState.classCount = classCount; appState.homeFlags.classOk = true; }
+  if (designCount != null) { appState.designCount = designCount; appState.homeFlags.designOk = true; }
+  if (classes) appState.classes = classes;
+  if (designs) { appState.designs = designs; appState.homeFlags.listOk = true; }
+  appState.homeFlags.settled = true;
+  renderHome();
+}
+async function loadClass() {
+  const token = ++appState.viewToken;
+  document.getElementById("classListMeta").textContent = t("loading");
+  let classes = null;
+  let count = null;
+  try { classes = await loadCsv(SRC_CLASS, CLASS_FIELDS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { count = await fetchCount(SRC_CLASS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  if (classes) appState.classes = classes;
+  if (count != null) appState.classCount = count;
+  renderClassList();
+}
+async function loadDesign() {
+  const token = ++appState.viewToken;
+  document.getElementById("designListMeta").textContent = t("loading");
+  let classes = null;
+  let classCount = null;
+  let designs = null;
+  let designCount = null;
+  try { classes = await loadCsv(SRC_CLASS, CLASS_FIELDS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { classCount = await fetchCount(SRC_CLASS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { designs = await loadCsv(SRC_DESIGN, DESIGN_FIELDS); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  try { designCount = await fetchCount(SRC_DESIGN); }
+  catch (err) { if (token === appState.viewToken) notify(err.message, "error"); }
+  if (token !== appState.viewToken) return;
+  if (classes) appState.classes = classes;
+  if (classCount != null) appState.classCount = classCount;
+  if (designs) appState.designs = designs;
+  if (designCount != null) appState.designCount = designCount;
+  refillDesignClassFilter();
+  updateCreateDesignButton();
+  renderDesignList();
+}
+function updateCreateDesignButton() {
+  const btn = document.getElementById("designCreateBtn");
+  if (appState.classCount === 0) {
+    setBtnLabel("designCreateBtn", "fa-solid fa-user-plus", t("goAddClass"));
+    btn.dataset.mode = "add-class";
+  } else {
+    setBtnLabel("designCreateBtn", "fa-solid fa-plus", t("newDesign"));
+    btn.dataset.mode = "new-design";
+  }
+}
+function readClassForm() {
+  return {
+    "班级名称": document.getElementById("formClass_班级名称").value.trim(),
+    "学段": document.getElementById("formClass_学段").value,
+    "年级": document.getElementById("formClass_年级").value,
+    "班额": document.getElementById("formClass_班额").value.trim(),
+    "课时分钟": document.getElementById("formClass_课时分钟").value,
+    "教材版本": document.getElementById("formClass_教材版本").value.trim()
+  };
+}
+function classErrors(data) {
+  const errors = [];
+  if (!normalizeName(data["班级名称"])) errors.push(t("needName"));
+  if (STAGES.indexOf(data["学段"]) < 0) errors.push(t("needStage"));
+  if (GRADES.indexOf(data["年级"]) < 0) errors.push(t("needGrade"));
+  else if (data["学段"] && gradesForStage(data["学段"]).indexOf(data["年级"]) < 0) errors.push(t("gradeStage"));
+  if (!/^\d+$/.test(data["班额"]) || parseInt(data["班额"], 10) < 1 || parseInt(data["班额"], 10) > 200) errors.push(t("needSize"));
+  if (MINUTES.indexOf(data["课时分钟"]) < 0) errors.push(t("needMinutes"));
+  return errors;
+}
+function updateClassValidity() {
+  const hint = document.getElementById("formClassHint");
+  const submit = document.getElementById("formClassSubmit");
+  if (!hint || !submit || !document.getElementById("formClass_班级名称")) return;
+  const errors = classErrors(readClassForm());
+  hint.textContent = errors.join(" ");
+  submit.disabled = errors.length > 0 || appState.classSaving;
+  const label = appState.classSaving ? t("submitting") : (appState.classMode === "edit" ? t("save") : t("submit"));
+  submit.textContent = label;
+}
+function clearClassForm() {
+  const data = { "班级名称": "", "学段": "", "年级": "", "班额": "", "课时分钟": "", "教材版本": "" };
+  const keys = Object.keys(data);
+  for (let i = 0; i < keys.length; i++) {
+    const node = document.getElementById("formClass_" + keys[i]);
+    if (node) node.value = "";
+  }
+  fillSelect(document.getElementById("formClass_年级"), GRADES, uiLang === "en" ? "Choose" : "请选择", "");
+  updateClassValidity();
+}
+function openClassFormNew() {
+  appState.classMode = "new";
+  appState.classRow = 0;
+  appState.classOriginalName = "";
+  document.getElementById("classModalTitle").textContent = fieldLabel("班级名称") ? "班级信息" : "班级信息";
+  document.getElementById("classModalTitle").textContent = uiLang === "en" ? "Class record" : "班级信息";
+  document.getElementById("classModalMode").textContent = t("newMode");
+  clearClassForm();
+  pushPopup(document.getElementById("classModal"));
+  const first = document.getElementById("formClass_班级名称");
+  if (first) setTimeout(function () { first.focus(); }, 40);
+}
+async function openClassFormEdit(row) {
+  const token = ++appState.formToken;
+  appState.classMode = "edit";
+  appState.classRow = row;
+  document.getElementById("classModalTitle").textContent = uiLang === "en" ? "Class record" : "班级信息";
+  document.getElementById("classModalMode").textContent = t("editMode");
+  clearClassForm();
+  pushPopup(document.getElementById("classModal"));
+  try {
+    for (let i = 0; i < CLASS_FIELDS.length; i++) {
+      const value = await getCell(SRC_CLASS, CLASS_FIELDS[i], row);
+      if (token !== appState.formToken) return;
+      const node = document.getElementById("formClass_" + CLASS_FIELDS[i]);
+      if (CLASS_FIELDS[i] === "学段") {
+        node.value = value;
+        onClassStageChange();
+      }
+      node.value = value;
+    }
+    if (token !== appState.formToken) return;
+    appState.classOriginalName = document.getElementById("formClass_班级名称").value.trim();
+    updateClassValidity();
+  } catch (err) {
+    if (token === appState.formToken) notify(err.message, "error");
+  }
+}
+function onClassStageChange() {
+  const stage = document.getElementById("formClass_学段").value;
+  const grade = document.getElementById("formClass_年级");
+  fillSelect(grade, gradesForStage(stage), uiLang === "en" ? "Choose" : "请选择", grade.value);
+  updateClassValidity();
+}
+async function submitClass(e) {
+  e.preventDefault();
+  if (appState.classSaving) return;
+  const data = readClassForm();
+  const errors = classErrors(data);
+  if (errors.length) { document.getElementById("formClassHint").textContent = errors.join(" "); return; }
+  appState.classSaving = true;
+  updateClassValidity();
+  try {
+    const existing = await loadCsv(SRC_CLASS, ["班级名称"]);
+    const key = normalizeName(data["班级名称"]);
+    for (let i = 0; i < existing.length; i++) {
+      if (appState.classMode === "edit" && existing[i]._row === appState.classRow) continue;
+      if (normalizeName(existing[i]["班级名称"]) === key) throw new Error(t("dupClass"));
+    }
+    const payload = {
+      "班级名称": data["班级名称"],
+      "学段": data["学段"],
+      "年级": data["年级"],
+      "班额": parseInt(data["班额"], 10),
+      "课时分钟": data["课时分钟"],
+      "教材版本": data["教材版本"]
+    };
+    if (appState.classMode === "new") {
+      await submitRecord(TABLE_CLASS, payload);
+      appState.classRow = 1;
+      closePopupElement(document.getElementById("classModal"));
+      notify(t("saved"), "success");
+      await loadClass();
+    } else {
+      const oldName = appState.classOriginalName;
+      const nextName = data["班级名称"];
+      if (oldName !== nextName) {
+        const ok = await openConfirm(tf("renameConfirm", { old: oldName || "—", next: nextName }));
+        if (!ok) return;
+      }
+      const values = [data["班级名称"], data["学段"], data["年级"], String(parseInt(data["班额"], 10)), data["课时分钟"], data["教材版本"]];
+      for (let i = 0; i < CLASS_FIELDS.length; i++) {
+        try {
+          await setCell(SRC_CLASS, CLASS_FIELDS[i], appState.classRow, values[i]);
+        } catch (err) {
+          notify(t("partialSave") + CLASS_FIELDS[i] + " " + err.message, "error");
+          return;
+        }
+      }
+      if (oldName && oldName !== nextName) {
+        try {
+          const designs = await loadCsv(SRC_DESIGN, ["班级"]);
+          for (let i = 0; i < designs.length; i++) {
+            if (designs[i]["班级"] === oldName) await setCell(SRC_DESIGN, "班级", designs[i]._row, nextName);
+          }
+        } catch (err) {
+          notify(t("cascadeFail") + " " + err.message, "error");
+        }
+      }
+      appState.classOriginalName = nextName;
+      notify(t("saved"), "success");
+      await loadClass();
+    }
+  } catch (err) {
+    notify(err.message, "error");
+  } finally {
+    appState.classSaving = false;
+    updateClassValidity();
+  }
+}
+async function deleteClass(row) {
+  let name = "";
+  for (let i = 0; i < appState.classes.length; i++) if (appState.classes[i]._row === row) name = appState.classes[i]["班级名称"];
+  try {
+    const designs = await loadCsv(SRC_DESIGN, ["班级"]);
+    const hits = [];
+    for (let i = 0; i < designs.length; i++) if (designs[i]["班级"] === name) hits.push(designs[i]);
+    if (hits.length) {
+      await openNotice(tf("classInUse", { n: hits.length, name: name }));
+      return;
+    }
+  } catch (err) {
+    notify(err.message, "error");
+    return;
+  }
+  const ok = await openConfirm(tf("deleteClassAsk", { name: name || "—" }));
+  if (!ok) return;
+  try {
+    await deleteRecord(SRC_CLASS, row);
+    if (appState.classRow === row) appState.classRow = 0;
+    else if (appState.classRow > row) appState.classRow -= 1;
+    notify(t("deleted"), "success");
+    await loadClass();
+  } catch (err) {
+    notify(err.message, "error");
+  }
+}
+function selectedSkills() {
+  const chips = document.querySelectorAll("#designSkillChips .chip");
+  const out = [];
+  for (let i = 0; i < chips.length; i++) if (chips[i].getAttribute("aria-pressed") === "true") out.push(chips[i].dataset.skill);
+  return out;
+}
+function setSelectedSkills(list) {
+  const chips = document.querySelectorAll("#designSkillChips .chip");
+  for (let i = 0; i < chips.length; i++) {
+    const on = list.indexOf(chips[i].dataset.skill) >= 0;
+    chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+    chips[i].classList.toggle("is-on", on);
+  }
+  document.getElementById("formDesign_微技能").value = joinSkills(list);
+}
+function readDesignForm() {
+  const skills = selectedSkills();
+  return {
+    "班级": document.getElementById("formDesign_班级").value,
+    "主题": document.getElementById("formDesign_主题").value.trim(),
+    "材料类型": document.getElementById("formDesign_材料类型").value,
+    "材料来源": document.getElementById("formDesign_材料来源").value,
+    "版权状态": document.getElementById("formDesign_版权状态").value,
+    "学员层次": document.getElementById("formDesign_学员层次").value,
+    "微技能": joinSkills(skills),
+    "听后任务": document.getElementById("formDesign_听后任务").value,
+    "材料文件": document.getElementById("formDesign_材料文件").value.trim()
+  };
+}
+function designErrors(data) {
+  const errors = [];
+  if (appState.classCount === 0) errors.push(t("needClass"));
+  if (!data["班级"]) errors.push(t("needClassPick"));
+  if (!data["主题"]) errors.push(t("needTopic"));
+  if (MATERIAL_TYPES.indexOf(data["材料类型"]) < 0) errors.push(t("needType"));
+  if (SOURCES.indexOf(data["材料来源"]) < 0) errors.push(t("needSource"));
+  if (COPYRIGHTS.indexOf(data["版权状态"]) < 0) errors.push(t("needCopy"));
+  if (LEVELS.indexOf(data["学员层次"]) < 0) errors.push(t("needLevel"));
+  if (!data["微技能"]) errors.push(t("needSkill"));
+  if (TASKS.indexOf(data["听后任务"]) < 0) errors.push(t("needTask"));
+  return errors;
+}
+function updateDesignValidity() {
+  const hint = document.getElementById("formDesignHint");
+  const submit = document.getElementById("formDesignSubmit");
+  const go = document.getElementById("designGoAddClass");
+  if (!hint || !submit || !document.getElementById("formDesign_主题")) return;
+  const errors = designErrors(readDesignForm());
+  hint.textContent = errors.join(" ");
+  const locked = appState.designSaving || appState.polling || appState.designMode === "submitted";
+  submit.disabled = locked || errors.length > 0;
+  if (appState.designSaving) submit.textContent = appState.designMode === "edit" ? t("saving") : t("submitting");
+  else if (appState.designMode === "edit") submit.textContent = t("save");
+  else submit.textContent = t("submit");
+  if (go) go.hidden = appState.classCount !== 0;
+}
+function syncDesignSide() {
+  const select = document.getElementById("formDesign_班级");
+  const box = document.getElementById("designSideFacts");
+  const hint = document.getElementById("designStageHint");
+  if (!select || !box || !hint) return;
+  const rec = findClass(select.value);
+  box.innerHTML = "";
+  if (!rec) {
+    const p = document.createElement("p");
+    p.className = "meta";
+    p.textContent = select.value ? t("classGone") : t("sideEmpty");
+    box.appendChild(p);
+    hint.textContent = "";
+    return;
+  }
+  const pairs = [
+    [fieldLabel("学段"), optLabel(rec["学段"])],
+    [fieldLabel("年级"), optLabel(rec["年级"])],
+    [fieldLabel("班额"), rec["班额"] ? tf("people", { n: rec["班额"] }) : "—"],
+    [fieldLabel("课时分钟"), optLabel(rec["课时分钟"])],
+    [fieldLabel("教材版本"), rec["教材版本"] || "—"]
+  ];
+  for (let i = 0; i < pairs.length; i++) {
+    const nodes = kvRow(pairs[i][0], pairs[i][1]);
+    box.appendChild(nodes[0]);
+    box.appendChild(nodes[1]);
+  }
+  const note = document.createElement("p");
+  note.className = "meta";
+  note.textContent = t("notInTable");
+  box.appendChild(note);
+  hint.textContent = rec["学段"] === "初中" ? t("hintJunior") : rec["学段"] === "高中" ? t("hintSenior") : rec["学段"] === "小学高段" ? t("hintPrimary") : "";
+}
+function syncMaterialSourceUI() {
+  const source = document.getElementById("formDesign_材料来源");
+  const copy = document.getElementById("formDesign_版权状态");
+  const rec = document.getElementById("recorderBox");
+  const warn = document.getElementById("copyrightWarn");
+  if (rec && source) rec.hidden = source.value !== "自制音频";
+  if (warn && copy) warn.hidden = copy.value !== "仅存索引";
+}
+function syncMaterialFileUI() {
+  const name = document.getElementById("formDesign_材料文件").value.trim();
+  const box = document.getElementById("materialInfo");
+  const label = document.getElementById("materialFileLabel");
+  const audio = document.getElementById("designAudio");
+  if (!box) return;
+  box.hidden = !name;
+  if (label) label.textContent = name ? fileBase(name) : "";
+  if (!audio) return;
+  if (name && isAudioName(name)) {
+    audio.hidden = false;
+    resolvePlayable(name).then(function (url) { audio.src = url; }).catch(function (err) { notify(err.message || String(err), "error"); });
+  } else {
+    audio.hidden = true;
+    audio.removeAttribute("src");
+  }
+}
+async function resolvePlayable(name) {
+  try {
+    const u = await bridge({ type: "FileUrl", data: name });
+    if (!isBlank(u) && /^https?:\/\//i.test(String(u).trim())) return String(u).trim();
+  } catch (err) {
+    notify(err.message, "error");
+  }
+  return privateUrl(name);
+}
+function renderRecStatus() {
+  const node = document.getElementById("recStatus");
+  if (!node) return;
+  node.textContent = appState.recState === "recording" ? t("recOn") : appState.recState === "paused" ? t("recPause") : t("recIdle");
+}
+function clearDesignForm(presetSkills) {
+  refillDesignClassChoices("");
+  const fields = ["主题", "材料类型", "材料来源", "版权状态", "学员层次", "听后任务"];
+  document.getElementById("formDesign_班级").value = "";
+  for (let i = 0; i < fields.length; i++) {
+    const node = document.getElementById("formDesign_" + fields[i]);
+    if (node) node.value = "";
+  }
+  document.getElementById("formDesign_材料文件").value = "";
+  setSelectedSkills(presetSkills || []);
+  appState.recState = "idle";
+  renderRecStatus();
+  syncMaterialSourceUI();
+  syncMaterialFileUI();
+  syncDesignSide();
+  document.getElementById("designPlanBox").hidden = true;
+  document.getElementById("designPlanPreview").innerHTML = "";
+  document.getElementById("designWait").hidden = true;
+  document.getElementById("gotoReviewBtn").hidden = true;
+  updateDesignValidity();
+}
+function openDesignFormNew(preset) {
+  appState.designMode = "new";
+  appState.designRow = 0;
+  document.getElementById("designModalTitle").textContent = uiLang === "en" ? "Listening design" : "听力设计";
+  document.getElementById("designModalMode").textContent = t("newMode");
+  clearDesignForm(preset || []);
+  const inputs = document.querySelectorAll("#formDesign input, #formDesign select, #designSkillChips button, #pickMaterialBtn, #clearMaterialBtn, #recStart, #recPause, #recResume, #recCancel, #recFinish");
+  for (let i = 0; i < inputs.length; i++) inputs[i].disabled = false;
+  pushPopup(document.getElementById("designModal"));
+  updateDesignValidity();
+}
+async function openDesignFormEdit(row) {
+  const token = ++appState.formToken;
+  appState.designMode = "edit";
+  appState.designRow = row;
+  document.getElementById("designModalTitle").textContent = uiLang === "en" ? "Listening design" : "听力设计";
+  document.getElementById("designModalMode").textContent = t("editMode");
+  clearDesignForm([]);
+  pushPopup(document.getElementById("designModal"));
+  try {
+    if (!appState.classes.length) {
+      const classes = await loadCsv(SRC_CLASS, CLASS_FIELDS);
+      if (token !== appState.formToken) return;
+      appState.classes = classes;
+    }
+    let skillValue = "";
+    let plan = "";
+    for (let i = 0; i < DESIGN_FIELDS.length; i++) {
+      const value = await getCell(SRC_DESIGN, DESIGN_FIELDS[i], row);
+      if (token !== appState.formToken) return;
+      if (DESIGN_FIELDS[i] === "微技能") skillValue = value;
+      else if (DESIGN_FIELDS[i] === "听力方案") plan = value;
+      else if (DESIGN_FIELDS[i] === "班级") refillDesignClassChoices(value);
+      else {
+        const node = document.getElementById("formDesign_" + DESIGN_FIELDS[i]);
+        if (node) node.value = value;
+      }
+    }
+    if (token !== appState.formToken) return;
+    const parts = splitSkills(skillValue);
+    const known = [];
+    const unknown = [];
+    for (let i = 0; i < parts.length; i++) {
+      if (SKILLS.indexOf(parts[i]) >= 0) known.push(parts[i]);
+      else unknown.push(parts[i]);
+    }
+    setSelectedSkills(known);
+    if (unknown.length) notify(t("unknownSkill") + " " + unknown.join(","), "error");
+    appState.planText = plan;
+    syncMaterialSourceUI();
+    syncMaterialFileUI();
+    syncDesignSide();
+    const box = document.getElementById("designPlanBox");
+    if (!isBlank(plan)) {
+      box.hidden = false;
+      document.getElementById("designPlanPreview").innerHTML = renderMarkdown(plan);
+    } else box.hidden = true;
+    updateDesignValidity();
+  } catch (err) {
+    if (token === appState.formToken) notify(err.message, "error");
+  }
+}
+async function submitDesign(e) {
+  e.preventDefault();
+  if (appState.designSaving || appState.polling || appState.designMode === "submitted") return;
+  const data = readDesignForm();
+  const errors = designErrors(data);
+  if (errors.length) { document.getElementById("formDesignHint").textContent = errors.join(" "); return; }
+  if (appState.designMode === "edit") {
+    const ok = await openConfirm(t("keepPlan"));
+    if (!ok) return;
+  }
+  appState.designSaving = true;
+  updateDesignValidity();
+  try {
+    if (appState.designMode === "new") {
+      await submitRecord(TABLE_DESIGN, data);
+      appState.designRow = 1;
+      appState.designMode = "submitted";
+      document.getElementById("designModalMode").textContent = t("submittedMode");
+      notify(t("saved"), "success");
+      appState.designSaving = false;
+      updateDesignValidity();
+      await pollPlan(1, "design");
+    } else {
+      const values = {};
+      values["班级"] = data["班级"];
+      values["主题"] = data["主题"];
+      values["材料类型"] = data["材料类型"];
+      values["材料来源"] = data["材料来源"];
+      values["版权状态"] = data["版权状态"];
+      values["学员层次"] = data["学员层次"];
+      values["微技能"] = data["微技能"];
+      values["听后任务"] = data["听后任务"];
+      values["材料文件"] = data["材料文件"];
+      for (let i = 0; i < DESIGN_EDIT_FIELDS.length; i++) {
+        const field = DESIGN_EDIT_FIELDS[i];
+        try {
+          await setCell(SRC_DESIGN, field, appState.designRow, values[field]);
+        } catch (err) {
+          notify(t("partialSave") + field + " " + err.message, "error");
+          return;
+        }
+      }
+      notify(t("saved"), "success");
+      await loadDesign();
+    }
+  } catch (err) {
+    notify(err.message, "error");
+  } finally {
+    appState.designSaving = false;
+    updateDesignValidity();
+  }
+}
+function setWait(target, mode, text) {
+  const box = document.getElementById(target === "review" ? "reviewWait" : "designWait");
+  const label = document.getElementById(target === "review" ? "reviewWaitText" : "designWaitText");
+  if (!box || !label) return;
+  if (mode === "off") { box.hidden = true; return; }
+  box.hidden = false;
+  label.textContent = text;
+  const wave = box.querySelector(".wave-wait");
+  if (wave) wave.hidden = mode !== "run";
+  const jump = document.getElementById("gotoReviewBtn");
+  if (jump && target === "design") jump.hidden = mode !== "timeout";
+}
+async function pollPlan(row, target) {
+  const token = ++appState.pollToken;
+  appState.polling = true;
+  updateDesignValidity();
+  const refresh = document.getElementById("reviewRefresh");
+  if (refresh) refresh.disabled = true;
+  setWait(target, "run", uiLang === "en" ? t("waitEn") : WAIT_TEXT);
+  let text = "";
+  let told = false;
+  for (let i = 0; i < 60; i++) {
+    if (token !== appState.pollToken) return;
+    if (i > 0) await sleep(2000);
+    if (token !== appState.pollToken) return;
+    try {
+      text = await bridge({ type: "GetCellValue", data: SRC_DESIGN, payload: "听力方案/" + String(row) });
+    } catch (err) {
+      text = "";
+      if (!told) { notify(err.message, "error"); told = true; }
+    }
+    if (!isBlank(text)) break;
+  }
+  if (token !== appState.pollToken) return;
+  appState.polling = false;
+  if (refresh) refresh.disabled = false;
+  updateDesignValidity();
+  if (!isBlank(text)) {
+    setWait(target, "off");
+    appState.planText = text;
+    if (target === "review") {
+      document.getElementById("reviewMarkdown").innerHTML = renderMarkdown(text);
+      document.getElementById("reviewEmpty").hidden = true;
+    }
+    if (target === "design") {
+      const modalOpen = popupStack.indexOf(document.getElementById("designModal")) >= 0;
+      if (modalOpen) closePopupElement(document.getElementById("designModal"));
+      if (appState.page === "design" || modalOpen) await showPage("review");
+      else notify(t("planReady"), "success");
+    }
+    return;
+  }
+  setWait(target, "timeout", t("pollTimeout"));
+  notify(t("pollTimeout"), "error");
+}
+async function deleteDesign(row) {
+  let name = "";
+  for (let i = 0; i < appState.designs.length; i++) if (appState.designs[i]._row === row) name = appState.designs[i]["主题"];
+  if (!name) {
+    try { name = await getCell(SRC_DESIGN, "主题", row); } catch (err) { name = ""; }
+  }
+  const ok = await openConfirm(tf("deleteDesignAsk", { name: name || "—" }));
+  if (!ok) return;
+  try {
+    await deleteRecord(SRC_DESIGN, row);
+    if (appState.designRow === row) {
+      appState.designRow = 0;
+      appState.planText = "";
+      appState.review = null;
+    } else if (appState.designRow > row) appState.designRow -= 1;
+    notify(t("deleted"), "success");
+    if (appState.page === "review") await loadReview();
+    else await loadDesign();
+  } catch (err) {
+    notify(err.message, "error");
+  }
+}
+function rhythmOf(minuteText) {
+  const m = String(minuteText || "").match(/(\d+)/);
+  if (!m) return null;
+  const total = parseInt(m[1], 10);
+  if (!total) return null;
+  const pre = Math.round(total * 0.2);
+  const mid = Math.round(total * 0.5);
+  let post = total - pre - mid;
+  if (post < 0) post = 0;
+  return { total: total, pre: pre, mid: mid, post: post };
+}
+async function loadReview() {
+  const token = ++appState.viewToken;
+  document.getElementById("reviewPos").textContent = t("loading");
+  let count = null;
+  try { count = await fetchCount(SRC_DESIGN); }
+  catch (err) {
+    if (token === appState.viewToken) notify(err.message, "error");
+  }
+  if (token !== appState.viewToken) return;
+  if (count != null) appState.designCount = count;
+  if (count != null && appState.designRow > count) {
+    appState.designRow = 0;
+    notify(t("rowShift"), "error");
+  }
+  updateReviewButtons();
+  if (appState.designRow < 1) {
+    appState.review = null;
+    appState.planText = "";
+    appState.reviewClassRow = 0;
+    renderReview();
+    return;
+  }
+  const rec = {};
+  try {
+    for (let i = 0; i < DESIGN_FIELDS.length; i++) {
+      rec[DESIGN_FIELDS[i]] = await getCell(SRC_DESIGN, DESIGN_FIELDS[i], appState.designRow);
+      if (token !== appState.viewToken) return;
+    }
+  } catch (err) {
+    notify(err.message, "error");
+    return;
+  }
+  if (token !== appState.viewToken) return;
+  let classRow = 0;
+  let classInfo = null;
+  if (!isBlank(rec["班级"])) {
+    try {
+      const rowText = await bridge({ type: "GetRecordRow", data: SRC_CLASS, payload: "班级名称/" + rec["班级"] });
+      if (token !== appState.viewToken) return;
+      classRow = parseRowNumber(rowText);
+      if (classRow > 0) {
+        classInfo = { "班级名称": rec["班级"] };
+        const fields = ["学段", "年级", "班额", "课时分钟", "教材版本"];
+        for (let i = 0; i < fields.length; i++) {
+          classInfo[fields[i]] = await getCell(SRC_CLASS, fields[i], classRow);
+          if (token !== appState.viewToken) return;
+        }
+      }
+    } catch (err) {
+      if (token === appState.viewToken) notify(err.message, "error");
+    }
+  }
+  if (token !== appState.viewToken) return;
+  appState.review = rec;
+  appState.planText = rec["听力方案"] || "";
+  appState.reviewClassRow = classRow;
+  appState.reviewClass = classInfo;
+  renderReview();
+}
+function renderReview() {
+  updateReviewButtons();
+  const count = appState.designCount || 0;
+  document.getElementById("reviewPos").textContent = appState.designRow > 0 ? tf("posLine", { r: appState.designRow, n: count }) : t("posNone");
+  document.getElementById("reviewAiBanner").textContent = t("aiLine") + t("aiGloss");
+  const facts = document.getElementById("reviewFacts");
+  const empty = document.getElementById("reviewEmpty");
+  const md = document.getElementById("reviewMarkdown");
+  facts.innerHTML = "";
+  const rec = appState.review;
+  if (!rec || appState.designRow < 1) {
+    empty.hidden = false;
+    empty.textContent = "";
+    empty.appendChild(iconPara("fa-solid fa-file-lines", t("pickFirst")));
+    md.innerHTML = "";
+    document.getElementById("reviewCopyBanner").hidden = true;
+    document.getElementById("reviewFileName").textContent = t("noMaterial");
+    document.getElementById("reviewRhythm").textContent = "";
+    setWait("review", "off");
+    return;
+  }
+  const cls = appState.reviewClass;
+  const pairs = [
+    [fieldLabel("班级"), cls ? rec["班级"] : (isBlank(rec["班级"]) ? "—" : t("classGone"))],
+    [fieldLabel("学段"), cls ? optLabel(cls["学段"]) : "—"],
+    [fieldLabel("年级"), cls ? optLabel(cls["年级"]) : "—"],
+    [fieldLabel("班额"), cls && cls["班额"] ? tf("people", { n: cls["班额"] }) : "—"],
+    [fieldLabel("课时分钟"), cls ? optLabel(cls["课时分钟"]) : "—"],
+    [fieldLabel("教材版本"), cls ? (cls["教材版本"] || "—") : "—"],
+    [fieldLabel("主题"), rec["主题"]],
+    [fieldLabel("材料类型"), optLabel(rec["材料类型"])],
+    [fieldLabel("材料来源"), optLabel(rec["材料来源"])],
+    [fieldLabel("版权状态"), optLabel(rec["版权状态"])],
+    [fieldLabel("学员层次"), optLabel(rec["学员层次"])],
+    [fieldLabel("微技能"), splitSkills(rec["微技能"]).map(optLabel).join(" / ")],
+    [fieldLabel("听后任务"), optLabel(rec["听后任务"])]
+  ];
+  for (let i = 0; i < pairs.length; i++) {
+    const nodes = kvRow(pairs[i][0], pairs[i][1] || "—");
+    facts.appendChild(nodes[0]);
+    facts.appendChild(nodes[1]);
+  }
+  document.getElementById("reviewCopyBanner").hidden = rec["版权状态"] !== "仅存索引";
+  const file = rec["材料文件"];
+  document.getElementById("reviewFileName").textContent = isBlank(file) ? t("noMaterial") : fileBase(file);
+  const hasFile = !isBlank(file);
+  document.getElementById("reviewListen").disabled = !hasFile;
+  document.getElementById("reviewOpen").disabled = !hasFile;
+  document.getElementById("reviewFileDownload").disabled = !hasFile;
+  const rhythm = document.getElementById("reviewRhythm");
+  rhythm.textContent = "";
+  const timing = cls ? rhythmOf(cls["课时分钟"]) : null;
+  const title = document.createElement("h2");
+  title.textContent = uiLang === "en" ? "Timing guide" : "参考节奏";
+  rhythm.appendChild(title);
+  const p = document.createElement("p");
+  p.textContent = timing ? tf("rhythmLine", { a: timing.pre, b: timing.mid, c: timing.post, t: timing.total }) : t("rhythmMissing");
+  rhythm.appendChild(p);
+  const note = document.createElement("p");
+  note.className = "meta";
+  note.textContent = t("rhythmNote");
+  rhythm.appendChild(note);
+  if (isBlank(rec["听力方案"])) {
+    empty.hidden = false;
+    empty.textContent = "";
+    empty.appendChild(iconPara("fa-solid fa-hourglass-half", uiLang === "en" ? t("waitEn") : WAIT_TEXT));
+    md.innerHTML = "";
+    if (!appState.polling) setWait("review", "off");
+  } else {
+    empty.hidden = true;
+    setWait("review", "off");
+    md.innerHTML = renderMarkdown(rec["听力方案"]);
+  }
+}
+function updateReviewButtons() {
+  const count = appState.designCount || 0;
+  const row = appState.designRow || 0;
+  document.getElementById("reviewPrev").disabled = row <= 1 || count === 0;
+  document.getElementById("reviewNext").disabled = row >= count || count === 0;
+  document.getElementById("reviewRefresh").disabled = appState.polling;
+}
+async function refreshReview() {
+  if (appState.designRow < 1) { notify(t("pickFirst"), "error"); return; }
+  try {
+    const text = await getCell(SRC_DESIGN, "听力方案", appState.designRow);
+    if (!isBlank(text)) {
+      appState.planText = text;
+      if (!appState.review) appState.review = {};
+      appState.review["听力方案"] = text;
+      document.getElementById("reviewEmpty").hidden = true;
+      setWait("review", "off");
+      document.getElementById("reviewMarkdown").innerHTML = renderMarkdown(text);
+      return;
+    }
+  } catch (err) {
+    notify(err.message, "error");
+  }
+  await pollPlan(appState.designRow, "review");
+}
+async function copyPlan() {
+  const text = appState.planText || (appState.review && appState.review["听力方案"]) || "";
+  if (isBlank(text)) { notify(t("noPlan"), "error"); return; }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(text);
+    else {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "readonly");
+      area.style.position = "fixed";
+      area.style.left = "-9999px";
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand("copy");
+      area.remove();
+      if (!ok) throw new Error("copy");
+    }
+    notify(t("copied"), "success");
+  } catch (err) {
+    notify(t("copyFail"), "error");
+  }
+}
+async function downloadPlan() {
+  const text = appState.planText || (appState.review && appState.review["听力方案"]) || "";
+  if (isBlank(text)) { notify(t("noPlan"), "error"); return; }
+  const topic = appState.review && appState.review["主题"] ? String(appState.review["主题"]).trim() : "";
+  const filename = (topic || t("planFileFallback")) + ".md";
+  try {
+    const res = await bridge({ type: "WriteFile", data: filename, payload: text });
+    if (isShortError(res) && String(text).indexOf(String(res).trim()) === -1) throw new Error(String(res).trim());
+    visit(downloadUrl(filename));
+    notify(t("downloaded"), "success");
+  } catch (err) {
+    notify(err.message, "error");
+  }
+}
+function openPrivate(name) {
+  if (!name) { notify(t("noMaterial"), "error"); return; }
+  if (isHtmlName(name)) {
+    document.getElementById("htmlFrame").src = privateUrl(name);
+    document.getElementById("htmlTitle").textContent = fileBase(name);
+    pushPopup(document.getElementById("htmlModal"));
+    return;
+  }
+  visit(privateUrl(name));
+}
+async function openPlayer(name) {
+  if (!name) { notify(t("noMaterial"), "error"); return; }
+  document.getElementById("playerFileName").textContent = fileBase(name);
+  document.getElementById("playerTitle").textContent = t("listen");
+  const audio = document.getElementById("playerAudio");
+  appState.playerFile = name;
+  if (isAudioName(name)) {
+    audio.hidden = false;
+    try { audio.src = await resolvePlayable(name); } catch (err) { notify(err.message, "error"); }
+  } else {
+    audio.hidden = true;
+    audio.removeAttribute("src");
+    openPrivate(name);
+    return;
+  }
+  pushPopup(document.getElementById("playerModal"));
+}
+async function onRecord(act) {
+  try {
+    if (act === "start") {
+      if (appState.recState !== "idle") { notify(t("recBusy"), "error"); return; }
+      await bridge({ type: "StartRecordVoice" });
+      appState.recState = "recording";
+    } else if (act === "pause") {
+      if (appState.recState !== "recording") { notify(t("recBusy"), "error"); return; }
+      await bridge({ type: "PauseRecordVoice" });
+      appState.recState = "paused";
+    } else if (act === "resume") {
+      if (appState.recState !== "paused") { notify(t("recBusy"), "error"); return; }
+      await bridge({ type: "ContinueRecordVoice" });
+      appState.recState = "recording";
+    } else if (act === "cancel") {
+      if (appState.recState === "idle") { notify(t("recBusy"), "error"); return; }
+      await bridge({ type: "CancelRecordVoice" });
+      appState.recState = "idle";
+      notify(t("recCancelled"), "info");
+    } else if (act === "finish") {
+      if (appState.recState === "idle") { notify(t("recBusy"), "error"); return; }
+      const name = await bridge({ type: "FinishRecordVoice" });
+      appState.recState = "idle";
+      if (isBlank(name)) { notify(t("recEmpty"), "error"); renderRecStatus(); return; }
+      document.getElementById("formDesign_材料文件").value = String(name).trim();
+      syncMaterialFileUI();
+      updateDesignValidity();
+    }
+  } catch (err) {
+    notify(err.message, "error");
+  }
+  renderRecStatus();
+}
+function bindStatic() {
+  document.getElementById("brandBtn").addEventListener("click", function () {
+    try {
+      if (window.parent && typeof window.parent.closeFullHtml === "function") {
+        window.parent.closeFullHtml(false);
+        return;
+      }
+    } catch (err) {
+      notify(t("closeFail") + (err.message || ""), "error");
+      return;
+    }
+    notify(t("closeUnavailable"), "error");
+  });
+  const tabs = document.querySelectorAll("[data-page]");
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener("click", function () {
+      const page = this.dataset.page;
+      closeMobileMenu();
+      if (page === appState.page) showPage(page, { skipHistory: true, keepScroll: true });
+      else showPage(page);
+    });
+  }
+  document.getElementById("langBtn").addEventListener("click", function () { setLang(uiLang === "en" ? "zh" : "en"); });
+  document.getElementById("langZhBtn").addEventListener("click", function () { setLang("zh"); closeMobileMenu(); });
+  document.getElementById("langEnBtn").addEventListener("click", function () { setLang("en"); closeMobileMenu(); });
+  document.getElementById("hamburgerBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    const menu = document.getElementById("mobileMenu");
+    const open = menu.hidden;
+    menu.hidden = !open;
+    this.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("mobileMenu");
+    const ham = document.getElementById("hamburgerBtn");
+    if (menu.hidden) return;
+    if (menu.contains(e.target) || ham.contains(e.target)) return;
+    closeMobileMenu();
+  });
+  window.addEventListener("resize", layoutNav);
+  document.getElementById("homeAddClass").addEventListener("click", function () {
+    showPage("class", { after: function () { openClassFormNew(); } });
+  });
+  document.getElementById("homeNewDesign").addEventListener("click", function () {
+    showPage("design", { after: function () { openDesignFormNew([]); } });
+  });
+  document.getElementById("statClassBtn").addEventListener("click", function () {
+    showPage("class", { after: function () { resetClassFilters(); renderClassList(); } });
+  });
+  document.getElementById("statDesignBtn").addEventListener("click", function () {
+    showPage("design", { after: function () { resetDesignFilters(); renderDesignList(); } });
+  });
+  document.getElementById("statReadyBtn").addEventListener("click", function () {
+    showPage("design", { after: function () { resetDesignFilters(); renderDesignList(); } });
+  });
+  document.getElementById("statPendingBtn").addEventListener("click", function () {
+    showPage("design", { after: function () { resetDesignFilters(); appState.pendingOnly = true; renderDesignList(); } });
+  });
+  document.getElementById("skillCoverage").addEventListener("click", function (e) {
+    const chip = e.target.closest("[data-skill]");
+    if (!chip) return;
+    const skill = chip.dataset.skill;
+    if (chip.dataset.covered === "1") {
+      showPage("design", { after: function () { resetDesignFilters(); appState.designSkillFilter = [skill]; renderDesignList(); } });
+    } else {
+      showPage("design", { after: function () { openDesignFormNew([skill]); } });
+    }
+  });
+  document.getElementById("recentList").addEventListener("click", function (e) { onRecent(e); });
+  document.getElementById("recentList").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const card = e.target.closest("[data-act]");
+    if (!card || e.target !== card) return;
+    e.preventDefault();
+    card.click();
+  });
+  document.getElementById("classSearch").addEventListener("input", renderClassList);
+  document.getElementById("classFilterStage").addEventListener("change", function () {
+    fillSelect(document.getElementById("classFilterGrade"), gradesForStage(this.value), t("filterGrade"), "");
+    renderClassList();
+  });
+  document.getElementById("classFilterGrade").addEventListener("change", renderClassList);
+  document.getElementById("classClearFilter").addEventListener("click", function () { resetClassFilters(); renderClassList(); });
+  document.getElementById("classList").addEventListener("click", onClassListClick);
+  document.getElementById("classCreateBtn").addEventListener("click", function () { openClassFormNew(); });
+  document.getElementById("classModalClose").addEventListener("click", function () { closePopupElement(document.getElementById("classModal")); });
+  document.getElementById("formClassCancel").addEventListener("click", function () { closePopupElement(document.getElementById("classModal")); });
+  document.getElementById("formClass").addEventListener("submit", submitClass);
+  document.getElementById("formClass").addEventListener("input", updateClassValidity);
+  document.getElementById("formClass").addEventListener("change", function (e) {
+    if (e.target && e.target.id === "formClass_学段") onClassStageChange();
+    else updateClassValidity();
+  });
+  document.getElementById("designSearch").addEventListener("input", renderDesignList);
+  ["designFilterClass", "designFilterType", "designFilterLevel", "designFilterCopy", "designFilterTask"].forEach(function (id) {
+    document.getElementById(id).addEventListener("change", renderDesignList);
+  });
+  document.getElementById("designSkillFilters").addEventListener("click", function (e) {
+    const chip = e.target.closest("[data-filter-skill]");
+    if (!chip) return;
+    const skill = chip.dataset.filterSkill;
+    const idx = appState.designSkillFilter.indexOf(skill);
+    if (idx >= 0) appState.designSkillFilter.splice(idx, 1);
+    else appState.designSkillFilter.push(skill);
+    renderDesignList();
+  });
+  document.getElementById("designExtraFilters").addEventListener("click", function (e) {
+    if (e.target.closest("#pendingChip")) { appState.pendingOnly = false; renderDesignList(); }
+  });
+  document.getElementById("designClearFilter").addEventListener("click", function () { resetDesignFilters(); renderDesignList(); });
+  document.getElementById("designList").addEventListener("click", onDesignListClick);
+  document.getElementById("designCreateBtn").addEventListener("click", onDesignCreate);
+  document.getElementById("designModalClose").addEventListener("click", function () { closePopupElement(document.getElementById("designModal")); });
+  document.getElementById("formDesignCancel").addEventListener("click", function () { closePopupElement(document.getElementById("designModal")); });
+  document.getElementById("formDesign").addEventListener("submit", submitDesign);
+  document.getElementById("formDesign").addEventListener("input", updateDesignValidity);
+  document.getElementById("formDesign").addEventListener("change", function (e) {
+    if (!e.target) return;
+    if (e.target.id === "formDesign_班级") syncDesignSide();
+    if (e.target.id === "formDesign_材料来源" || e.target.id === "formDesign_版权状态") syncMaterialSourceUI();
+    updateDesignValidity();
+  });
+  document.getElementById("designSkillChips").addEventListener("click", function (e) {
+    const chip = e.target.closest("[data-skill]");
+    if (!chip) return;
+    const on = chip.getAttribute("aria-pressed") !== "true";
+    chip.setAttribute("aria-pressed", on ? "true" : "false");
+    chip.classList.toggle("is-on", on);
+    document.getElementById("formDesign_微技能").value = joinSkills(selectedSkills());
+    updateDesignValidity();
+  });
+  document.getElementById("pickMaterialBtn").addEventListener("click", async function () {
+    try {
+      const name = await bridge({ type: "SelectFile" });
+      if (isBlank(name)) { notify(t("noFile"), "info"); return; }
+      document.getElementById("formDesign_材料文件").value = String(name).trim();
+      syncMaterialFileUI();
+      updateDesignValidity();
+    } catch (err) { notify(err.message, "error"); }
+  });
+  document.getElementById("clearMaterialBtn").addEventListener("click", function () {
+    document.getElementById("formDesign_材料文件").value = "";
+    syncMaterialFileUI();
+    updateDesignValidity();
+    notify(t("fileCleared"), "info");
+  });
+  document.getElementById("designFileOpen").addEventListener("click", function () { openPrivate(document.getElementById("formDesign_材料文件").value.trim()); });
+  document.getElementById("designFileDownload").addEventListener("click", function () {
+    const name = document.getElementById("formDesign_材料文件").value.trim();
+    if (!name) { notify(t("noMaterial"), "error"); return; }
+    visit(downloadUrl(name));
+  });
+  document.getElementById("recStart").addEventListener("click", function () { onRecord("start"); });
+  document.getElementById("recPause").addEventListener("click", function () { onRecord("pause"); });
+  document.getElementById("recResume").addEventListener("click", function () { onRecord("resume"); });
+  document.getElementById("recCancel").addEventListener("click", function () { onRecord("cancel"); });
+  document.getElementById("recFinish").addEventListener("click", function () { onRecord("finish"); });
+  document.getElementById("designGoAddClass").addEventListener("click", function () {
+    closePopupElement(document.getElementById("designModal"));
+    showPage("class", { after: function () { openClassFormNew(); } });
+  });
+  document.getElementById("gotoReviewBtn").addEventListener("click", function () {
+    if (popupStack.indexOf(document.getElementById("designModal")) >= 0) closePopupElement(document.getElementById("designModal"));
+    showPage("review");
+  });
+  document.getElementById("openPlanFull").addEventListener("click", function () {
+    document.getElementById("mdFull").innerHTML = document.getElementById("designPlanPreview").innerHTML;
+    pushPopup(document.getElementById("mdModal"));
+  });
+  document.getElementById("reviewPrev").addEventListener("click", function () {
+    if (this.disabled) return;
+    appState.designRow -= 1;
+    loadReview();
+  });
+  document.getElementById("reviewNext").addEventListener("click", function () {
+    if (this.disabled) return;
+    appState.designRow = appState.designRow < 1 ? 1 : appState.designRow + 1;
+    loadReview();
+  });
+  document.getElementById("reviewRefresh").addEventListener("click", refreshReview);
+  document.getElementById("reviewCopy").addEventListener("click", copyPlan);
+  document.getElementById("reviewDownload").addEventListener("click", downloadPlan);
+  document.getElementById("reviewPrint").addEventListener("click", function () { window.print(); });
+  document.getElementById("reviewEdit").addEventListener("click", function () {
+    if (appState.designRow < 1) { notify(t("pickFirst"), "error"); return; }
+    const row = appState.designRow;
+    showPage("design", { after: function () { return openDesignFormEdit(row); } });
+  });
+  document.getElementById("reviewDelete").addEventListener("click", function () {
+    if (appState.designRow < 1) { notify(t("noRow"), "error"); return; }
+    deleteDesign(appState.designRow);
+  });
+  document.getElementById("reviewNew").addEventListener("click", function () {
+    appState.designRow = 0;
+    showPage("design", { after: function () { openDesignFormNew([]); } });
+  });
+  document.getElementById("reviewViewClass").addEventListener("click", function () {
+    if (!appState.reviewClassRow) { notify(t("classGone"), "error"); return; }
+    const row = appState.reviewClassRow;
+    showPage("class", { after: function () { return openClassFormEdit(row); } });
+  });
+  document.getElementById("reviewListen").addEventListener("click", function () {
+    const name = appState.review && appState.review["材料文件"];
+    openPlayer(name);
+  });
+  document.getElementById("reviewOpen").addEventListener("click", function () {
+    const name = appState.review && appState.review["材料文件"];
+    openPrivate(name);
+  });
+  document.getElementById("reviewFileDownload").addEventListener("click", function () {
+    const name = appState.review && appState.review["材料文件"];
+    if (isBlank(name)) { notify(t("noMaterial"), "error"); return; }
+    visit(downloadUrl(name));
+  });
+  document.getElementById("confirmOk").addEventListener("click", function () { settleConfirm(true); });
+  document.getElementById("confirmCancel").addEventListener("click", function () { settleConfirm(false); });
+  document.getElementById("confirmModal").addEventListener("popup-closed", function () {
+    if (appState.confirmResolver) { const fn = appState.confirmResolver; appState.confirmResolver = null; fn(false); }
+  });
+  document.getElementById("noticeOk").addEventListener("click", settleNotice);
+  document.getElementById("noticeModal").addEventListener("popup-closed", function () {
+    if (appState.noticeResolver) { const fn = appState.noticeResolver; appState.noticeResolver = null; fn(); }
+  });
+  document.getElementById("playerClose").addEventListener("click", function () { closePopupElement(document.getElementById("playerModal")); });
+  document.getElementById("htmlClose").addEventListener("click", function () {
+    document.getElementById("htmlFrame").src = "about:blank";
+    closePopupElement(document.getElementById("htmlModal"));
+  });
+  document.getElementById("mdClose").addEventListener("click", function () { closePopupElement(document.getElementById("mdModal")); });
+  ["playerModal", "htmlModal", "mdModal"].forEach(function (id) {
+    document.getElementById(id).addEventListener("click", function (e) {
+      if (e.target !== this) return;
+      if (this.dataset.closeOutside !== "true") return;
+      if (popupStack[popupStack.length - 1] !== this) return;
+      if (id === "htmlModal") document.getElementById("htmlFrame").src = "about:blank";
+      closeTopPopup();
+    });
+  });
+  document.getElementById("playerOpen").addEventListener("click", function () { openPrivate(appState.playerFile || ""); });
+  document.getElementById("playerDownload").addEventListener("click", function () {
+    if (!appState.playerFile) return;
+    visit(downloadUrl(appState.playerFile));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    const menu = document.getElementById("mobileMenu");
+    if (!menu.hidden) { closeMobileMenu(); return; }
+    if (popupStack.length) airBack();
+  });
+  document.addEventListener("focusin", function (e) {
+    if (!e.target || !e.target.matches || !e.target.matches("input, textarea, select")) return;
+    if (!window.matchMedia("(max-width: 720px)").matches) return;
+    const kb = keyboardHeight();
+    document.documentElement.style.setProperty("--kb", kb + "px");
+    const body = e.target.closest(".modal-body");
+    if (body) body.style.paddingBottom = "calc(" + kb + "px + 200px)";
+    setTimeout(function () {
+      try { e.target.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) {}
+    }, 280);
+  });
+  document.addEventListener("focusout", function () {
+    setTimeout(function () {
+      const ae = document.activeElement;
+      if (ae && ae.matches && ae.matches("input, textarea, select")) return;
+      document.documentElement.style.setProperty("--kb", "0px");
+      const bodies = document.querySelectorAll(".modal-body");
+      for (let i = 0; i < bodies.length; i++) bodies[i].style.paddingBottom = "";
+    }, 180);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () {
+      const ae = document.activeElement;
+      if (!ae || !ae.matches || !ae.matches("input, textarea, select")) return;
+      const kb = keyboardHeight();
+      document.documentElement.style.setProperty("--kb", kb + "px");
+      const body = ae.closest(".modal-body");
+      if (body && window.matchMedia("(max-width: 720px)").matches) body.style.paddingBottom = "calc(" + kb + "px + 200px)";
+      try { ae.scrollIntoView({ block: "center" }); } catch (err) {}
+    });
+  }
+}
+function keyboardHeight() {
+  if (!window.visualViewport) return 0;
+  return Math.max(0, Math.round(window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop));
+}
+function onRecent(e) {
+  const trigger = e.target.closest("[data-act]");
+  if (!trigger) return;
+  const row = parseInt(trigger.dataset.row, 10);
+  if (!row) return;
+  appState.designRow = row;
+  showPage("review");
+}
+function onClassListClick(e) {
+  const trigger = e.target.closest("[data-act]");
+  if (!trigger || !document.getElementById("classList").contains(trigger)) return;
+  const row = parseInt(trigger.dataset.row, 10);
+  const act = trigger.dataset.act;
+  if (e.target.closest("button") && trigger !== e.target.closest("button") ) return;
+  if (act === "edit") openClassFormEdit(row);
+  else if (act === "plans") {
+    let name = "";
+    for (let i = 0; i < appState.classes.length; i++) if (appState.classes[i]._row === row) name = appState.classes[i]["班级名称"];
+    showPage("design", { after: function () {
+      resetDesignFilters();
+      const select = document.getElementById("designFilterClass");
+      let found = false;
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === name) { found = true; break; }
+      }
+      if (name && !found) {
+        const o = document.createElement("option");
+        o.value = name;
+        o.textContent = name;
+        select.appendChild(o);
+      }
+      select.value = name;
+      renderDesignList();
+    } });
+  } else if (act === "delete") {
+    e.stopPropagation();
+    deleteClass(row);
+  }
+}
+function onDesignListClick(e) {
+  const trigger = e.target.closest("[data-act]");
+  if (!trigger || !document.getElementById("designList").contains(trigger)) return;
+  if (trigger.disabled) return;
+  const row = parseInt(trigger.dataset.row, 10);
+  const act = trigger.dataset.act;
+  if (act === "edit") openDesignFormEdit(row);
+  else if (act === "review") { appState.designRow = row; showPage("review"); }
+  else if (act === "listen") {
+    e.stopPropagation();
+    let file = "";
+    for (let i = 0; i < appState.designs.length; i++) if (appState.designs[i]._row === row) file = appState.designs[i]["材料文件"];
+    openPlayer(file);
+  } else if (act === "delete") {
+    e.stopPropagation();
+    deleteDesign(row);
+  }
+}
+async function onDesignCreate() {
+  if (document.getElementById("designCreateBtn").dataset.mode === "add-class") {
+    showPage("class", { after: function () { openClassFormNew(); } });
+    return;
+  }
+  try {
+    const n = await fetchCount(SRC_CLASS);
+    appState.classCount = n;
+    updateCreateDesignButton();
+    if (n === 0) {
+      showPage("class", { after: function () { openClassFormNew(); } });
+      return;
+    }
+  } catch (err) {
+    notify(err.message, "error");
+  }
+  openDesignFormNew([]);
+}
+function bindKeyboardGuard() {}
+async function initialize() {
+  try {
+    uiLang = detectLang();
+    buildForms();
+    bindStatic();
+    applyI18n({ lists: false });
+    layoutNav();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutNav).catch(function () {});
+    try {
+      const mode = String(await bridge({ type: "模式" }) || "").trim();
+      if (mode === "暗色") document.documentElement.setAttribute("data-theme", "dark");
+      else if (mode === "亮色") document.documentElement.setAttribute("data-theme", "light");
+      else {
+        document.documentElement.setAttribute("data-theme", "light");
+        notify(t("modeUnknown") + mode, "error");
+      }
+    } catch (err) {
+      document.documentElement.setAttribute("data-theme", "light");
+      notify(t("modeFail") + (err.message || ""), "error");
+    }
+    await showPage("home", { skipHistory: true });
+  } catch (err) {
+    notify(err && err.message ? err.message : String(err), "error");
+  }
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

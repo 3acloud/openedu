@@ -1,0 +1,3478 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>化学解题教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+  --cobalt: #163A5F;
+  --copper: #E07A3D;
+  --teal: #2A9D8F;
+  --bg1: #F7F4EF;
+  --bg2: #E7EEF6;
+  --card: #ffffff;
+  --text: #1b2c3d;
+  --muted: #5d6e80;
+  --line: rgba(22, 58, 95, 0.14);
+  --shadow: 0 10px 28px rgba(22, 58, 95, 0.07);
+  --nav: #163A5F;
+  --nav-text: #f6f3ee;
+  --soft: rgba(22, 58, 95, 0.05);
+  --danger: #b85a24;
+  --kb: 0px;
+}
+html[data-theme="dark"] {
+  --bg1: #101a27;
+  --bg2: #173049;
+  --card: #1a2d42;
+  --text: #e7eef6;
+  --muted: #b3c2d3;
+  --line: rgba(231, 238, 246, 0.16);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  --nav: #163A5F;
+  --soft: rgba(231, 238, 246, 0.05);
+  --danger: #f0a277;
+  color-scheme: dark;
+}
+html[data-theme="light"] { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
+input, select, textarea { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  background: linear-gradient(165deg, var(--bg1) 0%, var(--bg2) 100%);
+  background-attachment: fixed;
+}
+button, input, select, textarea { font-family: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
+
+.topbar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+.navbar {
+  position: relative;
+  z-index: 1001;
+  background: var(--nav);
+  color: var(--nav-text);
+  box-shadow: 0 8px 24px rgba(14, 32, 54, 0.18);
+}
+#navInner {
+  max-width: 1120px;
+  margin: 0 auto;
+  min-height: 64px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--nav-text);
+  padding: 8px 0;
+  min-width: 0;
+  flex-shrink: 0;
+  font-weight: 750;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  display: inline-flex;
+}
+.brand-mark svg { width: 34px; height: 34px; display: block; }
+.brand-name { white-space: nowrap; }
+.navbar.is-collapsed .brand { min-width: 0; flex: 1 1 auto; }
+.navbar.is-collapsed .brand-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+#navTabs {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  align-items: stretch;
+  gap: 4px;
+}
+.nav-tab, .menu-tab {
+  border: 0;
+  background: transparent;
+  color: rgba(246, 243, 238, 0.82);
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 650;
+  padding: 18px 12px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-tab i, .menu-tab i { font-size: 13px; }
+.nav-tab.active, .menu-tab.active {
+  color: #fff;
+  box-shadow: inset 0 -3px 0 #E07A3D;
+}
+.lang-toggle, .menu-lang {
+  display: inline-flex;
+  border: 1px solid rgba(246, 243, 238, 0.28);
+  border-radius: 999px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+}
+.lang-toggle button, .menu-lang button {
+  border: 0;
+  background: transparent;
+  color: #f6f3ee;
+  min-width: 40px;
+  min-height: 32px;
+  padding: 0 10px;
+  font-weight: 750;
+  font-size: 13px;
+}
+.lang-toggle button.is-on, .menu-lang button.is-on {
+  background: #E07A3D;
+  color: #fff;
+}
+#hamburgerBtn {
+  display: none;
+  margin-left: auto;
+  border: 1px solid rgba(246, 243, 238, 0.35);
+  background: transparent;
+  color: #fff;
+  border-radius: 10px;
+  min-height: 38px;
+  padding: 0 12px;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.navbar.is-collapsed #hamburgerBtn { display: inline-flex; }
+.navbar.is-collapsed #navTabs,
+.navbar.is-collapsed #langToggle { display: none; }
+#mobileMenu {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #163A5F;
+  padding: 8px 12px 14px;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1002;
+}
+.navbar.is-collapsed.menu-open #mobileMenu { display: flex; }
+.menu-tab {
+  width: 100%;
+  text-align: left;
+  border-radius: 10px;
+  padding: 12px;
+}
+.menu-tab.active { background: rgba(224, 122, 61, 0.16); }
+.menu-lang { align-self: flex-start; margin-top: 6px; }
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 22px 16px 28px;
+}
+body { padding-top: 64px; }
+.page-spacer { height: 24px; }
+@media (max-width: 768px) {
+  .page-spacer { height: 120px; }
+  .wrap { padding-bottom: 12px; }
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.page-head h1, .hero h1 {
+  margin: 0 0 6px;
+  font-size: 34px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--cobalt);
+}
+html[data-theme="dark"] .page-head h1,
+html[data-theme="dark"] .hero h1 { color: #f3f7fb; }
+.lead { margin: 0; color: var(--muted); max-width: 68ch; }
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--copper);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+}
+h2.section-title {
+  margin: 22px 0 10px;
+  font-size: 18px;
+  color: var(--cobalt);
+}
+html[data-theme="dark"] h2.section-title { color: #d7e4f2; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  width: 128px;
+  height: 128px;
+  right: -28px;
+  bottom: -36px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,4 94,28 94,72 50,96 6,72 6,28' fill='none' stroke='%23163A5F' stroke-width='3'/><polygon points='50,24 76,38 76,66 50,80 24,66 24,38' fill='none' stroke='%232A9D8F' stroke-width='2'/></svg>") center/contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+@media (hover: hover) {
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(22, 58, 95, 0.14); }
+  .card:hover::after { opacity: 0.16; }
+  html[data-theme="dark"] .card:hover { box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35); }
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(180px, 0.6fr);
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  margin-bottom: 16px;
+}
+.hero-actions, .actions, .detail-actions, .record-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hero-actions { margin-top: 16px; }
+.hero-art { display: flex; justify-content: center; color: var(--cobalt); }
+.hero-art svg, .flask-art { width: min(220px, 100%); height: auto; }
+
+.method-row, .stat-row {
+  display: grid;
+  gap: 12px;
+}
+.method-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 8px; }
+.method {
+  padding: 14px 14px 16px;
+  min-height: 132px;
+}
+.method .idx {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(224, 122, 61, 0.14);
+  color: var(--copper);
+  font-weight: 800;
+  font-size: 13px;
+}
+.method strong, .explain-list strong, .step-name { display: block; margin-top: 8px; }
+.method p, .explain-list span, .stat-hint, .muted { color: var(--muted); }
+.method p { margin: 6px 0 0; font-size: 14px; }
+button.stat {
+  text-align: left;
+  width: 100%;
+  border: 1px solid var(--line);
+  padding: 16px;
+  font: inherit;
+}
+.stat-k { color: var(--muted); font-size: 14px; font-weight: 700; }
+.stat-n {
+  display: block;
+  margin: 6px 0 2px;
+  font-size: 36px;
+  line-height: 1.1;
+  color: var(--cobalt);
+  font-variant-numeric: tabular-nums;
+}
+html[data-theme="dark"] .stat-n { color: #f4d3bf; }
+.stat-hint { font-size: 13px; }
+
+.card-list { display: flex; flex-direction: column; gap: 12px; }
+.record { padding: 0; }
+.record-main {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 14px 16px 8px;
+  font: inherit;
+}
+.record-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.badge.junior { background: rgba(42, 157, 143, 0.16); color: #1a6e64; }
+.badge.senior { background: rgba(22, 58, 95, 0.12); color: #163A5F; }
+.badge.other { background: var(--soft); color: var(--muted); }
+html[data-theme="dark"] .badge.junior { color: #9ee4da; background: rgba(42, 157, 143, 0.22); }
+html[data-theme="dark"] .badge.senior { color: #d5e4f5; background: rgba(198, 220, 245, 0.12); }
+.clamp2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.record h3 { margin: 0; font-size: 17px; line-height: 1.45; }
+.record .summary { margin: 6px 0 0; font-size: 14px; }
+.record-actions, .detail-actions { padding: 0 16px 14px; }
+.record-detail {
+  margin: 0 12px 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+.record-detail h4 { margin: 10px 0 4px; font-size: 14px; color: var(--copper); }
+.record-detail h4:first-child { margin-top: 0; }
+.record-detail p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.empty {
+  text-align: center;
+  padding: 28px 16px 32px;
+  color: var(--muted);
+}
+.empty svg { width: 120px; height: auto; color: var(--cobalt); }
+html[data-theme="dark"] .empty svg { color: #d5e4f5; }
+.empty p { margin: 8px 0 0; font-weight: 700; color: var(--text); }
+
+.bench-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 16px;
+  align-items: start;
+}
+.sheet, .anno { padding: 16px; }
+.sheet h2, .anno-head h2 { margin: 0; font-size: 20px; color: var(--cobalt); }
+html[data-theme="dark"] .sheet h2,
+html[data-theme="dark"] .anno-head h2 { color: #f3f7fb; }
+.anno-head, .filter-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.field { margin-top: 12px; }
+.field label { display: block; font-weight: 750; margin-bottom: 6px; }
+.grade-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+#gradeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.bottle {
+  width: 74px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--teal);
+}
+.bottle.senior { color: var(--cobalt); }
+html[data-theme="dark"] .bottle.junior { color: #8fd9cf; }
+html[data-theme="dark"] .bottle.senior { color: #d5e4f5; }
+.bottle-neck {
+  display: block;
+  width: 18px;
+  height: 10px;
+  margin: 0 auto;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  background: rgba(224, 122, 61, 0.85);
+}
+.bottle-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border: 2px solid currentColor;
+  border-radius: 12px 12px 18px 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.62), rgba(42,157,143,.22));
+  font-weight: 800;
+}
+.bottle.senior .bottle-body {
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(22,58,95,.18));
+}
+html[data-theme="dark"] .bottle-body {
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(42,157,143,.28));
+}
+html[data-theme="dark"] .bottle.senior .bottle-body {
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(22,58,95,.45));
+}
+.bottle.is-selected .bottle-body,
+.bottle.is-selected .bottle-neck {
+  border-color: #E07A3D;
+  box-shadow: 0 0 0 3px rgba(224, 122, 61, 0.28);
+}
+textarea, input[type="search"], input[type="text"] {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+textarea { min-height: 112px; resize: vertical; }
+textarea:focus, input[type="search"]:focus, input[type="text"]:focus {
+  border-color: var(--copper);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(224, 122, 61, 0.18);
+}
+.hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+.actions { margin-top: 14px; }
+.btn {
+  border-radius: 12px;
+  border: 1px solid transparent;
+  min-height: 42px;
+  padding: 8px 14px;
+  font-weight: 750;
+  font-size: 14px;
+  background: var(--soft);
+}
+.btn.primary { background: #163A5F; color: #fff; }
+.btn.ghost { background: transparent; border-color: rgba(22, 58, 95, 0.35); color: var(--cobalt); }
+html[data-theme="dark"] .btn.ghost { color: #e7eef6; border-color: rgba(231, 238, 246, 0.35); }
+.btn.copper { background: transparent; color: var(--danger); border-color: rgba(224, 122, 61, 0.75); }
+.btn.tiny { min-height: 34px; padding: 4px 10px; font-size: 13px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.pager { display: inline-flex; align-items: center; gap: 6px; }
+.pager button {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-weight: 800;
+  color: var(--cobalt);
+}
+html[data-theme="dark"] .pager button { color: #f3f7fb; }
+.pager button:disabled { opacity: 0.4; }
+#rowIndicator { min-width: 72px; text-align: center; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); }
+.status { min-height: 1.2em; color: var(--copper); font-size: 14px; margin: 8px 0 0; }
+
+.anno-layout {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+.step-rail { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.step-rail button {
+  width: 100%;
+  text-align: left;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+  padding: 8px;
+  font-size: 13px;
+}
+.step-index {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(22, 58, 95, 0.1);
+  font-size: 12px;
+  font-weight: 800;
+}
+.step-rail button.is-lit {
+  border-color: #E07A3D;
+  box-shadow: inset 3px 0 0 #E07A3D;
+  background: rgba(224, 122, 61, 0.12);
+}
+.step-name { font-weight: 800; }
+.explain-list { margin: 0; padding-left: 18px; }
+.explain-list li { margin: 8px 0; }
+.anno-note { font-weight: 750; color: var(--cobalt); }
+html[data-theme="dark"] .anno-note { color: #f4d3bf; }
+.wait-box { text-align: center; padding: 12px 6px 4px; }
+.wait-flask { width: 96px; height: auto; color: var(--cobalt); }
+.bubble { transform-box: fill-box; transform-origin: center; animation: rise 1.8s infinite; }
+.bubble.b2 { animation-delay: .45s; }
+.bubble.b3 { animation-delay: .9s; }
+@keyframes rise {
+  0% { transform: translateY(8px); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translateY(-42px); opacity: 0; }
+}
+
+.md { overflow-wrap: anywhere; }
+.md h1, .md h2, .md h3, .md h4, .md h5, .md h6 { color: var(--cobalt); line-height: 1.35; margin: 1em 0 .4em; }
+html[data-theme="dark"] .md h1,
+html[data-theme="dark"] .md h2,
+html[data-theme="dark"] .md h3,
+html[data-theme="dark"] .md h4 { color: #f4d3bf; }
+.md p { margin: .5em 0; }
+.md strong { color: var(--copper); }
+.md a { color: var(--teal); }
+.md blockquote {
+  margin: .6em 0;
+  padding: .2em 0 .2em 12px;
+  border-left: 3px solid var(--copper);
+  color: var(--muted);
+}
+.md pre {
+  overflow-x: auto;
+  max-width: 100%;
+  background: var(--soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.md code { font-family: Consolas, "Courier New", monospace; font-size: 0.92em; }
+.md img { max-width: 100%; height: auto; border-radius: 10px; }
+.md hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
+.table-x { overflow-x: auto; max-width: 100%; }
+.md table { border-collapse: collapse; min-width: 420px; }
+.md th, .md td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.md th { background: rgba(22, 58, 95, 0.06); }
+
+.search-line, .chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.search-wrap { position: relative; flex: 1; min-width: min(100%, 240px); }
+.search-wrap i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+#archiveSearch { padding-left: 36px; }
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  min-height: 34px;
+  padding: 0 12px;
+  font-weight: 750;
+}
+.chip.is-selected { border-color: #E07A3D; color: #9a4e22; box-shadow: 0 0 0 3px rgba(224, 122, 61, 0.18); }
+html[data-theme="dark"] .chip.is-selected { color: #f4d3bf; }
+.banner {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+#modalRoot {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(14, 28, 46, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-card {
+  width: min(460px, 100%);
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  background: #ffffff;
+  color: #1b2c3d;
+  border-radius: 18px;
+  padding: 22px 22px 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+html[data-theme="dark"] .modal-card { background: #1b2e44; color: #e7eef6; }
+.modal-card h3 { margin: 0 0 8px; color: #163A5F; }
+html[data-theme="dark"] .modal-card h3 { color: #f4d3bf; }
+.modal-card p { margin: 0; white-space: pre-wrap; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.modal-spacer { height: 8px; }
+@media (max-width: 768px) {
+  .modal-spacer { height: 96px; }
+}
+@media (max-width: 640px) {
+  .modal-root.markdown-view,
+  .modal-root.html-view { padding: 0; }
+  .modal-root.markdown-view .modal-card,
+  .modal-root.html-view .modal-card {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+}
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 3000;
+  background: #163A5F;
+  color: #fff;
+  border-radius: 999px;
+  padding: 10px 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  max-width: min(520px, calc(100% - 32px));
+}
+
+@media (max-width: 900px) {
+  .hero, .bench-grid, .method-row { grid-template-columns: 1fr 1fr; }
+  .bench-grid { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-art { order: -1; }
+  .hero-art svg { width: 140px; }
+}
+@media (max-width: 700px) {
+  .method-row, .stat-row { grid-template-columns: 1fr; }
+  .page-head { flex-direction: column; align-items: stretch; }
+  .page-head h1, .hero h1 { font-size: 28px; }
+  .anno-layout { grid-template-columns: 1fr; }
+  .step-rail { flex-direction: row; overflow-x: auto; }
+  .step-rail li { min-width: 108px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="topbar-fixed">
+  <nav id="mainNav" class="navbar" style="position: relative; z-index: 1001;">
+    <div id="navInner">
+      <button type="button" id="brandBtn" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <rect x="1" y="1" width="46" height="46" rx="14" fill="#E07A3D"/>
+            <path d="M20 11h8v5l9 16a8 8 0 0 1-7 7H18a8 8 0 0 1-7-7l9-16v-5z" fill="#F7F4EF" stroke="#163A5F" stroke-width="2"/>
+            <path d="M20 11h8" stroke="#163A5F" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span id="brandName" class="brand-name" data-i18n="brand">化学解题教练</span>
+      </button>
+      <div id="navTabs">
+        <button type="button" id="tabHome" class="nav-tab active" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="navHome">首页</span></button>
+        <button type="button" id="tabBench" class="nav-tab" data-page="bench"><i class="fa-solid fa-flask" aria-hidden="true"></i><span data-i18n="navBench">解题台</span></button>
+        <button type="button" id="tabArchive" class="nav-tab" data-page="archive"><i class="fa-solid fa-folder-open" aria-hidden="true"></i><span data-i18n="navArchive">解题档案</span></button>
+      </div>
+      <div id="langToggle" class="lang-toggle" role="group" aria-label="language">
+        <button type="button" id="langBtnCn">中</button>
+        <button type="button" id="langBtnEn">EN</button>
+      </div>
+      <button type="button" id="hamburgerBtn" aria-expanded="false" aria-controls="mobileMenu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        <span data-i18n="menu">菜单</span>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" id="mTabHome" class="menu-tab active" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="navHome">首页</span></button>
+      <button type="button" id="mTabBench" class="menu-tab" data-page="bench"><i class="fa-solid fa-flask" aria-hidden="true"></i><span data-i18n="navBench">解题台</span></button>
+      <button type="button" id="mTabArchive" class="menu-tab" data-page="archive"><i class="fa-solid fa-folder-open" aria-hidden="true"></i><span data-i18n="navArchive">解题档案</span></button>
+      <div class="menu-lang" role="group" aria-label="language">
+        <button type="button" id="langBtnCnM">中文</button>
+        <button type="button" id="langBtnEnM">EN</button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<main>
+  <section id="page-home" class="page">
+    <div class="wrap">
+      <div class="card hero">
+        <div>
+          <p class="eyebrow" data-i18n="eyebrow">初中与高中必修起点</p>
+          <h1 id="homeTitle" data-i18n="homeTitle">化学解题教练</h1>
+          <p id="homeLead" class="lead" data-i18n="homeLead">先把题目和你已经写下的尝试交给教练。教练不直接公布原题答案，而是按定物质、三重表征、写式列式、守恒检验逐级给提示。</p>
+          <div class="hero-actions">
+            <button type="button" id="btnStart" class="btn primary" data-i18n="start">开始解题</button>
+            <button type="button" id="btnToArchive" class="btn ghost" data-i18n="viewArchive">查看解题档案</button>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 200 240">
+            <path d="M78 28h44v22L168 196a30 30 0 0 1-28 22H60a30 30 0 0 1-28-22L78 50V28z" fill="rgba(255,255,255,.55)" stroke="#163A5F" stroke-width="4"/>
+            <path d="M78 28h44" stroke="#E07A3D" stroke-width="6" stroke-linecap="round"/>
+            <path d="M70 78h60" stroke="#2A9D8F" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+          </svg>
+        </div>
+      </div>
+
+      <h2 class="section-title" data-i18n="methodTitle">方法阶梯</h2>
+      <div class="method-row">
+        <article class="card method" id="method1"><span class="idx">1</span><strong data-i18n="step1">定物质</strong><p data-i18n="step1d">先确认反应物、生成物和题目在问谁</p></article>
+        <article class="card method" id="method2"><span class="idx">2</span><strong data-i18n="step2">三重表征</strong><p data-i18n="step2d">把宏观现象、符号和图示对齐</p></article>
+        <article class="card method" id="method3"><span class="idx">3</span><strong data-i18n="step3">写式列式</strong><p data-i18n="step3d">再写方程式或关系式，并配平</p></article>
+        <article class="card method" id="method4"><span class="idx">4</span><strong data-i18n="step4">守恒检验</strong><p data-i18n="step4d">用质量、原子、电荷或电子守恒回头检查</p></article>
+      </div>
+
+      <div class="stat-row">
+        <button type="button" id="statTotal" class="card stat">
+          <span class="stat-k" data-i18n="statTotal">总解题数</span>
+          <strong id="statTotalNum" class="stat-n">…</strong>
+          <span class="stat-hint" data-i18n="statTotalHint">查看全部记录</span>
+        </button>
+        <button type="button" id="statAttempt" class="card stat">
+          <span class="stat-k" data-i18n="statAttempt">已写下尝试</span>
+          <strong id="statAttemptNum" class="stat-n">…</strong>
+          <span class="stat-hint" data-i18n="statAttemptHint">只看写过尝试的</span>
+        </button>
+        <button type="button" id="statGrades" class="card stat">
+          <span class="stat-k" data-i18n="statGrades">覆盖年级</span>
+          <strong id="statGradeNum" class="stat-n">…</strong>
+          <span class="stat-hint" data-i18n="statGradesHint">按年级查看</span>
+        </button>
+      </div>
+
+      <h2 class="section-title" data-i18n="recentTitle">最近解题</h2>
+      <div id="recentLoading" class="card empty"><p data-i18n="loading">正在读取解题记录</p></div>
+      <div id="recentEmpty" class="card empty" hidden>
+        <svg class="flask-art" viewBox="0 0 160 200" aria-hidden="true">
+          <path d="M62 18h36v16L132 164a26 26 0 0 1-24 22H52a26 26 0 0 1-24-22L62 34V18z" fill="none" stroke="currentColor" stroke-width="3"/>
+          <path d="M62 18h36" stroke="#E07A3D" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <p id="recentEmptyText" data-i18n="emptyRecent">还没有解题记录</p>
+      </div>
+      <div id="recentList" class="card-list" hidden></div>
+      <div class="page-spacer"></div>
+    </div>
+  </section>
+
+  <section id="page-bench" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="benchTitle" data-i18n="benchTitle">解题台</h1>
+          <p id="benchLead" class="lead" data-i18n="benchLead">选出年级，写下题目。已有尝试可留空；留空时教练从下一步提示开始，而不是直接给出原题答案。</p>
+        </div>
+        <button type="button" id="btnGoArchive" class="btn ghost" data-i18n="navArchive">解题档案</button>
+      </div>
+      <div class="bench-grid">
+        <section class="card sheet" id="benchSheet">
+          <h2 data-i18n="sheetTitle">实验记录单</h2>
+          <form id="formChem" autocomplete="off">
+            <div class="field">
+              <label for="formChem_年级" data-i18n="labelGrade">年级</label>
+              <select id="formChem_年级" name="年级" class="grade-native" aria-hidden="true" tabindex="-1">
+                <option value=""></option>
+                <option value="初一">初一</option>
+                <option value="初二">初二</option>
+                <option value="初三">初三</option>
+                <option value="高一">高一</option>
+                <option value="高二">高二</option>
+                <option value="高三">高三</option>
+              </select>
+              <div id="gradeChips" role="radiogroup">
+                <button type="button" class="bottle junior" id="bottle-1" data-grade="初一" role="radio" aria-checked="false"><span class="bottle-neck"></span><span class="bottle-body">初一</span></button>
+                <button type="button" class="bottle junior" id="bottle-2" data-grade="初二" role="radio" aria-checked="false"><span class="bottle-neck"></span><span class="bottle-body">初二</span></button>
+                <button type="button" class="bottle junior" id="bottle-3" data-grade="初三" role="radio" aria-checked="false"><span class="bottle-neck"></span><span class="bottle-body">初三</span></button>
+                <button type="button" class="bottle senior" id="bottle-4" data-grade="高一" role="radio" aria-checked="false"><span class="bottle-neck"></span><span class="bottle-body">高一</span></button>
+                <button type="button" class="bottle senior" id="bottle-5" data-grade="高二" role="radio" aria-checked="false"><span class="bottle-neck"></span><span class="bottle-body">高二</span></button>
+                <button type="button" class="bottle senior" id="bottle-6" data-grade="高三" role="radio" aria-checked="false"><span class="bottle-neck"></span><span class="bottle-body">高三</span></button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="formChem_题目" data-i18n="labelTitle">题目</label>
+              <textarea id="formChem_题目" name="题目" data-i18n-ph="phTitle" placeholder="例如：用石灰石和稀盐酸制取二氧化碳，写出化学方程式，并说明如何检验该气体"></textarea>
+            </div>
+            <div class="field">
+              <label for="formChem_已有尝试" data-i18n="labelAttempt">已有尝试</label>
+              <textarea id="formChem_已有尝试" name="已有尝试" data-i18n-ph="phAttempt" placeholder="写下你已经判断出的物质、方程式或卡在哪一步；还没写也可以"></textarea>
+            </div>
+            <p class="hint" data-i18n="needHint">先选择年级并写下题目，再生成分步引导。</p>
+            <div class="actions">
+              <button type="button" id="btnGenerate" class="btn primary" data-i18n="btnGenerate" disabled>生成分步引导</button>
+              <button type="button" id="btnSave" class="btn ghost" data-i18n="btnSave" disabled>保存修改</button>
+              <button type="button" id="btnRegenerate" class="btn ghost" data-i18n="btnRegen" disabled>按当前内容重新生成</button>
+              <button type="button" id="btnRefresh" class="btn ghost" data-i18n="btnRefresh" disabled>刷新引导</button>
+              <button type="button" id="btnClear" class="btn ghost" data-i18n="btnClear">清空</button>
+              <button type="button" id="btnDelete" class="btn copper" data-i18n="btnDelete" disabled>删除本条</button>
+            </div>
+            <p id="benchStatus" class="status" role="status"></p>
+          </form>
+        </section>
+        <section class="card anno" id="annoPanel">
+          <div class="anno-head">
+            <h2 id="annoTitle" data-i18n="annoTitle">教练批注</h2>
+            <div class="pager">
+              <button type="button" id="btnPrevRow" aria-label="&lt;" disabled>&lt;</button>
+              <span id="rowIndicator">—</span>
+              <button type="button" id="btnNextRow" aria-label="&gt;" disabled>&gt;</button>
+            </div>
+          </div>
+          <div class="anno-layout">
+            <ol id="stepRail" class="step-rail">
+              <li><button type="button" id="stepBtn1" data-step="定物质"><span class="step-index">1</span><span class="step-name" data-i18n="step1">定物质</span></button></li>
+              <li><button type="button" id="stepBtn2" data-step="三重表征"><span class="step-index">2</span><span class="step-name" data-i18n="step2">三重表征</span></button></li>
+              <li><button type="button" id="stepBtn3" data-step="写式列式"><span class="step-index">3</span><span class="step-name" data-i18n="step3">写式列式</span></button></li>
+              <li><button type="button" id="stepBtn4" data-step="守恒检验"><span class="step-index">4</span><span class="step-name" data-i18n="step4">守恒检验</span></button></li>
+            </ol>
+            <div class="anno-main">
+              <div id="annoEmpty">
+                <ol class="explain-list">
+                  <li><strong data-i18n="step1">定物质</strong><span data-i18n="step1d">先确认反应物、生成物和题目在问谁</span></li>
+                  <li><strong data-i18n="step2">三重表征</strong><span data-i18n="step2d">把宏观现象、符号和图示对齐</span></li>
+                  <li><strong data-i18n="step3">写式列式</strong><span data-i18n="step3d">再写方程式或关系式，并配平</span></li>
+                  <li><strong data-i18n="step4">守恒检验</strong><span data-i18n="step4d">用质量、原子、电荷或电子守恒回头检查</span></li>
+                </ol>
+                <p class="anno-note" data-i18n="afterGen">生成后，批注会出现在这里</p>
+              </div>
+              <div id="annoWait" class="wait-box" hidden>
+                <svg class="wait-flask" viewBox="0 0 120 160" aria-hidden="true">
+                  <path d="M46 14h28v12L102 128a22 22 0 0 1-20 18H38a22 22 0 0 1-20-18L46 26V14z" fill="none" stroke="currentColor" stroke-width="3"/>
+                  <path d="M46 14h28" stroke="#E07A3D" stroke-width="4" stroke-linecap="round"/>
+                  <circle class="bubble b1" cx="60" cy="118" r="4" fill="#2A9D8F"/>
+                  <circle class="bubble b2" cx="48" cy="126" r="3" fill="#E07A3D"/>
+                  <circle class="bubble b3" cx="74" cy="124" r="2.5" fill="#163A5F"/>
+                </svg>
+                <p data-i18n="waiting">正在按定物质、三重表征、写式列式、守恒检验整理提示，不会直接公布原题答案。</p>
+                <p id="annoTimeout" data-i18n="pollTimeout" hidden>自动等待已结束。可以点「刷新引导」再取一次。</p>
+              </div>
+              <div id="annoMarkdown" class="md" hidden></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+  </section>
+
+  <section id="page-archive" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="archiveTitle" data-i18n="archiveTitle">解题档案</h1>
+          <p id="archiveLead" class="lead" data-i18n="archiveLead">回看每一次题目、尝试和教练批注。卡片可悬停，点击卡片展开详情。</p>
+        </div>
+        <button type="button" id="btnNewSolve" class="btn primary" data-i18n="newSolve">+ 新的解题</button>
+      </div>
+      <div class="search-line">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="archiveSearch" name="archiveSearch" type="search" data-i18n-ph="searchPh" placeholder="按题目关键字筛选">
+        </div>
+      </div>
+      <div id="filterBar" class="chips" style="margin-top:10px;">
+        <button type="button" id="filterAll" class="chip is-selected" data-grade="all">全部</button>
+        <button type="button" id="filterG1" class="chip" data-grade="初一">初一</button>
+        <button type="button" id="filterG2" class="chip" data-grade="初二">初二</button>
+        <button type="button" id="filterG3" class="chip" data-grade="初三">初三</button>
+        <button type="button" id="filterG4" class="chip" data-grade="高一">高一</button>
+        <button type="button" id="filterG5" class="chip" data-grade="高二">高二</button>
+        <button type="button" id="filterG6" class="chip" data-grade="高三">高三</button>
+      </div>
+      <p id="gradeHint" class="banner" hidden data-i18n="gradeHint">用年级芯片查看这些记录覆盖了哪些年级。</p>
+      <button type="button" id="attemptFilterChip" class="chip" hidden style="margin-top:8px;"><span data-i18n="attemptOnly">只看已写下尝试</span> ×</button>
+      <div id="archiveLoading" class="card empty" style="margin-top:12px;"><p data-i18n="loading">正在读取解题记录</p></div>
+      <div id="archiveEmpty" class="card empty" style="margin-top:12px;" hidden>
+        <svg class="flask-art" viewBox="0 0 160 200" aria-hidden="true">
+          <path d="M62 18h36v16L132 164a26 26 0 0 1-24 22H52a26 26 0 0 1-24-22L62 34V18z" fill="none" stroke="currentColor" stroke-width="3"/>
+          <path d="M62 18h36" stroke="#E07A3D" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <p id="archiveEmptyText">没有符合条件的解题记录</p>
+      </div>
+      <div id="archiveList" class="card-list" style="margin-top:12px;" hidden></div>
+      <div class="page-spacer"></div>
+    </div>
+  </section>
+</main>
+
+<div id="modalRoot" class="modal-root" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle"></h3>
+    <p id="modalMessage"></p>
+    <div class="modal-actions">
+      <button type="button" id="modalCancel" class="btn ghost"></button>
+      <button type="button" id="modalOk" class="btn primary"></button>
+    </div>
+    <div class="modal-spacer"></div>
+  </div>
+</div>
+<div id="toast" role="status" hidden></div>
+
+<script>
+var uiLang = 'cn';
+var I18N = {
+  cn: {
+    docTitle: '化学解题教练',
+    brand: '化学解题教练',
+    navHome: '首页',
+    navBench: '解题台',
+    navArchive: '解题档案',
+    menu: '菜单',
+    eyebrow: '初中与高中必修起点',
+    homeTitle: '化学解题教练',
+    homeLead: '先把题目和你已经写下的尝试交给教练。教练不直接公布原题答案，而是按定物质、三重表征、写式列式、守恒检验逐级给提示。',
+    start: '开始解题',
+    viewArchive: '查看解题档案',
+    methodTitle: '方法阶梯',
+    step1: '定物质',
+    step2: '三重表征',
+    step3: '写式列式',
+    step4: '守恒检验',
+    step1d: '先确认反应物、生成物和题目在问谁',
+    step2d: '把宏观现象、符号和图示对齐',
+    step3d: '再写方程式或关系式，并配平',
+    step4d: '用质量、原子、电荷或电子守恒回头检查',
+    statTotal: '总解题数',
+    statAttempt: '已写下尝试',
+    statGrades: '覆盖年级',
+    statTotalHint: '查看全部记录',
+    statAttemptHint: '只看写过尝试的',
+    statGradesHint: '按年级查看',
+    recentTitle: '最近解题',
+    loading: '正在读取解题记录',
+    emptyRecent: '还没有解题记录',
+    loadError: '暂时没有连上记录，请稍后再来',
+    noAttempt: '尚未写下尝试',
+    untitled: '（这条没有题目文字）',
+    benchTitle: '解题台',
+    benchLead: '选出年级，写下题目。已有尝试可留空；留空时教练从下一步提示开始，而不是直接给出原题答案。',
+    sheetTitle: '实验记录单',
+    annoTitle: '教练批注',
+    labelGrade: '年级',
+    labelTitle: '题目',
+    labelAttempt: '已有尝试',
+    phTitle: '例如：用石灰石和稀盐酸制取二氧化碳，写出化学方程式，并说明如何检验该气体',
+    phAttempt: '写下你已经判断出的物质、方程式或卡在哪一步；还没写也可以',
+    needHint: '先选择年级并写下题目，再生成分步引导。',
+    btnGenerate: '生成分步引导',
+    btnSave: '保存修改',
+    btnRegen: '按当前内容重新生成',
+    btnRefresh: '刷新引导',
+    btnClear: '清空',
+    btnDelete: '删除本条',
+    waiting: '正在按定物质、三重表征、写式列式、守恒检验整理提示，不会直接公布原题答案。',
+    pollTimeout: '自动等待已结束。可以点「刷新引导」再取一次。',
+    afterGen: '生成后，批注会出现在这里',
+    guideReady: '引导已生成',
+    saved: '记录已更新。指令流不会因保存而重新生成',
+    archiveTitle: '解题档案',
+    archiveLead: '回看每一次题目、尝试和教练批注。卡片可悬停，点击卡片展开详情。',
+    newSolve: '+ 新的解题',
+    searchPh: '按题目关键字筛选',
+    filterAll: '全部',
+    attemptOnly: '只看已写下尝试',
+    gradeHint: '用年级芯片查看这些记录覆盖了哪些年级。',
+    emptyFilter: '没有符合条件的解题记录',
+    noGuide: '这条记录的引导还没生成，可回解题台刷新',
+    readingGuide: '正在读取这条批注',
+    viewGuide: '查看引导',
+    edit: '编辑',
+    delete: '删除',
+    toBench: '去解题台修改',
+    fold: '收起',
+    deleteTitle: '删除这条记录',
+    deleteMsg: '确定删除这条解题记录？',
+    deleteOk: '删除',
+    regenTitle: '按当前内容重新生成',
+    regenMsg: '会新增一条记录，原记录仍保留',
+    regenOk: '新增一条',
+    cancel: '取消',
+    netError: '刚才没有完成，请再试一次',
+    deleted: '这条记录已删除',
+    rowNone: '未打开'
+  },
+  en: {
+    docTitle: 'Chemistry Coach',
+    brand: 'Chemistry Coach',
+    navHome: 'Home',
+    navBench: 'Bench',
+    navArchive: 'Archive',
+    menu: 'Menu',
+    eyebrow: 'Middle school and the start of high school',
+    homeTitle: 'Chemistry Problem-Solving Coach',
+    homeLead: 'Hand over the question and what you have already tried. The coach does not publish the original answer. Hints follow four steps: name the substances, line up the three representations, write the relationship, then check conservation.',
+    start: 'Start solving',
+    viewArchive: 'View archive',
+    methodTitle: 'Method steps',
+    step1: '定物质',
+    step2: '三重表征',
+    step3: '写式列式',
+    step4: '守恒检验',
+    step1d: 'First name the reactants, the products, and what the question is asking about.',
+    step2d: 'Line up what you can see, the symbols, and a simple sketch.',
+    step3d: 'Then write the equation or relationship, and balance it.',
+    step4d: 'Check again with mass, atoms, charge, or electrons.',
+    statTotal: 'All solutions',
+    statAttempt: 'Attempts written',
+    statGrades: 'Grades covered',
+    statTotalHint: 'Show every record',
+    statAttemptHint: 'Only records with an attempt',
+    statGradesHint: 'Browse by grade',
+    recentTitle: 'Recent work',
+    loading: 'Reading records',
+    emptyRecent: 'No solution records yet',
+    loadError: 'The records could not be read just now. Try again in a moment.',
+    noAttempt: 'No attempt written yet',
+    untitled: '(No question text)',
+    benchTitle: 'Bench',
+    benchLead: 'Choose a grade and write the question. The attempt can stay empty. If it is empty, the coach starts from the next hint and does not give the original answer.',
+    sheetTitle: 'Lab sheet',
+    annoTitle: 'Coach notes',
+    labelGrade: 'Grade',
+    labelTitle: 'Question',
+    labelAttempt: 'What you tried',
+    phTitle: 'For example: limestone and dilute hydrochloric acid are used to make carbon dioxide. Write the chemical equation and say how you would test that gas.',
+    phAttempt: 'Write the substances, equation, or the step you are stuck on. Leaving this empty is fine.',
+    needHint: 'Choose a grade and write the question before generating hints.',
+    btnGenerate: 'Generate step-by-step hints',
+    btnSave: 'Save changes',
+    btnRegen: 'Regenerate from current text',
+    btnRefresh: 'Refresh hints',
+    btnClear: 'Clear',
+    btnDelete: 'Delete this one',
+    waiting: 'Hints are being arranged as: name the substances, line up the three representations, write the relationship, then check conservation. The original answer is not published.',
+    pollTimeout: 'Automatic waiting has stopped. Use Refresh hints to look once more.',
+    afterGen: 'After you generate, the notes show up here.',
+    guideReady: 'Hints are ready',
+    saved: 'Record updated. Saving does not regenerate the hints.',
+    archiveTitle: 'Archive',
+    archiveLead: 'Look back at each question, attempt, and coach note. Cards lift on hover. Click a card to open the detail.',
+    newSolve: '+ New solution',
+    searchPh: 'Filter by words in the question',
+    filterAll: 'All',
+    attemptOnly: 'Attempts only',
+    gradeHint: 'Use the grade chips to see which grades these records cover.',
+    emptyFilter: 'No solution records match',
+    noGuide: 'Hints for this record are not ready yet. Return to the bench and refresh.',
+    readingGuide: 'Reading this note',
+    viewGuide: 'View hints',
+    edit: 'Edit',
+    delete: 'Delete',
+    toBench: 'Edit on the bench',
+    fold: 'Collapse',
+    deleteTitle: 'Delete this record',
+    deleteMsg: 'Delete this solution record?',
+    deleteOk: 'Delete',
+    regenTitle: 'Regenerate from current text',
+    regenMsg: 'This adds a new record. The original record stays.',
+    regenOk: 'Add a record',
+    cancel: 'Cancel',
+    netError: 'That did not finish. Please try again.',
+    deleted: 'That record was deleted',
+    rowNone: 'None'
+  }
+};
+
+function t(key) {
+  var pack = I18N[uiLang] || I18N.cn;
+  if (pack[key] != null) return pack[key];
+  if (I18N.cn[key] != null) return I18N.cn[key];
+  return key;
+}
+
+function detectLanguage() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var fromUrl = String(params.get('lang') || '').toLowerCase();
+    if (fromUrl === 'cn') return 'cn';
+    if (fromUrl === 'en') return 'en';
+  } catch (e) {}
+  try {
+    var stored = localStorage.getItem('iThinkAir_UiLanguage');
+    if (stored !== null && stored !== '') return stored === 'en' ? 'en' : 'cn';
+  } catch (e2) {}
+  try {
+    if (navigator.languages == null) return 'cn';
+    var list = navigator.languages;
+    if (!list || !list.length) return 'cn';
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i] || '').toLowerCase().indexOf('zh') === 0) return 'cn';
+    }
+    return 'en';
+  } catch (e3) {
+    return 'cn';
+  }
+}
+
+function applyLanguage() {
+  document.documentElement.lang = uiLang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('docTitle');
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  var ph = document.querySelectorAll('[data-i18n-ph]');
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute('placeholder', t(ph[j].getAttribute('data-i18n-ph')));
+  markLangButtons();
+  updateRowIndicator();
+  updateArchiveChrome();
+  if (recentState === 'empty' || recentState === 'error') applyRecentState();
+  if (tableRows) {
+    renderRecent();
+    renderArchiveList();
+    if (openRow) fillDetail(openRow);
+  }
+  scheduleNav();
+}
+
+function markLangButtons() {
+  var onCn = uiLang !== 'en';
+  var ids = ['langBtnCn', 'langBtnCnM', 'langBtnEn', 'langBtnEnM'];
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (!el) continue;
+    var isCn = ids[i].indexOf('Cn') !== -1;
+    if (isCn) el.classList.toggle('is-on', onCn);
+    else el.classList.toggle('is-on', !onCn);
+  }
+}
+
+function persistLang(lang) {
+  uiLang = lang === 'en' ? 'en' : 'cn';
+  try { localStorage.setItem('iThinkAir_UiLanguage', uiLang); } catch (e) {}
+  try {
+    var u = new URL(window.location.href);
+    u.searchParams.set('lang', uiLang);
+    history.replaceState(null, '', u.toString());
+  } catch (e2) {}
+  applyLanguage();
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function mediaUrl(src) {
+  var s = String(src || '').trim();
+  if (!s) return '';
+  if (/^(https?:|data:|blob:)/i.test(s)) return s;
+  return 'http://' + window.location.hostname + ':3130/download/' + encodeURIComponent(s.replace(/^\/+/, ''));
+}
+
+function safeHref(url) {
+  var u = String(url || '').trim();
+  if (/^(https?:|mailto:)/i.test(u)) return u;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return '';
+  return u;
+}
+
+function readBracket(s, i) {
+  if (s.charAt(i) !== '[') return null;
+  var j = i + 1;
+  var text = '';
+  while (j < s.length && s.charAt(j) !== ']') {
+    if (s.charAt(j) === '\\' && j + 1 < s.length) {
+      text += s.charAt(j + 1);
+      j += 2;
+      continue;
+    }
+    text += s.charAt(j);
+    j++;
+  }
+  if (s.charAt(j) !== ']') return null;
+  j++;
+  if (s.charAt(j) !== '(') return null;
+  j++;
+  var url = '';
+  while (j < s.length && s.charAt(j) !== ')' && s.charAt(j) !== ' ' && s.charAt(j) !== '\n') {
+    url += s.charAt(j);
+    j++;
+  }
+  if (s.charAt(j) === ' ') {
+    while (j < s.length && s.charAt(j) !== ')') j++;
+  }
+  if (s.charAt(j) !== ')') return null;
+  return { text: text, url: url, end: j + 1 };
+}
+
+function formatInline(raw) {
+  var s = String(raw == null ? '' : raw);
+  var out = '';
+  var i = 0;
+  while (i < s.length) {
+    if (s.charAt(i) === '!' && s.charAt(i + 1) === '[') {
+      var img = readBracket(s, i + 1);
+      if (img) {
+        var src = mediaUrl(img.url);
+        out += '<a class="md-img" href="' + escapeHtml(src) + '" download target="_blank" rel="noopener noreferrer"><img src="' + escapeHtml(src) + '" alt="' + escapeHtml(img.text) + '"></a>';
+        i = img.end;
+        continue;
+      }
+    }
+    if (s.charAt(i) === '[') {
+      var link = readBracket(s, i);
+      if (link) {
+        var href = safeHref(link.url);
+        out += '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' + formatInline(link.text) + '</a>';
+        i = link.end;
+        continue;
+      }
+    }
+    if (s.charAt(i) === '`') {
+      var endCode = s.indexOf('`', i + 1);
+      if (endCode > i) {
+        out += '<code>' + escapeHtml(s.slice(i + 1, endCode)) + '</code>';
+        i = endCode + 1;
+        continue;
+      }
+    }
+    if (s.substr(i, 2) === '~~') {
+      var endS = s.indexOf('~~', i + 2);
+      if (endS > i) {
+        out += '<del>' + formatInline(s.slice(i + 2, endS)) + '</del>';
+        i = endS + 2;
+        continue;
+      }
+    }
+    if (s.substr(i, 2) === '**' || s.substr(i, 2) === '__') {
+      var marker = s.substr(i, 2);
+      var endB = s.indexOf(marker, i + 2);
+      if (endB > i) {
+        out += '<strong>' + formatInline(s.slice(i + 2, endB)) + '</strong>';
+        i = endB + 2;
+        continue;
+      }
+    }
+    if ((s.charAt(i) === '*' || s.charAt(i) === '_') && s.charAt(i + 1) && s.charAt(i + 1) !== ' ' && s.charAt(i + 1) !== s.charAt(i)) {
+      var mk = s.charAt(i);
+      var j2 = i + 1;
+      while (j2 < s.length && s.charAt(j2) !== mk) j2++;
+      if (j2 < s.length && s.charAt(j2 - 1) !== ' ' && j2 > i + 1) {
+        out += '<em>' + formatInline(s.slice(i + 1, j2)) + '</em>';
+        i = j2 + 1;
+        continue;
+      }
+    }
+    if (s.substr(i, 7) === 'http://' || s.substr(i, 8) === 'https://') {
+      var j3 = i;
+      while (j3 < s.length && s.charAt(j3) !== ' ' && s.charAt(j3) !== ')' && s.charAt(j3) !== ']') j3++;
+      var auto = s.slice(i, j3);
+      out += '<a href="' + escapeHtml(auto) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(auto) + '</a>';
+      i = j3;
+      continue;
+    }
+    out += escapeHtml(s.charAt(i));
+    i++;
+  }
+  return out;
+}
+
+function leadingIndent(line) {
+  var n = 0;
+  for (var i = 0; i < line.length; i++) {
+    if (line.charAt(i) === ' ') n++;
+    else if (line.charAt(i) === '\t') n += 4;
+    else break;
+  }
+  return n;
+}
+
+function listMatch(line) {
+  var m = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/.exec(line);
+  if (!m) return null;
+  var indent = m[1].replace(/\t/g, '    ').length;
+  var ordered = /^\d/.test(m[2]);
+  var content = m[3];
+  var task = null;
+  var tm = /^\[([ xX])\]\s+(.*)$/.exec(content);
+  if (tm) {
+    task = tm[1].toLowerCase() === 'x';
+    content = tm[2];
+  }
+  return { indent: indent, ordered: ordered, content: content, task: task };
+}
+
+function splitRow(line) {
+  var s = String(line || '').trim();
+  if (s.charAt(0) === '|') s = s.slice(1);
+  if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1);
+  var parts = s.split('|');
+  for (var i = 0; i < parts.length; i++) parts[i] = parts[i].trim();
+  return parts;
+}
+
+function isTableSep(line) {
+  var t = String(line || '').trim();
+  if (t.indexOf('|') === -1 || t.indexOf('-') === -1) return false;
+  var cells = splitRow(t);
+  if (!cells.length) return false;
+  for (var i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i].replace(/\s/g, ''))) return false;
+  }
+  return true;
+}
+
+function isFence(line) {
+  return /^( {0,3})(`{3,}|~{3,})(.*)$/.exec(line);
+}
+
+function isBlockStart(lines, i) {
+  var line = lines[i] || '';
+  if (!String(line).trim()) return true;
+  if (isFence(line)) return true;
+  if (/^(#{1,6})\s+/.test(line)) return true;
+  if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) return true;
+  if (/^>\s?/.test(line)) return true;
+  if (listMatch(line)) return true;
+  if (/^\s*\|.+\|\s*$/.test(line) && i + 1 < lines.length && isTableSep(lines[i + 1])) return true;
+  if (/^( {4}|\t)/.test(line)) return true;
+  if (i + 1 < lines.length && String(lines[i]).trim() && /^(=+|-{2,})\s*$/.test(String(lines[i + 1]).trim()) && !isTableSep(lines[i + 1])) return true;
+  return false;
+}
+
+function readTable(lines, start) {
+  var header = splitRow(lines[start]);
+  var i = start + 2;
+  var body = [];
+  while (i < lines.length && /^\s*\|.+\|\s*$/.test(lines[i])) {
+    body.push(splitRow(lines[i]));
+    i++;
+  }
+  var html = '<div class="table-x"><table><thead><tr>';
+  for (var c = 0; c < header.length; c++) html += '<th>' + formatInline(header[c]) + '</th>';
+  html += '</tr></thead><tbody>';
+  for (var r = 0; r < body.length; r++) {
+    html += '<tr>';
+    for (var c2 = 0; c2 < header.length; c2++) html += '<td>' + formatInline(body[r][c2] || '') + '</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  return { html: html, next: i };
+}
+
+function readList(lines, start, baseIndent) {
+  var first = listMatch(lines[start]);
+  if (!first || first.indent < baseIndent) return { html: '', next: start };
+  var ordered = first.ordered;
+  var useIndent = first.indent;
+  var items = [];
+  var i = start;
+  while (i < lines.length) {
+    if (!String(lines[i]).trim()) break;
+    var m = listMatch(lines[i]);
+    if (!m || m.indent !== useIndent || m.ordered !== ordered) break;
+    var content = m.content;
+    var task = m.task;
+    i++;
+    var extras = [];
+    while (i < lines.length && String(lines[i]).trim() && leadingIndent(lines[i]) > useIndent) {
+      var child = listMatch(lines[i]);
+      if (child && child.indent > useIndent) {
+        var sub = readList(lines, i, child.indent);
+        extras.push(sub.html);
+        i = sub.next;
+      } else {
+        extras.push(formatInline(String(lines[i]).trim()));
+        i++;
+      }
+    }
+    var inner = formatInline(content);
+    if (task !== null) {
+      inner = '<input type="checkbox" disabled' + (task ? ' checked' : '') + '> ' + inner;
+    }
+    for (var e = 0; e < extras.length; e++) {
+      if (extras[e].indexOf('<ul') === 0 || extras[e].indexOf('<ol') === 0) inner += extras[e];
+      else inner += '<br>' + extras[e];
+    }
+    items.push('<li>' + inner + '</li>');
+  }
+  var tag = ordered ? 'ol' : 'ul';
+  return { html: '<' + tag + '>' + items.join('') + '</' + tag + '>', next: i };
+}
+
+function renderMdBlocks(src) {
+  var lines = String(src || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  var html = '';
+  var i = 0;
+  while (i < lines.length) {
+    var guard = i;
+    var line = lines[i];
+    if (!String(line).trim()) { i++; continue; }
+    var fence = isFence(line);
+    if (fence) {
+      var marker = fence[2].charAt(0);
+      var flen = fence[2].length;
+      i++;
+      var body = [];
+      while (i < lines.length) {
+        var closeRe = new RegExp('^ {0,3}' + marker + '{' + flen + ',}\\s*$');
+        if (closeRe.test(lines[i])) { i++; break; }
+        body.push(lines[i]);
+        i++;
+      }
+      html += '<pre class="md-pre"><code>' + escapeHtml(body.join('\n')) + '</code></pre>';
+      if (i === guard) i++;
+      continue;
+    }
+    if (/^(#{1,6})\s+/.test(line)) {
+      var hm = /^(#{1,6})\s+(.*)$/.exec(line);
+      var level = hm[1].length;
+      html += '<h' + level + '>' + formatInline(hm[2].trim()) + '</h' + level + '>';
+      i++;
+      continue;
+    }
+    if (i + 1 < lines.length && String(line).trim() && /^=+\s*$/.test(String(lines[i + 1]).trim())) {
+      html += '<h1>' + formatInline(String(line).trim()) + '</h1>';
+      i += 2;
+      continue;
+    }
+    if (i + 1 < lines.length && String(line).trim() && /^-+\s*$/.test(String(lines[i + 1]).trim()) && !isTableSep(lines[i + 1]) && !listMatch(line)) {
+      html += '<h2>' + formatInline(String(line).trim()) + '</h2>';
+      i += 2;
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(String(line).trim())) {
+      html += '<hr>';
+      i++;
+      continue;
+    }
+    if (/^\s*\|.+\|\s*$/.test(line) && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+      var table = readTable(lines, i);
+      html += table.html;
+      i = table.next;
+      if (i === guard) i++;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      var quoted = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        quoted.push(lines[i].replace(/^>\s?/, ''));
+        i++;
+      }
+      html += '<blockquote>' + renderMdBlocks(quoted.join('\n')) + '</blockquote>';
+      if (i === guard) i++;
+      continue;
+    }
+    if (listMatch(line)) {
+      var lst = readList(lines, i, 0);
+      html += lst.html;
+      i = lst.next;
+      if (i === guard) i++;
+      continue;
+    }
+    if (/^( {4}|\t)/.test(line)) {
+      var code = [];
+      while (i < lines.length && (/^( {4}|\t)/.test(lines[i]) || !String(lines[i]).trim())) {
+        if (!String(lines[i]).trim() && (i + 1 >= lines.length || !/^( {4}|\t)/.test(lines[i + 1] || ''))) break;
+        code.push(String(lines[i]).replace(/^( {4}|\t)/, ''));
+        i++;
+      }
+      html += '<pre class="md-pre"><code>' + escapeHtml(code.join('\n')) + '</code></pre>';
+      if (i === guard) i++;
+      continue;
+    }
+    var chunk = [];
+    while (i < lines.length && String(lines[i]).trim() && !isBlockStart(lines, i)) {
+      chunk.push(lines[i]);
+      i++;
+    }
+    if (!chunk.length) {
+      chunk.push(lines[i] || '');
+      i++;
+    }
+    var parts = [];
+    for (var p = 0; p < chunk.length; p++) {
+      var br = /[ ]{2}$/.test(chunk[p]);
+      parts.push(formatInline(chunk[p].replace(/[ ]+$/, '')));
+      if (p < chunk.length - 1) parts.push(br ? '<br>' : ' ');
+    }
+    html += '<p>' + parts.join('') + '</p>';
+    if (i === guard) i++;
+  }
+  return html;
+}
+
+function renderMarkdown(src) {
+  if (src == null) return '';
+  return renderMdBlocks(String(src));
+}
+
+function clearStepLights() {
+  var steps = document.querySelectorAll('#stepRail [data-step]');
+  for (var i = 0; i < steps.length; i++) steps[i].classList.remove('is-lit');
+}
+
+function lightSteps(root) {
+  var keys = ['定物质', '三重表征', '写式列式', '守恒检验'];
+  var found = {};
+  for (var k = 0; k < keys.length; k++) found[keys[k]] = false;
+  if (root) {
+    var nodes = root.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,strong');
+    for (var n = 0; n < nodes.length; n++) {
+      var tag = nodes[n].tagName;
+      var tx = String(nodes[n].textContent || '').trim();
+      for (var a = 0; a < keys.length; a++) {
+        if ((/^H[1-6]$/.test(tag) && tx.indexOf(keys[a]) !== -1) || ((tag === 'STRONG' || tag === 'P' || tag === 'LI') && tx === keys[a])) {
+          found[keys[a]] = true;
+        }
+      }
+    }
+  }
+  var steps = document.querySelectorAll('#stepRail [data-step]');
+  for (var i = 0; i < steps.length; i++) {
+    var key = steps[i].getAttribute('data-step');
+    steps[i].classList.toggle('is-lit', !!found[key]);
+  }
+}
+
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("91427d95628bbaf2_化学解题教练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+var currentPage = 'home';
+var currentRow = 0;
+var recordCount = 0;
+var tableRows = null;
+var historyStack = [];
+var polling = false;
+var pollTimer = null;
+var pollDeadline = null;
+var awaitingGuide = false;
+var actionLock = false;
+var homeToken = 0;
+var archiveToken = 0;
+var loadToken = 0;
+var detailToken = 0;
+var recentState = 'loading';
+var archiveState = 'loading';
+var archiveGrade = 'all';
+var archiveAttemptOnly = false;
+var archiveHint = '';
+var archiveQuery = '';
+var openRow = 0;
+var popupStack = [];
+var modalResolve = null;
+var toastTimer = null;
+var navTimer = 0;
+var navMeasureLock = false;
+var GRADES = ['初一', '初二', '初三', '高一', '高二', '高三'];
+
+function cell(row, idx) {
+  if (!row || row.length <= idx || row[idx] == null) return '';
+  return String(row[idx]);
+}
+
+function summarize(text, n) {
+  var flat = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!flat) return '';
+  var chars = Array.from(flat);
+  if (chars.length <= n) return flat;
+  return chars.slice(0, n).join('') + '…';
+}
+
+function gradeBand(g) {
+  if (g === '初一' || g === '初二' || g === '初三') return 'junior';
+  if (g === '高一' || g === '高二' || g === '高三') return 'senior';
+  return 'other';
+}
+
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 2800);
+}
+
+function closeModal(result, fromStack) {
+  var root = document.getElementById('modalRoot');
+  if (!root || root.hidden) return;
+  root.hidden = true;
+  if (!fromStack && popupStack.length) popupStack.pop();
+  var resolve = modalResolve;
+  modalResolve = null;
+  if (resolve) resolve(!!result);
+}
+
+function confirmModal(title, message, okText, cancelText) {
+  return new Promise(function (resolve) {
+    var root = document.getElementById('modalRoot');
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMessage').textContent = message;
+    document.getElementById('modalOk').textContent = okText;
+    document.getElementById('modalCancel').textContent = cancelText;
+    root.hidden = false;
+    modalResolve = resolve;
+    popupStack.push(function () { closeModal(false, true); });
+  });
+}
+
+function closeTopPopup() {
+  if (!popupStack.length) return false;
+  var fn = popupStack.pop();
+  fn();
+  return true;
+}
+
+function isMenuOpen() {
+  return document.getElementById('mainNav').classList.contains('menu-open');
+}
+
+function closeMenu() {
+  var nav = document.getElementById('mainNav');
+  nav.classList.remove('menu-open');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
+}
+
+function updateNavMode() {
+  if (navMeasureLock) return;
+  navMeasureLock = true;
+  var nav = document.getElementById('mainNav');
+  var inner = document.getElementById('navInner');
+  var was = nav.classList.contains('is-collapsed');
+  if (was) nav.classList.remove('is-collapsed');
+  var need = inner.scrollWidth > inner.clientWidth + 1;
+  nav.classList.toggle('is-collapsed', need);
+  if (!need) closeMenu();
+  navMeasureLock = false;
+}
+
+function scheduleNav() {
+  if (navTimer) cancelAnimationFrame(navTimer);
+  navTimer = requestAnimationFrame(updateNavMode);
+}
+
+function setStatus(msg) {
+  var el = document.getElementById('benchStatus');
+  if (el) el.textContent = msg || '';
+}
+
+function formGrade() {
+  return String(document.getElementById('formChem_年级').value || '').trim();
+}
+function formTitle() {
+  return String(document.getElementById('formChem_题目').value || '');
+}
+function formAttempt() {
+  return String(document.getElementById('formChem_已有尝试').value || '');
+}
+
+function syncGradeChips(value) {
+  var chips = document.querySelectorAll('#gradeChips .bottle');
+  for (var i = 0; i < chips.length; i++) {
+    var on = chips[i].getAttribute('data-grade') === value;
+    chips[i].classList.toggle('is-selected', on);
+    chips[i].setAttribute('aria-checked', on ? 'true' : 'false');
+  }
+}
+
+function updateActionButtons() {
+  var gradeOk = GRADES.indexOf(formGrade()) !== -1;
+  var ready = !!(gradeOk && formTitle().trim());
+  document.getElementById('btnGenerate').disabled = !ready || polling || actionLock;
+  document.getElementById('btnRegenerate').disabled = !ready || polling || actionLock;
+  document.getElementById('btnSave').disabled = currentRow < 1 || actionLock;
+  document.getElementById('btnDelete').disabled = currentRow < 1 || actionLock;
+  document.getElementById('btnRefresh').disabled = currentRow < 1 || polling || actionLock;
+  document.getElementById('btnClear').disabled = !!actionLock;
+  document.getElementById('annoPanel').setAttribute('aria-busy', polling ? 'true' : 'false');
+}
+
+function updateRowIndicator() {
+  var el = document.getElementById('rowIndicator');
+  if (!el) return;
+  if (currentRow <= 0) el.textContent = t('rowNone') + ' / ' + String(recordCount);
+  else el.textContent = String(currentRow) + ' / ' + String(recordCount);
+}
+
+function updateRowButtons() {
+  document.getElementById('btnPrevRow').disabled = currentRow <= 1;
+  var nextOff = (currentRow === 0 && recordCount === 0) || currentRow >= recordCount;
+  document.getElementById('btnNextRow').disabled = nextOff;
+  updateRowIndicator();
+}
+
+function showWaiting(timedOut) {
+  document.getElementById('annoEmpty').hidden = true;
+  document.getElementById('annoMarkdown').hidden = true;
+  document.getElementById('annoWait').hidden = false;
+  document.getElementById('annoTimeout').hidden = !timedOut;
+  clearStepLights();
+}
+
+function renderGuide(text) {
+  var value = String(text == null ? '' : text).replace(/^\uFEFF/, '').trim();
+  var empty = document.getElementById('annoEmpty');
+  var wait = document.getElementById('annoWait');
+  var md = document.getElementById('annoMarkdown');
+  document.getElementById('annoTimeout').hidden = true;
+  wait.hidden = true;
+  if (!value) {
+    md.hidden = true;
+    md.innerHTML = '';
+    empty.hidden = false;
+    clearStepLights();
+    return;
+  }
+  empty.hidden = true;
+  md.hidden = false;
+  md.innerHTML = renderMarkdown(value);
+  lightSteps(md);
+}
+
+function stopPoll() {
+  polling = false;
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = null;
+  if (pollDeadline) clearTimeout(pollDeadline);
+  pollDeadline = null;
+}
+
+function startPoll() {
+  stopPoll();
+  polling = true;
+  awaitingGuide = true;
+  showWaiting(false);
+  updateActionButtons();
+  pollDeadline = setTimeout(function () {
+    if (!polling) return;
+    polling = false;
+    if (pollTimer) clearTimeout(pollTimer);
+    pollTimer = null;
+    pollDeadline = null;
+    awaitingGuide = true;
+    showWaiting(true);
+    updateActionButtons();
+  }, 60000);
+  var tick = async function () {
+    if (!polling) return;
+    var text = '';
+    try {
+      text = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '解题引导/1' });
+    } catch (e) {
+      text = '';
+    }
+    if (text && String(text).trim()) {
+      stopPoll();
+      awaitingGuide = false;
+      currentRow = 1;
+      renderGuide(String(text));
+      toast(t('guideReady'));
+      updateActionButtons();
+      updateRowButtons();
+      return;
+    }
+    if (!polling) return;
+    pollTimer = setTimeout(tick, 1500);
+  };
+  tick();
+}
+
+function clearBench() {
+  stopPoll();
+  awaitingGuide = false;
+  currentRow = 0;
+  document.getElementById('formChem_年级').value = '';
+  document.getElementById('formChem_题目').value = '';
+  document.getElementById('formChem_已有尝试').value = '';
+  syncGradeChips('');
+  renderGuide('');
+  setStatus('');
+  updateActionButtons();
+  updateRowButtons();
+}
+
+async function fetchCount() {
+  var text = await callAppBridge({ type: 'GetRecordCount', data: '化学解题/默认表格' });
+  var n = parseInt(String(text == null ? '' : text).trim(), 10);
+  if (!isFinite(n) || n < 0) throw new Error('count');
+  recordCount = n;
+  return recordCount;
+}
+
+async function fetchTableRows() {
+  var text = await callAppBridge({ type: 'GetTableCSV', data: '化学解题/默认表格', payload: '年级,题目,已有尝试' });
+  var raw = text == null ? '' : String(text);
+  if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+  if (!raw.trim()) return [];
+  var rows = parseCSV(raw);
+  return rows || [];
+}
+
+function countFromRows(rows) {
+  var attempt = 0;
+  var grades = {};
+  for (var i = 0; i < rows.length; i++) {
+    var g = cell(rows[i], 0).trim();
+    var a = cell(rows[i], 2).trim();
+    var title = cell(rows[i], 1).trim();
+    if (!g && !a && !title) continue;
+    if (a) attempt++;
+    if (g) grades[g] = true;
+  }
+  return { attempt: attempt, grades: Object.keys(grades).length };
+}
+
+function applyRecentState() {
+  document.getElementById('recentLoading').hidden = recentState !== 'loading';
+  document.getElementById('recentEmpty').hidden = !(recentState === 'empty' || recentState === 'error');
+  document.getElementById('recentList').hidden = recentState !== 'list';
+  var msg = document.getElementById('recentEmptyText');
+  if (recentState === 'error') msg.textContent = t('loadError');
+  else msg.textContent = t('emptyRecent');
+}
+
+function renderStats(rows, countOk, rowsOk) {
+  document.getElementById('statTotalNum').textContent = countOk ? String(recordCount) : '…';
+  if (!rowsOk) {
+    document.getElementById('statAttemptNum').textContent = '…';
+    document.getElementById('statGradeNum').textContent = '…';
+    return;
+  }
+  var info = countFromRows(rows);
+  document.getElementById('statAttemptNum').textContent = String(info.attempt);
+  document.getElementById('statGradeNum').textContent = String(info.grades);
+}
+
+function renderRecent() {
+  var host = document.getElementById('recentList');
+  host.innerHTML = '';
+  var shown = 0;
+  for (var i = 0; i < (tableRows ? tableRows.length : 0) && shown < 5; i++) {
+    var g = cell(tableRows[i], 0).trim();
+    var title = cell(tableRows[i], 1);
+    var attempt = cell(tableRows[i], 2);
+    if (!g && !title.trim() && !attempt.trim()) continue;
+    shown++;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'card record-main';
+    btn.setAttribute('data-row', String(i + 1));
+    var top = document.createElement('div');
+    top.className = 'record-top';
+    var badge = document.createElement('span');
+    badge.className = 'badge ' + gradeBand(g);
+    badge.textContent = g || '—';
+    top.appendChild(badge);
+    var h = document.createElement('h3');
+    h.className = 'clamp2';
+    h.textContent = title.trim() ? title.trim() : t('untitled');
+    var p = document.createElement('p');
+    p.className = 'summary muted clamp2';
+    p.textContent = attempt.trim() ? summarize(attempt, 72) : t('noAttempt');
+    btn.appendChild(top);
+    btn.appendChild(h);
+    btn.appendChild(p);
+    host.appendChild(btn);
+  }
+  if (!shown) {
+    recentState = 'empty';
+  } else {
+    recentState = 'list';
+  }
+  applyRecentState();
+}
+
+async function refreshHome() {
+  var token = ++homeToken;
+  recentState = 'loading';
+  applyRecentState();
+  var countOk = false;
+  var rowsOk = false;
+  var rows = [];
+  try {
+    await fetchCount();
+    countOk = true;
+  } catch (e) {}
+  try {
+    rows = await fetchTableRows();
+    rowsOk = true;
+  } catch (e2) {}
+  if (token !== homeToken) return;
+  if (rowsOk) tableRows = rows;
+  renderStats(tableRows || [], countOk, rowsOk);
+  if (!countOk && !rowsOk) {
+    recentState = 'error';
+    applyRecentState();
+    return;
+  }
+  if (rowsOk) renderRecent();
+  else {
+    recentState = 'error';
+    applyRecentState();
+  }
+  updateRowButtons();
+}
+
+function updateArchiveChrome() {
+  var chips = document.querySelectorAll('#filterBar .chip');
+  for (var i = 0; i < chips.length; i++) {
+    var g = chips[i].getAttribute('data-grade');
+    var on = g === archiveGrade;
+    chips[i].classList.toggle('is-selected', on);
+    chips[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  var all = document.getElementById('filterAll');
+  if (all) all.textContent = t('filterAll');
+  document.getElementById('attemptFilterChip').hidden = !archiveAttemptOnly;
+  document.getElementById('gradeHint').hidden = archiveHint !== 'grades';
+}
+
+function filteredItems() {
+  var list = [];
+  var q = archiveQuery.trim().toLowerCase();
+  var rows = tableRows || [];
+  for (var i = 0; i < rows.length; i++) {
+    var g = cell(rows[i], 0).trim();
+    var title = cell(rows[i], 1);
+    var attempt = cell(rows[i], 2);
+    if (!g && !title.trim() && !attempt.trim()) continue;
+    if (archiveGrade !== 'all' && g !== archiveGrade) continue;
+    if (archiveAttemptOnly && !attempt.trim()) continue;
+    if (q && title.toLowerCase().indexOf(q) === -1) continue;
+    list.push({ row: i + 1, grade: g, title: title, attempt: attempt });
+  }
+  return list;
+}
+
+function renderArchiveList() {
+  updateArchiveChrome();
+  var host = document.getElementById('archiveList');
+  var items = filteredItems();
+  host.innerHTML = '';
+  if (!tableRows) {
+    archiveState = 'loading';
+  } else if (!items.length) {
+    archiveState = 'empty';
+  } else {
+    archiveState = 'list';
+  }
+  document.getElementById('archiveLoading').hidden = archiveState !== 'loading';
+  document.getElementById('archiveEmpty').hidden = archiveState !== 'empty';
+  host.hidden = archiveState !== 'list';
+  var emptyText = document.getElementById('archiveEmptyText');
+  if (archiveState === 'empty') {
+    var noFilter = archiveGrade === 'all' && !archiveAttemptOnly && !archiveQuery.trim();
+    var anyReal = false;
+    var srcRows = tableRows || [];
+    for (var n = 0; n < srcRows.length; n++) {
+      if (cell(srcRows[n], 0).trim() || cell(srcRows[n], 1).trim() || cell(srcRows[n], 2).trim()) anyReal = true;
+    }
+    emptyText.textContent = (!anyReal && noFilter) ? t('emptyRecent') : t('emptyFilter');
+  }
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+    var art = document.createElement('article');
+    art.className = 'card record' + (openRow === item.row ? ' is-open' : '');
+    art.setAttribute('data-row', String(item.row));
+    var main = document.createElement('button');
+    main.type = 'button';
+    main.className = 'record-main';
+    main.setAttribute('data-act', 'toggle');
+    var top = document.createElement('div');
+    top.className = 'record-top';
+    var badge = document.createElement('span');
+    badge.className = 'badge ' + gradeBand(item.grade);
+    badge.textContent = item.grade || '—';
+    top.appendChild(badge);
+    var h = document.createElement('h3');
+    h.className = 'clamp2';
+    h.textContent = item.title.trim() ? item.title.trim() : t('untitled');
+    var p = document.createElement('p');
+    p.className = 'summary muted clamp2';
+    p.textContent = item.attempt.trim() ? summarize(item.attempt, 80) : t('noAttempt');
+    main.appendChild(top);
+    main.appendChild(h);
+    main.appendChild(p);
+    art.appendChild(main);
+    if (openRow !== item.row) {
+      var acts = document.createElement('div');
+      acts.className = 'record-actions';
+      acts.appendChild(makeAct('view', t('viewGuide'), 'ghost'));
+      acts.appendChild(makeAct('edit', t('edit'), 'ghost'));
+      acts.appendChild(makeAct('delete', t('delete'), 'copper'));
+      art.appendChild(acts);
+    } else {
+      var detail = document.createElement('div');
+      detail.className = 'record-detail';
+      detail.id = 'detail-' + String(item.row);
+      var ht = document.createElement('h4');
+      ht.textContent = t('labelTitle');
+      var pt = document.createElement('p');
+      pt.textContent = item.title.trim() ? item.title : t('untitled');
+      var ha = document.createElement('h4');
+      ha.textContent = t('labelAttempt');
+      var pa = document.createElement('p');
+      pa.textContent = item.attempt.trim() ? item.attempt : t('noAttempt');
+      var hg = document.createElement('h4');
+      hg.textContent = t('viewGuide');
+      var guide = document.createElement('div');
+      guide.className = 'detail-guide md';
+      guide.textContent = t('readingGuide');
+      detail.appendChild(ht);
+      detail.appendChild(pt);
+      detail.appendChild(ha);
+      detail.appendChild(pa);
+      detail.appendChild(hg);
+      detail.appendChild(guide);
+      var foot = document.createElement('div');
+      foot.className = 'detail-actions';
+      foot.appendChild(makeAct('edit', t('toBench'), 'primary'));
+      foot.appendChild(makeAct('delete', t('delete'), 'copper'));
+      foot.appendChild(makeAct('fold', t('fold'), 'ghost'));
+      detail.appendChild(foot);
+      art.appendChild(detail);
+    }
+    host.appendChild(art);
+  }
+}
+
+function makeAct(act, label, kind) {
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'btn tiny ' + kind;
+  b.setAttribute('data-act', act);
+  b.textContent = label;
+  return b;
+}
+
+async function fillDetail(row) {
+  var token = ++detailToken;
+  var box = document.getElementById('detail-' + String(row));
+  if (!box) return;
+  var host = box.querySelector('.detail-guide');
+  if (host) host.textContent = t('readingGuide');
+  var guide = '';
+  try {
+    guide = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '解题引导/' + String(row) });
+  } catch (e) {
+    guide = '';
+  }
+  if (token !== detailToken || openRow !== row) return;
+  var again = document.getElementById('detail-' + String(row));
+  if (!again) return;
+  var slot = again.querySelector('.detail-guide');
+  if (!slot) return;
+  var value = guide == null ? '' : String(guide).trim();
+  if (!value) {
+    slot.textContent = t('noGuide');
+    return;
+  }
+  slot.innerHTML = renderMarkdown(String(guide));
+}
+
+async function toggleDetail(row) {
+  if (openRow === row) {
+    openRow = 0;
+    renderArchiveList();
+    return;
+  }
+  openRow = row;
+  renderArchiveList();
+  await fillDetail(row);
+}
+
+async function refreshArchive() {
+  var token = ++archiveToken;
+  archiveState = 'loading';
+  document.getElementById('archiveLoading').hidden = false;
+  document.getElementById('archiveEmpty').hidden = true;
+  document.getElementById('archiveList').hidden = true;
+  updateArchiveChrome();
+  try {
+    await fetchCount();
+    var rows = await fetchTableRows();
+    if (token !== archiveToken) return;
+    tableRows = rows;
+    renderArchiveList();
+    if (openRow) await fillDetail(openRow);
+    updateRowButtons();
+  } catch (e) {
+    if (token !== archiveToken) return;
+    archiveState = 'empty';
+    document.getElementById('archiveLoading').hidden = true;
+    document.getElementById('archiveEmpty').hidden = false;
+    document.getElementById('archiveEmptyText').textContent = t('loadError');
+  }
+}
+
+async function showPage(page, opts) {
+  var record = !opts || opts.record !== false;
+  var y = opts && typeof opts.y === 'number' ? opts.y : null;
+  if (page === currentPage) {
+    closeMenu();
+    if (y != null) window.scrollTo(0, y);
+    return;
+  }
+  if (record) historyStack.push({ page: currentPage, y: window.scrollY || document.documentElement.scrollTop || 0 });
+  currentPage = page;
+  document.getElementById('page-home').hidden = page !== 'home';
+  document.getElementById('page-bench').hidden = page !== 'bench';
+  document.getElementById('page-archive').hidden = page !== 'archive';
+  var tabs = document.querySelectorAll('[data-page]');
+  for (var i = 0; i < tabs.length; i++) {
+    if (!tabs[i].classList.contains('nav-tab') && !tabs[i].classList.contains('menu-tab')) continue;
+    tabs[i].classList.toggle('active', tabs[i].getAttribute('data-page') === page);
+  }
+  closeMenu();
+  window.scrollTo(0, 0);
+  if (page === 'home') {
+    try { await refreshHome(); } catch (e) {}
+  } else if (page === 'archive') {
+    try { await refreshArchive(); } catch (e2) {}
+  } else if (page === 'bench') {
+    try { await fetchCount(); } catch (e3) {}
+    updateRowButtons();
+    updateActionButtons();
+  }
+  window.scrollTo(0, y == null ? 0 : y);
+}
+
+async function openFreshBench() {
+  await showPage('bench');
+  clearBench();
+}
+
+async function openArchiveFiltered(kind) {
+  if (kind === 'attempt') {
+    archiveGrade = 'all';
+    archiveAttemptOnly = true;
+    archiveHint = '';
+  } else if (kind === 'grades') {
+    archiveGrade = 'all';
+    archiveAttemptOnly = false;
+    archiveHint = 'grades';
+  } else {
+    archiveGrade = 'all';
+    archiveAttemptOnly = false;
+    archiveHint = '';
+  }
+  archiveQuery = '';
+  openRow = 0;
+  var search = document.getElementById('archiveSearch');
+  if (search) search.value = '';
+  await showPage('archive');
+}
+
+async function loadRow(row) {
+  if (row < 1) return;
+  if (polling && row !== 1) stopPoll();
+  if (!(polling && row === 1)) awaitingGuide = false;
+  var token = ++loadToken;
+  setStatus('');
+  try {
+    var grade = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '年级/' + row });
+    var title = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '题目/' + row });
+    var attempt = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '已有尝试/' + row });
+    var guide = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '解题引导/' + row });
+    if (token !== loadToken) return;
+    currentRow = row;
+    document.getElementById('formChem_年级').value = grade == null ? '' : String(grade).trim();
+    document.getElementById('formChem_题目').value = title == null ? '' : String(title);
+    document.getElementById('formChem_已有尝试').value = attempt == null ? '' : String(attempt);
+    syncGradeChips(formGrade());
+    if (!(polling && row === 1)) renderGuide(guide == null ? '' : String(guide));
+    updateActionButtons();
+    updateRowButtons();
+  } catch (e) {
+    if (token !== loadToken) return;
+    setStatus(t('netError'));
+  }
+}
+
+async function openRowOnBench(row) {
+  await showPage('bench');
+  await loadRow(row);
+}
+
+async function submitCurrent() {
+  if (actionLock || polling) return;
+  var grade = formGrade();
+  var title = formTitle();
+  var attempt = formAttempt();
+  if (!grade || !title.trim()) return;
+  if (GRADES.indexOf(grade) === -1) return;
+  actionLock = true;
+  updateActionButtons();
+  try {
+    var payload = JSON.stringify({ '年级': grade, '题目': title, '已有尝试': attempt });
+    await callAppBridge({ type: 'SubmitRecord', data: '化学解题', payload: payload });
+    currentRow = 1;
+    setStatus('');
+    try { await fetchCount(); } catch (e) { recordCount = Math.max(recordCount, 1); }
+    updateRowButtons();
+    startPoll();
+  } catch (err) {
+    setStatus(t('netError'));
+  } finally {
+    actionLock = false;
+    updateActionButtons();
+  }
+}
+
+async function saveCurrent() {
+  if (currentRow < 1 || actionLock) return;
+  var grade = formGrade();
+  var title = formTitle();
+  var attempt = formAttempt();
+  if (!grade || !title.trim()) {
+    setStatus(t('needHint'));
+    return;
+  }
+  actionLock = true;
+  updateActionButtons();
+  try {
+    var row = String(currentRow);
+    await callAppBridge({ type: 'SetCellValue', data: '化学解题/默认表格', payload: '年级/' + row + '/' + grade });
+    await callAppBridge({ type: 'SetCellValue', data: '化学解题/默认表格', payload: '题目/' + row + '/' + title });
+    await callAppBridge({ type: 'SetCellValue', data: '化学解题/默认表格', payload: '已有尝试/' + row + '/' + attempt });
+    toast(t('saved'));
+    setStatus('');
+  } catch (e) {
+    setStatus(t('netError'));
+  } finally {
+    actionLock = false;
+    updateActionButtons();
+  }
+}
+
+async function regenerate() {
+  if (actionLock || polling) return;
+  if (!formGrade() || !formTitle().trim()) return;
+  actionLock = true;
+  updateActionButtons();
+  var ok = false;
+  try {
+    ok = await confirmModal(t('regenTitle'), t('regenMsg'), t('regenOk'), t('cancel'));
+  } catch (e) { ok = false; }
+  actionLock = false;
+  updateActionButtons();
+  if (!ok) return;
+  await submitCurrent();
+}
+
+async function deleteAt(row) {
+  if (row < 1 || actionLock) return;
+  actionLock = true;
+  updateActionButtons();
+  var ok = false;
+  try {
+    ok = await confirmModal(t('deleteTitle'), t('deleteMsg'), t('deleteOk'), t('cancel'));
+  } catch (e) { ok = false; }
+  if (!ok) {
+    actionLock = false;
+    updateActionButtons();
+    return;
+  }
+  try {
+    stopPoll();
+    awaitingGuide = false;
+    await callAppBridge({ type: 'DeleteRecord', data: '化学解题/默认表格', payload: row.toString() });
+    if (currentRow === row) clearBench();
+    else if (currentRow > row) currentRow -= 1;
+    if (openRow === row) openRow = 0;
+    else if (openRow > row) openRow -= 1;
+    try { await fetchCount(); } catch (e2) {}
+    updateRowButtons();
+    try {
+      tableRows = await fetchTableRows();
+      renderStats(tableRows, true, true);
+      renderRecent();
+      if (currentPage === 'archive') renderArchiveList();
+    } catch (e3) {}
+    toast(t('deleted'));
+  } catch (err) {
+    setStatus(t('netError'));
+  } finally {
+    actionLock = false;
+    updateActionButtons();
+  }
+}
+
+async function refreshGuide() {
+  if (currentRow < 1 || polling || actionLock) return;
+  var row = currentRow;
+  var token = ++loadToken;
+  try {
+    var guide = await callAppBridge({ type: 'GetCellValue', data: '化学解题/默认表格', payload: '解题引导/' + String(row) });
+    if (token !== loadToken || currentRow !== row) return;
+    var value = guide == null ? '' : String(guide).trim();
+    if (value) {
+      awaitingGuide = false;
+      renderGuide(String(guide));
+      toast(t('guideReady'));
+    } else if (awaitingGuide) {
+      showWaiting(true);
+    } else {
+      renderGuide('');
+    }
+  } catch (e) {
+    setStatus(t('netError'));
+  }
+}
+
+async function goPrev() {
+  if (currentRow <= 1) return;
+  await loadRow(currentRow - 1);
+}
+
+async function goNext() {
+  try { await fetchCount(); } catch (e) {}
+  updateRowButtons();
+  if ((currentRow === 0 && recordCount === 0) || currentRow >= recordCount) return;
+  var target = currentRow === 0 ? 1 : currentRow + 1;
+  await loadRow(target);
+}
+
+function setupViewportKeyboard() {
+  var root = document.documentElement;
+  function padFor(el) {
+    if (!el || !el.matches || !el.matches('input, textarea, select')) return;
+    if (window.innerWidth > 768) return;
+    var vv = window.visualViewport;
+    var overlap = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+    var kb = Math.max(overlap, 280);
+    root.style.setProperty('--kb', overlap + 'px');
+    if (el.closest && el.closest('#page-bench')) {
+      var sheet = document.getElementById('benchSheet');
+      if (sheet) sheet.style.paddingBottom = (kb + 32) + 'px';
+    }
+    var modal = document.getElementById('modalRoot');
+    if (modal && !modal.hidden && el.closest && el.closest('#modalRoot')) {
+      var card = modal.querySelector('.modal-card');
+      if (card) card.style.paddingBottom = (kb + 24) + 'px';
+    }
+    setTimeout(function () {
+      try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+    }, 80);
+  }
+  document.addEventListener('focusin', function (e) { padFor(e.target); });
+  document.addEventListener('focusout', function () {
+    setTimeout(function () {
+      var ae = document.activeElement;
+      if (ae && ae.matches && ae.matches('input, textarea, select')) return;
+      var sheet = document.getElementById('benchSheet');
+      if (sheet) sheet.style.paddingBottom = '';
+      var card = document.querySelector('#modalRoot .modal-card');
+      if (card) card.style.paddingBottom = '';
+      root.style.setProperty('--kb', '0px');
+    }, 150);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      var ae = document.activeElement;
+      if (ae && ae.matches && ae.matches('input, textarea, select')) padFor(ae);
+    });
+  }
+}
+
+function bindEvents() {
+  document.getElementById('brandBtn').addEventListener('click', function () {
+    try {
+      if (window.parent && typeof window.parent.closeFullHtml === 'function') window.parent.closeFullHtml(false);
+    } catch (e) {}
+  });
+  document.getElementById('hamburgerBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var nav = document.getElementById('mainNav');
+    var open = !nav.classList.contains('menu-open');
+    nav.classList.toggle('menu-open', open);
+    document.getElementById('hamburgerBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  var pageButtons = document.querySelectorAll('.nav-tab, .menu-tab');
+  for (var i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener('click', function (ev) {
+      var page = ev.currentTarget.getAttribute('data-page');
+      closeMenu();
+      showPage(page);
+    });
+  }
+  document.getElementById('langBtnCn').addEventListener('click', function () { persistLang('cn'); });
+  document.getElementById('langBtnEn').addEventListener('click', function () { persistLang('en'); });
+  document.getElementById('langBtnCnM').addEventListener('click', function () { persistLang('cn'); closeMenu(); });
+  document.getElementById('langBtnEnM').addEventListener('click', function () { persistLang('en'); closeMenu(); });
+  document.addEventListener('pointerdown', function (e) {
+    var nav = document.getElementById('mainNav');
+    if (!nav.classList.contains('menu-open')) return;
+    if (!nav.contains(e.target)) closeMenu();
+  });
+  document.getElementById('btnStart').addEventListener('click', function () { openFreshBench(); });
+  document.getElementById('btnToArchive').addEventListener('click', function () { showPage('archive'); });
+  document.getElementById('btnGoArchive').addEventListener('click', function () { showPage('archive'); });
+  document.getElementById('btnNewSolve').addEventListener('click', function () { openFreshBench(); });
+  document.getElementById('statTotal').addEventListener('click', function () { openArchiveFiltered('all'); });
+  document.getElementById('statAttempt').addEventListener('click', function () { openArchiveFiltered('attempt'); });
+  document.getElementById('statGrades').addEventListener('click', function () { openArchiveFiltered('grades'); });
+  document.getElementById('recentList').addEventListener('click', function (e) {
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    var row = parseInt(card.getAttribute('data-row'), 10);
+    if (row >= 1) openRowOnBench(row);
+  });
+  document.getElementById('gradeChips').addEventListener('click', function (e) {
+    var btn = e.target.closest('.bottle');
+    if (!btn) return;
+    var g = btn.getAttribute('data-grade');
+    document.getElementById('formChem_年级').value = g;
+    syncGradeChips(g);
+    updateActionButtons();
+  });
+  document.getElementById('formChem').addEventListener('submit', function (e) { e.preventDefault(); });
+  document.getElementById('formChem_题目').addEventListener('input', updateActionButtons);
+  document.getElementById('formChem_已有尝试').addEventListener('input', updateActionButtons);
+  document.getElementById('btnGenerate').addEventListener('click', function () { submitCurrent(); });
+  document.getElementById('btnSave').addEventListener('click', function () { saveCurrent(); });
+  document.getElementById('btnRegenerate').addEventListener('click', function () { regenerate(); });
+  document.getElementById('btnRefresh').addEventListener('click', function () { refreshGuide(); });
+  document.getElementById('btnClear').addEventListener('click', function () { clearBench(); });
+  document.getElementById('btnDelete').addEventListener('click', function () { deleteAt(currentRow); });
+  document.getElementById('btnPrevRow').addEventListener('click', function () { goPrev(); });
+  document.getElementById('btnNextRow').addEventListener('click', function () { goNext(); });
+  document.getElementById('stepRail').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-step]');
+    if (!btn) return;
+    var key = btn.getAttribute('data-step');
+    var heads = document.querySelectorAll('#annoMarkdown h1,#annoMarkdown h2,#annoMarkdown h3,#annoMarkdown h4,#annoMarkdown h5,#annoMarkdown h6,#annoMarkdown strong');
+    for (var n = 0; n < heads.length; n++) {
+      if (String(heads[n].textContent || '').indexOf(key) !== -1) {
+        heads[n].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+    }
+  });
+  document.getElementById('archiveSearch').addEventListener('input', function (e) {
+    archiveQuery = e.target.value || '';
+    openRow = 0;
+    if (tableRows) renderArchiveList();
+  });
+  document.getElementById('filterBar').addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-grade]');
+    if (!chip) return;
+    archiveGrade = chip.getAttribute('data-grade') || 'all';
+    archiveHint = '';
+    openRow = 0;
+    if (tableRows) renderArchiveList();
+    else updateArchiveChrome();
+  });
+  document.getElementById('attemptFilterChip').addEventListener('click', function () {
+    archiveAttemptOnly = false;
+    openRow = 0;
+    if (tableRows) renderArchiveList();
+    else updateArchiveChrome();
+  });
+  document.getElementById('archiveList').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    var card = btn.closest('[data-row]');
+    if (!card) return;
+    var row = parseInt(card.getAttribute('data-row'), 10);
+    var act = btn.getAttribute('data-act');
+    if (act === 'toggle' || act === 'view') {
+      if (act === 'view' && openRow === row) {
+        var g = document.querySelector('#detail-' + row + ' .detail-guide');
+        if (g) g.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      toggleDetail(row);
+    } else if (act === 'edit') {
+      openRowOnBench(row);
+    } else if (act === 'delete') {
+      deleteAt(row);
+    } else if (act === 'fold') {
+      openRow = 0;
+      renderArchiveList();
+    }
+  });
+  document.addEventListener('click', function (e) {
+    if (!openRow) return;
+    var modal = document.getElementById('modalRoot');
+    if (modal && !modal.hidden) return;
+    var path = e.composedPath ? e.composedPath() : [];
+    for (var i = 0; i < path.length; i++) {
+      var node = path[i];
+      if (!node || !node.id) continue;
+      if (node.id === 'archiveList' || node.id === 'mainNav') return;
+    }
+    openRow = 0;
+    renderArchiveList();
+  });
+  document.getElementById('modalRoot').addEventListener('click', function (e) {
+    if (e.target === document.getElementById('modalRoot')) closeModal(false, false);
+  });
+  document.getElementById('modalCancel').addEventListener('click', function () { closeModal(false, false); });
+  document.getElementById('modalOk').addEventListener('click', function () { closeModal(true, false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!document.getElementById('modalRoot').hidden) closeModal(false, false);
+    else if (isMenuOpen()) closeMenu();
+  });
+  window.addEventListener('resize', scheduleNav);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(function () { scheduleNav(); });
+    ro.observe(document.getElementById('navInner'));
+  }
+}
+
+function collapseArchiveDetail() {
+  if (!openRow) return false;
+  openRow = 0;
+  renderArchiveList();
+  return true;
+}
+
+function airBack() {
+  if (closeTopPopup()) return 'false';
+  if (isMenuOpen()) {
+    closeMenu();
+    return 'false';
+  }
+  if (collapseArchiveDetail()) return 'false';
+  if (historyStack.length) {
+    var prev = historyStack.pop();
+    showPage(prev.page, { record: false, y: prev.y });
+    return 'false';
+  }
+  return 'true';
+}
+window.airBack = airBack;
+
+async function loadTheme() {
+  try {
+    var mode = await callAppBridge({ type: '模式' });
+    var text = String(mode == null ? '' : mode).trim();
+    if (text.indexOf('暗色') !== -1) document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.setAttribute('data-theme', 'light');
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+}
+
+async function initialize() {
+  try {
+    uiLang = detectLanguage();
+    applyLanguage();
+    bindEvents();
+    setupViewportKeyboard();
+    updateActionButtons();
+    updateRowButtons();
+    scheduleNav();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleNav);
+    var themeTask = loadTheme();
+    var homeTask = refreshHome();
+    try { await themeTask; } catch (e) {}
+    try { await homeTask; } catch (e2) {}
+    scheduleNav();
+  } catch (err) {
+    recentState = 'error';
+    applyRecentState();
+  }
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>生物错题根因分析</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+<style>
+:root{color-scheme:light;--bg:#edf5f7;--bg2:#fffaf0;--card:#fff;--ink:#173849;--muted:#5d7884;--line:#d7e5e8;--primary:#12667a;--primary2:#2a8794;--amber:#b16b19;--amber-bg:#fff4df;--teal:#147f79;--teal-bg:#e5f6f2;--shadow:0 18px 50px rgba(29,75,88,.1)}
+body.dark{color-scheme:dark;--bg:#10262f;--bg2:#1a2d32;--card:#1b343e;--ink:#edf8f8;--muted:#adc8cc;--line:#35545d;--primary:#66c4d0;--primary2:#7bd5d6;--amber:#ffd28b;--amber-bg:#493b29;--teal:#8ee0cb;--teal-bg:#24483f;--shadow:0 18px 50px rgba(0,0,0,.24)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(130deg,var(--bg),var(--bg2));min-height:100vh}button,input,textarea,select{font:inherit}input,select,textarea{box-sizing:border-box}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.52}a{color:inherit}h1,h2,h3{line-height:1.22;letter-spacing:.035em}h1{font-size:clamp(2rem,4vw,3.4rem);margin:0 0 16px}h2{font-size:1.65rem;margin:0}h3{font-size:1.08rem;margin:0}.muted{color:var(--muted)}.small{font-size:.87rem}.wrap{max-width:1200px;margin:auto;padding:28px 22px 130px}.nav{position:relative;z-index:1001;position:sticky;top:0;background:linear-gradient(100deg,#123c51,#276c7c);color:#fff;box-shadow:0 8px 24px rgba(11,45,60,.18)}.nav-inner{max-width:1244px;min-height:72px;margin:auto;padding:0 22px;display:flex;align-items:center;gap:24px}.brand{display:flex;align-items:center;gap:11px;min-width:0;border:0;background:transparent;color:#fff;font-size:1.12rem;font-weight:800;letter-spacing:.08em;white-space:nowrap;padding:8px 0}.brand i{font-size:1.55rem;color:#9de1df}.nav-spacer{flex:1}.nav-links{display:flex;gap:5px;align-items:center;white-space:nowrap}.nav-link,.lang-button,.menu-button{border:0;border-radius:12px;background:transparent;color:#e2f3f5;padding:9px 14px;font-weight:650;white-space:nowrap}.nav-link.active,.nav-link:hover,.lang-button:hover,.menu-button:hover{background:rgba(255,255,255,.17);color:#fff}.menu-button{display:none;font-size:1.25rem;padding:8px 11px}.mobile-menu{display:none;position:absolute;top:100%;left:0;right:0;background:#17485b;padding:9px 22px 16px;box-shadow:0 14px 25px #0b2f4055}.mobile-menu.open{display:grid;gap:4px}.mobile-menu .nav-link{text-align:left}.page{display:none}.page.active{display:block}.hero{padding:56px 0 28px;display:grid;grid-template-columns:1.4fr .6fr;gap:28px;align-items:center}.eyebrow{color:var(--primary);font-weight:800;letter-spacing:.17em;text-transform:uppercase;font-size:.75rem}.hero p{max-width:730px;color:var(--muted);font-size:1.05rem}.hero-art{height:220px;border-radius:36px;background:radial-gradient(circle at 35% 36%,#8dd2d2aa,transparent 30%),radial-gradient(circle at 65% 60%,#edc886aa,transparent 34%),linear-gradient(145deg,#c9e9e9,#fff7e9);display:grid;place-items:center;color:#296b79;font-size:6rem;box-shadow:var(--shadow)}body.dark .hero-art{background:linear-gradient(145deg,#285160,#3b4b49);color:#9fdddd}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:1px solid transparent;border-radius:13px;padding:11px 18px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .18s,box-shadow .18s}.btn:hover:not(:disabled),.card:hover{transform:translateY(-2px)}.btn-primary{background:#176d80;color:#fff;box-shadow:0 8px 18px #176d802a}.btn-secondary{background:var(--card);color:var(--primary);border-color:var(--line)}.btn-amber{background:var(--amber-bg);color:var(--amber)}.btn-danger{background:#b85049;color:white}.btn-quiet{background:transparent;color:var(--primary);border-color:var(--line)}.icon-btn{border:0;background:transparent;color:var(--muted);font-size:1.2rem;padding:6px 10px;border-radius:9px}.card{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s}.panel{padding:24px}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin:30px 0 16px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.stat{padding:24px;text-align:left;width:100%;color:var(--ink)}.stat:nth-child(1){border-top:5px solid #247285}.stat:nth-child(2){border-top:5px solid #d99740}.stat:nth-child(3){border-top:5px solid #3b9b97}.stat .number{display:block;font-size:2.1rem;font-weight:850;line-height:1.2;margin-top:12px}.stat i{float:right;font-size:1.4rem;color:var(--primary)}.stat:nth-child(2) i{color:var(--amber)}.stat:nth-child(3) i{color:var(--teal)}.distribution{margin-top:20px}.bar{display:flex;overflow:hidden;height:52px;border-radius:14px;background:var(--line);color:#183843;font-weight:800}.bar>div{display:flex;align-items:center;justify-content:center;min-width:0;white-space:nowrap;overflow:hidden}.bar-junior{background:#f3be77}.bar-senior{background:#85ccc3}.recent-grid,.archive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.recent-card,.archive-card{padding:20px;text-align:left;color:var(--ink)}.recent-card{width:100%;border:1px solid var(--line)}.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.76rem;font-weight:800;background:var(--amber-bg);color:var(--amber)}.badge.senior{background:var(--teal-bg);color:var(--teal)}.question{font-weight:760;font-size:1.05rem;white-space:pre-wrap;overflow-wrap:anywhere;margin:11px 0}.answer-preview{color:var(--muted);font-size:.87rem;margin:5px 0;overflow-wrap:anywhere}.answer-preview strong{color:var(--amber)}.answer-preview.correct strong{color:var(--teal)}.page-intro{display:flex;justify-content:space-between;gap:16px;align-items:start;margin:24px 0}.page-intro p{margin:8px 0 0;color:var(--muted)}.diagnosis-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}.form-grid{display:grid;gap:16px}.field-label{display:block;font-weight:750;margin-bottom:7px}.text-field{width:100%;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--ink);padding:11px 13px;outline:none}.text-field:focus{border-color:var(--primary2);box-shadow:0 0 0 3px #56b3bd33}textarea.text-field{min-height:105px;resize:vertical}.segment{display:flex;gap:10px;flex-wrap:wrap}.segment label{position:relative}.segment input{position:absolute;opacity:0}.segment span{display:block;padding:8px 20px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-weight:750;cursor:pointer}.segment input:checked+span{background:var(--primary);border-color:var(--primary);color:var(--card)}.legend{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 22px}.legend span{border-radius:99px;background:var(--bg);color:var(--muted);padding:3px 10px;font-size:.78rem}.report-placeholder,.empty{border:1px dashed var(--line);background:var(--bg);border-radius:17px;padding:25px;color:var(--muted)}.empty{text-align:center}.report-card{min-height:350px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.compare>div{border-radius:16px;padding:15px;white-space:pre-wrap;overflow-wrap:anywhere}.compare .student{background:var(--amber-bg)}.compare .correct{background:var(--teal-bg)}.compare h3{margin-bottom:8px}.compare p{margin:0}.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 20px}.search{flex:1;min-width:210px}.archive-card{display:flex;flex-direction:column;gap:3px}.archive-card .card-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:15px}.archive-card .card-actions .btn{padding:7px 11px;font-size:.82rem}.click-area{cursor:pointer;flex:1}.modal-backdrop{position:fixed;inset:0;z-index:2000;background:rgba(7,34,44,.65);display:none;align-items:center;justify-content:center;padding:24px}.modal-backdrop.open{display:flex}.modal{width:min(790px,100%);max-height:calc(100dvh - 48px);overflow:auto;background:var(--card);color:var(--ink);border-radius:25px;box-shadow:0 30px 80px #061a2e70;padding:25px}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}.detail-question{white-space:pre-wrap;overflow-wrap:anywhere;font-size:1.2rem;font-weight:760;margin:12px 0 20px}.markdown-body{background:transparent!important;color:var(--ink)!important;font-family:inherit!important;overflow-wrap:anywhere}.markdown-body img{max-width:100%;cursor:pointer}.markdown-body pre{overflow:auto}.markdown-body a{color:var(--primary)}.modal .form-grid{padding-bottom:12px}.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);z-index:3000;background:#123f51;color:#fff;padding:10px 17px;border-radius:12px;box-shadow:var(--shadow);display:none;max-width:min(90vw,580px)}.toast.show{display:block}.loading{display:inline-flex;align-items:center;gap:8px}.loading i{animation:spin 1.2s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:760px){.wrap{padding:18px 15px 180px}.nav-inner{min-height:62px;padding:0 14px}.brand{font-size:.94rem}.hero{grid-template-columns:1fr;padding:35px 0 15px}.hero-art{height:130px;font-size:4rem}.stats{grid-template-columns:1fr 1fr}.diagnosis-grid,.recent-grid,.archive-grid{grid-template-columns:1fr}.page-intro{align-items:stretch;flex-direction:column}.page-intro .btn{align-self:flex-start}.modal-backdrop{padding:12px}.modal{max-height:calc(100dvh - 24px);padding:20px;padding-bottom:170px}.compare{grid-template-columns:1fr}}@media(max-width:480px){.stats{grid-template-columns:1fr}.modal-backdrop.markdown-modal{padding:0}.markdown-modal .modal{border-radius:0;max-height:100dvh;height:100dvh;width:100%;padding:18px 16px 190px}.brand span{font-size:.84rem}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="nav" id="topNav"><div class="nav-inner"><button class="brand" id="brandButton" type="button" aria-label="Close"><i class="fa-solid fa-dna"></i><span data-i18n="appName">生物错题根因分析</span></button><div class="nav-spacer"></div><nav class="nav-links" id="desktopNav" aria-label="Pages"><button class="nav-link active" data-page="home" data-i18n="home">首页</button><button class="nav-link" data-page="diagnosis" data-i18n="diagnosis">错题诊断</button><button class="nav-link" data-page="archive" data-i18n="archive">错题档案</button></nav><button class="lang-button" id="langButton" type="button">EN</button><button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-label="Menu"><i class="fa-solid fa-bars"></i></button></div><div class="mobile-menu" id="mobileMenu"><button class="nav-link active" data-page="home" data-i18n="home">首页</button><button class="nav-link" data-page="diagnosis" data-i18n="diagnosis">错题诊断</button><button class="nav-link" data-page="archive" data-i18n="archive">错题档案</button><button class="nav-link" id="mobileLangButton" type="button">English</button></div></header>
+<main class="wrap">
+<section class="page active" id="homePage"><div class="hero"><div><div class="eyebrow" data-i18n="eyebrow">BIOLOGY · ERROR LAB</div><h1 data-i18n="heroTitle">生物错题根因分析</h1><p data-i18n="heroText">把一道生物错题放到显微镜下，按学段看清概念、结构、图表、实验、表述或计算上的根因，并只给出一项能马上练习的改进建议。单题证据不足时，报告会直接说明，不把一题说成长期弱项。</p><div class="actions"><button class="btn btn-primary" id="startButton" data-i18n="start">开始诊断错题</button><button class="btn btn-secondary" id="allButton" data-i18n="viewAll">查看全部档案</button></div></div><div class="hero-art" aria-hidden="true"><i class="fa-solid fa-dna"></i></div></div><div class="stats"><button class="card stat" data-filter="all"><i class="fa-solid fa-layer-group"></i><span data-i18n="total">错题总数</span><span class="number" id="totalCount">—</span></button><button class="card stat" data-filter="初中"><i class="fa-solid fa-flask"></i><span data-i18n="juniorCount">初中错题</span><span class="number" id="juniorCount">—</span></button><button class="card stat" data-filter="高中"><i class="fa-solid fa-microscope"></i><span data-i18n="seniorCount">高中错题</span><span class="number" id="seniorCount">—</span></button></div><section class="card panel distribution"><h3 data-i18n="distribution">学段分布</h3><div id="distributionBody" style="margin-top:15px"></div></section><div class="section-head"><h2 data-i18n="recent">最近放入显微镜的错题</h2></div><div id="recentList" class="recent-grid"></div></section>
+<section class="page" id="diagnosisPage"><div class="page-intro"><div><h2 data-i18n="diagnosis">错题诊断</h2><p data-i18n="diagnosisDesc">录入一道错题。分析由后台按六维错因体系生成，页面只负责提交和展示。</p></div><button class="btn btn-secondary" id="toArchiveButton" data-i18n="goArchive">去错题档案</button></div><div class="diagnosis-grid"><div class="card panel"><h3 data-i18n="formTitle">错题分析</h3><div class="legend"><span data-i18n="concept">概念</span><span data-i18n="structure">结构</span><span data-i18n="charts">图表</span><span data-i18n="experiment">实验</span><span data-i18n="expression">表述</span><span data-i18n="calculation">计算</span></div><form id="diagnosisForm" class="form-grid"><div><span class="field-label" data-i18n="stage">学段</span><div class="segment"><label><input id="diagnosisForm_stage_junior" type="radio" name="学段" value="初中"><span data-i18n="junior">初中</span></label><label><input id="diagnosisForm_stage_senior" type="radio" name="学段" value="高中"><span data-i18n="senior">高中</span></label></div></div><label><span class="field-label" data-i18n="question">题目</span><textarea id="diagnosisForm_question" name="题目" class="text-field" required></textarea></label><label><span class="field-label" data-i18n="studentAnswer">学生答案</span><textarea id="diagnosisForm_student" name="学生答案" class="text-field" required></textarea></label><label><span class="field-label" data-i18n="correctAnswer">正确答案</span><textarea id="diagnosisForm_correct" name="正确答案" class="text-field" required></textarea></label><div class="actions"><button class="btn btn-primary" id="analyzeButton" type="submit" disabled data-i18n="analyze">开始分析</button><button class="btn btn-quiet" id="clearButton" type="button" data-i18n="clear">清空重录</button></div></form></div><div class="card panel report-card"><h3 data-i18n="rootReport">根因报告</h3><div id="reportBody" class="report-placeholder" style="margin-top:17px"></div><div id="reportCompare" class="compare" hidden></div><div class="actions"><button class="btn btn-secondary" id="viewCurrentButton" disabled data-i18n="viewCurrent">查看本条档案</button></div></div></div></section>
+<section class="page" id="archivePage"><div class="page-intro"><div><h2 data-i18n="archive">错题档案</h2><p data-i18n="archiveDesc">回看每一道错题的作答对照和根因报告。</p></div><button class="btn btn-primary" id="addButton" data-i18n="add">+ 录入错题</button></div><div class="filters"><input class="text-field search" id="archiveSearch" type="search" data-placeholder="search" placeholder="按题目关键字搜索"><div class="segment" id="archiveFilters"><label><input type="radio" name="archiveStage" value="all" checked><span data-i18n="all">全部</span></label><label><input type="radio" name="archiveStage" value="初中"><span data-i18n="junior">初中</span></label><label><input type="radio" name="archiveStage" value="高中"><span data-i18n="senior">高中</span></label></div></div><div id="archiveList" class="archive-grid"></div></section>
+</main>
+<div class="modal-backdrop markdown-modal" id="detailBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal-head"><h2 id="detailTitle" data-i18n="slice">错题切片</h2><button class="icon-btn" id="detailCloseX" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div><div id="detailBody"></div><div class="actions"><button class="btn btn-secondary" id="detailClose" data-i18n="close">关闭</button><button class="btn btn-primary" id="detailEdit" data-i18n="editThis">编辑此题</button></div></div></div>
+<div class="modal-backdrop" id="editBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="editTitle"><div class="modal-head"><h2 id="editTitle" data-i18n="editTitle">编辑错题</h2><button class="icon-btn" id="editCloseX" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div><form id="editForm" class="form-grid"><div><span class="field-label" data-i18n="stage">学段</span><div class="segment"><label><input id="editForm_stage_junior" type="radio" name="学段" value="初中"><span data-i18n="junior">初中</span></label><label><input id="editForm_stage_senior" type="radio" name="学段" value="高中"><span data-i18n="senior">高中</span></label></div></div><label><span class="field-label" data-i18n="question">题目</span><textarea id="editForm_question" name="题目" class="text-field" required></textarea></label><label><span class="field-label" data-i18n="studentAnswer">学生答案</span><textarea id="editForm_student" name="学生答案" class="text-field" required></textarea></label><label><span class="field-label" data-i18n="correctAnswer">正确答案</span><textarea id="editForm_correct" name="正确答案" class="text-field" required></textarea></label><div id="editExistingReport" hidden><p class="muted small" data-i18n="editNotice">编辑只会更新题目信息，不会重新生成根因分析；要新的报告，请另录入一道错题。</p><div id="editReportMarkdown" class="markdown-body"></div></div><div class="actions"><button class="btn btn-primary" id="saveButton" type="submit" data-i18n="save">保存</button><button class="btn btn-secondary" id="editCancel" type="button" data-i18n="cancel">取消</button></div></form></div></div>
+<div class="modal-backdrop" id="confirmBackdrop"><div class="modal" style="width:min(440px,100%)" role="dialog" aria-modal="true"><h2 data-i18n="confirmDelete">确定删除这道错题？</h2><p class="muted" data-i18n="deleteWarn">删除后无法恢复。</p><div class="actions"><button class="btn btn-danger" id="confirmDeleteButton" data-i18n="delete">删除</button><button class="btn btn-secondary" id="confirmCancelButton" data-i18n="cancel">取消</button></div></div></div>
+<div id="toast" class="toast" role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("73be47a17c57ee9c_生物错题根因分析")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const originalCallAppBridge=callAppBridge;
+callAppBridge=async function(request){
+  if(window.AndroidBridge || (window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.iosBridge) || (window.chrome&&window.chrome.webview)) return await localAppBridge(request);
+  return await originalCallAppBridge(request);
+};
+const SOURCE='错题分析/默认表格', TABLE='错题分析', FIELDS=['学段','题目','学生答案','正确答案'];
+const dict={cn:{appName:'生物错题根因分析',home:'首页',diagnosis:'错题诊断',archive:'错题档案',eyebrow:'BIOLOGY · ERROR LAB',heroTitle:'生物错题根因分析',heroText:'把一道生物错题放到显微镜下，按学段看清概念、结构、图表、实验、表述或计算上的根因，并只给出一项能马上练习的改进建议。单题证据不足时，报告会直接说明，不把一题说成长期弱项。',start:'开始诊断错题',viewAll:'查看全部档案',total:'错题总数',juniorCount:'初中错题',seniorCount:'高中错题',distribution:'学段分布',recent:'最近放入显微镜的错题',diagnosisDesc:'录入一道错题。分析由后台按六维错因体系生成，页面只负责提交和展示。',goArchive:'去错题档案',formTitle:'错题分析',concept:'概念',structure:'结构',charts:'图表',experiment:'实验',expression:'表述',calculation:'计算',stage:'学段',junior:'初中',senior:'高中',question:'题目',studentAnswer:'学生答案',correctAnswer:'正确答案',analyze:'开始分析',clear:'清空重录',rootReport:'根因报告',viewCurrent:'查看本条档案',archiveDesc:'回看每一道错题的作答对照和根因报告。',add:'+ 录入错题',search:'按题目关键字搜索',all:'全部',slice:'错题切片',close:'关闭',editThis:'编辑此题',editTitle:'编辑错题',editNotice:'编辑只会更新题目信息，不会重新生成根因分析；要新的报告，请另录入一道错题。',save:'保存',cancel:'取消',confirmDelete:'确定删除这道错题？',deleteWarn:'删除后无法恢复。',delete:'删除',viewRoot:'查看根因',edit:'编辑',emptyHome:'还没有错题切片。录入一道错题，开始观察它的根因。',emptyArchive:'还没有错题档案。',noMatch:'没有匹配的错题，请更换关键字或学段。',initialReport:'提交后，这里会显示主维度、子类型、判断依据、根本原因和一项改进建议。',waiting:'正在对准这道错题，按六维错因体系写根因报告…',timeout:'报告仍在生成，请稍后到错题档案查看。',pending:'报告还在生成，请稍后重开详情',refresh:'刷新报告',required:'请填写学段、题目、学生答案和正确答案。',saved:'已保存。',deleted:'已删除。',failed:'操作失败：',loading:'正在加载…',noSlices:'还没有错题切片',countUnit:'题',refreshing:'正在刷新报告…'},en:{appName:'Biology Error Analysis',home:'Home',diagnosis:'Diagnosis',archive:'Archive',eyebrow:'BIOLOGY · ERROR LAB',heroTitle:'Biology Error Analysis',heroText:'Put one biology mistake under the microscope. Identify its cause across concepts, structure, charts, experiments, expression, or calculation, then get one practical next step. A single question is not treated as proof of a lasting weakness.',start:'Diagnose a mistake',viewAll:'View archive',total:'Total mistakes',juniorCount:'Junior level',seniorCount:'Senior level',distribution:'Level distribution',recent:'Recently examined mistakes',diagnosisDesc:'Enter one mistake. The background service creates the six dimension analysis; this page submits and displays it.',goArchive:'Go to archive',formTitle:'Mistake analysis',concept:'Concept',structure:'Structure',charts:'Charts',experiment:'Experiment',expression:'Expression',calculation:'Calculation',stage:'Level',junior:'Junior',senior:'Senior',question:'Question',studentAnswer:'Student answer',correctAnswer:'Correct answer',analyze:'Analyze',clear:'Clear and start over',rootReport:'Root cause report',viewCurrent:'View this record',archiveDesc:'Review each question, answer comparison, and root cause report.',add:'+ Add mistake',search:'Search questions',all:'All',slice:'Mistake detail',close:'Close',editThis:'Edit this question',editTitle:'Edit mistake',editNotice:'Editing updates the question information only. It does not regenerate the analysis. Add a new mistake for a new report.',save:'Save',cancel:'Cancel',confirmDelete:'Delete this mistake?',deleteWarn:'This cannot be undone.',delete:'Delete',viewRoot:'View report',edit:'Edit',emptyHome:'No mistakes yet. Add one to begin examining its cause.',emptyArchive:'No mistakes in the archive yet.',noMatch:'No matching mistakes. Try another keyword or level.',initialReport:'After submission, the main dimension, subtype, evidence, root cause, and one improvement step will appear here.',waiting:'Examining this mistake and writing its six dimension report…',timeout:'The report is still being generated. Check the archive later.',pending:'The report is still being generated. Reopen this detail later.',refresh:'Refresh report',required:'Complete the level, question, student answer, and correct answer.',saved:'Saved.',deleted:'Deleted.',failed:'Operation failed: ',loading:'Loading…',noSlices:'No mistakes yet',countUnit:'items',refreshing:'Refreshing report…'}};
+let lang='cn', page='home', historyStack=[], rows=[], currentRow=0, detailRow=0, editRow=0, deleteRow=0, pollToken=0, polling=false, submitting=false, submittedAnswers=null, toastTimer;
+const $=id=>document.getElementById(id), t=k=>dict[lang][k]||k, esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function notify(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4000)}
+function chooseLanguage(){let stored=localStorage.getItem('iThinkAir_UiLanguage');if(stored!==null&&stored!=='')return stored==='en'?'en':'cn';let param=new URLSearchParams(location.search).get('lang');if(param==='en'||param==='cn')return param;try{let list=navigator.languages;return !list||!list.length?'cn':list.some(x=>/^zh(?:-|$)/i.test(x))?'cn':'en'}catch{return 'cn'}}
+function applyLanguage(){document.documentElement.lang=lang==='cn'?'zh-CN':'en';document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));document.querySelectorAll('[data-placeholder]').forEach(el=>el.placeholder=t(el.dataset.placeholder));$('langButton').textContent=lang==='cn'?'EN':'中文';$('mobileLangButton').textContent=lang==='cn'?'English':'中文';if(!currentRow&&!polling)$('reportBody').textContent=t('initialReport');renderHome();renderArchive();fitNav()}
+function toggleLanguage(){lang=lang==='cn'?'en':'cn';localStorage.setItem('iThinkAir_UiLanguage',lang);applyLanguage();closeMenu()}
+function fitNav(){const nav=$('desktopNav'), menu=$('menuButton'), langBtn=$('langButton');nav.style.display='flex';langBtn.style.display='block';menu.style.display='none';let inner=$('topNav').querySelector('.nav-inner');let needed=inner.querySelector('.brand').scrollWidth+nav.scrollWidth+langBtn.scrollWidth+95;if(needed>inner.clientWidth){nav.style.display='none';langBtn.style.display='none';menu.style.display='block'}else closeMenu()}
+function closeMenu(){$('mobileMenu').classList.remove('open');$('menuButton').setAttribute('aria-expanded','false')}
+function openModal(id){closeMenu();$(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){$(id).classList.remove('open');if(!document.querySelector('.modal-backdrop.open'))document.body.style.overflow=''}
+function topModal(){return [...document.querySelectorAll('.modal-backdrop.open')].at(-1)}
+function go(target,options={}){closeMenu();if(page!==target){historyStack.push({page,scroll:window.scrollY});page=target}document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===target+'Page'));document.querySelectorAll('[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===target));window.scrollTo(0,0);if(target==='home')refreshHome();if(target==='archive'){if(options.filter){document.querySelector(`input[name="archiveStage"][value="${options.filter}"]`).checked=true}$('archiveSearch').value=options.search||'';refreshArchive().then(()=>{if(options.detail)openDetail(options.detail)})}if(target==='diagnosis'&&options.clear)clearDiagnosis()}
+window.airBack=function(){let modal=topModal();if(modal){closeModal(modal.id);return 'false'}if(historyStack.length){let prior=historyStack.pop();page=prior.page;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page+'Page'));document.querySelectorAll('[data-page]').forEach(el=>el.classList.toggle('active',el.dataset.page===page));if(page==='home')refreshHome();if(page==='archive')refreshArchive();requestAnimationFrame(()=>window.scrollTo(0,prior.scroll));return 'false'}return 'true'};
+async function getRows(){let csv=await callAppBridge({type:'GetTableCSV',data:SOURCE,payload:FIELDS.join(',')});return parseCSV(String(csv||'').replace(/^\uFEFF/,'')).map((r,i)=>({row:i+1,stage:r[0],question:r[1],student:r[2],correct:r[3]})).filter(r=>r.correct!==undefined)}
+function short(s,n=80){s=String(s||'').replace(/\s+/g,' ').trim();return [...s].length>n?[...s].slice(0,n).join('')+'…':s}
+function badge(r){return `<span class="badge ${r.stage==='高中'?'senior':''}">${esc(r.stage==='初中'?t('junior'):r.stage==='高中'?t('senior'):r.stage)}</span>`}
+function preview(r){return `<p class="answer-preview"><strong>${t('studentAnswer')}:</strong> ${esc(short(r.student,85))}</p><p class="answer-preview correct"><strong>${t('correctAnswer')}:</strong> ${esc(short(r.correct,85))}</p>`}
+function renderHome(){if(!rows.length){$('distributionBody').innerHTML=`<div class="empty">${esc(t('noSlices'))}</div>`;$('recentList').innerHTML=`<div class="empty" style="grid-column:1/-1">${esc(t('emptyHome'))}<div class="actions" style="justify-content:center"><button class="btn btn-primary" data-action="start">${esc(t('start'))}</button></div></div>`;return}let junior=rows.filter(r=>r.stage==='初中').length,senior=rows.filter(r=>r.stage==='高中').length,total=junior+senior;if(total){let jp=Math.round(junior/total*100),sp=100-jp;$('distributionBody').innerHTML=`<div class="bar"><div class="bar-junior" style="width:${jp}%" title="${esc(t('junior'))}: ${junior} (${jp}%)">${jp>=15?esc(t('junior'))+' '+junior+' · '+jp+'%':''}</div><div class="bar-senior" style="width:${sp}%" title="${esc(t('senior'))}: ${senior} (${sp}%)">${sp>=15?esc(t('senior'))+' '+senior+' · '+sp+'%':''}</div></div><p class="small muted">${esc(t('junior'))} ${junior} (${jp}%) · ${esc(t('senior'))} ${senior} (${sp}%)</p>`}else $('distributionBody').innerHTML=`<div class="empty">${esc(t('noSlices'))}</div>`;$('recentList').innerHTML=rows.slice(0,5).map(r=>`<button class="card recent-card" data-action="recent" data-row="${r.row}">${badge(r)}<div class="question">${esc(short(r.question,36))}</div>${preview(r)}</button>`).join('')}
+async function refreshHome(){try{let [count,data]=await Promise.all([callAppBridge({type:'GetRecordCount',data:SOURCE}),getRows()]);rows=data;$('totalCount').textContent=/^\d+$/.test(String(count).trim())?String(count).trim():data.length;$('juniorCount').textContent=data.filter(r=>r.stage==='初中').length;$('seniorCount').textContent=data.filter(r=>r.stage==='高中').length;renderHome()}catch(e){notify(t('failed')+e)}}
+function renderArchive(){let term=$('archiveSearch').value.trim().toLocaleLowerCase(),stage=document.querySelector('input[name="archiveStage"]:checked').value,found=rows.filter(r=>(stage==='all'||r.stage===stage)&&r.question.toLocaleLowerCase().includes(term));$('archiveList').innerHTML=found.length?found.map(r=>`<article class="card archive-card"><div class="click-area" data-action="detail" data-row="${r.row}">${badge(r)}<div class="question">${esc(r.question)}</div>${preview(r)}</div><div class="card-actions"><button class="btn btn-secondary" data-action="detail" data-row="${r.row}">${esc(t('viewRoot'))}</button><button class="btn btn-quiet" data-action="edit" data-row="${r.row}">${esc(t('edit'))}</button><button class="btn btn-amber" data-action="delete" data-row="${r.row}">${esc(t('delete'))}</button></div></article>`).join(''):`<div class="empty" style="grid-column:1/-1">${esc(rows.length?t('noMatch'):t('emptyArchive'))}<div class="actions" style="justify-content:center"><button class="btn btn-primary" data-action="start">${esc(t('add'))}</button></div></div>`}
+async function refreshArchive(){try{rows=await getRows();renderArchive()}catch(e){notify(t('failed')+e)}}
+function values(form){let f=$(form),stage=f.querySelector('input[name="学段"]:checked')?.value||'';return {'学段':stage,'题目':f.elements['题目'].value.trim(),'学生答案':f.elements['学生答案'].value.trim(),'正确答案':f.elements['正确答案'].value.trim()}}
+function valid(v){return FIELDS.every(k=>String(v[k]||'').trim())}
+function updateAnalyze(){ $('analyzeButton').disabled=polling||submitting||!valid(values('diagnosisForm')) }
+function clearDiagnosis(){pollToken++;polling=false;currentRow=0;submittedAnswers=null;$('diagnosisForm').reset();$('reportBody').className='report-placeholder';$('reportBody').textContent=t('initialReport');$('reportCompare').hidden=true;$('reportCompare').innerHTML='';$('viewCurrentButton').disabled=true;updateAnalyze()}
+function compareHTML(student,correct){return `<div class="student"><h3>${esc(t('studentAnswer'))}</h3><p>${esc(student)}</p></div><div class="correct"><h3>${esc(t('correctAnswer'))}</h3><p>${esc(correct)}</p></div>`}
+function markdown(md){let rendered=window.marked?marked.parse(String(md||''),{gfm:true,breaks:true}):esc(md).replace(/\n/g,'<br>');return window.DOMPurify?DOMPurify.sanitize(rendered,{ADD_ATTR:['target','download']}):rendered}
+function showMarkdown(el,text){el.className='markdown-body';el.innerHTML=markdown(text);el.querySelectorAll('img').forEach(img=>{let src=img.getAttribute('src')||'';if(!/^https?:|^data:/.test(src))src='http://' + window.location.hostname + ':3130/download/'+encodeURIComponent(src);let link=document.createElement('a');link.href=src;link.download='';link.target='_blank';img.replaceWith(link);link.appendChild(img);img.src=src})}
+async function readCell(field,row){return await callAppBridge({type:'GetCellValue',data:SOURCE,payload:field+'/'+row})}
+async function submitDiagnosis(e){e.preventDefault();let v=values('diagnosisForm');if(polling||submitting||!valid(v)){if(!polling&&!submitting)notify(t('required'));return}polling=true;submitting=true;updateAnalyze();const token=++pollToken;$('reportBody').className='report-placeholder';$('reportBody').innerHTML=`<span class="loading"><i class="fa-solid fa-spinner"></i>${esc(t('waiting'))}</span>`;$('viewCurrentButton').disabled=true;try{await callAppBridge({type:'SubmitRecord',data:TABLE,payload:JSON.stringify(v)});submitting=false;if(token!==pollToken){await refreshArchive();return}currentRow=1;submittedAnswers={student:v['学生答案'],correct:v['正确答案']};$('reportCompare').innerHTML=compareHTML(submittedAnswers.student,submittedAnswers.correct);$('reportCompare').hidden=false;await refreshArchive();let began=Date.now();while(token===pollToken&&Date.now()-began<60000){await new Promise(resolve=>setTimeout(resolve,2000));if(token!==pollToken)return;let result=await readCell('根因分析',1);if(token!==pollToken)return;if(String(result||'').trim()){showMarkdown($('reportBody'),result);$('viewCurrentButton').disabled=false;break}}if(token===pollToken&&$('viewCurrentButton').disabled){$('reportBody').className='report-placeholder';$('reportBody').textContent=t('timeout')}}catch(err){if(token===pollToken){$('reportBody').className='report-placeholder';$('reportBody').textContent=t('failed')+err;notify(t('failed')+err)}}finally{submitting=false;if(token===pollToken)polling=false;updateAnalyze()}}
+async function openDetail(row){detailRow=row;openModal('detailBackdrop');$('detailBody').innerHTML=`<div class="loading"><i class="fa-solid fa-spinner"></i>${esc(t('loading'))}</div>`;try{let data={};for(const field of [...FIELDS,'根因分析'])data[field]=await readCell(field,row);if(detailRow!==row)return;let stage=data['学段'];$('detailBody').innerHTML=`<span class="badge ${stage==='高中'?'senior':''}">${esc(stage==='初中'?t('junior'):stage==='高中'?t('senior'):stage)}</span><div class="detail-question">${esc(data['题目'])}</div><div class="compare">${compareHTML(data['学生答案'],data['正确答案'])}</div><h3 style="margin:24px 0 12px">${esc(t('rootReport'))}</h3><div id="detailReport"></div>`;setDetailReport(data['根因分析'])}catch(e){$('detailBody').textContent=t('failed')+e}}
+function setDetailReport(value){let el=$('detailReport');if(String(value||'').trim())showMarkdown(el,value);else{el.className='report-placeholder';el.innerHTML=`${esc(t('pending'))}<div class="actions"><button class="btn btn-secondary" id="refreshReportButton">${esc(t('refresh'))}</button></div>`}}
+async function refreshDetailReport(){let button=$('refreshReportButton');if(button)button.disabled=true;try{let result=await readCell('根因分析',detailRow);setDetailReport(result)}catch(e){notify(t('failed')+e);if(button)button.disabled=false}}
+async function openEdit(row){editRow=row;currentRow=row;openModal('editBackdrop');$('editForm').reset();$('saveButton').disabled=true;$('editExistingReport').hidden=true;try{let data={};for(const field of FIELDS)data[field]=await readCell(field,row);if(editRow!==row)return;let radio=$('editForm').querySelector(`input[name="学段"][value="${data['学段']}"]`);if(radio)radio.checked=true;$('editForm').elements['题目'].value=data['题目'];$('editForm').elements['学生答案'].value=data['学生答案'];$('editForm').elements['正确答案'].value=data['正确答案'];let report=await readCell('根因分析',row);if(String(report||'').trim()){$('editExistingReport').hidden=false;showMarkdown($('editReportMarkdown'),report)}$('saveButton').disabled=false}catch(e){notify(t('failed')+e);closeModal('editBackdrop')}}
+async function saveEdit(e){e.preventDefault();let v=values('editForm');if(!valid(v)){notify(t('required'));return}$('saveButton').disabled=true;try{for(const field of FIELDS)await callAppBridge({type:'SetCellValue',data:SOURCE,payload:field+'/'+editRow+'/'+v[field]});closeModal('editBackdrop');await refreshArchive();await refreshHome();notify(t('saved'))}catch(e){notify(t('failed')+e)}finally{$('saveButton').disabled=false}}
+async function doDelete(){$('confirmDeleteButton').disabled=true;try{await callAppBridge({type:'DeleteRecord',data:SOURCE,payload:deleteRow.toString()});if(currentRow===deleteRow)clearDiagnosis();else if(currentRow>deleteRow)currentRow--;closeModal('confirmBackdrop');await refreshArchive();await refreshHome();notify(t('deleted'))}catch(e){notify(t('failed')+e)}finally{$('confirmDeleteButton').disabled=false}}
+function setupInputVisibility(){let active=null;document.addEventListener('focusin',e=>{if(e.target.matches('input,textarea,select')){active=e.target;setTimeout(()=>active?.scrollIntoView({block:'center',behavior:'smooth'}),280)}});window.visualViewport?.addEventListener('resize',()=>{if(active&&document.activeElement===active)setTimeout(()=>active.scrollIntoView({block:'center',behavior:'smooth'}),120)});document.addEventListener('focusout',e=>{if(e.target===active)active=null})}
+async function initialize(){lang=chooseLanguage();try{let mode=await callAppBridge({type:'模式'});document.body.classList.toggle('dark',String(mode).trim()==='暗色')}catch{}applyLanguage();$('reportBody').textContent=t('initialReport');document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.page)));$('brandButton').onclick=()=>{if(parent&&typeof parent.closeFullHtml==='function')parent.closeFullHtml(false)};$('langButton').onclick=toggleLanguage;$('mobileLangButton').onclick=toggleLanguage;$('menuButton').onclick=()=>{let open=$('mobileMenu').classList.toggle('open');$('menuButton').setAttribute('aria-expanded',String(open))};document.addEventListener('click',e=>{if(!e.target.closest('#topNav'))closeMenu()});new ResizeObserver(fitNav).observe($('topNav').querySelector('.nav-inner'));$('startButton').onclick=()=>go('diagnosis',{clear:true});$('allButton').onclick=()=>go('archive',{filter:'all'});document.querySelectorAll('.stat').forEach(el=>el.onclick=()=>go('archive',{filter:el.dataset.filter}));$('toArchiveButton').onclick=()=>go('archive');$('addButton').onclick=()=>go('diagnosis',{clear:true});$('diagnosisForm').addEventListener('input',updateAnalyze);$('diagnosisForm').onsubmit=submitDiagnosis;$('clearButton').onclick=clearDiagnosis;$('viewCurrentButton').onclick=()=>{if(currentRow>=1&&!$('viewCurrentButton').disabled)go('archive',{detail:1})};$('archiveSearch').oninput=renderArchive;$('archiveFilters').onchange=renderArchive;document.addEventListener('click',e=>{let a=e.target.closest('[data-action]');if(!a)return;let row=Number(a.dataset.row);if(a.dataset.action==='start')go('diagnosis',{clear:true});if(a.dataset.action==='recent')go('archive',{detail:row});if(a.dataset.action==='detail')openDetail(row);if(a.dataset.action==='edit')openEdit(row);if(a.dataset.action==='delete'){deleteRow=row;openModal('confirmBackdrop')}});$('detailBody').addEventListener('click',e=>{if(e.target.closest('#refreshReportButton'))refreshDetailReport()});$('detailClose').onclick=$('detailCloseX').onclick=()=>closeModal('detailBackdrop');$('detailEdit').onclick=()=>{let row=detailRow;closeModal('detailBackdrop');openEdit(row)};$('editCancel').onclick=$('editCloseX').onclick=()=>closeModal('editBackdrop');$('editForm').onsubmit=saveEdit;$('confirmCancelButton').onclick=()=>closeModal('confirmBackdrop');$('confirmDeleteButton').onclick=doDelete;document.querySelectorAll('.modal-backdrop').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id)}));document.addEventListener('keydown',e=>{if(e.key==='Escape'){let m=topModal();if(m)closeModal(m.id);else closeMenu()}});setupInputVisibility();await refreshHome()}
+document.addEventListener('DOMContentLoaded',()=>{(async()=>{await initialize()})()});
+</script>
+</body>
+</html>

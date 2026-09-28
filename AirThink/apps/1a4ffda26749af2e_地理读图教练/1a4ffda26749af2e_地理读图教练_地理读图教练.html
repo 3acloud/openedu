@@ -1,0 +1,3866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>地理读图教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+<style>
+:root {
+  --bg: #F4EFE4;
+  --bg-elev: #FFFDF8;
+  --ink: #1C2A30;
+  --ink-soft: #52656A;
+  --primary: #0E4D6C;
+  --primary-deep: #0A3A52;
+  --primary-ink: #F7F1E4;
+  --river: #1F8A70;
+  --gold: #C6A15B;
+  --gold-deep: #A7843E;
+  --pin: #C45C4A;
+  --line: rgba(14, 77, 108, 0.12);
+  --grid: rgba(14, 77, 108, 0.055);
+  --shadow: 0 12px 28px rgba(14, 77, 108, 0.08);
+  --nav: #0E4D6C;
+  --nav-ink: #F4EFE4;
+  --input-bg: #FFFCF7;
+  --input-border: rgba(14, 77, 108, 0.22);
+  --overlay: rgba(12, 32, 40, 0.48);
+  --code-bg: rgba(14, 77, 108, 0.06);
+  --quote: rgba(31, 138, 112, 0.08);
+  --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", "PMingLiU", serif;
+  --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Segoe UI", sans-serif;
+  --nav-h: 64px;
+  --kb-offset: 0px;
+  --radius: 18px;
+}
+html.theme-dark {
+  --bg: #102228;
+  --bg-elev: #173038;
+  --ink: #F4EFE4;
+  --ink-soft: #C5D2CC;
+  --primary: #8FC0D6;
+  --primary-deep: #D7E8F0;
+  --primary-ink: #08202A;
+  --river: #3CB896;
+  --gold: #D4B56E;
+  --gold-deep: #E3C98A;
+  --pin: #E07A68;
+  --line: rgba(244, 239, 228, 0.12);
+  --grid: rgba(198, 161, 91, 0.07);
+  --shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+  --nav: #0E4D6C;
+  --nav-ink: #F4EFE4;
+  --input-bg: #102830;
+  --input-border: rgba(244, 239, 228, 0.2);
+  --overlay: rgba(0, 0, 0, 0.62);
+  --code-bg: rgba(244, 239, 228, 0.06);
+  --quote: rgba(60, 184, 150, 0.12);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 52px 52px;
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body.no-scroll { overflow: hidden; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font-family: inherit; color: inherit; }
+input, select, textarea {
+  box-sizing: border-box;
+  font-size: 16px;
+  scroll-margin-top: 96px;
+  scroll-margin-bottom: calc(140px + var(--kb-offset));
+}
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.55; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+h1, h2, h3, .serif { font-family: var(--serif); font-weight: 700; }
+p { margin: 0; }
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  background: var(--nav);
+  color: var(--nav-ink);
+  padding-top: env(safe-area-inset-top);
+  box-shadow: 0 8px 20px rgba(8, 32, 44, 0.18);
+}
+.nav-row {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px 0 12px;
+  overflow: hidden;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 0;
+  color: var(--nav-ink);
+  padding: 6px 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.brand i {
+  color: var(--gold);
+  font-size: 22px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.25));
+}
+.brand span {
+  font-family: var(--serif);
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 4px;
+  margin-left: auto;
+  flex: 0 0 auto;
+  height: 64px;
+}
+.nav-tab, .lang-btn, .burger, .menu-btn, .menu-lang button {
+  background: transparent;
+  color: var(--nav-ink);
+  border: 0;
+}
+.nav-tab {
+  padding: 0 14px;
+  font-size: 15px;
+  white-space: nowrap;
+  position: relative;
+  flex: 0 0 auto;
+}
+.nav-tab.is-active { box-shadow: inset 0 -3px 0 var(--gold); color: #fff; }
+.nav-tab:hover, .lang-btn:hover, .burger:hover { color: var(--gold); }
+.lang-btn {
+  flex: 0 0 auto;
+  border: 1px solid rgba(198, 161, 91, 0.7);
+  color: var(--gold);
+  border-radius: 999px;
+  padding: 6px 12px;
+  margin-left: 6px;
+  background: rgba(0, 0, 0, 0.12);
+}
+.burger {
+  margin-left: auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 18px;
+  flex: 0 0 auto;
+}
+.mobile-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--nav);
+  border-top: 1px solid rgba(244, 239, 228, 0.12);
+  padding: 8px 12px 14px;
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.22);
+}
+.menu-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 12px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+.menu-btn.is-active { background: rgba(198, 161, 91, 0.18); color: var(--gold); }
+.menu-lang {
+  display: flex;
+  gap: 8px;
+  padding: 8px 4px 0;
+}
+.menu-lang button {
+  flex: 1;
+  border: 1px solid rgba(198, 161, 91, 0.65);
+  border-radius: 999px;
+  padding: 8px 10px;
+  color: var(--gold);
+}
+.menu-lang button.is-active { background: var(--gold); color: #1C2A30; }
+
+main {
+  position: relative;
+  z-index: 0;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 22px) 16px 0;
+}
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.page-head h1, .hero h1 { margin: 0 0 6px; font-size: 34px; line-height: 1.25; color: var(--primary); }
+html.theme-dark .page-head h1, html.theme-dark .hero h1 { color: var(--gold); }
+.lede { color: var(--ink-soft); line-height: 1.7; max-width: 46em; }
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.hero-mark {
+  width: 160px;
+  height: 160px;
+  margin-left: auto;
+  border-radius: 50%;
+  border: 1px dashed rgba(198, 161, 91, 0.8);
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 42%, rgba(14, 77, 108, 0.08) 43%, transparent 44%),
+    radial-gradient(circle at 50% 50%, rgba(198, 161, 91, 0.16), transparent 62%);
+  color: var(--primary);
+  position: relative;
+}
+.hero-mark i { font-size: 54px; color: var(--gold); }
+.hero-mark::before, .hero-mark::after {
+  content: "";
+  position: absolute;
+  background: rgba(14, 77, 108, 0.18);
+}
+.hero-mark::before { width: 1px; height: 78%; }
+.hero-mark::after { height: 1px; width: 78%; }
+
+.pin, .pin-ghost, .pin-danger, .pin-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  line-height: 1.2;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.pin {
+  background: #0E4D6C;
+  color: #F4EFE4;
+  box-shadow: 0 6px 0 #082838;
+}
+.pin:hover:not(:disabled) { background: #0A3C56; }
+.pin-gold {
+  background: var(--gold);
+  color: #1C2A30;
+  box-shadow: 0 6px 0 var(--gold-deep);
+}
+.pin-ghost {
+  background: transparent;
+  color: var(--primary);
+  border-color: rgba(14, 77, 108, 0.28);
+}
+html.theme-dark .pin-ghost { color: var(--ink); border-color: rgba(244, 239, 228, 0.28); background: transparent; }
+button.stat-card { width: 100%; text-align: left; font: inherit; }
+.pin-danger {
+  background: var(--pin);
+  color: #fff;
+  box-shadow: 0 6px 0 #8d3d30;
+}
+.pin:hover:not(:disabled), .pin-gold:hover:not(:disabled), .pin-danger:hover:not(:disabled), .pin-ghost:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.pin i, .pin-gold i, .pin-danger i, .pin-ghost i { font-size: 14px; }
+
+.stat-grid, .tip-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.tip-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 8px; }
+.stat-card, .tip-card, .panel, .record-card, .check-card {
+  background: var(--bg-elev);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid transparent;
+  position: relative;
+}
+.stat-card {
+  text-align: left;
+  padding: 16px 16px 14px;
+  min-height: 112px;
+  overflow: hidden;
+}
+.stat-card i {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  color: var(--gold);
+  opacity: 0.85;
+}
+.stat-num {
+  display: block;
+  font-family: var(--serif);
+  font-size: 36px;
+  color: var(--primary);
+  line-height: 1.1;
+}
+html.theme-dark .stat-num { color: var(--gold); }
+.stat-label { display: block; margin-top: 6px; color: var(--ink-soft); font-size: 14px; }
+.section-title { margin: 22px 0 10px; font-size: 26px; }
+.tip-card { padding: 16px; }
+.tip-card .kicker {
+  font-family: var(--serif);
+  color: var(--river);
+  letter-spacing: 0.08em;
+}
+.tip-card h3 { margin: 6px 0; font-size: 20px; }
+.tip-card p { color: var(--ink-soft); line-height: 1.65; font-size: 14px; }
+
+.record-list { display: flex; flex-direction: column; gap: 12px; }
+.record-card {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  overflow: hidden;
+}
+.record-card.is-clickable { cursor: pointer; }
+.thumb {
+  background: rgba(14, 77, 108, 0.06);
+  min-height: 132px;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  overflow: hidden;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb .file-fallback { text-align: center; padding: 10px; font-size: 12px; color: var(--ink-soft); }
+.thumb .file-fallback i { display: block; font-size: 28px; color: var(--gold); margin-bottom: 6px; }
+.record-main { padding: 12px 14px 12px; min-width: 0; }
+.record-hit { cursor: pointer; }
+.record-top, .badge-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #fff;
+}
+.badge-junior { background: #1F8A70; }
+.badge-senior { background: #0E4D6C; }
+.badge-plain { background: #6d7c80; }
+.badge-ready { background: #1F8A70; }
+.badge-wait { background: #C6A15B; color: #1C2A30; }
+.meta-soft { color: var(--ink-soft); font-size: 12px; }
+.record-title { margin: 8px 0 4px; font-size: 18px; line-height: 1.45; }
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.summary { color: var(--ink-soft); font-size: 13px; line-height: 1.55; margin: 0; }
+.summary.is-empty { font-style: italic; }
+.record-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.record-actions .pin, .record-actions .pin-ghost, .record-actions .pin-danger { padding: 7px 12px; box-shadow: none; font-size: 13px; }
+
+.empty {
+  text-align: center;
+  padding: 28px 16px 8px;
+  color: var(--ink-soft);
+}
+.compass {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  border: 1px dashed var(--gold);
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  font-size: 34px;
+  background: radial-gradient(circle, rgba(198,161,91,.18), transparent 68%);
+}
+.empty p { line-height: 1.7; }
+
+.desk {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 16px;
+  align-items: start;
+}
+.panel { padding: 16px; }
+.panel h2 { margin: 0 0 8px; font-size: 22px; }
+.panel-kicker { color: var(--ink-soft); font-size: 13px; margin-bottom: 10px; }
+.map-stage {
+  border: 1.5px dashed rgba(14, 77, 108, 0.35);
+  border-radius: 16px;
+  min-height: 240px;
+  background: rgba(14, 77, 108, 0.03);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  position: relative;
+}
+.map-empty { text-align: center; color: var(--ink-soft); padding: 24px; }
+.map-empty i { font-size: 36px; color: var(--gold); display: block; margin-bottom: 8px; }
+.map-stage img, .map-stage iframe { width: 100%; height: 320px; border: 0; background: #dfe7e4; object-fit: contain; }
+.map-name {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  word-break: break-all;
+}
+.map-actions, .form-actions, .detail-actions, .filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.map-actions { margin-top: 12px; }
+.check-card { margin-top: 14px; padding: 14px; }
+.check-card h3 { margin: 0 0 8px; font-size: 16px; }
+.check-item { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0; font-size: 14px; line-height: 1.5; }
+.check-item input { margin-top: 3px; width: 16px; height: 16px; flex: 0 0 auto; }
+
+.field { margin: 0 0 12px; }
+.field label.lbl, .lbl { display: block; font-size: 14px; margin-bottom: 6px; }
+.req { color: var(--pin); margin-left: 4px; }
+.choice-row, .switch-set { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice, .switch-opt {
+  position: relative;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  border-radius: 999px;
+  padding: 8px 14px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.choice input, .switch-opt input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+}
+.choice:has(input:checked) { background: #1F8A70; color: #fff; border-color: #1F8A70; }
+.choice.senior:has(input:checked) { background: #0E4D6C; color: #F4EFE4; border-color: var(--gold); }
+.switch-opt:has(input:checked) { background: #0E4D6C; color: #F4EFE4; border-color: var(--gold); }
+.choice.is-on { background: #1F8A70; color: #fff; border-color: #1F8A70; }
+.choice.senior.is-on { background: #0E4D6C; color: #F4EFE4; border-color: var(--gold); }
+.switch-opt.is-on { background: #0E4D6C; color: #F4EFE4; border-color: var(--gold); }
+textarea, input[type="text"], input[type="search"], select {
+  width: 100%;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+textarea { min-height: 96px; resize: vertical; line-height: 1.6; }
+input[readonly] { color: var(--ink-soft); }
+.field-note { color: var(--ink-soft); font-size: 12px; line-height: 1.6; margin: 6px 0 0; }
+.hint { min-height: 1.4em; color: var(--ink-soft); font-size: 13px; margin: 8px 0 0; }
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: rgba(198, 161, 91, 0.18);
+  color: var(--primary);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+html.theme-dark .mode-pill { color: var(--gold); }
+
+.guide-box {
+  margin-top: 16px;
+  border-radius: 16px;
+  background-image: linear-gradient(transparent 31px, rgba(14, 77, 108, 0.06) 32px);
+  background-size: 100% 32px;
+  background-color: var(--bg-elev);
+  border: 1px solid var(--line);
+  padding: 12px 14px 8px;
+}
+.guide-box h2 { font-size: 20px; margin: 0 0 8px; }
+.wait-line { display: flex; gap: 10px; align-items: flex-start; color: var(--ink-soft); line-height: 1.7; }
+.wait-line i { color: var(--gold); margin-top: 4px; }
+
+.filter-bar { margin-bottom: 12px; }
+.filter-bar input[type="search"] { margin-bottom: 8px; }
+.filter-row select { width: auto; min-width: 140px; flex: 1; }
+.chip {
+  border: 1px solid var(--gold);
+  background: rgba(198, 161, 91, 0.15);
+  color: inherit;
+  border-radius: 999px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+}
+.result-count { color: var(--ink-soft); font-size: 13px; margin: 0 0 8px; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.overlay.viewer { z-index: 1800; }
+.overlay.confirm { z-index: 2200; }
+.dialog {
+  width: min(920px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: var(--bg-elev);
+  color: var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  padding: 16px 16px 20px;
+}
+.confirm .dialog { width: min(440px, 100%); max-height: calc(100vh - 48px); }
+.viewer .dialog {
+  width: min(1040px, 100%);
+  height: min(760px, calc(100vh - 48px));
+  max-height: calc(100vh - 48px);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.viewer iframe { flex: 1; width: 100%; border: 0; background: #fff; border-radius: 12px; }
+.dialog-head, .detail-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  color: var(--ink);
+}
+.detail-map {
+  margin: 12px 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(14, 77, 108, 0.05);
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+}
+.detail-map img, .detail-map iframe { width: 100%; max-height: 460px; object-fit: contain; border: 0; background: #e7eeeb; }
+.kv { margin: 10px 0; }
+.kv .k { font-size: 12px; color: var(--ink-soft); }
+.kv .v { white-space: pre-wrap; line-height: 1.65; word-break: break-word; }
+.detail-actions { margin-top: 12px; }
+
+.markdown { line-height: 1.75; word-break: break-word; }
+.markdown > *:first-child { margin-top: 0; }
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+  font-family: var(--serif);
+  line-height: 1.35;
+  margin: 1em 0 .4em;
+  color: var(--primary);
+}
+html.theme-dark .markdown h1, html.theme-dark .markdown h2, html.theme-dark .markdown h3,
+html.theme-dark .markdown h4, html.theme-dark .markdown h5, html.theme-dark .markdown h6 { color: var(--gold); }
+.markdown p { margin: .5em 0; }
+.markdown a { color: var(--river); }
+.markdown ul, .markdown ol { padding-left: 1.3em; margin: .4em 0; }
+.markdown li { margin: .2em 0; }
+.markdown blockquote {
+  margin: .6em 0;
+  padding: .2em .8em;
+  border-left: 3px solid var(--gold);
+  background: var(--quote);
+}
+.markdown code {
+  font-family: "Cascadia Code", Consolas, monospace;
+  background: var(--code-bg);
+  padding: .1em .35em;
+  border-radius: 6px;
+  font-size: .92em;
+}
+.markdown pre {
+  background: #0E4D6C;
+  color: #F4EFE4;
+  padding: 12px;
+  border-radius: 12px;
+  overflow: auto;
+  max-width: 100%;
+}
+.markdown pre code { background: transparent; color: inherit; padding: 0; }
+.markdown img { max-width: 100%; border-radius: 10px; }
+.markdown .md-image { display: inline-block; }
+.table-scroll { overflow-x: auto; max-width: 100%; margin: .6em 0; }
+.markdown table { border-collapse: collapse; min-width: 360px; }
+.markdown th, .markdown td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.markdown th { background: rgba(14, 77, 108, 0.08); }
+.markdown hr { border: 0; border-top: 1px dashed var(--gold); margin: 1em 0; }
+.markdown input[type="checkbox"] { width: auto; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 2600;
+  background: #0E4D6C;
+  color: #F4EFE4;
+  padding: 12px 16px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  max-width: min(520px, calc(100% - 32px));
+  text-align: center;
+}
+.page-end-space { height: 56px; }
+.form-keyboard-gap, .popup-end-space { height: 8px; }
+
+@media (hover: hover) {
+  .stat-card:hover, .record-card:hover, .tip-card:hover, .panel:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+  }
+  .stat-card, .record-card, .tip-card, .panel { transition: transform .16s ease, border-color .16s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; }
+}
+
+@media (max-width: 900px) {
+  .desk { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero { grid-template-columns: 1fr; }
+  .hero-mark { display: none; }
+  .page-head h1, .hero h1 { font-size: 28px; }
+}
+@media (max-width: 760px) {
+  .tip-grid { grid-template-columns: 1fr; }
+  .record-card { grid-template-columns: 1fr; }
+  .thumb { min-height: 180px; max-height: 220px; }
+  .page-end-space { height: calc(150px + var(--kb-offset)); }
+  .form-keyboard-gap { height: calc(180px + var(--kb-offset)); }
+  .popup-end-space { height: calc(180px + var(--kb-offset)); }
+  .overlay.edge-to-edge { padding: 0; align-items: stretch; }
+  .overlay.edge-to-edge .dialog {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .toast { bottom: calc(88px + var(--kb-offset)); }
+}
+@media (max-width: 520px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .filter-row select { min-width: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<header class="top-nav" id="topNav">
+  <div id="navBar" style="position: relative; z-index: 1001;">
+    <div class="nav-row" id="navRow">
+      <button type="button" class="brand" id="btnLogo">
+        <i class="fa-solid fa-compass" aria-hidden="true"></i>
+        <span data-i18n="appName">地理读图教练</span>
+      </button>
+      <div class="nav-tabs" id="navTabs" role="tablist">
+        <button type="button" class="nav-tab is-active" id="navTabHome" data-page="home" data-i18n="tabHome">探险起点</button>
+        <button type="button" class="nav-tab" id="navTabWorkshop" data-page="workshop" data-i18n="tabWorkshop">读图工坊</button>
+        <button type="button" class="nav-tab" id="navTabJournal" data-page="journal" data-i18n="tabJournal">练习手账</button>
+      </div>
+      <button type="button" class="lang-btn" id="btnLang">EN</button>
+      <button type="button" class="burger" id="btnBurger" hidden aria-expanded="false" aria-controls="mobileMenu" data-i18n-aria="menuLabel">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <button type="button" class="menu-btn" id="menuTabHome" data-page="home" data-i18n="tabHome">探险起点</button>
+      <button type="button" class="menu-btn" id="menuTabWorkshop" data-page="workshop" data-i18n="tabWorkshop">读图工坊</button>
+      <button type="button" class="menu-btn" id="menuTabJournal" data-page="journal" data-i18n="tabJournal">练习手账</button>
+      <div class="menu-lang">
+        <button type="button" id="menuLangZh">中文</button>
+        <button type="button" id="menuLangEn">English</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="appMain">
+  <section class="page" id="pageHome">
+    <div class="hero">
+      <div>
+        <h1 data-i18n="appName">地理读图教练</h1>
+        <p class="lede" data-i18n="heroDesc">拍下或上传地图，写下题目和你自己的判断，教练按图给提示，不替你提前公布答案。</p>
+        <p style="margin-top:16px;">
+          <button type="button" class="pin" id="btnStart"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span data-i18n="startBtn">开始读图</span></button>
+        </p>
+      </div>
+      <div class="hero-mark" aria-hidden="true"><i class="fa-solid fa-compass"></i></div>
+    </div>
+    <div class="stat-grid">
+      <button type="button" class="stat-card" id="statTotal">
+        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+        <span class="stat-num" id="statTotalNum">—</span>
+        <span class="stat-label" data-i18n="statTotal">总练习数</span>
+      </button>
+      <button type="button" class="stat-card" id="statJunior">
+        <i class="fa-solid fa-school" aria-hidden="true"></i>
+        <span class="stat-num" id="statJuniorNum">—</span>
+        <span class="stat-label" data-i18n="statJunior">初中练习数</span>
+      </button>
+      <button type="button" class="stat-card" id="statSenior">
+        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+        <span class="stat-num" id="statSeniorNum">—</span>
+        <span class="stat-label" data-i18n="statSenior">高中练习数</span>
+      </button>
+      <button type="button" class="stat-card" id="statAnswered">
+        <i class="fa-solid fa-pen-nib" aria-hidden="true"></i>
+        <span class="stat-num" id="statAnsweredNum">—</span>
+        <span class="stat-label" data-i18n="statAnswered">已写作出答数</span>
+      </button>
+    </div>
+    <h2 class="section-title" data-i18n="recentTitle">最近读图</h2>
+    <div id="recentList" class="record-list"></div>
+    <div id="recentEmpty" class="empty" hidden>
+      <div class="compass"><i class="fa-solid fa-compass" aria-hidden="true"></i></div>
+      <p data-i18n="emptyEncourage">先看图名，再看图例。地图会把线索交给你。</p>
+    </div>
+    <h2 class="section-title" data-i18n="tipsTitle">读图方法</h2>
+    <div class="tip-grid">
+      <article class="tip-card">
+        <div class="kicker">01</div>
+        <h3 data-i18n="tip1Title">先读图名</h3>
+        <p data-i18n="tip1Body">图名告诉你这张图的范围和主题。先确认它在讲哪里、讲什么，再往下看。</p>
+      </article>
+      <article class="tip-card">
+        <div class="kicker">02</div>
+        <h3 data-i18n="tip2Title">再定方向</h3>
+        <p data-i18n="tip2Body">找到指向标，或用经纬方向确认上下左右分别对应哪里。</p>
+      </article>
+      <article class="tip-card">
+        <div class="kicker">03</div>
+        <h3 data-i18n="tip3Title">最后对图例和数值</h3>
+        <p data-i18n="tip3Body">用图例解释符号和颜色，再读比例尺、等值线和标注数字。</p>
+      </article>
+    </div>
+    <div class="page-end-space"></div>
+  </section>
+
+  <section class="page" id="pageWorkshop" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="tabWorkshop">读图工坊</h1>
+        <p class="lede" data-i18n="workshopDesc">先自己看图、写判断，再请教练顺着图里的证据提示你。</p>
+      </div>
+      <button type="button" class="pin-ghost" id="btnToJournal"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="tabJournal">练习手账</span></button>
+    </div>
+    <div class="desk">
+      <div class="panel" id="mapPanel">
+        <h2 data-i18n="lightboxTitle">地图灯箱</h2>
+        <div class="map-stage" id="mapStage">
+          <div class="map-empty" id="mapEmpty">
+            <i class="fa-solid fa-map" aria-hidden="true"></i>
+            <p id="mapEmptyText">把课本或试卷上的地图放进来</p>
+          </div>
+          <img id="mapPreview" alt="" hidden>
+          <iframe id="mapHtmlFrame" title="map" hidden></iframe>
+        </div>
+        <p class="map-name" id="mapNameLine" hidden></p>
+        <div class="map-actions">
+          <button type="button" class="pin" id="btnCapture"><i class="fa-solid fa-camera" aria-hidden="true"></i><span data-i18n="btnCapture">拍摄地图</span></button>
+          <button type="button" class="pin" id="btnAlbum"><i class="fa-solid fa-images" aria-hidden="true"></i><span data-i18n="btnAlbum">相册选图</span></button>
+          <button type="button" class="pin" id="btnPickFile"><i class="fa-solid fa-folder-open" aria-hidden="true"></i><span data-i18n="btnPickFile">选择文件</span></button>
+          <button type="button" class="pin-ghost" id="btnClearMap"><i class="fa-solid fa-eraser" aria-hidden="true"></i><span data-i18n="btnClearMap">清除地图</span></button>
+          <button type="button" class="pin-ghost" id="btnOpenMap" hidden><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i><span data-i18n="btnOpen">在浏览器打开</span></button>
+        </div>
+        <div class="check-card" id="checkCard">
+          <h3 data-i18n="checkTitle">提交前自检</h3>
+          <p class="field-note" data-i18n="checkNote">这些勾选只留给你自己确认，不会写入练习记录。</p>
+          <label class="check-item"><input type="checkbox" id="formGeoRead_check_title" name="check_title"><span data-i18n="check1">我看过图名</span></label>
+          <label class="check-item"><input type="checkbox" id="formGeoRead_check_dir" name="check_dir"><span data-i18n="check2">我确认了方向</span></label>
+          <label class="check-item"><input type="checkbox" id="formGeoRead_check_legend" name="check_legend"><span data-i18n="check3">我查过图例和比例尺</span></label>
+          <label class="check-item"><input type="checkbox" id="formGeoRead_check_value" name="check_value"><span data-i18n="check4">我圈出了关键数值</span></label>
+        </div>
+      </div>
+      <div class="panel" id="formPanel">
+        <div class="mode-pill" id="workshopMode"></div>
+        <h2 data-i18n="formTitle">地理读图</h2>
+        <form id="formGeoRead" autocomplete="off">
+          <div class="field">
+            <span class="lbl" id="labelStage"><span data-i18n="fieldStage">学段</span><span class="req">*</span></span>
+            <div class="choice-row" role="radiogroup" aria-labelledby="labelStage">
+              <label class="choice" id="labelStageJunior"><input type="radio" name="学段" id="formGeoRead_xueduan_junior" value="初中"><span data-i18n="stageJunior">初中</span></label>
+              <label class="choice senior" id="labelStageSenior"><input type="radio" name="学段" id="formGeoRead_xueduan_senior" value="高中"><span data-i18n="stageSenior">高中</span></label>
+            </div>
+          </div>
+          <div class="field" id="electiveWrap" hidden>
+            <span class="lbl" id="labelElective"><span data-i18n="fieldElective">是否选考地理</span><span class="req">*</span></span>
+            <div class="switch-set" role="radiogroup" id="formGeoRead_elective" aria-labelledby="labelElective">
+              <label class="switch-opt" id="labelElectiveYes"><input type="radio" name="是否选考地理" id="formGeoRead_elective_yes" value="是"><span data-i18n="yes">是</span></label>
+              <label class="switch-opt" id="labelElectiveNo"><input type="radio" name="是否选考地理" id="formGeoRead_elective_no" value="否"><span data-i18n="no">否</span></label>
+            </div>
+          </div>
+          <p class="field-note" id="electiveJuniorNote" hidden data-i18n="juniorElectiveNote">初中不区分选考，提交时记为「否」。</p>
+          <div class="field">
+            <label class="lbl" for="formGeoRead_question"><span data-i18n="fieldQuestion">题目与问题</span><span class="req">*</span></label>
+            <textarea id="formGeoRead_question" name="题目与问题" data-i18n-placeholder="questionPh" placeholder="把题目原文和要求写在这里"></textarea>
+          </div>
+          <div class="field">
+            <label class="lbl" for="formGeoRead_mapfile"><span data-i18n="fieldMap">地图文件</span><span class="req">*</span></label>
+            <input type="text" id="formGeoRead_mapfile" name="地图文件" readonly>
+            <p class="field-note" data-i18n="mapNote">文件名来自拍摄、相册或选择文件，不用手输。</p>
+          </div>
+          <div class="field">
+            <label class="lbl" for="formGeoRead_answer" data-i18n="fieldAnswer">我的作答</label>
+            <textarea id="formGeoRead_answer" name="我的作答" data-i18n-placeholder="answerPh" placeholder="先写下你自己的判断"></textarea>
+            <p class="field-note" data-i18n="answerNote">建议先写下你的判断；留空时教练只给读图步骤，不直接给原题答案。</p>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="pin" id="btnAskCoach"><i class="fa-solid fa-compass" aria-hidden="true"></i><span data-i18n="btnAsk">请教练读图</span></button>
+            <button type="button" class="pin" id="btnSave" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="btnSave">保存修改</span></button>
+            <button type="button" class="pin-gold" id="btnReask" hidden><i class="fa-solid fa-rotate" aria-hidden="true"></i><span data-i18n="btnReask">重新请教练读图</span></button>
+            <button type="button" class="pin-ghost" id="btnReset"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span data-i18n="btnReset">清空重来</span></button>
+            <button type="button" class="pin-ghost" id="btnRefreshGuide" disabled><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i><span data-i18n="btnRefresh">刷新指导</span></button>
+          </div>
+          <p class="hint" id="submitHint"></p>
+          <div class="form-keyboard-gap"></div>
+        </form>
+        <section class="guide-box" id="guideBox" aria-live="polite">
+          <h2 data-i18n="guideTitle">教练指导</h2>
+          <div id="guideContent"></div>
+        </section>
+      </div>
+    </div>
+    <div class="page-end-space"></div>
+  </section>
+
+  <section class="page" id="pageJournal" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="tabJournal">练习手账</h1>
+        <p class="lede" data-i18n="journalDesc">每一次读图都留在这里，可以回看指导、修改作答或删除。</p>
+      </div>
+      <button type="button" class="pin" id="btnNewReading"><i class="fa-solid fa-plus" aria-hidden="true"></i><span data-i18n="btnNew">新的读图</span></button>
+    </div>
+    <div class="filter-bar">
+      <input type="search" id="journalSearch" name="search" data-i18n-placeholder="searchPh" placeholder="搜索题目或作答">
+      <button type="button" class="chip" id="chipAnswered" hidden><span data-i18n="answeredOnly">仅看已写作出答</span> <i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      <div class="filter-row">
+        <select id="filterStage" name="filterStage" aria-label="学段">
+          <option value="all" data-i18n="filterAll">全部</option>
+          <option value="初中">初中</option>
+          <option value="高中">高中</option>
+        </select>
+        <select id="filterElective" name="filterElective" aria-label="是否选考地理">
+          <option value="all" data-i18n="filterAll">全部</option>
+          <option value="是">是</option>
+          <option value="否">否</option>
+        </select>
+        <select id="filterGuide" name="filterGuide" aria-label="指导状态">
+          <option value="all" data-i18n="filterAll">全部</option>
+          <option value="ready" data-i18n="guideReady">已生成</option>
+          <option value="pending" data-i18n="guidePending">未生成</option>
+        </select>
+      </div>
+    </div>
+    <p class="result-count" id="journalCount"></p>
+    <div id="journalList" class="record-list"></div>
+    <div id="journalEmpty" class="empty" hidden>
+      <div class="compass"><i class="fa-solid fa-compass" aria-hidden="true"></i></div>
+      <p id="journalEmptyText" data-i18n="emptyEncourage">先看图名，再看图例。地图会把线索交给你。</p>
+      <p style="margin-top:12px;"><button type="button" class="pin-ghost" id="btnClearFilters" hidden><span data-i18n="clearFilters">清除筛选</span></button></p>
+    </div>
+    <div class="page-end-space"></div>
+  </section>
+</main>
+
+<div class="overlay edge-to-edge" id="detailOverlay" hidden>
+  <div class="dialog" id="detailPanel" role="dialog" aria-modal="true" aria-labelledby="detailHeading">
+    <div class="dialog-head">
+      <h2 id="detailHeading" data-i18n="detailTitle">练习详情</h2>
+      <button type="button" class="icon-btn" id="btnDetailClose" data-i18n-aria="close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="detail-nav">
+      <span class="meta-soft" id="detailPos"></span>
+      <div class="map-actions">
+        <button type="button" class="pin-ghost" id="btnDetailPrev"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i><span data-i18n="prev">上一张</span></button>
+        <button type="button" class="pin-ghost" id="btnDetailNext"><span data-i18n="next">下一张</span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="detail-map" id="detailMap"></div>
+    <div id="detailFields"></div>
+    <h3 class="serif" data-i18n="guideTitle">教练指导</h3>
+    <div id="detailGuide" class="markdown"></div>
+    <div class="detail-actions">
+      <button type="button" class="pin-ghost" id="btnDetailOpen"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i><span data-i18n="openMap">在浏览器打开地图</span></button>
+      <button type="button" class="pin-ghost" id="btnDetailDownload"><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="downloadMap">下载地图</span></button>
+      <button type="button" class="pin" id="btnDetailEdit"><i class="fa-solid fa-pen" aria-hidden="true"></i><span data-i18n="editThis">修改这条</span></button>
+      <button type="button" class="pin-danger" id="btnDetailDelete"><i class="fa-solid fa-trash" aria-hidden="true"></i><span data-i18n="deleteThis">删除这条</span></button>
+      <button type="button" class="pin-ghost" id="btnDetailRefresh"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i><span data-i18n="btnRefresh">刷新指导</span></button>
+    </div>
+    <div class="popup-end-space"></div>
+  </div>
+</div>
+
+<div class="overlay edge-to-edge viewer" id="htmlOverlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true">
+    <div class="dialog-head">
+      <strong id="htmlViewerTitle"></strong>
+      <button type="button" class="icon-btn" id="btnHtmlClose" data-i18n-aria="close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <iframe id="htmlFrame" title="HTML"></iframe>
+  </div>
+</div>
+
+<div class="overlay confirm" id="confirmOverlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmMessage">
+    <p id="confirmMessage" style="line-height:1.7;"></p>
+    <div class="form-actions" style="margin-top:16px;">
+      <button type="button" class="pin" id="btnConfirmOk" data-i18n="confirmOk">继续</button>
+      <button type="button" class="pin-ghost" id="btnConfirmCancel" data-i18n="confirmCancel">留下</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("1a4ffda26749af2e_地理读图教练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+
+const DATA_SOURCE = '地理读图/默认表格';
+const TABLE_NAME = '地理读图';
+const LIST_FIELDS = '学段,是否选考地理,题目与问题,地图文件,我的作答';
+const FIELD_STAGE = '学段';
+const FIELD_ELECTIVE = '是否选考地理';
+const FIELD_QUESTION = '题目与问题';
+const FIELD_MAP = '地图文件';
+const FIELD_ANSWER = '我的作答';
+const FIELD_GUIDE = '读图指导';
+const HOST = 'https://www.ithinkair.com:3031';
+
+const I18N = {
+  zh: {
+    appName: '地理读图教练',
+    tabHome: '探险起点',
+    tabWorkshop: '读图工坊',
+    tabJournal: '练习手账',
+    heroDesc: '拍下或上传地图，写下题目和你自己的判断，教练按图给提示，不替你提前公布答案。',
+    startBtn: '开始读图',
+    statTotal: '总练习数',
+    statJunior: '初中练习数',
+    statSenior: '高中练习数',
+    statAnswered: '已写作出答数',
+    recentTitle: '最近读图',
+    tipsTitle: '读图方法',
+    tip1Title: '先读图名',
+    tip1Body: '图名告诉你这张图的范围和主题。先确认它在讲哪里、讲什么，再往下看。',
+    tip2Title: '再定方向',
+    tip2Body: '找到指向标，或用经纬方向确认上下左右分别对应哪里。',
+    tip3Title: '最后对图例和数值',
+    tip3Body: '用图例解释符号和颜色，再读比例尺、等值线和标注数字。',
+    emptyEncourage: '先看图名，再看图例。地图会把线索交给你。',
+    workshopDesc: '先自己看图、写判断，再请教练顺着图里的证据提示你。',
+    lightboxTitle: '地图灯箱',
+    mapEmpty: '把课本或试卷上的地图放进来',
+    btnCapture: '拍摄地图',
+    btnAlbum: '相册选图',
+    btnPickFile: '选择文件',
+    btnClearMap: '清除地图',
+    btnOpen: '在浏览器打开',
+    checkTitle: '提交前自检',
+    checkNote: '这些勾选只留给你自己确认，不会写入练习记录。',
+    check1: '我看过图名',
+    check2: '我确认了方向',
+    check3: '我查过图例和比例尺',
+    check4: '我圈出了关键数值',
+    formTitle: '地理读图',
+    fieldStage: '学段',
+    fieldElective: '是否选考地理',
+    fieldQuestion: '题目与问题',
+    fieldMap: '地图文件',
+    fieldAnswer: '我的作答',
+    stageJunior: '初中',
+    stageSenior: '高中',
+    yes: '是',
+    no: '否',
+    juniorElectiveNote: '初中不区分选考，提交时记为「否」。',
+    questionPh: '把题目原文和要求写在这里',
+    mapNote: '文件名来自拍摄、相册或选择文件，不用手输。',
+    answerPh: '先写下你自己的判断',
+    answerNote: '建议先写下你的判断；留空时教练只给读图步骤，不直接给原题答案。',
+    btnAsk: '请教练读图',
+    btnSave: '保存修改',
+    btnReask: '重新请教练读图',
+    btnReset: '清空重来',
+    btnRefresh: '刷新指导',
+    guideTitle: '教练指导',
+    modeNew: '新建练习',
+    modeEdit: '正在修改第 {n} 条',
+    hintNeed: '请选择学段、写下题目，并放入地图。',
+    hintElective: '高中请选择是否选考地理。',
+    hintPolling: '教练正在看图，请先不要再次提交。',
+    hintReady: '可以请教练读图了。',
+    hintSave: '可以保存这五栏的修改。',
+    waitText: '教练正在看你的地图。请先自己找出图名、方向、图例和关键数值。',
+    timeoutText: '这次等待超时了。请稍后到练习手账刷新查看。',
+    pendingText: '教练指导还没有写好。可以先复核图名、方向、图例和关键数值，再点刷新指导。',
+    guideEmpty: '提交之后，教练指导会显示在这里。',
+    saveNote: '修改不会自动重写教练指导。',
+    journalDesc: '每一次读图都留在这里，可以回看指导、修改作答或删除。',
+    btnNew: '新的读图',
+    searchPh: '搜索题目或作答',
+    filterAll: '全部',
+    filterStage: '学段',
+    filterElective: '是否选考地理',
+    filterGuide: '指导状态',
+    guideReady: '已生成',
+    guidePending: '未生成',
+    badgeReady: '指导已生成',
+    badgeWait: '生成中',
+    noAnswer: '还没写作出答',
+    electiveYes: '选考地理：是',
+    electiveNo: '选考地理：否',
+    viewGuide: '查看指导',
+    edit: '修改',
+    delete: '删除',
+    answeredOnly: '仅看已写作出答',
+    clearFilters: '清除筛选',
+    noMatch: '没有符合条件的练习。',
+    shownCount: '显示 {n} 条',
+    loading: '正在读取练习记录…',
+    loadFailed: '读取失败，请稍后再试。',
+    submitFailed: '提交失败，请稍后再试。',
+    saveFailed: '保存失败，请稍后再试。',
+    deleteFailed: '删除失败，请稍后再试。',
+    actionFailed: '操作没有完成，请稍后再试。',
+    deleteAsk: '删除这条练习？删除后不能恢复。',
+    discardAsk: '读图工坊还有未保存的修改。继续会放下这些修改。',
+    confirmOk: '继续',
+    confirmCancel: '留下',
+    detailTitle: '练习详情',
+    close: '关闭',
+    prev: '上一张',
+    next: '下一张',
+    openMap: '在浏览器打开地图',
+    downloadMap: '下载地图',
+    editThis: '修改这条',
+    deleteThis: '删除这条',
+    pos: '第 {n} 条 / 共 {total} 条',
+    fileHtml: 'HTML 地图',
+    fileOther: '文件',
+    menuLabel: '打开页面菜单',
+    detailLoading: '正在读取这条练习…'
+  },
+  en: {
+    appName: 'Geography Map Coach',
+    tabHome: 'Expedition Start',
+    tabWorkshop: 'Map Workshop',
+    tabJournal: 'Practice Journal',
+    heroDesc: 'Photograph or upload a map, write the question and your own judgment. The coach prompts from the map and does not reveal the answer early.',
+    startBtn: 'Start reading',
+    statTotal: 'Total practices',
+    statJunior: 'Junior-high practices',
+    statSenior: 'Senior-high practices',
+    statAnswered: 'Answers written',
+    recentTitle: 'Recent maps',
+    tipsTitle: 'How to read a map',
+    tip1Title: 'Read the title first',
+    tip1Body: 'The title tells you the area and the theme. Confirm where and what the map is about before you go on.',
+    tip2Title: 'Then set the direction',
+    tip2Body: 'Find the compass arrow, or use latitude and longitude to see which way is which.',
+    tip3Title: 'Then the legend and the values',
+    tip3Body: 'Use the legend to explain symbols and colors, then read the scale, isolines, and printed numbers.',
+    emptyEncourage: 'Start with the map title, then the legend. The map will hand you the clues.',
+    workshopDesc: 'Look at the map and write your judgment first. Then ask the coach to prompt you from the evidence in the map.',
+    lightboxTitle: 'Map lightbox',
+    mapEmpty: 'Place the map from your textbook or paper here.',
+    btnCapture: 'Capture map',
+    btnAlbum: 'Choose from album',
+    btnPickFile: 'Choose file',
+    btnClearMap: 'Clear map',
+    btnOpen: 'Open in browser',
+    checkTitle: 'Check before you submit',
+    checkNote: 'These ticks are only for you. They are not saved in the record.',
+    check1: 'I have read the map title',
+    check2: 'I have confirmed the direction',
+    check3: 'I have checked the legend and the scale',
+    check4: 'I have marked the key values',
+    formTitle: 'Geography map reading',
+    fieldStage: 'Stage',
+    fieldElective: 'Geography elective',
+    fieldQuestion: 'Question',
+    fieldMap: 'Map file',
+    fieldAnswer: 'My answer',
+    stageJunior: 'Junior high',
+    stageSenior: 'Senior high',
+    yes: 'Yes',
+    no: 'No',
+    juniorElectiveNote: 'Junior high does not distinguish an elective. It is submitted as No.',
+    questionPh: 'Write the original question and what it asks here',
+    mapNote: 'The file name comes from capture, album, or choose file. Do not type it.',
+    answerPh: 'Write your own judgment first',
+    answerNote: 'Write your judgment first. If you leave this blank, the coach only gives map-reading steps and does not give the original answer.',
+    btnAsk: 'Ask the coach',
+    btnSave: 'Save changes',
+    btnReask: 'Ask the coach again',
+    btnReset: 'Start over',
+    btnRefresh: 'Refresh guidance',
+    guideTitle: 'Coach guidance',
+    modeNew: 'New practice',
+    modeEdit: 'Editing No. {n}',
+    hintNeed: 'Choose a stage, write the question, and add a map.',
+    hintElective: 'For senior high, choose whether geography is an elective.',
+    hintPolling: 'The coach is reading the map. Please do not submit again.',
+    hintReady: 'You can ask the coach to read the map.',
+    hintSave: 'You can save changes to these five fields.',
+    waitText: 'The coach is looking at your map. First find the title, direction, legend, and key values yourself.',
+    timeoutText: 'This wait timed out. Check the practice journal later and refresh the guidance.',
+    pendingText: 'Guidance is not ready yet. Check the title, direction, legend, and key values, then refresh.',
+    guideEmpty: 'After you submit, coach guidance appears here.',
+    saveNote: 'Saving does not automatically rewrite the coach guidance.',
+    journalDesc: 'Every map-reading stays here. You can review guidance, edit your answer, or delete.',
+    btnNew: 'New map reading',
+    searchPh: 'Search questions and answers',
+    filterAll: 'All',
+    filterStage: 'Stage',
+    filterElective: 'Elective',
+    filterGuide: 'Guidance',
+    guideReady: 'Ready',
+    guidePending: 'Not ready',
+    badgeReady: 'Guidance ready',
+    badgeWait: 'Generating',
+    noAnswer: 'No answer written yet',
+    electiveYes: 'Elective: Yes',
+    electiveNo: 'Elective: No',
+    viewGuide: 'View guidance',
+    edit: 'Edit',
+    delete: 'Delete',
+    answeredOnly: 'Answers written only',
+    clearFilters: 'Clear filters',
+    noMatch: 'No practices match these filters.',
+    shownCount: 'Showing {n}',
+    loading: 'Loading practice records…',
+    loadFailed: 'Could not load data. Please try again.',
+    submitFailed: 'Submit failed. Please try again.',
+    saveFailed: 'Save failed. Please try again.',
+    deleteFailed: 'Delete failed. Please try again.',
+    actionFailed: 'The action did not finish. Please try again.',
+    deleteAsk: 'Delete this practice? This cannot be undone.',
+    discardAsk: 'The workshop has unsaved changes. Continuing will put those changes down.',
+    confirmOk: 'Continue',
+    confirmCancel: 'Stay',
+    detailTitle: 'Practice detail',
+    close: 'Close',
+    prev: 'Previous',
+    next: 'Next',
+    openMap: 'Open map in browser',
+    downloadMap: 'Download map',
+    editThis: 'Edit this',
+    deleteThis: 'Delete this',
+    pos: 'No. {n} / {total}',
+    fileHtml: 'HTML map',
+    fileOther: 'File',
+    menuLabel: 'Open page menu',
+    detailLoading: 'Loading this practice…'
+  }
+};
+
+const state = {
+  lang: 'zh',
+  page: 'home',
+  history: [],
+  records: [],
+  count: 0,
+  loaded: false,
+  loadError: '',
+  loading: false,
+  currentRow: 0,
+  formLoadedFor: 0,
+  signature: '',
+  detailRow: 0,
+  detailData: null,
+  detailCount: 0,
+  guideMode: 'empty',
+  guideText: '',
+  polling: false,
+  busy: false,
+  filling: false,
+  answeredOnly: false,
+  pollToken: 0
+};
+
+const layers = [];
+
+function t(key, vars) {
+  const pack = I18N[state.lang] || I18N.zh;
+  let text = pack[key] || I18N.zh[key] || key;
+  if (vars) {
+    Object.keys(vars).forEach((name) => {
+      text = text.split('{' + name + '}').join(String(vars[name]));
+    });
+  }
+  return text;
+}
+
+function escHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function fileKind(name) {
+  const lower = String(name || '').toLowerCase().split('?')[0];
+  if (/\.(png|jpe?g|gif|webp|bmp|svg|ico|heic|heif|avif)$/.test(lower)) return 'image';
+  if (/\.html?$/.test(lower)) return 'html';
+  return 'file';
+}
+
+function downloadUrl(name) {
+  return HOST + '/download/' + encodeURIComponent(String(name || ''));
+}
+
+function privateUrl(name) {
+  return HOST + '/private/' + encodeURIComponent(String(name || ''));
+}
+
+function toDownloadUrl(src) {
+  const raw = String(src || '').trim();
+  if (/^https?:\/\//i.test(raw) || /^data:image\//i.test(raw)) return raw;
+  const clean = raw.replace(/^<|>$/g, '');
+  const base = clean.split('/').pop() || clean;
+  return downloadUrl(base);
+}
+
+function safeHttp(url) {
+  const raw = String(url || '').trim().replace(/^<|>$/g, '');
+  if (/^https?:\/\//i.test(raw) || /^mailto:/i.test(raw)) return raw;
+  return '';
+}
+
+function summarize(text, limit) {
+  const flat = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!flat) return '';
+  if (flat.length <= limit) return flat;
+  return flat.slice(0, limit) + '…';
+}
+
+function displayStage(value) {
+  if (value === '初中') return t('stageJunior');
+  if (value === '高中') return t('stageSenior');
+  return value || '';
+}
+
+function displayYesNo(value) {
+  if (value === '是') return t('yes');
+  if (value === '否') return t('no');
+  return value || '';
+}
+
+function imageTag(alt, src, title) {
+  const href = toDownloadUrl(src);
+  const show = /^data:image\//i.test(href) || /^https?:\/\//i.test(href) ? href : '';
+  if (!show) return escHtml(alt || src || '');
+  const titleAttr = title ? ' title="' + escHtml(title) + '"' : '';
+  return '<a class="md-image" href="' + escHtml(href) + '" target="_blank" rel="noopener noreferrer"' + titleAttr + '><img src="' + escHtml(show) + '" alt="' + escHtml(alt || '') + '"></a>';
+}
+
+function linkTag(label, href, title) {
+  const safe = safeHttp(href);
+  const text = inlineFormat(label, {}, true);
+  if (!safe) return text;
+  const titleAttr = title ? ' title="' + escHtml(title) + '"' : '';
+  return '<a href="' + escHtml(safe) + '" target="_blank" rel="noopener noreferrer"' + titleAttr + '>' + text + '</a>';
+}
+
+function inlineFormat(input, refs, nested) {
+  let text = String(input == null ? '' : input);
+  const tokens = [];
+  const hold = (html) => {
+    const id = tokens.length;
+    tokens.push(html);
+    return '\u0000' + id + '\u0000';
+  };
+  text = text.replace(/\\([\\`*_{}\[\]()#+\-.!|>~])/g, (m, ch) => hold(escHtml(ch)));
+  text = text.replace(/(`+)([\s\S]*?)\1/g, (m, ticks, code) => hold('<code>' + escHtml(code) + '</code>'));
+  text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (m, alt, src, title) => hold(imageTag(alt, src, title)));
+  text = text.replace(/!\[([^\]]*)\]\[([^\]]*)\]/g, (m, alt, id) => {
+    const ref = refs[(id || alt).toLowerCase()];
+    return ref ? hold(imageTag(alt, ref.href, ref.title)) : m;
+  });
+  if (!nested) {
+    text = text.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, (m, label, href, title) => hold(linkTag(label, href, title)));
+    text = text.replace(/\[([^\]]+)\]\[([^\]]*)\]/g, (m, label, id) => {
+      const ref = refs[(id || label).toLowerCase()];
+      return ref ? hold(linkTag(label, ref.href, ref.title)) : m;
+    });
+    text = text.replace(/<((?:https?:\/\/|mailto:)[^>\s]+)>/g, (m, href) => hold(linkTag(href, href, '')));
+    text = text.replace(/(^|[\s(（])(https?:\/\/[A-Za-z0-9\-._~:/?#\[\]@!$&'*+,;=%]+)(?=$|[\s)）。，、；：！？])/g, (m, pre, url) => {
+      const trimmed = url.replace(/[.,);:!?]+$/g, '');
+      const tail = url.slice(trimmed.length);
+      return pre + hold(linkTag(trimmed, trimmed, '')) + tail;
+    });
+  }
+  text = text.replace(/[ \t]{2,}\n/g, () => hold('<br>\n'));
+  text = escHtml(text);
+  text = text.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+  text = text.replace(/___([^_]+)___/g, '<strong><em>$1</em></strong>');
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  text = text.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  text = text.replace(/(^|[\s(])_([^_\n]+)_(?=$|[\s).,;:!?])/g, '$1<em>$2</em>');
+  text = text.replace(/~~([^~\n]+)~~/g, '<del>$1</del>');
+  text = text.replace(/\u0000(\d+)\u0000/g, (m, id) => tokens[Number(id)] || '');
+  return text;
+}
+
+function renderMarkdown(src) {
+  const text = String(src == null ? '' : src).replace(/\r\n?/g, '\n');
+  if (!text.trim()) return '';
+  const lines = text.split('\n');
+  const refs = {};
+  const kept = [];
+  for (let i = 0; i < lines.length; i++) {
+    const def = lines[i].match(/^ {0,3}\[([^\]]+)\]:[ \t]+(\S+?)(?:[ \t]+"([^"]*)")?[ \t]*$/);
+    if (def && lines[i].indexOf('](') === -1) {
+      refs[def[1].toLowerCase()] = { href: def[2].replace(/^<|>$/g, ''), title: def[3] || '' };
+    } else {
+      kept.push(lines[i]);
+    }
+  }
+  return '<div class="markdown">' + parseBlocks(kept, 0, kept.length, refs).html + '</div>';
+}
+
+function parseBlocks(lines, start, end, refs) {
+  let html = '';
+  let i = start;
+  while (i < end) {
+    const line = lines[i];
+    if (!line.trim()) { i += 1; continue; }
+    const fence = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+    if (fence) {
+      const mark = fence[1].charAt(0);
+      const lang = fence[2].trim().split(/\s+/)[0] || '';
+      const buf = [];
+      i += 1;
+      while (i < end && !new RegExp('^ {0,3}' + mark + '{' + fence[1].length + ',}\\s*$').test(lines[i])) {
+        buf.push(lines[i]);
+        i += 1;
+      }
+      if (i < end) i += 1;
+      const klass = lang ? ' class="language-' + escHtml(lang) + '"' : '';
+      html += '<pre><code' + klass + '>' + escHtml(buf.join('\n')) + '</code></pre>';
+      continue;
+    }
+    if (/^ {0,3}(\*\s*){3,}$/.test(line) || /^ {0,3}(-\s*){3,}$/.test(line) || /^ {0,3}(_\s*){3,}$/.test(line)) {
+      html += '<hr>';
+      i += 1;
+      continue;
+    }
+    const heading = line.match(/^ {0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$/);
+    if (heading) {
+      const level = heading[1].length;
+      html += '<h' + level + '>' + inlineFormat(heading[2], refs) + '</h' + level + '>';
+      i += 1;
+      continue;
+    }
+    if (/^ {0,3}>/.test(line)) {
+      const buf = [];
+      while (i < end && (/^ {0,3}>/.test(lines[i]) || (lines[i].trim() && buf.length && !/^ {0,3}(#{1,6}\s|```|~~~)/.test(lines[i]) && !listMatch(lines[i])))) {
+        if (!/^ {0,3}>/.test(lines[i]) && !lines[i].trim()) break;
+        buf.push(lines[i].replace(/^ {0,3}> ?/, ''));
+        i += 1;
+        if (i < end && !lines[i].trim()) break;
+      }
+      html += '<blockquote>' + parseBlocks(buf, 0, buf.length, refs).html + '</blockquote>';
+      continue;
+    }
+    if (listMatch(lines[i])) {
+      const parsed = parseList(lines, i, end, indentOf(lines[i]), refs);
+      html += parsed.html;
+      i = parsed.next;
+      continue;
+    }
+    if (i + 1 < end && isTableSep(lines[i + 1]) && lines[i].indexOf('|') !== -1) {
+      const header = splitRow(lines[i]);
+      const alignCells = splitRow(lines[i + 1]);
+      const align = [];
+      for (let a = 0; a < alignCells.length; a++) align.push(cellAlign(alignCells[a]));
+      i += 2;
+      const body = [];
+      while (i < end && lines[i].trim() && lines[i].indexOf('|') !== -1 && !/^ {0,3}```/.test(lines[i])) {
+        body.push(splitRow(lines[i]));
+        i += 1;
+      }
+      html += renderTable(header, align, body, refs);
+      continue;
+    }
+    if (/^( {4}|\t)/.test(line)) {
+      const buf = [];
+      while (i < end && (/^( {4}|\t)/.test(lines[i]) || !lines[i].trim())) {
+        if (!lines[i].trim() && (i + 1 >= end || !/^( {4}|\t)/.test(lines[i + 1]))) break;
+        buf.push(lines[i].replace(/^( {4}|\t)/, ''));
+        i += 1;
+      }
+      html += '<pre><code>' + escHtml(buf.join('\n')) + '</code></pre>';
+      continue;
+    }
+    const buf = [line];
+    i += 1;
+    while (i < end && lines[i].trim() && !blockStart(lines, i)) {
+      buf.push(lines[i]);
+      i += 1;
+    }
+    if (i < end && /^=+$/.test(lines[i].trim()) && buf.length) {
+      html += '<h1>' + inlineFormat(buf.join(' '), refs) + '</h1>';
+      i += 1;
+      continue;
+    }
+    if (i < end && /^-+$/.test(lines[i].trim()) && buf.length === 1) {
+      html += '<h2>' + inlineFormat(buf[0], refs) + '</h2>';
+      i += 1;
+      continue;
+    }
+    const joined = buf.join('\n');
+    html += '<p>' + inlineFormat(joined, refs).replace(/<br>\n/g, '<br>').replace(/\n/g, ' ') + '</p>';
+  }
+  return { html: html, next: i };
+}
+
+function blockStart(lines, index) {
+  const line = lines[index];
+  if (/^ {0,3}(#{1,6})\s/.test(line)) return true;
+  if (/^ {0,3}>/.test(line)) return true;
+  if (/^ {0,3}(`{3,}|~{3,})/.test(line)) return true;
+  if (/^ {0,3}(\*\s*){3,}$/.test(line) || /^ {0,3}(-\s*){3,}$/.test(line) || /^ {0,3}(_\s*){3,}$/.test(line)) return true;
+  if (listMatch(line)) return true;
+  if (index + 1 < lines.length && isTableSep(lines[index + 1]) && line.indexOf('|') !== -1) return true;
+  return false;
+}
+
+function indentOf(line) {
+  const match = String(line).match(/^[ \t]*/);
+  return match ? match[0].replace(/\t/g, '    ').length : 0;
+}
+
+function listMatch(line) {
+  const match = String(line).match(/^([ \t]*)([*+-]|\d+[.)])[ \t]+(.*)$/);
+  if (!match) return null;
+  return {
+    indent: match[1].replace(/\t/g, '    ').length,
+    marker: match[2],
+    ordered: /\d/.test(match[2]),
+    text: match[3]
+  };
+}
+
+function parseList(lines, start, end, baseIndent, refs) {
+  const first = listMatch(lines[start]);
+  const ordered = first && first.ordered;
+  const items = [];
+  let i = start;
+  while (i < end) {
+    if (!lines[i].trim()) {
+      let j = i + 1;
+      const nxt = j < end ? listMatch(lines[j]) : null;
+      if (nxt && nxt.indent >= baseIndent) { i += 1; continue; }
+      break;
+    }
+    const mark = listMatch(lines[i]);
+    if (!mark || mark.indent < baseIndent) break;
+    if (mark.indent > baseIndent) {
+      if (!items.length) break;
+      const nested = parseList(lines, i, end, mark.indent, refs);
+      items[items.length - 1].nested += nested.html;
+      i = nested.next;
+      continue;
+    }
+    let text = mark.text;
+    i += 1;
+    const extra = [];
+    while (i < end && lines[i].trim() && !listMatch(lines[i]) && !/^ {0,3}#{1,6}\s/.test(lines[i]) && !/^ {0,3}(`{3,}|~{3,})/.test(lines[i])) {
+      if (indentOf(lines[i]) < baseIndent + 2 && blockStart(lines, i)) break;
+      extra.push(lines[i].trim());
+      i += 1;
+    }
+    if (extra.length) text += '\n' + extra.join('\n');
+    items.push({ text: text, nested: '' });
+  }
+  let html = ordered ? '<ol>' : '<ul>';
+  for (let n = 0; n < items.length; n++) {
+    const task = items[n].text.match(/^\[( |x|X)\][ \t]+([\s\S]*)$/);
+    if (task) {
+      const checked = task[1].toLowerCase() === 'x' ? ' checked' : '';
+      html += '<li><label><input type="checkbox" disabled' + checked + '> ' + inlineFormat(task[2], refs) + '</label>' + items[n].nested + '</li>';
+    } else {
+      html += '<li>' + inlineFormat(items[n].text, refs).replace(/\n/g, '<br>') + items[n].nested + '</li>';
+    }
+  }
+  html += ordered ? '</ol>' : '</ul>';
+  return { html: html, next: i };
+}
+
+function isTableSep(line) {
+  const raw = String(line || '').trim();
+  if (raw.indexOf('|') === -1 || raw.indexOf('-') === -1) return false;
+  const cells = splitRow(raw);
+  if (!cells.length) return false;
+  for (let i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i].replace(/\s/g, ''))) return false;
+  }
+  return true;
+}
+
+function splitRow(line) {
+  let raw = String(line || '').trim();
+  if (raw.charAt(0) === '|') raw = raw.slice(1);
+  if (raw.charAt(raw.length - 1) === '|') raw = raw.slice(0, -1);
+  const cells = [];
+  let cur = '';
+  for (let i = 0; i < raw.length; i++) {
+    if (raw.charAt(i) === '|' && raw.charAt(i - 1) !== '\\') {
+      cells.push(cur.trim());
+      cur = '';
+    } else {
+      cur += raw.charAt(i);
+    }
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+function cellAlign(cell) {
+  const token = String(cell || '').trim();
+  const left = token.charAt(0) === ':';
+  const right = token.charAt(token.length - 1) === ':';
+  if (left && right) return 'center';
+  if (right) return 'right';
+  return 'left';
+}
+
+function renderTable(header, align, body, refs) {
+  let html = '<div class="table-scroll"><table><thead><tr>';
+  for (let i = 0; i < header.length; i++) {
+    const al = align[i] || 'left';
+    html += '<th style="text-align:' + al + '">' + inlineFormat(header[i], refs) + '</th>';
+  }
+  html += '</tr></thead><tbody>';
+  for (let r = 0; r < body.length; r++) {
+    html += '<tr>';
+    for (let c = 0; c < header.length; c++) {
+      const al = align[c] || 'left';
+      html += '<td style="text-align:' + al + '">' + inlineFormat(body[r][c] || '', refs) + '</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function pushLayer(name, closeFn) {
+  const idx = layerIndex(name);
+  if (idx >= 0) layers.splice(idx, 1);
+  layers.push({ name: name, closeFn: closeFn });
+  document.body.classList.add('no-scroll');
+}
+
+function removeLayer(name) {
+  const idx = layerIndex(name);
+  if (idx >= 0) layers.splice(idx, 1);
+  document.body.classList.toggle('no-scroll', layers.length > 0);
+}
+
+function layerIndex(name) {
+  for (let i = 0; i < layers.length; i++) {
+    if (layers[i].name === name) return i;
+  }
+  return -1;
+}
+
+function airBack() {
+  if (layers.length) {
+    const top = layers.pop();
+    document.body.classList.toggle('no-scroll', layers.length > 0);
+    top.closeFn();
+    return 'false';
+  }
+  if (!document.getElementById('mobileMenu').hidden) {
+    closeMobileMenu(true);
+    return 'false';
+  }
+  if (state.history.length) {
+    const prev = state.history.pop();
+    showPage(prev.page, false);
+    window.scrollTo(0, prev.scrollY || 0);
+    return 'false';
+  }
+  return 'true';
+}
+
+function showToast(message) {
+  const node = document.getElementById('toast');
+  node.textContent = message;
+  node.hidden = false;
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => { node.hidden = true; }, 4200);
+}
+
+function openConfirm(message, okText, cancelText) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const overlay = document.getElementById('confirmOverlay');
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('btnConfirmOk').textContent = okText || t('confirmOk');
+    document.getElementById('btnConfirmCancel').textContent = cancelText || t('confirmCancel');
+    const finish = (value, fromBack) => {
+      if (settled) return;
+      settled = true;
+      overlay.hidden = true;
+      if (!fromBack) removeLayer('confirm');
+      resolve(value);
+    };
+    overlay.hidden = false;
+    pushLayer('confirm', () => finish(false, true));
+    document.getElementById('btnConfirmOk').onclick = () => finish(true, false);
+    document.getElementById('btnConfirmCancel').onclick = () => finish(false, false);
+  });
+}
+
+function resolveLanguage() {
+  let lang = 'zh';
+  try {
+    const list = navigator.languages;
+    if (list && list.length) {
+      let hasZh = false;
+      for (let i = 0; i < list.length; i++) {
+        const tag = String(list[i] || '').toLowerCase();
+        if (tag === 'zh' || tag.indexOf('zh-') === 0) hasZh = true;
+      }
+      lang = hasZh ? 'zh' : 'en';
+    } else {
+      lang = 'zh';
+    }
+  } catch (err) {
+    lang = 'zh';
+  }
+  try {
+    const query = new URLSearchParams(window.location.search).get('lang');
+    if (query === 'cn') lang = 'zh';
+    else if (query === 'en') lang = 'en';
+  } catch (err2) {}
+  try {
+    const saved = localStorage.getItem('iThinkAir_UiLanguage');
+    if (saved !== null && saved !== '') lang = saved === 'en' ? 'en' : 'zh';
+  } catch (err3) {}
+  return lang;
+}
+
+function applyLanguage(lang, persist) {
+  state.lang = lang === 'en' ? 'en' : 'zh';
+  if (persist) {
+    try { localStorage.setItem('iThinkAir_UiLanguage', state.lang === 'en' ? 'en' : 'cn'); } catch (err) {}
+  }
+  document.documentElement.lang = state.lang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('appName');
+  const nodes = document.querySelectorAll('[data-i18n]');
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+  for (let p = 0; p < placeholders.length; p++) placeholders[p].setAttribute('placeholder', t(placeholders[p].getAttribute('data-i18n-placeholder')));
+  const arias = document.querySelectorAll('[data-i18n-aria]');
+  for (let a = 0; a < arias.length; a++) arias[a].setAttribute('aria-label', t(arias[a].getAttribute('data-i18n-aria')));
+  labelFilters();
+  updateLangButtons();
+  paintGuide();
+  syncWorkshopMode();
+  setMapFile(document.getElementById('formGeoRead_mapfile').value || '');
+  renderHome();
+  renderJournal();
+  if (!document.getElementById('detailOverlay').hidden && state.detailData) paintDetail();
+  layoutNav();
+}
+
+function labelFilters() {
+  const stage = document.getElementById('filterStage');
+  const elective = document.getElementById('filterElective');
+  const guide = document.getElementById('filterGuide');
+  stage.options[0].textContent = t('filterAll');
+  stage.options[1].textContent = t('stageJunior');
+  stage.options[2].textContent = t('stageSenior');
+  elective.options[0].textContent = t('filterAll');
+  elective.options[1].textContent = t('yes');
+  elective.options[2].textContent = t('no');
+  guide.options[0].textContent = t('filterAll');
+  guide.options[1].textContent = t('guideReady');
+  guide.options[2].textContent = t('guidePending');
+  stage.setAttribute('aria-label', t('filterStage'));
+  elective.setAttribute('aria-label', t('filterElective'));
+  guide.setAttribute('aria-label', t('filterGuide'));
+}
+
+function updateLangButtons() {
+  document.getElementById('btnLang').textContent = state.lang === 'en' ? '中文' : 'EN';
+  document.getElementById('menuLangZh').classList.toggle('is-active', state.lang !== 'en');
+  document.getElementById('menuLangEn').classList.toggle('is-active', state.lang === 'en');
+}
+
+function setLanguage(lang) {
+  applyLanguage(lang, true);
+  closeMobileMenu(false);
+}
+
+async function applyThemeMode() {
+  const mode = await callAppBridge({ type: '模式' });
+  document.documentElement.classList.toggle('theme-dark', String(mode || '').trim() === '暗色');
+}
+
+function layoutNav() {
+  const row = document.getElementById('navRow');
+  const tabs = document.getElementById('navTabs');
+  const lang = document.getElementById('btnLang');
+  const burger = document.getElementById('btnBurger');
+  tabs.hidden = false;
+  lang.hidden = false;
+  burger.hidden = true;
+  closeMobileMenu(false);
+  const overflow = row.scrollWidth > row.clientWidth + 1;
+  if (overflow) {
+    tabs.hidden = true;
+    lang.hidden = true;
+    burger.hidden = false;
+  }
+  const bar = document.getElementById('topNav');
+  document.documentElement.style.setProperty('--nav-h', bar.getBoundingClientRect().height + 'px');
+}
+
+function closeMobileMenu(fromBack) {
+  const menu = document.getElementById('mobileMenu');
+  menu.hidden = true;
+  document.getElementById('btnBurger').setAttribute('aria-expanded', 'false');
+  if (!fromBack) removeLayer('menu');
+}
+
+function openMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.hidden = false;
+  document.getElementById('btnBurger').setAttribute('aria-expanded', 'true');
+  pushLayer('menu', () => closeMobileMenu(true));
+}
+
+function toggleMobileMenu() {
+  if (document.getElementById('mobileMenu').hidden) openMobileMenu();
+  else closeMobileMenu(false);
+}
+
+function showPage(page, record) {
+  if (record && state.page && state.page !== page) {
+    state.history.push({ page: state.page, scrollY: window.scrollY });
+  }
+  state.page = page;
+  const ids = { home: 'pageHome', workshop: 'pageWorkshop', journal: 'pageJournal' };
+  Object.keys(ids).forEach((name) => {
+    document.getElementById(ids[name]).hidden = name !== page;
+  });
+  updateNavActive();
+  closeMobileMenu(false);
+  if (record) window.scrollTo(0, 0);
+}
+
+function updateNavActive() {
+  const tabs = document.querySelectorAll('[data-page]');
+  for (let i = 0; i < tabs.length; i++) {
+    const on = tabs[i].getAttribute('data-page') === state.page;
+    tabs[i].classList.toggle('is-active', on);
+    if (tabs[i].classList.contains('nav-tab')) tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+  }
+}
+
+async function goPage(page) {
+  if (page === 'workshop') {
+    const ok = await ensureWorkshop();
+    if (!ok) return;
+  }
+  if (state.page === page) {
+    closeMobileMenu(false);
+    return;
+  }
+  showPage(page, true);
+}
+
+function closeHost() {
+  try { parent.closeFullHtml(false); } catch (err) {}
+}
+
+function setupKeyboardGuard() {
+  const bump = () => {
+    const viewport = window.visualViewport;
+    let overlap = 0;
+    if (viewport) overlap = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
+    document.documentElement.style.setProperty('--kb-offset', overlap + 'px');
+    const active = document.activeElement;
+    if (overlap > 0 && active && active.matches && active.matches('input, textarea, select')) {
+      active.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  };
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', bump);
+    window.visualViewport.addEventListener('scroll', bump);
+  }
+  document.addEventListener('focusin', (event) => {
+    const target = event.target;
+    if (target && target.matches && target.matches('input, textarea, select')) {
+      setTimeout(() => { target.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 320);
+    }
+  });
+  window.addEventListener('resize', () => { layoutNav(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => layoutNav());
+}
+
+async function bridge(request) {
+  const result = await callAppBridge(request);
+  return typeof result === 'string' ? result : (result == null ? '' : String(result));
+}
+
+function parseCount(text) {
+  const match = String(text == null ? '' : text).trim().match(/-?\d+/);
+  if (!match) return 0;
+  const number = parseInt(match[0], 10);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function isEmptyCols(cols) {
+  for (let i = 0; i < cols.length; i++) {
+    if (String(cols[i] || '').trim() !== '') return false;
+  }
+  return true;
+}
+
+async function fetchRecords() {
+  const countText = await bridge({ type: 'GetRecordCount', data: DATA_SOURCE });
+  let csv = await bridge({ type: 'GetTableCSV', data: DATA_SOURCE, payload: LIST_FIELDS });
+  if (csv && csv.charCodeAt(0) === 0xFEFF) csv = csv.slice(1);
+  let parsed = parseCSV(csv || '');
+  const count = parseCount(countText);
+  const exactZero = String(countText || '').trim() === '0';
+  if (exactZero && parsed.length === 1 && (isEmptyCols(parsed[0]) || (String(parsed[0][0] || '').trim() !== '初中' && String(parsed[0][0] || '').trim() !== '高中'))) {
+    parsed = [];
+  }
+  const records = [];
+  for (let i = 0; i < parsed.length; i++) {
+    const cols = parsed[i] || [];
+    records.push({
+      rowNo: i + 1,
+      stage: cols[0] || '',
+      elective: cols[1] || '',
+      question: cols[2] || '',
+      mapFile: cols[3] || '',
+      answer: cols[4] || '',
+      guide: '',
+      guideReady: false
+    });
+  }
+  let cursor = 0;
+  async function worker() {
+    while (cursor < records.length) {
+      const index = cursor;
+      cursor += 1;
+      const rec = records[index];
+      try {
+        const answer = await bridge({ type: 'GetCellValue', data: DATA_SOURCE, payload: FIELD_ANSWER + '/' + String(rec.rowNo) });
+        rec.answer = answer;
+      } catch (err) {}
+      try {
+        const guide = await bridge({ type: 'GetCellValue', data: DATA_SOURCE, payload: FIELD_GUIDE + '/' + String(rec.rowNo) });
+        rec.guide = guide;
+        rec.guideReady = String(guide || '').trim() !== '';
+      } catch (err2) {
+        rec.guideReady = false;
+      }
+    }
+  }
+  const workers = [];
+  const pool = Math.min(3, records.length);
+  for (let w = 0; w < pool; w++) workers.push(worker());
+  if (workers.length) await Promise.all(workers);
+  return { records: records, count: count };
+}
+
+let loadToken = 0;
+async function reloadData() {
+  const token = ++loadToken;
+  state.loading = true;
+  state.loadError = '';
+  renderHome();
+  renderJournal();
+  try {
+    const data = await fetchRecords();
+    if (token !== loadToken) return;
+    state.records = data.records;
+    state.count = data.count;
+    state.loaded = true;
+  } catch (err) {
+    if (token !== loadToken) return;
+    state.loadError = t('loadFailed');
+    showToast(t('loadFailed'));
+  } finally {
+    if (token === loadToken) {
+      state.loading = false;
+      renderHome();
+      renderJournal();
+    }
+  }
+}
+
+function readFilters() {
+  return {
+    q: document.getElementById('journalSearch').value || '',
+    stage: document.getElementById('filterStage').value,
+    elective: document.getElementById('filterElective').value,
+    guide: document.getElementById('filterGuide').value,
+    answeredOnly: state.answeredOnly
+  };
+}
+
+function rowMatches(rec, filters) {
+  if (filters.stage !== 'all' && String(rec.stage).trim() !== filters.stage) return false;
+  if (filters.elective !== 'all' && String(rec.elective).trim() !== filters.elective) return false;
+  if (filters.guide === 'ready' && !rec.guideReady) return false;
+  if (filters.guide === 'pending' && rec.guideReady) return false;
+  if (filters.answeredOnly && !String(rec.answer || '').trim()) return false;
+  const query = filters.q.trim().toLowerCase();
+  if (query) {
+    const hay = (String(rec.question || '') + '\n' + String(rec.answer || '')).toLowerCase();
+    if (hay.indexOf(query) === -1) return false;
+  }
+  return true;
+}
+
+function makeThumb(fileName) {
+  const box = document.createElement('div');
+  box.className = 'thumb';
+  fillThumb(box, fileName);
+  return box;
+}
+
+function fillThumb(box, fileName) {
+  box.textContent = '';
+  if (!fileName) {
+    box.appendChild(fallbackIcon('fa-compass', ''));
+    return;
+  }
+  const kind = fileKind(fileName);
+  if (kind === 'image') {
+    const img = document.createElement('img');
+    img.alt = '';
+    img.src = downloadUrl(fileName);
+    img.addEventListener('error', () => {
+      box.textContent = '';
+      box.appendChild(fallbackIcon('fa-file-image', fileName));
+    });
+    box.appendChild(img);
+    return;
+  }
+  if (kind === 'html') {
+    box.appendChild(fallbackIcon('fa-file-code', t('fileHtml')));
+    return;
+  }
+  box.appendChild(fallbackIcon('fa-file', fileName));
+}
+
+function fallbackIcon(icon, label) {
+  const wrap = document.createElement('div');
+  wrap.className = 'file-fallback';
+  const i = document.createElement('i');
+  i.className = 'fa-solid ' + icon;
+  wrap.appendChild(i);
+  if (label) {
+    const span = document.createElement('span');
+    span.textContent = label;
+    wrap.appendChild(span);
+  }
+  return wrap;
+}
+
+function stageBadge(stage) {
+  const badge = document.createElement('span');
+  badge.className = 'badge ' + (stage === '高中' ? 'badge-senior' : stage === '初中' ? 'badge-junior' : 'badge-plain');
+  badge.textContent = displayStage(String(stage || '').trim()) || '—';
+  return badge;
+}
+
+function guideBadge(ready) {
+  const badge = document.createElement('span');
+  badge.className = 'badge ' + (ready ? 'badge-ready' : 'badge-wait');
+  badge.textContent = ready ? t('badgeReady') : t('badgeWait');
+  return badge;
+}
+
+function buildCard(rec, withActions) {
+  const card = document.createElement('article');
+  card.className = 'record-card' + (withActions ? '' : ' is-clickable');
+  card.setAttribute('data-row', String(rec.rowNo));
+  card.appendChild(makeThumb(String(rec.mapFile || '').trim()));
+  const main = document.createElement('div');
+  main.className = 'record-main';
+  const hit = document.createElement('div');
+  hit.className = 'record-hit';
+  const top = document.createElement('div');
+  top.className = 'record-top';
+  top.appendChild(stageBadge(String(rec.stage || '').trim()));
+  const elective = document.createElement('span');
+  elective.className = 'meta-soft';
+  const electiveValue = String(rec.elective || '').trim();
+  elective.textContent = electiveValue === '是' ? t('electiveYes') : t('electiveNo');
+  top.appendChild(elective);
+  top.appendChild(guideBadge(rec.guideReady));
+  hit.appendChild(top);
+  const title = document.createElement('h3');
+  title.className = 'record-title clamp-2';
+  title.textContent = String(rec.question || '').trim() || '—';
+  hit.appendChild(title);
+  const summary = document.createElement('p');
+  const answerText = summarize(rec.answer, 80);
+  summary.className = 'summary' + (answerText ? '' : ' is-empty');
+  summary.textContent = answerText || t('noAnswer');
+  hit.appendChild(summary);
+  const open = () => { openDetail(rec.rowNo); };
+  main.appendChild(hit);
+  if (withActions) {
+    hit.addEventListener('click', open);
+    card.querySelector('.thumb').addEventListener('click', open);
+  } else {
+    card.classList.add('is-clickable');
+    card.tabIndex = 0;
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        open();
+      }
+    });
+  }
+  if (withActions) {
+    const actions = document.createElement('div');
+    actions.className = 'record-actions';
+    actions.appendChild(smallButton('pin-ghost', 'fa-book-open', t('viewGuide'), () => openDetail(rec.rowNo)));
+    actions.appendChild(smallButton('pin', 'fa-pen', t('edit'), () => editRow(rec.rowNo)));
+    actions.appendChild(smallButton('pin-danger', 'fa-trash', t('delete'), () => deleteRow(rec.rowNo)));
+    main.appendChild(actions);
+  }
+  card.appendChild(main);
+  return card;
+}
+
+function smallButton(kind, icon, label, handler) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = kind;
+  const i = document.createElement('i');
+  i.className = 'fa-solid ' + icon;
+  i.setAttribute('aria-hidden', 'true');
+  button.appendChild(i);
+  button.appendChild(document.createTextNode(label));
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    handler();
+  });
+  return button;
+}
+
+function renderHome() {
+  const waiting = !state.loaded;
+  document.getElementById('statTotalNum').textContent = state.loaded ? String(state.count) : '…';
+  let junior = 0;
+  let senior = 0;
+  let answered = 0;
+  for (let i = 0; i < state.records.length; i++) {
+    const stage = String(state.records[i].stage || '').trim();
+    if (stage === '初中') junior += 1;
+    if (stage === '高中') senior += 1;
+    if (String(state.records[i].answer || '').trim()) answered += 1;
+  }
+  document.getElementById('statJuniorNum').textContent = state.loaded ? String(junior) : '…';
+  document.getElementById('statSeniorNum').textContent = state.loaded ? String(senior) : '…';
+  document.getElementById('statAnsweredNum').textContent = state.loaded ? String(answered) : '…';
+  const list = document.getElementById('recentList');
+  const empty = document.getElementById('recentEmpty');
+  list.textContent = '';
+  if (waiting) {
+    empty.hidden = false;
+    empty.querySelector('p').textContent = state.loadError || t('loading');
+    return;
+  }
+  if (!state.records.length) {
+    empty.hidden = false;
+    empty.querySelector('p').textContent = t('emptyEncourage');
+    return;
+  }
+  empty.hidden = true;
+  const max = Math.min(5, state.records.length);
+  for (let n = 0; n < max; n++) list.appendChild(buildCard(state.records[n], false));
+}
+
+function renderJournal() {
+  const list = document.getElementById('journalList');
+  const empty = document.getElementById('journalEmpty');
+  const text = document.getElementById('journalEmptyText');
+  const clearBtn = document.getElementById('btnClearFilters');
+  const count = document.getElementById('journalCount');
+  document.getElementById('chipAnswered').hidden = !state.answeredOnly;
+  list.textContent = '';
+  if (!state.loaded) {
+    empty.hidden = false;
+    text.textContent = state.loadError || t('loading');
+    clearBtn.hidden = true;
+    count.textContent = '';
+    return;
+  }
+  const filters = readFilters();
+  const shown = [];
+  for (let i = 0; i < state.records.length; i++) {
+    if (rowMatches(state.records[i], filters)) shown.push(state.records[i]);
+  }
+  count.textContent = state.loaded ? t('shownCount', { n: shown.length }) : '';
+  if (!shown.length) {
+    empty.hidden = false;
+    const filtering = filters.q.trim() || filters.stage !== 'all' || filters.elective !== 'all' || filters.guide !== 'all' || filters.answeredOnly;
+    text.textContent = state.loadError ? state.loadError : (filtering ? t('noMatch') : t('emptyEncourage'));
+    clearBtn.hidden = !filtering;
+    return;
+  }
+  empty.hidden = true;
+  for (let n = 0; n < shown.length; n++) list.appendChild(buildCard(shown[n], true));
+}
+
+function setJournalPreset(preset) {
+  state.answeredOnly = preset === 'answered';
+  document.getElementById('journalSearch').value = '';
+  document.getElementById('filterStage').value = preset === '初中' || preset === '高中' ? preset : 'all';
+  document.getElementById('filterElective').value = 'all';
+  document.getElementById('filterGuide').value = 'all';
+}
+
+async function openJournalPreset(preset) {
+  setJournalPreset(preset);
+  if (state.page !== 'journal') showPage('journal', true);
+  await reloadData();
+}
+
+function selectedStage() {
+  if (document.getElementById('formGeoRead_xueduan_junior').checked) return '初中';
+  if (document.getElementById('formGeoRead_xueduan_senior').checked) return '高中';
+  return '';
+}
+
+function selectedElective() {
+  if (document.getElementById('formGeoRead_elective_yes').checked) return '是';
+  if (document.getElementById('formGeoRead_elective_no').checked) return '否';
+  return '';
+}
+
+function formSignature() {
+  return JSON.stringify({
+    stage: selectedStage(),
+    elective: selectedElective(),
+    question: document.getElementById('formGeoRead_question').value,
+    mapFile: document.getElementById('formGeoRead_mapfile').value,
+    answer: document.getElementById('formGeoRead_answer').value
+  });
+}
+
+function markClean() {
+  state.signature = formSignature();
+  state.formLoadedFor = state.currentRow;
+}
+
+function isDirty() {
+  return formSignature() !== state.signature;
+}
+
+function abandonDraft() {
+  state.formLoadedFor = -1;
+  state.signature = formSignature();
+}
+
+function canSubmit() {
+  if (state.polling || state.busy || state.filling) return false;
+  if (!selectedStage()) return false;
+  if (!document.getElementById('formGeoRead_question').value.trim()) return false;
+  if (!document.getElementById('formGeoRead_mapfile').value.trim()) return false;
+  if (selectedStage() === '高中' && !selectedElective()) return false;
+  return true;
+}
+
+function canSave() {
+  if (state.polling || state.busy || state.filling) return false;
+  if (state.currentRow < 1) return false;
+  if (!selectedStage()) return false;
+  if (!document.getElementById('formGeoRead_question').value.trim()) return false;
+  if (selectedStage() === '高中' && !selectedElective()) return false;
+  return true;
+}
+
+function paintChoiceStyles() {
+  document.getElementById('labelStageJunior').classList.toggle('is-on', document.getElementById('formGeoRead_xueduan_junior').checked);
+  document.getElementById('labelStageSenior').classList.toggle('is-on', document.getElementById('formGeoRead_xueduan_senior').checked);
+  document.getElementById('labelElectiveYes').classList.toggle('is-on', document.getElementById('formGeoRead_elective_yes').checked);
+  document.getElementById('labelElectiveNo').classList.toggle('is-on', document.getElementById('formGeoRead_elective_no').checked);
+}
+
+function onStageChange() {
+  const stage = selectedStage();
+  const wrap = document.getElementById('electiveWrap');
+  const note = document.getElementById('electiveJuniorNote');
+  if (stage === '高中') {
+    wrap.hidden = false;
+    note.hidden = true;
+  } else if (stage === '初中') {
+    wrap.hidden = true;
+    note.hidden = false;
+    document.getElementById('formGeoRead_elective_yes').checked = false;
+    document.getElementById('formGeoRead_elective_no').checked = false;
+  } else {
+    wrap.hidden = true;
+    note.hidden = true;
+  }
+  paintChoiceStyles();
+  syncWorkshopMode();
+}
+
+function syncWorkshopMode() {
+  const isNew = state.currentRow === 0;
+  document.getElementById('workshopMode').textContent = isNew ? t('modeNew') : t('modeEdit', { n: state.currentRow });
+  document.getElementById('btnAskCoach').hidden = !isNew;
+  document.getElementById('btnSave').hidden = isNew;
+  document.getElementById('btnReask').hidden = isNew;
+  const locked = state.polling || state.busy || state.filling;
+  document.getElementById('btnAskCoach').disabled = !canSubmit();
+  document.getElementById('btnReask').disabled = !canSubmit();
+  document.getElementById('btnSave').disabled = !canSave();
+  document.getElementById('btnRefreshGuide').disabled = state.currentRow < 1 || state.filling;
+  document.getElementById('btnReset').disabled = state.filling;
+  const hint = document.getElementById('submitHint');
+  if (state.polling) hint.textContent = t('hintPolling');
+  else if (selectedStage() === '高中' && !selectedElective()) hint.textContent = t('hintElective');
+  else if (isNew && !canSubmit() && !locked) hint.textContent = t('hintNeed');
+  else if (isNew && canSubmit()) hint.textContent = t('hintReady');
+  else if (!isNew && canSave()) hint.textContent = t('hintSave');
+  else hint.textContent = '';
+  paintChoiceStyles();
+}
+
+function paintGuide() {
+  const box = document.getElementById('guideContent');
+  box.textContent = '';
+  if (state.guideMode === 'markdown') {
+    box.innerHTML = renderMarkdown(state.guideText);
+    return;
+  }
+  const line = document.createElement('div');
+  line.className = 'wait-line';
+  const icon = document.createElement('i');
+  icon.className = 'fa-solid fa-compass';
+  line.appendChild(icon);
+  const p = document.createElement('p');
+  if (state.guideMode === 'wait') p.textContent = t('waitText');
+  else if (state.guideMode === 'timeout') p.textContent = t('timeoutText');
+  else if (state.guideMode === 'pending') p.textContent = t('pendingText');
+  else p.textContent = t('guideEmpty');
+  line.appendChild(p);
+  box.appendChild(line);
+}
+
+function setMapFile(name) {
+  const value = String(name || '').trim();
+  document.getElementById('formGeoRead_mapfile').value = value;
+  const empty = document.getElementById('mapEmpty');
+  const emptyText = document.getElementById('mapEmptyText');
+  const emptyIcon = empty.querySelector('i');
+  const img = document.getElementById('mapPreview');
+  const frame = document.getElementById('mapHtmlFrame');
+  const nameLine = document.getElementById('mapNameLine');
+  const openBtn = document.getElementById('btnOpenMap');
+  img.onerror = null;
+  img.hidden = true;
+  frame.hidden = true;
+  img.removeAttribute('src');
+  frame.removeAttribute('src');
+  if (emptyIcon) emptyIcon.className = 'fa-solid fa-map';
+  if (emptyText) emptyText.textContent = t('mapEmpty');
+  if (!value) {
+    empty.hidden = false;
+    nameLine.hidden = true;
+    nameLine.textContent = '';
+    openBtn.hidden = true;
+    syncWorkshopMode();
+    return;
+  }
+  nameLine.hidden = false;
+  nameLine.textContent = value;
+  openBtn.hidden = false;
+  const kind = fileKind(value);
+  if (kind === 'image') {
+    empty.hidden = true;
+    img.hidden = false;
+    img.alt = value;
+    img.onerror = () => {
+      if (document.getElementById('formGeoRead_mapfile').value !== value) return;
+      img.hidden = true;
+      empty.hidden = false;
+      if (emptyIcon) emptyIcon.className = 'fa-solid fa-file-image';
+      if (emptyText) emptyText.textContent = value;
+    };
+    img.src = downloadUrl(value);
+  } else if (kind === 'html') {
+    empty.hidden = true;
+    frame.hidden = false;
+    frame.src = privateUrl(value);
+  } else {
+    empty.hidden = false;
+    emptyIcon.className = 'fa-solid fa-file';
+    emptyText.textContent = value;
+  }
+  syncWorkshopMode();
+}
+
+function clearFormValues() {
+  document.getElementById('formGeoRead_xueduan_junior').checked = false;
+  document.getElementById('formGeoRead_xueduan_senior').checked = false;
+  document.getElementById('formGeoRead_elective_yes').checked = false;
+  document.getElementById('formGeoRead_elective_no').checked = false;
+  document.getElementById('formGeoRead_question').value = '';
+  document.getElementById('formGeoRead_answer').value = '';
+  document.getElementById('formGeoRead_check_title').checked = false;
+  document.getElementById('formGeoRead_check_dir').checked = false;
+  document.getElementById('formGeoRead_check_legend').checked = false;
+  document.getElementById('formGeoRead_check_value').checked = false;
+  setMapFile('');
+  state.guideText = '';
+  state.guideMode = 'empty';
+  paintGuide();
+  onStageChange();
+}
+
+function resetToNew() {
+  stopPoll();
+  state.currentRow = 0;
+  clearFormValues();
+  markClean();
+  syncWorkshopMode();
+}
+
+function stopPoll() {
+  state.pollToken += 1;
+  state.polling = false;
+  syncWorkshopMode();
+}
+
+function buildPayload() {
+  const stage = selectedStage();
+  const data = {};
+  data[FIELD_STAGE] = stage;
+  data[FIELD_ELECTIVE] = stage === '初中' ? '否' : selectedElective();
+  data[FIELD_QUESTION] = document.getElementById('formGeoRead_question').value;
+  data[FIELD_MAP] = document.getElementById('formGeoRead_mapfile').value;
+  data[FIELD_ANSWER] = document.getElementById('formGeoRead_answer').value;
+  return data;
+}
+
+async function startPoll() {
+  const token = ++state.pollToken;
+  state.polling = true;
+  state.guideMode = 'wait';
+  state.guideText = '';
+  paintGuide();
+  syncWorkshopMode();
+  for (let attempt = 0; attempt < 30; attempt++) {
+    await sleep(2000);
+    if (token !== state.pollToken) return;
+    try {
+      const text = await bridge({ type: 'GetCellValue', data: DATA_SOURCE, payload: FIELD_GUIDE + '/1' });
+      if (token !== state.pollToken) return;
+      if (String(text || '').trim()) {
+        state.polling = false;
+        if (state.currentRow === 1 && state.formLoadedFor === 1) {
+          state.guideText = text;
+          state.guideMode = 'markdown';
+          paintGuide();
+        }
+        syncWorkshopMode();
+        try { await reloadData(); } catch (err) {}
+        if (!document.getElementById('detailOverlay').hidden && state.detailRow === 1 && state.detailData) {
+          state.detailData[FIELD_GUIDE] = text;
+          paintDetail();
+        }
+        return;
+      }
+    } catch (err2) {}
+  }
+  if (token !== state.pollToken) return;
+  state.polling = false;
+  if (state.currentRow === 1 && state.formLoadedFor === 1) {
+    state.guideMode = 'timeout';
+    paintGuide();
+  }
+  syncWorkshopMode();
+  try { await reloadData(); } catch (err3) {}
+}
+
+async function submitNew() {
+  if (!canSubmit()) return;
+  state.busy = true;
+  syncWorkshopMode();
+  try {
+    await bridge({ type: 'SubmitRecord', data: TABLE_NAME, payload: JSON.stringify(buildPayload()) });
+  } catch (err) {
+    state.busy = false;
+    syncWorkshopMode();
+    showToast(t('submitFailed'));
+    return;
+  }
+  state.currentRow = 1;
+  state.busy = false;
+  markClean();
+  syncWorkshopMode();
+  try { await reloadData(); } catch (err2) {}
+  await startPoll();
+}
+
+async function saveEdit() {
+  if (!canSave()) {
+    showToast(t('hintNeed'));
+    return;
+  }
+  const row = state.currentRow;
+  const payload = buildPayload();
+  const fields = [FIELD_STAGE, FIELD_ELECTIVE, FIELD_QUESTION, FIELD_MAP, FIELD_ANSWER];
+  state.busy = true;
+  syncWorkshopMode();
+  try {
+    for (let i = 0; i < fields.length; i++) {
+      await bridge({
+        type: 'SetCellValue',
+        data: DATA_SOURCE,
+        payload: fields[i] + '/' + String(row) + '/' + payload[fields[i]]
+      });
+    }
+  } catch (err) {
+    state.busy = false;
+    syncWorkshopMode();
+    showToast(t('saveFailed'));
+    return;
+  }
+  markClean();
+  state.busy = false;
+  syncWorkshopMode();
+  showToast(t('saveNote'));
+  try { await reloadData(); } catch (err2) {}
+}
+
+async function refreshGuide() {
+  if (state.currentRow < 1) return;
+  const row = state.currentRow;
+  try {
+    const text = await bridge({ type: 'GetCellValue', data: DATA_SOURCE, payload: FIELD_GUIDE + '/' + String(row) });
+    if (String(text || '').trim()) {
+      state.guideText = text;
+      state.guideMode = 'markdown';
+      if (state.polling && row === 1) stopPoll();
+    } else {
+      state.guideText = '';
+      state.guideMode = 'pending';
+    }
+    paintGuide();
+    if (!document.getElementById('detailOverlay').hidden && state.detailRow === row && state.detailData) {
+      state.detailData[FIELD_GUIDE] = text;
+      paintDetail();
+    }
+  } catch (err) {
+    showToast(t('loadFailed'));
+  }
+}
+
+async function pickMap(type) {
+  try {
+    const name = await bridge({ type: type });
+    if (!name || !String(name).trim()) return;
+    setMapFile(String(name).trim());
+  } catch (err) {
+    showToast(t('actionFailed'));
+  }
+}
+
+function openFile(name) {
+  const fileName = String(name || '').trim();
+  if (!fileName) return;
+  if (fileKind(fileName) === 'html') {
+    openHtmlViewer(fileName);
+    return;
+  }
+  const anchor = document.createElement('a');
+  anchor.href = privateUrl(fileName);
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+}
+
+function downloadFile(name) {
+  const fileName = String(name || '').trim();
+  if (!fileName) return;
+  const anchor = document.createElement('a');
+  anchor.href = downloadUrl(fileName);
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+}
+
+function openHtmlViewer(fileName) {
+  const overlay = document.getElementById('htmlOverlay');
+  document.getElementById('htmlViewerTitle').textContent = fileName;
+  document.getElementById('htmlFrame').src = privateUrl(fileName);
+  overlay.hidden = false;
+  pushLayer('html', () => closeHtmlViewer(true));
+}
+
+function closeHtmlViewer(fromBack) {
+  const overlay = document.getElementById('htmlOverlay');
+  overlay.hidden = true;
+  document.getElementById('htmlFrame').removeAttribute('src');
+  if (!fromBack) removeLayer('html');
+}
+
+async function loadForm(rowNo) {
+  stopPoll();
+  state.filling = true;
+  state.currentRow = rowNo;
+  syncWorkshopMode();
+  clearFormValues();
+  const fields = [FIELD_STAGE, FIELD_ELECTIVE, FIELD_QUESTION, FIELD_MAP, FIELD_ANSWER, FIELD_GUIDE];
+  const values = {};
+  try {
+    for (let i = 0; i < fields.length; i++) {
+      values[fields[i]] = await bridge({
+        type: 'GetCellValue',
+        data: DATA_SOURCE,
+        payload: fields[i] + '/' + String(rowNo)
+      });
+    }
+  } catch (err) {
+    state.filling = false;
+    syncWorkshopMode();
+    throw err;
+  }
+  document.getElementById('formGeoRead_xueduan_junior').checked = String(values[FIELD_STAGE] || '').trim() === '初中';
+  document.getElementById('formGeoRead_xueduan_senior').checked = String(values[FIELD_STAGE] || '').trim() === '高中';
+  onStageChange();
+  document.getElementById('formGeoRead_elective_yes').checked = String(values[FIELD_ELECTIVE] || '').trim() === '是';
+  document.getElementById('formGeoRead_elective_no').checked = String(values[FIELD_ELECTIVE] || '').trim() === '否';
+  document.getElementById('formGeoRead_question').value = values[FIELD_QUESTION] || '';
+  document.getElementById('formGeoRead_answer').value = values[FIELD_ANSWER] || '';
+  setMapFile(String(values[FIELD_MAP] || '').trim());
+  if (String(values[FIELD_GUIDE] || '').trim()) {
+    state.guideText = values[FIELD_GUIDE];
+    state.guideMode = 'markdown';
+  } else {
+    state.guideText = '';
+    state.guideMode = 'pending';
+  }
+  paintGuide();
+  paintChoiceStyles();
+  state.filling = false;
+  markClean();
+  syncWorkshopMode();
+}
+
+async function ensureWorkshop() {
+  if (state.formLoadedFor === state.currentRow && state.formLoadedFor !== -1) return true;
+  if (isDirty()) {
+    const ok = await openConfirm(t('discardAsk'));
+    if (!ok) return false;
+  }
+  if (state.currentRow === 0) {
+    resetToNew();
+    return true;
+  }
+  try {
+    await loadForm(state.currentRow);
+  } catch (err) {
+    showToast(t('loadFailed'));
+    return false;
+  }
+  return true;
+}
+
+async function startNew() {
+  if (isDirty()) {
+    const ok = await openConfirm(t('discardAsk'));
+    if (!ok) return;
+  }
+  resetToNew();
+  if (state.page !== 'workshop') showPage('workshop', true);
+  else closeMobileMenu(false);
+}
+
+async function editRow(rowNo) {
+  if (state.formLoadedFor === rowNo && !state.filling) {
+    state.currentRow = rowNo;
+    syncWorkshopMode();
+    closeDetail(false);
+    if (state.page !== 'workshop') showPage('workshop', true);
+    return;
+  }
+  if (isDirty()) {
+    const ok = await openConfirm(t('discardAsk'));
+    if (!ok) return;
+  }
+  try {
+    await loadForm(rowNo);
+  } catch (err) {
+    showToast(t('loadFailed'));
+    return;
+  }
+  closeDetail(false);
+  if (state.page !== 'workshop') showPage('workshop', true);
+}
+
+function shiftAfterDelete(row, deleted) {
+  if (!row || row < 1) return row || 0;
+  if (row === deleted) return 0;
+  if (row > deleted) return row - 1;
+  return row;
+}
+
+async function deleteRow(rowNo) {
+  const ok = await openConfirm(t('deleteAsk'), t('delete'), t('confirmCancel'));
+  if (!ok) return;
+  state.busy = true;
+  try {
+    await bridge({ type: 'DeleteRecord', data: DATA_SOURCE, payload: String(rowNo) });
+  } catch (err) {
+    state.busy = false;
+    showToast(t('deleteFailed'));
+    return;
+  }
+  const formRow = shiftAfterDelete(state.formLoadedFor, rowNo);
+  const current = shiftAfterDelete(state.currentRow, rowNo);
+  const detail = shiftAfterDelete(state.detailRow, rowNo);
+  if (state.formLoadedFor === rowNo) {
+    resetToNew();
+  } else {
+    state.formLoadedFor = formRow;
+    state.currentRow = current;
+    if (state.polling && rowNo === 1) stopPoll();
+  }
+  state.detailRow = detail;
+  state.busy = false;
+  if (!document.getElementById('detailOverlay').hidden && detail < 1) closeDetail(false);
+  try { await reloadData(); } catch (err2) { showToast(t('loadFailed')); }
+  if (!document.getElementById('detailOverlay').hidden && state.detailRow > 0) {
+    if (state.detailRow > state.count && state.count >= 0) {
+      if (!state.records.length) closeDetail(false);
+      else await renderDetail(Math.min(state.detailRow, state.records.length));
+    } else {
+      await renderDetail(state.detailRow);
+    }
+  }
+  syncWorkshopMode();
+}
+
+async function openDetail(rowNo) {
+  if (rowNo !== state.currentRow && isDirty()) {
+    const ok = await openConfirm(t('discardAsk'));
+    if (!ok) return;
+    abandonDraft();
+  }
+  state.currentRow = rowNo;
+  if (state.page !== 'journal') showPage('journal', true);
+  await renderDetail(rowNo);
+}
+
+function closeDetail(fromBack) {
+  document.getElementById('detailOverlay').hidden = true;
+  if (!fromBack) removeLayer('detail');
+}
+
+let detailToken = 0;
+async function renderDetail(rowNo) {
+  const token = ++detailToken;
+  const overlay = document.getElementById('detailOverlay');
+  overlay.hidden = false;
+  if (layerIndex('detail') < 0) pushLayer('detail', () => closeDetail(true));
+  state.detailRow = rowNo;
+  state.currentRow = rowNo;
+  document.getElementById('detailFields').textContent = '';
+  document.getElementById('detailGuide').textContent = t('detailLoading');
+  document.getElementById('detailMap').textContent = '';
+  const fields = [FIELD_STAGE, FIELD_ELECTIVE, FIELD_QUESTION, FIELD_MAP, FIELD_ANSWER, FIELD_GUIDE];
+  const values = {};
+  let count = state.count;
+  try {
+    const countText = await bridge({ type: 'GetRecordCount', data: DATA_SOURCE });
+    count = parseCount(countText);
+    for (let i = 0; i < fields.length; i++) {
+      values[fields[i]] = await bridge({
+        type: 'GetCellValue',
+        data: DATA_SOURCE,
+        payload: fields[i] + '/' + String(rowNo)
+      });
+    }
+  } catch (err) {
+    if (token !== detailToken) return;
+    showToast(t('loadFailed'));
+    closeDetail(false);
+    return;
+  }
+  if (token !== detailToken) return;
+  state.detailCount = count;
+  state.detailData = values;
+  paintDetail();
+}
+
+function paintDetail() {
+  const data = state.detailData || {};
+  document.getElementById('detailPos').textContent = t('pos', { n: state.detailRow, total: state.detailCount });
+  document.getElementById('btnDetailPrev').disabled = state.detailRow <= 1;
+  document.getElementById('btnDetailNext').disabled = state.detailCount > 0 ? state.detailRow >= state.detailCount : true;
+  const mapWrap = document.getElementById('detailMap');
+  mapWrap.textContent = '';
+  const fileName = String(data[FIELD_MAP] || '').trim();
+  document.getElementById('btnDetailOpen').disabled = !fileName;
+  document.getElementById('btnDetailDownload').disabled = !fileName;
+  if (!fileName) {
+    mapWrap.appendChild(fallbackIcon('fa-compass', t('mapEmpty')));
+  } else if (fileKind(fileName) === 'image') {
+    const img = document.createElement('img');
+    img.alt = fileName;
+    img.src = downloadUrl(fileName);
+    mapWrap.appendChild(img);
+  } else if (fileKind(fileName) === 'html') {
+    const frame = document.createElement('iframe');
+    frame.title = fileName;
+    frame.src = privateUrl(fileName);
+    mapWrap.appendChild(frame);
+  } else {
+    mapWrap.appendChild(fallbackIcon('fa-file', fileName));
+  }
+  const fields = document.getElementById('detailFields');
+  fields.textContent = '';
+  const rows = [
+    [t('fieldStage'), displayStage(String(data[FIELD_STAGE] || '').trim())],
+    [t('fieldElective'), displayYesNo(String(data[FIELD_ELECTIVE] || '').trim())],
+    [t('fieldQuestion'), data[FIELD_QUESTION] || ''],
+    [t('fieldMap'), data[FIELD_MAP] || ''],
+    [t('fieldAnswer'), String(data[FIELD_ANSWER] || '').trim() ? data[FIELD_ANSWER] : t('noAnswer')]
+  ];
+  for (let i = 0; i < rows.length; i++) {
+    const block = document.createElement('div');
+    block.className = 'kv';
+    const k = document.createElement('div');
+    k.className = 'k';
+    k.textContent = rows[i][0];
+    const v = document.createElement('div');
+    v.className = 'v';
+    v.textContent = rows[i][1];
+    block.appendChild(k);
+    block.appendChild(v);
+    fields.appendChild(block);
+  }
+  const guide = document.getElementById('detailGuide');
+  if (String(data[FIELD_GUIDE] || '').trim()) guide.innerHTML = renderMarkdown(data[FIELD_GUIDE]);
+  else {
+    guide.textContent = '';
+    const line = document.createElement('div');
+    line.className = 'wait-line';
+    const icon = document.createElement('i');
+    icon.className = 'fa-solid fa-compass';
+    const p = document.createElement('p');
+    p.textContent = t('pendingText');
+    line.appendChild(icon);
+    line.appendChild(p);
+    guide.appendChild(line);
+  }
+}
+
+async function stepDetail(delta) {
+  let count = state.detailCount;
+  try {
+    count = parseCount(await bridge({ type: 'GetRecordCount', data: DATA_SOURCE }));
+  } catch (err) {
+    showToast(t('loadFailed'));
+    return;
+  }
+  state.detailCount = count;
+  const target = state.detailRow + delta;
+  if (target < 1 || (count > 0 && target > count)) {
+    paintDetail();
+    return;
+  }
+  if (target !== state.currentRow && isDirty()) {
+    const ok = await openConfirm(t('discardAsk'));
+    if (!ok) return;
+    abandonDraft();
+  }
+  state.currentRow = target;
+  await renderDetail(target);
+}
+
+async function refreshDetailGuide() {
+  if (state.detailRow < 1) return;
+  try {
+    const text = await bridge({ type: 'GetCellValue', data: DATA_SOURCE, payload: FIELD_GUIDE + '/' + String(state.detailRow) });
+    if (state.detailData) state.detailData[FIELD_GUIDE] = text;
+    paintDetail();
+    if (state.currentRow === state.detailRow && state.formLoadedFor === state.detailRow) {
+      if (String(text || '').trim()) {
+        state.guideText = text;
+        state.guideMode = 'markdown';
+      } else {
+        state.guideText = '';
+        state.guideMode = 'pending';
+      }
+      paintGuide();
+    }
+  } catch (err) {
+    showToast(t('loadFailed'));
+  }
+}
+
+function clearJournalFilters() {
+  state.answeredOnly = false;
+  document.getElementById('journalSearch').value = '';
+  document.getElementById('filterStage').value = 'all';
+  document.getElementById('filterElective').value = 'all';
+  document.getElementById('filterGuide').value = 'all';
+}
+
+let searchTimer = 0;
+function scheduleJournalReload() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { reloadData(); }, 280);
+}
+
+function bindUi() {
+  document.getElementById('btnLogo').addEventListener('click', closeHost);
+  document.getElementById('btnLang').addEventListener('click', () => setLanguage(state.lang === 'en' ? 'zh' : 'en'));
+  document.getElementById('menuLangZh').addEventListener('click', () => setLanguage('zh'));
+  document.getElementById('menuLangEn').addEventListener('click', () => setLanguage('en'));
+  document.getElementById('btnBurger').addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleMobileMenu();
+  });
+  const pageButtons = document.querySelectorAll('.nav-tab, .menu-btn');
+  for (let i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener('click', () => goPage(pageButtons[i].getAttribute('data-page')));
+  }
+  document.addEventListener('click', (event) => {
+    const menu = document.getElementById('mobileMenu');
+    if (menu.hidden) return;
+    if (!document.getElementById('navBar').contains(event.target)) closeMobileMenu(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (!layers.length) return;
+    event.preventDefault();
+    const top = layers.pop();
+    document.body.classList.toggle('no-scroll', layers.length > 0);
+    top.closeFn();
+  });
+  document.getElementById('btnStart').addEventListener('click', startNew);
+  document.getElementById('btnNewReading').addEventListener('click', startNew);
+  document.getElementById('btnToJournal').addEventListener('click', () => goPage('journal'));
+  document.getElementById('statTotal').addEventListener('click', () => openJournalPreset('all'));
+  document.getElementById('statJunior').addEventListener('click', () => openJournalPreset('初中'));
+  document.getElementById('statSenior').addEventListener('click', () => openJournalPreset('高中'));
+  document.getElementById('statAnswered').addEventListener('click', () => openJournalPreset('answered'));
+  document.getElementById('btnCapture').addEventListener('click', () => pickMap('CapturePhoto'));
+  document.getElementById('btnAlbum').addEventListener('click', () => pickMap('SelectImage'));
+  document.getElementById('btnPickFile').addEventListener('click', () => pickMap('SelectFile'));
+  document.getElementById('btnClearMap').addEventListener('click', () => setMapFile(''));
+  document.getElementById('btnOpenMap').addEventListener('click', () => openFile(document.getElementById('formGeoRead_mapfile').value));
+  document.getElementById('formGeoRead').addEventListener('submit', (event) => event.preventDefault());
+  document.getElementById('formGeoRead_xueduan_junior').addEventListener('change', onStageChange);
+  document.getElementById('formGeoRead_xueduan_senior').addEventListener('change', onStageChange);
+  document.getElementById('formGeoRead_elective_yes').addEventListener('change', () => { paintChoiceStyles(); syncWorkshopMode(); });
+  document.getElementById('formGeoRead_elective_no').addEventListener('change', () => { paintChoiceStyles(); syncWorkshopMode(); });
+  document.getElementById('formGeoRead_question').addEventListener('input', syncWorkshopMode);
+  document.getElementById('formGeoRead_answer').addEventListener('input', syncWorkshopMode);
+  document.getElementById('btnAskCoach').addEventListener('click', submitNew);
+  document.getElementById('btnReask').addEventListener('click', submitNew);
+  document.getElementById('btnSave').addEventListener('click', saveEdit);
+  document.getElementById('btnReset').addEventListener('click', async () => {
+    if (isDirty()) {
+      const ok = await openConfirm(t('discardAsk'));
+      if (!ok) return;
+    }
+    resetToNew();
+  });
+  document.getElementById('btnRefreshGuide').addEventListener('click', refreshGuide);
+  document.getElementById('journalSearch').addEventListener('input', scheduleJournalReload);
+  document.getElementById('filterStage').addEventListener('change', () => reloadData());
+  document.getElementById('filterElective').addEventListener('change', () => reloadData());
+  document.getElementById('filterGuide').addEventListener('change', () => reloadData());
+  document.getElementById('chipAnswered').addEventListener('click', () => {
+    state.answeredOnly = false;
+    reloadData();
+  });
+  document.getElementById('btnClearFilters').addEventListener('click', () => {
+    clearJournalFilters();
+    reloadData();
+  });
+  document.getElementById('btnDetailClose').addEventListener('click', () => closeDetail(false));
+  document.getElementById('detailOverlay').addEventListener('click', (event) => {
+    if (event.target.id === 'detailOverlay') closeDetail(false);
+  });
+  document.getElementById('btnDetailPrev').addEventListener('click', () => stepDetail(-1));
+  document.getElementById('btnDetailNext').addEventListener('click', () => stepDetail(1));
+  document.getElementById('btnDetailOpen').addEventListener('click', () => {
+    if (state.detailData) openFile(state.detailData[FIELD_MAP]);
+  });
+  document.getElementById('btnDetailDownload').addEventListener('click', () => {
+    if (state.detailData) downloadFile(state.detailData[FIELD_MAP]);
+  });
+  document.getElementById('btnDetailEdit').addEventListener('click', () => editRow(state.detailRow));
+  document.getElementById('btnDetailDelete').addEventListener('click', () => deleteRow(state.detailRow));
+  document.getElementById('btnDetailRefresh').addEventListener('click', refreshDetailGuide);
+  document.getElementById('btnHtmlClose').addEventListener('click', () => closeHtmlViewer(false));
+  document.getElementById('htmlOverlay').addEventListener('click', (event) => {
+    if (event.target.id === 'htmlOverlay') closeHtmlViewer(false);
+  });
+  document.getElementById('confirmOverlay').addEventListener('click', (event) => {
+    if (event.target.id === 'confirmOverlay') document.getElementById('btnConfirmCancel').click();
+  });
+}
+
+async function initialize() {
+  bindUi();
+  applyLanguage(resolveLanguage(), false);
+  setupKeyboardGuard();
+  resetToNew();
+  showPage('home', false);
+  layoutNav();
+  try { await applyThemeMode(); } catch (err) {}
+  try { await reloadData(); } catch (err2) { showToast(t('loadFailed')); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  (async () => {    await initialize();  })();
+});
+</script>
+</body>
+</html>

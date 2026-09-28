@@ -1,0 +1,3372 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" id="metaTheme" content="#1b2740">
+<title>智能词汇学习</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f6f0e6;
+    --card: #fffdf8;
+    --line: #e6dcc8;
+    --ink: #241c14;
+    --muted: #6f655a;
+    --nav: #1b2740;
+    --amber: #e07a3d;
+    --amber-hover: #c96a2e;
+    --nav-text: #f6f1e8;
+    --shadow: 0 10px 28px rgba(36, 28, 20, .06);
+    --danger: #8d3b32;
+    --track: #efe6d6;
+    --glow: rgba(224, 122, 61, .20);
+  }
+  html[data-theme="dark"] {
+    --bg: #12161f;
+    --card: #1b2130;
+    --line: #323c52;
+    --ink: #f3ecdf;
+    --muted: #b7ad9e;
+    --nav: #0e1422;
+    --amber: #e07a3d;
+    --amber-hover: #f0935a;
+    --nav-text: #f6f1e8;
+    --shadow: 0 12px 28px rgba(0, 0, 0, .35);
+    --danger: #f0a8a0;
+    --track: #2a3346;
+    --glow: rgba(224, 122, 61, .16);
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  html[data-theme="dark"] { color-scheme: dark; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  body {
+    margin: 0;
+    padding-top: 72px;
+    color: var(--ink);
+    background:
+      radial-gradient(1100px 380px at 50% -120px, var(--glow), transparent 62%),
+      var(--bg);
+    font-family: "Noto Sans SC", "Source Han Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  input, select, textarea {
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--card);
+    scroll-margin-top: 88px;
+    scroll-margin-bottom: 42vh;
+  }
+  button { font-family: inherit; }
+  [hidden] { display: none !important; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+  #navShell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    background: var(--nav);
+    color: var(--nav-text);
+  }
+  .nav-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 64px;
+    padding: 0 16px;
+    overflow: hidden;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1 1 0;
+    overflow: hidden;
+    color: var(--nav-text);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: .01em;
+  }
+  .brand i { font-size: 20px; color: #e07a3d; flex: none; }
+  .brand span {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-tabs {
+    display: flex;
+    flex: none;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  .nav-tabs-hidden { display: none !important; }
+  .nav-lang-hidden { display: none !important; }
+  .nav-burger-hidden { display: none; }
+  .nav-tab, .menu-tab {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: var(--nav-text);
+    opacity: .78;
+    padding: 10px 12px 12px;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex: none;
+  }
+  .nav-tab.is-active, .menu-tab.is-active {
+    opacity: 1;
+    color: #fff;
+    border-bottom-color: #e07a3d;
+  }
+  #langToggle, .icon-btn {
+    appearance: none;
+    background: transparent;
+    color: var(--nav-text);
+    border: 1px solid rgba(246, 241, 232, .35);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 700;
+    white-space: nowrap;
+    flex: none;
+  }
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    flex: none;
+    border-radius: 12px;
+  }
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    background: var(--nav);
+    border-top: 1px solid rgba(255, 255, 255, .08);
+  }
+  .menu-tab {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+  }
+  .menu-tab.is-active { box-shadow: inset 3px 0 0 #e07a3d; }
+  .menu-lang {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 16px;
+  }
+  .menu-lang button {
+    flex: 1;
+    appearance: none;
+    background: transparent;
+    color: var(--nav-text);
+    border: 1px solid rgba(246, 241, 232, .35);
+    border-radius: 999px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .menu-lang button.is-active {
+    background: #e07a3d;
+    border-color: #e07a3d;
+    color: #fffdf8;
+  }
+  .wrap {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+  .page { padding: 22px 0 8px; }
+  .hero { margin-bottom: 18px; }
+  .hero h1, .page-head h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    line-height: 1.25;
+    letter-spacing: .01em;
+  }
+  .lead { margin: 0; color: var(--muted); font-size: 16px; max-width: 46rem; }
+  .page-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 26px 0 12px;
+  }
+  .section-title h2, .block-title {
+    margin: 0;
+    font-size: 20px;
+  }
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .entry-card, .method-card, .stat-card, .paper-card, .record-card, .recent-card, .dist-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+  .entry-card, .method-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    text-align: left;
+    padding: 16px 16px 16px 18px;
+    cursor: pointer;
+    color: inherit;
+    overflow: hidden;
+  }
+  .entry-bar, .method-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+  }
+  .entry-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(224, 122, 61, .12);
+    color: #e07a3d;
+    margin-bottom: 4px;
+  }
+  .entry-title, .method-card strong { font-size: 17px; font-weight: 700; }
+  .entry-desc, .method-card span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+  .lift { transition: transform .18s ease, box-shadow .18s ease; }
+  .entry-card:hover, .method-card:hover, .recent-card:hover, .record-card:hover,
+  .btn:hover:not(:disabled), #langToggle:hover, .icon-btn:hover, .menu-lang button:hover {
+    transform: translateY(-2px);
+  }
+  .entry-card:hover, .method-card:hover, .recent-card:hover, .record-card:hover {
+    box-shadow: 0 14px 30px rgba(27, 39, 64, .12);
+  }
+  .method-card.is-selected {
+    box-shadow: 0 0 0 1px var(--mc, #e07a3d), var(--shadow);
+  }
+  .method-card:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+  .side-label { margin: 0 0 8px; font-weight: 700; }
+  .fine-print, .hint { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .stat-card { padding: 14px 16px 12px; border-top: 4px solid #1b2740; }
+  .stat-num { font-size: 28px; font-weight: 700; line-height: 1.2; }
+  .stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .dist-card { padding: 14px 16px 16px; margin-top: 12px; }
+  .bar-row { margin-top: 10px; }
+  .bar-top { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+  .bar-track { height: 8px; border-radius: 999px; background: var(--track); margin-top: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; width: 0; border-radius: inherit; }
+  .recent-list, .archive-list { display: grid; gap: 12px; }
+  .recent-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    border-left-width: 5px;
+    cursor: pointer;
+    color: inherit;
+  }
+  .card-head, .record-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .method-name { font-weight: 700; }
+  .card-title { margin-top: 8px; font-size: 16px; font-weight: 650; font-weight: 600; }
+  .card-meta { margin-top: 6px; color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+  .empty-line { color: var(--muted); padding: 8px 2px 18px; }
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr .8fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field label, .seg-legend { font-size: 14px; font-weight: 650; font-weight: 600; }
+  .is-req::after { content: " *"; color: #e07a3d; }
+  .toolbar input, .toolbar select, .field input, .field textarea, .field select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  .field textarea { min-height: 120px; resize: vertical; }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid rgba(224, 122, 61, .45);
+    border-color: #e07a3d;
+  }
+  .studio-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+  .method-stack { display: grid; gap: 10px; }
+  .paper-card { padding: 18px; }
+  .form-title { margin: 0 0 12px; font-size: 22px; }
+  .segs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .seg {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+    background: transparent;
+  }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg.is-on { background: #1b2740; color: #fffdf8; border-color: #1b2740; }
+  html[data-theme="dark"] .seg.is-on { background: #e07a3d; color: #1b120c; border-color: #e07a3d; }
+  .form-actions, .result-actions, .record-actions, .detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .btn {
+    appearance: none;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .btn-sm { padding: 7px 12px; font-size: 14px; }
+  .btn-primary { background: #e07a3d; color: #fffdf8; border-color: #e07a3d; }
+  .btn-primary:hover:not(:disabled) { background: var(--amber-hover); border-color: var(--amber-hover); }
+  .btn-secondary { background: transparent; color: var(--ink); border-color: #1b2740; }
+  html[data-theme="dark"] .btn-secondary { border-color: #d5deef; }
+  .btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+  .result-paper {
+    max-width: 720px;
+    margin: 22px auto 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 4px solid #e07a3d;
+    border-radius: 18px;
+    padding: 22px 22px 18px;
+    box-shadow: var(--shadow);
+  }
+  .error-banner {
+    background: #f8e6e0;
+    color: #7a2e24;
+    border: 1px solid #e7c2b6;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin: 10px 0;
+    white-space: pre-wrap;
+  }
+  html[data-theme="dark"] .error-banner {
+    background: #3a2422;
+    color: #ffd2c8;
+    border-color: #6b3d36;
+  }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(18, 16, 14, .48);
+  }
+  #detailOverlay { z-index: 2000; }
+  #editOverlay { z-index: 2100; }
+  #confirmOverlay { z-index: 2200; }
+  .dialog {
+    width: min(760px, 100%);
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+    opacity: 1;
+  }
+  #editDialog { width: min(680px, 100%); }
+  #confirmDialog { width: min(420px, 100%); }
+  .dialog-head, .detail-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px 0;
+  }
+  .dialog-head h2, .detail-top h2 { margin: 0; font-size: 22px; }
+  .dialog-body { overflow: auto; padding: 12px 18px 18px; -webkit-overflow-scrolling: touch; }
+  .kv { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 8px 12px; margin: 8px 0 12px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .md-body { line-height: 1.75; overflow-wrap: anywhere; }
+  .md-body.is-waiting, .md-body.is-empty { text-align: center; color: var(--muted); padding: 28px 8px; }
+  .md-body h1, .md-body h2, .md-body h3, .md-body h4 { line-height: 1.35; margin: 1em 0 .4em; }
+  .md-body p { margin: .6em 0; }
+  .md-body pre {
+    background: rgba(27, 39, 64, .06);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    border-radius: 10px;
+    overflow-x: auto;
+  }
+  html[data-theme="dark"] .md-body pre { background: rgba(0, 0, 0, .28); }
+  .md-body code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
+  .md-body img { max-width: 100%; height: auto; border-radius: 8px; }
+  .md-body blockquote {
+    margin: .8em 0;
+    padding: 4px 12px;
+    border-left: 3px solid #e07a3d;
+    color: var(--muted);
+  }
+  .md-body a { color: #9a4e1b; }
+  html[data-theme="dark"] .md-body a { color: #f0b089; }
+  .md-body ul, .md-body ol { padding-left: 1.3em; }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  .table-scroll table { border-collapse: collapse; width: max-content; min-width: 100%; }
+  .md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+  .record-card { border-left-width: 5px; padding: 14px 14px 12px; }
+  .record-main { cursor: pointer; }
+  .page-end-space { height: calc(28px + env(safe-area-inset-bottom)); }
+  .nav-step { display: flex; gap: 8px; flex: none; }
+  @media (max-width: 980px) {
+    .mode-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .studio-layout { grid-template-columns: 1fr; }
+    .method-stack { grid-template-columns: 1fr 1fr; }
+    .toolbar { grid-template-columns: 1fr; }
+    .page-head { flex-direction: column; }
+  }
+  @media (max-width: 768px) {
+    .wrap { width: min(1120px, calc(100% - 20px)); }
+    .hero h1, .page-head h1 { font-size: 26px; }
+    .page-end-space { height: calc(120px + env(safe-area-inset-bottom)); }
+    .dialog-body { padding-bottom: 140px; }
+    .form-fields { padding-bottom: 46vh; }
+    #detailOverlay { padding: 0; align-items: stretch; }
+    #detailDialog {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      border-radius: 0;
+      border: none;
+    }
+    .kv { grid-template-columns: 1fr; gap: 2px; }
+    .kv dt { margin-top: 8px; }
+  }
+  @media (max-width: 560px) {
+    .mode-grid, .method-stack, .stat-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    #navTabs, #langToggle { display: none !important; }
+    #navBurger { display: inline-flex !important; }
+  }
+</style>
+</head>
+<body>
+<div id="navShell">
+  <nav id="topNav" style="position: relative;z-index: 1001;">
+    <div class="nav-row" id="navRow">
+      <a href="#" class="brand" id="navBrand">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span id="navBrandText" data-i18n="appName">智能词汇学习</span>
+      </a>
+      <div class="nav-tabs" id="navTabs">
+        <button type="button" class="nav-tab is-active" id="navHome" data-page="home" data-i18n="home">首页</button>
+        <button type="button" class="nav-tab" id="navStudio" data-page="studio" data-i18n="studio">学习台</button>
+        <button type="button" class="nav-tab" id="navArchive" data-page="archive" data-i18n="archive">学习档案</button>
+      </div>
+      <button type="button" id="langToggle">EN</button>
+      <button type="button" id="navBurger" class="icon-btn nav-burger-hidden" aria-expanded="false" aria-controls="mobileMenu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        <span class="sr-only" data-i18n="menu">菜单</span>
+      </button>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <button type="button" class="menu-tab is-active" id="menuHome" data-page="home" data-i18n="home">首页</button>
+      <button type="button" class="menu-tab" id="menuStudio" data-page="studio" data-i18n="studio">学习台</button>
+      <button type="button" class="menu-tab" id="menuArchive" data-page="archive" data-i18n="archive">学习档案</button>
+      <div class="menu-lang">
+        <button type="button" id="menuLangZh" data-i18n="langZh">中文</button>
+        <button type="button" id="menuLangEn" data-i18n="langEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<main id="main">
+  <section id="pageHome" class="page">
+    <div class="wrap">
+      <header class="hero">
+        <h1 id="homeTitle" data-i18n="appName">智能词汇学习</h1>
+        <p class="lead" id="homeLead" data-i18n="heroLead">收录单词与词表，生成今日词卡和课前预热，按作答看复习建议，需要时再看词库情况</p>
+      </header>
+      <div class="mode-grid" id="homeModes">
+        <button type="button" class="entry-card lift" id="entryAdd" data-method="录入词汇">
+          <span class="entry-bar" style="background:#2f6f62"></span>
+          <span class="entry-icon"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></span>
+          <span class="entry-title" data-i18n="modeAdd">录入词汇</span>
+          <span class="entry-desc" data-i18n="modeAddDesc">把新单词或词表收进词库</span>
+        </button>
+        <button type="button" class="entry-card lift" id="entryDue" data-method="到期复习">
+          <span class="entry-bar" style="background:#c46b2d"></span>
+          <span class="entry-icon"><i class="fa-solid fa-clock" aria-hidden="true"></i></span>
+          <span class="entry-title" data-i18n="modeDue">到期复习</span>
+          <span class="entry-desc" data-i18n="modeDueDesc">生成今日到期词卡，并可带上作答</span>
+        </button>
+        <button type="button" class="entry-card lift" id="entryWarm" data-method="课前预热">
+          <span class="entry-bar" style="background:#3d5a99"></span>
+          <span class="entry-icon"><i class="fa-solid fa-sun" aria-hidden="true"></i></span>
+          <span class="entry-title" data-i18n="modeWarm">课前预热</span>
+          <span class="entry-desc" data-i18n="modeWarmDesc">按上课日期安排预热</span>
+        </button>
+        <button type="button" class="entry-card lift" id="entryReport" data-method="词库报告">
+          <span class="entry-bar" style="background:#6b4c7a"></span>
+          <span class="entry-icon"><i class="fa-solid fa-file-lines" aria-hidden="true"></i></span>
+          <span class="entry-title" data-i18n="modeReport">词库报告</span>
+          <span class="entry-desc" data-i18n="modeReportDesc">汇总已有学习记录</span>
+        </button>
+      </div>
+      <p class="fine-print" id="homeNoRemind" data-i18n="noRemind">每日到期词汇合并成一张词卡，本应用不发送提醒</p>
+      <div id="homeError" class="error-banner" hidden></div>
+      <div class="stat-grid" id="statGrid">
+        <article class="stat-card" style="border-top-color:#1b2740">
+          <div class="stat-num" id="statTotal">…</div>
+          <div class="stat-label" data-i18n="statAll">全部记录</div>
+        </article>
+        <article class="stat-card" style="border-top-color:#2f6f62">
+          <div class="stat-num" id="statAdd">…</div>
+          <div class="stat-label" data-i18n="modeAdd">录入词汇</div>
+        </article>
+        <article class="stat-card" style="border-top-color:#c46b2d">
+          <div class="stat-num" id="statDue">…</div>
+          <div class="stat-label" data-i18n="modeDue">到期复习</div>
+        </article>
+        <article class="stat-card" style="border-top-color:#3d5a99">
+          <div class="stat-num" id="statWarm">…</div>
+          <div class="stat-label" data-i18n="modeWarm">课前预热</div>
+        </article>
+      </div>
+      <section class="dist-card" id="methodDistCard">
+        <h2 class="block-title" data-i18n="methodDist">方式分布</h2>
+        <div id="methodBars"></div>
+      </section>
+      <section class="dist-card" id="stageDistCard">
+        <h2 class="block-title" data-i18n="stageDist">学段分布</h2>
+        <div id="stageBars"></div>
+      </section>
+      <div class="section-title">
+        <h2 id="recentTitle" data-i18n="recent">最近学习</h2>
+        <button type="button" class="btn btn-secondary btn-sm" id="btnViewAll" data-i18n="viewAll">查看全部档案</button>
+      </div>
+      <div id="recentList" class="recent-list"></div>
+      <p id="recentEmpty" class="empty-line" hidden></p>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+
+  <section id="pageStudio" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="studioTitle" data-i18n="studio">学习台</h1>
+          <p class="lead" id="studioLead" data-i18n="studioLead">选一种方式，写下学段和需要的内容，生成适合学生阅读的结果</p>
+        </div>
+        <button type="button" class="btn btn-secondary" id="btnStudioToArchive" data-i18n="archive">学习档案</button>
+      </div>
+      <div id="studioError" class="error-banner" hidden></div>
+      <div class="studio-layout">
+        <div>
+          <p class="side-label" data-i18n="method">学习方式</p>
+          <div id="studioModes" class="method-stack">
+            <button type="button" class="method-card lift" id="studioModeAdd" data-method="录入词汇" style="--mc:#2f6f62">
+              <span class="method-bar" style="background:#2f6f62"></span>
+              <strong data-i18n="modeAdd">录入词汇</strong>
+              <span data-i18n="modeAddDesc">把新单词或词表收进词库</span>
+            </button>
+            <button type="button" class="method-card lift" id="studioModeDue" data-method="到期复习" style="--mc:#c46b2d">
+              <span class="method-bar" style="background:#c46b2d"></span>
+              <strong data-i18n="modeDue">到期复习</strong>
+              <span data-i18n="modeDueDesc">生成今日到期词卡，并可带上作答</span>
+            </button>
+            <button type="button" class="method-card lift" id="studioModeWarm" data-method="课前预热" style="--mc:#3d5a99">
+              <span class="method-bar" style="background:#3d5a99"></span>
+              <strong data-i18n="modeWarm">课前预热</strong>
+              <span data-i18n="modeWarmDesc">按上课日期安排预热</span>
+            </button>
+            <button type="button" class="method-card lift" id="studioModeReport" data-method="词库报告" style="--mc:#6b4c7a">
+              <span class="method-bar" style="background:#6b4c7a"></span>
+              <strong data-i18n="modeReport">词库报告</strong>
+              <span data-i18n="modeReportDesc">汇总已有学习记录</span>
+            </button>
+          </div>
+        </div>
+        <div class="paper-card">
+          <h2 class="form-title" id="formStudioTitle" data-i18n="chooseMode">请先选择一种学习方式</h2>
+          <form id="formStudio" novalidate>
+            <input type="hidden" id="formStudio_method" name="学习方式" value="">
+            <div class="field">
+              <div class="seg-legend is-req" id="formStudio_stageLegend" data-i18n="stage">学段</div>
+              <div class="segs" id="formStudio_stageGroup">
+                <label class="seg" id="formStudio_stageLabelP"><input type="radio" name="学段" id="formStudio_stage_p" value="小学高段"><span data-i18n="stageP">小学高段</span></label>
+                <label class="seg" id="formStudio_stageLabelJ"><input type="radio" name="学段" id="formStudio_stage_j" value="初中"><span data-i18n="stageJ">初中</span></label>
+                <label class="seg" id="formStudio_stageLabelS"><input type="radio" name="学段" id="formStudio_stage_s" value="高中"><span data-i18n="stageS">高中</span></label>
+              </div>
+            </div>
+            <div class="form-fields">
+              <div class="field" id="formStudio_wordsWrap" hidden>
+                <label for="formStudio_words" id="formStudio_wordsLabel">词汇或词表</label>
+                <textarea id="formStudio_words" name="词汇或词表" placeholder="每行一个单词，或粘贴词表"></textarea>
+              </div>
+              <div class="field" id="formStudio_dateWrap" hidden>
+                <label for="formStudio_date" id="formStudio_dateLabel">上课日期</label>
+                <input type="date" id="formStudio_date" name="上课日期">
+              </div>
+              <div class="field" id="formStudio_answerWrap" hidden>
+                <label for="formStudio_answer" id="formStudio_answerLabel">复习作答</label>
+                <textarea id="formStudio_answer" name="复习作答"></textarea>
+              </div>
+              <p class="hint" id="formStudio_dueHint" data-i18n="dueHint" hidden>只根据已有学习记录判断到期词，没有记录会如实说明；到期词合并为一张词卡，不发送提醒</p>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" id="btnGenerate" data-i18n="generate" disabled>生成学习内容</button>
+              <button type="button" class="btn btn-secondary" id="btnClear" data-i18n="clear">清空</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <section class="result-paper" id="resultPanel" hidden>
+        <div id="resultBody" class="md-body is-waiting" aria-live="polite"></div>
+        <p class="fine-print" id="resultNote" data-i18n="resultNote" hidden>内容来自本次学习结果；缺少记录时以其说明为准</p>
+        <div class="result-actions">
+          <button type="button" class="btn btn-secondary" id="btnAgain" data-i18n="again" hidden>再学一项</button>
+          <button type="button" class="btn btn-primary" id="linkToArchive" data-i18n="toArchive" hidden>已生成，去档案查看</button>
+        </div>
+      </section>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+
+  <section id="pageArchive" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 id="archiveTitle" data-i18n="archive">学习档案</h1>
+          <p class="lead" id="archiveLead" data-i18n="archiveLead">查看、修改或删除已提交的学习。修改输入不会重新生成学习结果</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnNewStudy" data-i18n="newStudy">+ 新建学习</button>
+      </div>
+      <div class="toolbar">
+        <div class="field">
+          <label for="archiveSearch" data-i18n="searchLabel">搜索</label>
+          <input type="search" id="archiveSearch" name="search" data-i18n-ph="searchPh" placeholder="搜索词汇、词表或作答" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="archiveStage" data-i18n="stage">学段</label>
+          <select id="archiveStage" name="filterStage">
+            <option value="" data-i18n="filterAll">全部</option>
+            <option value="小学高段" data-i18n="stageP">小学高段</option>
+            <option value="初中" data-i18n="stageJ">初中</option>
+            <option value="高中" data-i18n="stageS">高中</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="archiveMethod" data-i18n="method">学习方式</label>
+          <select id="archiveMethod" name="filterMethod">
+            <option value="" data-i18n="filterAll">全部</option>
+            <option value="录入词汇" data-i18n="modeAdd">录入词汇</option>
+            <option value="到期复习" data-i18n="modeDue">到期复习</option>
+            <option value="课前预热" data-i18n="modeWarm">课前预热</option>
+            <option value="词库报告" data-i18n="modeReport">词库报告</option>
+          </select>
+        </div>
+      </div>
+      <div id="archiveError" class="error-banner" hidden></div>
+      <div id="archiveList" class="archive-list"></div>
+      <p id="archiveEmpty" class="empty-line" hidden></p>
+      <div class="page-end-space"></div>
+    </div>
+  </section>
+</main>
+
+<div id="detailOverlay" class="overlay" hidden>
+  <div class="dialog" id="detailDialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="detail-top">
+      <h2 id="detailTitle" tabindex="-1" data-i18n="detailTitle">学习详情</h2>
+      <div class="nav-step">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnPrev" data-i18n="prev">&lt; 上一则</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btnNext" data-i18n="next">&gt; 下一则</button>
+      </div>
+    </div>
+    <div class="dialog-body" id="detailBody">
+      <div id="detailError" class="error-banner" hidden></div>
+      <dl class="kv">
+        <dt data-i18n="stage">学段</dt>
+        <dd id="detailStage">—</dd>
+        <dt data-i18n="method">学习方式</dt>
+        <dd id="detailMethod">—</dd>
+        <dt data-i18n="wordsLabel">词汇或词表</dt>
+        <dd id="detailWords">—</dd>
+        <dt data-i18n="dateLabel">上课日期</dt>
+        <dd id="detailDate">—</dd>
+        <dt data-i18n="answerField">复习作答</dt>
+        <dd id="detailAnswer">—</dd>
+      </dl>
+      <h3 id="detailResultTitle" data-i18n="resultTitle">学习结果</h3>
+      <div id="detailResult" class="md-body is-empty">结果尚未生成</div>
+      <div class="detail-actions">
+        <button type="button" class="btn btn-primary" id="btnDetailEdit" data-i18n="goEdit">去编辑</button>
+        <button type="button" class="btn btn-danger" id="btnDetailDelete" data-i18n="del">删除</button>
+        <button type="button" class="btn btn-secondary" id="btnDetailClose" data-i18n="close">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="editOverlay" class="overlay" hidden>
+  <div class="dialog" id="editDialog" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="dialog-head">
+      <h2 id="editTitle" tabindex="-1" data-i18n="editTitle">修改学习记录</h2>
+    </div>
+    <div class="dialog-body">
+      <p class="hint" id="editNote" data-i18n="editNote">保存只更新输入字段，不会重新生成学习结果。若要新的词卡、预热或报告，请新建一次学习</p>
+      <div id="editError" class="error-banner" hidden></div>
+      <p class="side-label" data-i18n="method">学习方式</p>
+      <div id="editModes" class="method-stack">
+        <button type="button" class="method-card lift" id="editModeAdd" data-method="录入词汇" style="--mc:#2f6f62"><span class="method-bar" style="background:#2f6f62"></span><strong data-i18n="modeAdd">录入词汇</strong></button>
+        <button type="button" class="method-card lift" id="editModeDue" data-method="到期复习" style="--mc:#c46b2d"><span class="method-bar" style="background:#c46b2d"></span><strong data-i18n="modeDue">到期复习</strong></button>
+        <button type="button" class="method-card lift" id="editModeWarm" data-method="课前预热" style="--mc:#3d5a99"><span class="method-bar" style="background:#3d5a99"></span><strong data-i18n="modeWarm">课前预热</strong></button>
+        <button type="button" class="method-card lift" id="editModeReport" data-method="词库报告" style="--mc:#6b4c7a"><span class="method-bar" style="background:#6b4c7a"></span><strong data-i18n="modeReport">词库报告</strong></button>
+      </div>
+      <form id="formEdit" novalidate>
+        <input type="hidden" id="formEdit_method" name="学习方式" value="">
+        <div class="field">
+          <div class="seg-legend is-req" id="formEdit_stageLegend" data-i18n="stage">学段</div>
+          <div class="segs">
+            <label class="seg" id="formEdit_stageLabelP"><input type="radio" name="学段" id="formEdit_stage_p" value="小学高段"><span data-i18n="stageP">小学高段</span></label>
+            <label class="seg" id="formEdit_stageLabelJ"><input type="radio" name="学段" id="formEdit_stage_j" value="初中"><span data-i18n="stageJ">初中</span></label>
+            <label class="seg" id="formEdit_stageLabelS"><input type="radio" name="学段" id="formEdit_stage_s" value="高中"><span data-i18n="stageS">高中</span></label>
+          </div>
+        </div>
+        <div class="form-fields">
+          <div class="field" id="formEdit_wordsWrap" hidden>
+            <label for="formEdit_words" id="formEdit_wordsLabel">词汇或词表</label>
+            <textarea id="formEdit_words" name="词汇或词表"></textarea>
+          </div>
+          <div class="field" id="formEdit_dateWrap" hidden>
+            <label for="formEdit_date" id="formEdit_dateLabel">上课日期</label>
+            <input type="date" id="formEdit_date" name="上课日期">
+          </div>
+          <div class="field" id="formEdit_answerWrap" hidden>
+            <label for="formEdit_answer" id="formEdit_answerLabel">复习作答</label>
+            <textarea id="formEdit_answer" name="复习作答"></textarea>
+          </div>
+          <p class="hint" id="formEdit_dueHint" data-i18n="dueHint" hidden>只根据已有学习记录判断到期词，没有记录会如实说明；到期词合并为一张词卡，不发送提醒</p>
+        </div>
+      </form>
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" id="btnEditSave" data-i18n="save" disabled>保存</button>
+        <button type="button" class="btn btn-secondary" id="btnEditCancel" data-i18n="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="confirmOverlay" class="overlay" hidden>
+  <div class="dialog" id="confirmDialog" role="dialog" aria-modal="true" aria-labelledby="confirmText">
+    <div class="dialog-body">
+      <p id="confirmText">确定删除这条学习记录？</p>
+      <div class="form-actions">
+        <button type="button" class="btn btn-danger" id="btnConfirmOk" data-i18n="confirmOk">确定</button>
+        <button type="button" class="btn btn-secondary" id="btnConfirmCancel" data-i18n="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("a368b6894cbd6912_智能词汇学习")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+const METHODS = ["录入词汇", "到期复习", "课前预热", "词库报告"];
+const STAGES = ["小学高段", "初中", "高中"];
+const METHOD_COLOR = { "录入词汇": "#2f6f62", "到期复习": "#c46b2d", "课前预热": "#3d5a99", "词库报告": "#6b4c7a" };
+const STAGE_COLOR = { "小学高段": "#2f6f62", "初中": "#3d5a99", "高中": "#6b4c7a" };
+const I18N = {
+  zh: {
+    appName: "智能词汇学习",
+    home: "首页",
+    studio: "学习台",
+    archive: "学习档案",
+    heroLead: "收录单词与词表，生成今日词卡和课前预热，按作答看复习建议，需要时再看词库情况",
+    modeAdd: "录入词汇",
+    modeDue: "到期复习",
+    modeWarm: "课前预热",
+    modeReport: "词库报告",
+    modeAddDesc: "把新单词或词表收进词库",
+    modeDueDesc: "生成今日到期词卡，并可带上作答",
+    modeWarmDesc: "按上课日期安排预热",
+    modeReportDesc: "汇总已有学习记录",
+    noRemind: "每日到期词汇合并成一张词卡，本应用不发送提醒",
+    statAll: "全部记录",
+    methodDist: "方式分布",
+    stageDist: "学段分布",
+    stage: "学段",
+    stageP: "小学高段",
+    stageJ: "初中",
+    stageS: "高中",
+    recent: "最近学习",
+    viewAll: "查看全部档案",
+    emptyRecent: "还没有学习记录，从一种学习方式开始",
+    detailTitle: "学习详情",
+    resultTitle: "学习结果",
+    resultEmpty: "结果尚未生成",
+    prev: "< 上一则",
+    next: "> 下一则",
+    goEdit: "去编辑",
+    del: "删除",
+    close: "关闭",
+    studioLead: "选一种方式，写下学段和需要的内容，生成适合学生阅读的结果",
+    wordsLabel: "词汇或词表",
+    wordsPh: "每行一个单词，或粘贴词表",
+    contextLabel: "使用语境（可选）",
+    answerField: "复习作答",
+    answerDueLabel: "学生作答（可选，用于调整复习建议）",
+    dateLabel: "上课日期",
+    dueHint: "只根据已有学习记录判断到期词，没有记录会如实说明；到期词合并为一张词卡，不发送提醒",
+    generate: "生成学习内容",
+    clear: "清空",
+    waiting: "正在根据学习记录生成内容，请稍候…",
+    resultNote: "内容来自本次学习结果；缺少记录时以其说明为准",
+    again: "再学一项",
+    toArchive: "已生成，去档案查看",
+    archiveLead: "查看、修改或删除已提交的学习。修改输入不会重新生成学习结果",
+    newStudy: "+ 新建学习",
+    searchLabel: "搜索",
+    searchPh: "搜索词汇、词表或作答",
+    filterAll: "全部",
+    method: "学习方式",
+    noMatch: "没有符合条件的学习记录",
+    viewResult: "查看结果",
+    edit: "编辑",
+    editTitle: "修改学习记录",
+    editNote: "保存只更新输入字段，不会重新生成学习结果。若要新的词卡、预热或报告，请新建一次学习",
+    save: "保存",
+    cancel: "取消",
+    confirmDelete: "确定删除这条学习记录？",
+    confirmOk: "确定",
+    chooseMode: "请先选择一种学习方式",
+    pollTimeout: "等待超时，学习结果仍为空",
+    loading: "正在读取…",
+    langZh: "中文",
+    langEn: "English",
+    menu: "菜单",
+    dash: "—"
+  },
+  en: {
+    appName: "Smart Vocabulary",
+    home: "Home",
+    studio: "Study Desk",
+    archive: "Study Archive",
+    heroLead: "Save words and word lists, make today's card and a pre-class warm-up, read review advice from answers, and open a word-bank report when you need it.",
+    modeAdd: "Add words",
+    modeDue: "Due review",
+    modeWarm: "Warm-up",
+    modeReport: "Word-bank report",
+    modeAddDesc: "Save new words or a word list into the bank",
+    modeDueDesc: "Build today's due card, and include answers if you have them",
+    modeWarmDesc: "Plan a warm-up for the class date",
+    modeReportDesc: "Summarize the study records you already have",
+    noRemind: "Due words for the day are merged into one card. This app does not send reminders.",
+    statAll: "All records",
+    methodDist: "Mode mix",
+    stageDist: "Stage mix",
+    stage: "Stage",
+    stageP: "Upper primary",
+    stageJ: "Junior high",
+    stageS: "Senior high",
+    recent: "Recent study",
+    viewAll: "View all records",
+    emptyRecent: "No study records yet. Start with a learning mode.",
+    detailTitle: "Study details",
+    resultTitle: "Study result",
+    resultEmpty: "Result not ready yet",
+    prev: "< Previous",
+    next: "> Next",
+    goEdit: "Edit this",
+    del: "Delete",
+    close: "Close",
+    studioLead: "Pick a mode, set the stage and what you need, then generate something students can read.",
+    wordsLabel: "Words or list",
+    wordsPh: "One word per line, or paste a list",
+    contextLabel: "Context (optional)",
+    answerField: "Review answers",
+    answerDueLabel: "Student answers (optional, used to adjust review advice)",
+    dateLabel: "Class date",
+    dueHint: "Due words come only from study records you already have. If there are none, the result says so. Due words are merged into one card. No reminders are sent.",
+    generate: "Generate",
+    clear: "Clear",
+    waiting: "Generating from your study records. Please wait…",
+    resultNote: "This text is the study result. If records are missing, follow what it says.",
+    again: "Study another",
+    toArchive: "Generated. Open records",
+    archiveLead: "View, edit, or delete submitted study. Editing inputs does not regenerate the result.",
+    newStudy: "+ New study",
+    searchLabel: "Search",
+    searchPh: "Search words, lists, or answers",
+    filterAll: "All",
+    method: "Mode",
+    noMatch: "No study records match",
+    viewResult: "View result",
+    edit: "Edit",
+    editTitle: "Edit study record",
+    editNote: "Saving only updates the inputs. It does not regenerate the result. For a new card, warm-up, or report, start a new study.",
+    save: "Save",
+    cancel: "Cancel",
+    confirmDelete: "Delete this study record?",
+    confirmOk: "Confirm",
+    chooseMode: "Choose a learning mode first",
+    pollTimeout: "Timed out. The study result is still empty.",
+    loading: "Loading…",
+    langZh: "中文",
+    langEn: "English",
+    menu: "Menu",
+    dash: "—"
+  }
+};
+
+let currentRow = 0;
+let currentPage = "home";
+const pageHistory = [];
+let pollToken = 0;
+let editLoadToken = 0;
+let homeLoadToken = 0;
+let archiveLoadToken = 0;
+let confirmResolver = null;
+let lastDetail = null;
+let deleting = false;
+const state = { lang: "zh", generating: false, saving: false };
+const homeData = {
+  total: null,
+  totalFailed: false,
+  methods: null,
+  methodsFailed: false,
+  stages: null,
+  stagesFailed: false,
+  recent: null,
+  recentFailed: false
+};
+let archiveRows = [];
+let archiveReady = false;
+let archiveFailed = false;
+
+function t(key) {
+  const pack = I18N[state.lang] || I18N.zh;
+  if (Object.prototype.hasOwnProperty.call(pack, key)) return pack[key];
+  return I18N.zh[key] || key;
+}
+
+function detectLanguage() {
+  let stored = null;
+  try { stored = localStorage.getItem("iThinkAir_UiLanguage"); } catch (e) { stored = null; }
+  if (stored !== null && stored !== "") return stored === "en" ? "en" : "zh";
+  let urlLang = "";
+  try { urlLang = new URLSearchParams(window.location.search).get("lang") || ""; } catch (e2) { urlLang = ""; }
+  urlLang = String(urlLang).toLowerCase();
+  if (urlLang === "cn" || urlLang === "zh" || urlLang.indexOf("zh-") === 0) return "zh";
+  if (urlLang === "en") return "en";
+  try {
+    const list = navigator.languages;
+    if (!list || !list.length) return "zh";
+    for (let i = 0; i < list.length; i++) {
+      const tag = String(list[i] || "").toLowerCase();
+      if (tag === "zh" || tag.indexOf("zh-") === 0) return "zh";
+    }
+    return "en";
+  } catch (e3) {
+    return "zh";
+  }
+}
+
+function errorText(err) {
+  if (err == null) return "";
+  if (typeof err === "string") return err;
+  if (err && err.message) return String(err.message);
+  return String(err);
+}
+
+function showBanner(id, message) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!message) {
+    el.hidden = true;
+    el.textContent = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = message;
+}
+
+function trimEdges(s) {
+  return String(s == null ? "" : s).replace(/^\s+|\s+$/g, "");
+}
+
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function clipText(text, n) {
+  const s = String(text == null ? "" : text).replace(/[\r\n]+/g, " ").trim();
+  const chars = Array.from(s);
+  if (chars.length <= n) return s;
+  return chars.slice(0, n).join("") + "…";
+}
+
+function methodLabel(v) {
+  const raw = trimEdges(v);
+  if (!raw) return t("dash");
+  if (raw === "录入词汇") return t("modeAdd");
+  if (raw === "到期复习") return t("modeDue");
+  if (raw === "课前预热") return t("modeWarm");
+  if (raw === "词库报告") return t("modeReport");
+  return raw;
+}
+
+function stageLabel(v) {
+  const raw = trimEdges(v);
+  if (!raw) return t("dash");
+  if (raw === "小学高段") return t("stageP");
+  if (raw === "初中") return t("stageJ");
+  if (raw === "高中") return t("stageS");
+  return raw;
+}
+
+function fieldVisibility(method) {
+  return {
+    words: method === "录入词汇" || method === "到期复习" || method === "课前预热",
+    date: method === "课前预热",
+    answer: method === "到期复习",
+    wordsRequired: method === "录入词汇",
+    dateRequired: method === "课前预热"
+  };
+}
+
+function wordsLabelKey(method) {
+  if (method === "到期复习" || method === "课前预热") return "contextLabel";
+  return "wordsLabel";
+}
+
+function answerLabelKey(method) {
+  if (method === "到期复习") return "answerDueLabel";
+  return "answerField";
+}
+
+function parseCsvSafe(text) {
+  let s = text == null ? "" : String(text);
+  if (s.charCodeAt(0) === 0xFEFF) s = s.slice(1);
+  if (!s) return [];
+  return parseCSV(s);
+}
+
+function isBlankCells(cells) {
+  for (let i = 0; i < cells.length; i++) {
+    if (trimEdges(cells[i]).length) return false;
+  }
+  return true;
+}
+
+function applyTheme(mode) {
+  const dark = mode === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const meta = document.getElementById("metaTheme");
+  if (meta) meta.setAttribute("content", dark ? "#0e1422" : "#1b2740");
+}
+
+function setLanguage(lang) {
+  state.lang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", state.lang === "en" ? "en" : "zh"); } catch (e) {}
+  applyI18n();
+}
+
+function applyI18n() {
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) {
+    const key = nodes[i].getAttribute("data-i18n");
+    nodes[i].textContent = t(key);
+  }
+  const ph = document.querySelectorAll("[data-i18n-ph]");
+  for (let i = 0; i < ph.length; i++) {
+    ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-ph")));
+  }
+  const langBtn = document.getElementById("langToggle");
+  if (langBtn) langBtn.textContent = state.lang === "en" ? "中文" : "EN";
+  const zhBtn = document.getElementById("menuLangZh");
+  const enBtn = document.getElementById("menuLangEn");
+  if (zhBtn) zhBtn.classList.toggle("is-active", state.lang !== "en");
+  if (enBtn) enBtn.classList.toggle("is-active", state.lang === "en");
+  updateStudioForm();
+  updateEditForm();
+  renderHome();
+  renderArchive();
+  if (lastDetail && document.getElementById("detailOverlay") && !document.getElementById("detailOverlay").hidden) {
+    fillDetail(lastDetail);
+  }
+  updateNavFit();
+}
+
+function closeMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  const burger = document.getElementById("navBurger");
+  if (menu) menu.hidden = true;
+  if (burger) burger.setAttribute("aria-expanded", "false");
+}
+
+function openMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  const burger = document.getElementById("navBurger");
+  if (menu) menu.hidden = false;
+  if (burger) burger.setAttribute("aria-expanded", "true");
+}
+
+let navFitLock = false;
+function updateNavFit() {
+  if (navFitLock) return;
+  const row = document.getElementById("navRow");
+  const tabs = document.getElementById("navTabs");
+  const langBtn = document.getElementById("langToggle");
+  const burger = document.getElementById("navBurger");
+  const brandText = document.getElementById("navBrandText");
+  if (!row || !tabs || !langBtn || !burger || !brandText) return;
+  navFitLock = true;
+  tabs.classList.remove("nav-tabs-hidden");
+  langBtn.classList.remove("nav-lang-hidden");
+  burger.classList.add("nav-burger-hidden");
+  row.style.overflow = "visible";
+  tabs.style.flexShrink = "0";
+  const overflow = row.scrollWidth > row.clientWidth + 1;
+  row.style.overflow = "";
+  tabs.style.flexShrink = "";
+  if (overflow) {
+    tabs.classList.add("nav-tabs-hidden");
+    langBtn.classList.add("nav-lang-hidden");
+    burger.classList.remove("nav-burger-hidden");
+  } else {
+    closeMobileMenu();
+  }
+  navFitLock = false;
+}
+
+function showPage(page, resetScroll, scrollY) {
+  currentPage = page;
+  document.getElementById("pageHome").hidden = page !== "home";
+  document.getElementById("pageStudio").hidden = page !== "studio";
+  document.getElementById("pageArchive").hidden = page !== "archive";
+  const tabs = document.querySelectorAll(".nav-tab, .menu-tab");
+  for (let i = 0; i < tabs.length; i++) {
+    const on = tabs[i].getAttribute("data-page") === page;
+    tabs[i].classList.toggle("is-active", on);
+    if (on) tabs[i].setAttribute("aria-current", "page");
+    else tabs[i].removeAttribute("aria-current");
+  }
+  let job = Promise.resolve();
+  if (page === "home") job = refreshHome();
+  else if (page === "archive") job = refreshArchive();
+  function placeScroll() {
+    if (resetScroll) window.scrollTo(0, 0);
+    else if (typeof scrollY === "number") window.scrollTo(0, scrollY);
+  }
+  placeScroll();
+  job.then(placeScroll);
+}
+
+function navigateTo(page) {
+  closeMobileMenu();
+  if (page === currentPage) return;
+  pageHistory.push({ page: currentPage, scrollY: window.scrollY || window.pageYOffset || 0 });
+  showPage(page, true);
+}
+
+function airBack() {
+  const confirmOverlay = document.getElementById("confirmOverlay");
+  if (confirmOverlay && !confirmOverlay.hidden) {
+    closeConfirm(false);
+    return "false";
+  }
+  const editOverlay = document.getElementById("editOverlay");
+  if (editOverlay && !editOverlay.hidden) {
+    if (!state.saving) closeEdit();
+    return "false";
+  }
+  const detailOverlay = document.getElementById("detailOverlay");
+  if (detailOverlay && !detailOverlay.hidden) {
+    closeDetail();
+    return "false";
+  }
+  const menu = document.getElementById("mobileMenu");
+  if (menu && !menu.hidden) {
+    closeMobileMenu();
+    return "false";
+  }
+  if (pageHistory.length > 0) {
+    const prev = pageHistory.pop();
+    showPage(prev.page, false, prev.scrollY);
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+function closeHost() {
+  try { parent.closeFullHtml(false); } catch (e) {}
+}
+
+function syncSeg(form) {
+  if (!form) return;
+  const labels = form.querySelectorAll(".seg");
+  for (let i = 0; i < labels.length; i++) {
+    const input = labels[i].querySelector("input");
+    labels[i].classList.toggle("is-on", !!(input && input.checked));
+  }
+}
+
+function setStage(form, value) {
+  if (!form) return;
+  const radios = form.querySelectorAll('input[name="学段"]');
+  for (let i = 0; i < radios.length; i++) radios[i].checked = radios[i].value === value;
+  syncSeg(form);
+}
+
+function highlightMethods(container, method) {
+  if (!container) return;
+  const cards = container.querySelectorAll(".method-card");
+  for (let i = 0; i < cards.length; i++) {
+    const on = cards[i].getAttribute("data-method") === method;
+    cards[i].classList.toggle("is-selected", on);
+    cards[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+
+function applyVisibility(prefix, method) {
+  const vis = fieldVisibility(method);
+  const wordsWrap = document.getElementById(prefix + "_wordsWrap");
+  const dateWrap = document.getElementById(prefix + "_dateWrap");
+  const answerWrap = document.getElementById(prefix + "_answerWrap");
+  if (wordsWrap) wordsWrap.hidden = !vis.words;
+  if (dateWrap) dateWrap.hidden = !vis.date;
+  if (answerWrap) answerWrap.hidden = !vis.answer;
+  const wordsLabel = document.getElementById(prefix + "_wordsLabel");
+  if (wordsLabel) {
+    wordsLabel.textContent = t(wordsLabelKey(method));
+    wordsLabel.classList.toggle("is-req", !!vis.wordsRequired);
+  }
+  const dateLabel = document.getElementById(prefix + "_dateLabel");
+  if (dateLabel) {
+    dateLabel.textContent = t("dateLabel");
+    dateLabel.classList.toggle("is-req", !!vis.dateRequired);
+  }
+  const answerLabel = document.getElementById(prefix + "_answerLabel");
+  if (answerLabel) answerLabel.textContent = t(answerLabelKey(method));
+  const words = document.getElementById(prefix + "_words");
+  if (words) {
+    words.placeholder = method === "录入词汇" ? t("wordsPh") : "";
+    words.setAttribute("aria-required", vis.wordsRequired ? "true" : "false");
+  }
+  const date = document.getElementById(prefix + "_date");
+  if (date) date.setAttribute("aria-required", vis.dateRequired ? "true" : "false");
+}
+
+function collectForm(formId) {
+  const form = document.getElementById(formId);
+  const method = document.getElementById(formId + "_method").value || "";
+  const vis = fieldVisibility(method);
+  let stage = "";
+  const checked = form.querySelector('input[name="学段"]:checked');
+  if (checked) stage = checked.value;
+  const words = document.getElementById(formId + "_words").value || "";
+  const date = document.getElementById(formId + "_date").value || "";
+  const answer = document.getElementById(formId + "_answer").value || "";
+  return {
+    "学段": stage,
+    "学习方式": method,
+    "词汇或词表": vis.words ? trimEdges(words) : "",
+    "上课日期": vis.date ? trimEdges(date) : "",
+    "复习作答": vis.answer ? trimEdges(answer) : ""
+  };
+}
+
+function canSubmit(data) {
+  if (STAGES.indexOf(data["学段"]) < 0) return false;
+  if (METHODS.indexOf(data["学习方式"]) < 0) return false;
+  if (data["学习方式"] === "录入词汇" && !String(data["词汇或词表"]).trim()) return false;
+  if (data["学习方式"] === "课前预热" && !String(data["上课日期"]).trim()) return false;
+  return true;
+}
+
+function updateGenerateState() {
+  const btn = document.getElementById("btnGenerate");
+  if (!btn) return;
+  if (state.generating) {
+    btn.disabled = true;
+    return;
+  }
+  btn.disabled = !canSubmit(collectForm("formStudio"));
+}
+
+function updateStudioForm() {
+  const hidden = document.getElementById("formStudio_method");
+  if (!hidden) return;
+  const method = hidden.value || "";
+  highlightMethods(document.getElementById("studioModes"), method);
+  const title = document.getElementById("formStudioTitle");
+  if (title) title.textContent = method ? methodLabel(method) : t("chooseMode");
+  applyVisibility("formStudio", method);
+  const due = document.getElementById("formStudio_dueHint");
+  if (due) due.hidden = method !== "到期复习";
+  syncSeg(document.getElementById("formStudio"));
+  updateGenerateState();
+}
+
+function updateEditForm() {
+  const hidden = document.getElementById("formEdit_method");
+  if (!hidden) return;
+  const method = hidden.value || "";
+  highlightMethods(document.getElementById("editModes"), method);
+  applyVisibility("formEdit", method);
+  const due = document.getElementById("formEdit_dueHint");
+  if (due) due.hidden = method !== "到期复习";
+  syncSeg(document.getElementById("formEdit"));
+  const save = document.getElementById("btnEditSave");
+  if (save) save.disabled = state.saving || !canSubmit(collectForm("formEdit"));
+}
+
+function setEditBusy(busy) {
+  const form = document.getElementById("formEdit");
+  if (form) {
+    const nodes = form.querySelectorAll("input, textarea, select");
+    for (let i = 0; i < nodes.length; i++) nodes[i].disabled = !!busy;
+  }
+  const cards = document.querySelectorAll("#editModes .method-card");
+  for (let i = 0; i < cards.length; i++) cards[i].disabled = !!busy;
+  const save = document.getElementById("btnEditSave");
+  if (busy) {
+    if (save) save.disabled = true;
+  } else {
+    updateEditForm();
+  }
+}
+
+function setGenerating(on) {
+  state.generating = !!on;
+  const form = document.getElementById("formStudio");
+  if (form) {
+    const nodes = form.querySelectorAll("input, textarea, button, select");
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].id === "btnClear") continue;
+      nodes[i].disabled = !!on;
+    }
+  }
+  const cards = document.querySelectorAll("#studioModes .method-card");
+  for (let i = 0; i < cards.length; i++) cards[i].disabled = !!on;
+  if (!on) updateGenerateState();
+  else {
+    const btn = document.getElementById("btnGenerate");
+    if (btn) btn.disabled = true;
+  }
+}
+
+function clearResult() {
+  const panel = document.getElementById("resultPanel");
+  const body = document.getElementById("resultBody");
+  const note = document.getElementById("resultNote");
+  const again = document.getElementById("btnAgain");
+  const link = document.getElementById("linkToArchive");
+  if (panel) panel.hidden = true;
+  if (body) {
+    body.className = "md-body is-waiting";
+    body.textContent = "";
+  }
+  if (note) note.hidden = true;
+  if (again) again.hidden = true;
+  if (link) link.hidden = true;
+}
+
+function showWaiting() {
+  const panel = document.getElementById("resultPanel");
+  const body = document.getElementById("resultBody");
+  const note = document.getElementById("resultNote");
+  const again = document.getElementById("btnAgain");
+  const link = document.getElementById("linkToArchive");
+  if (panel) panel.hidden = false;
+  if (body) {
+    body.className = "md-body is-waiting";
+    body.textContent = t("waiting");
+  }
+  if (note) note.hidden = true;
+  if (again) again.hidden = true;
+  if (link) link.hidden = true;
+}
+
+function showResult(text) {
+  const panel = document.getElementById("resultPanel");
+  const body = document.getElementById("resultBody");
+  const note = document.getElementById("resultNote");
+  const again = document.getElementById("btnAgain");
+  const link = document.getElementById("linkToArchive");
+  if (panel) panel.hidden = false;
+  if (body) {
+    body.className = "md-body";
+    mountMarkdown(body, text);
+  }
+  if (note) note.hidden = false;
+  if (again) again.hidden = false;
+  if (link) link.hidden = false;
+}
+
+function clearStudio() {
+  pollToken += 1;
+  state.generating = false;
+  currentRow = 0;
+  document.getElementById("formStudio_method").value = "";
+  setStage(document.getElementById("formStudio"), "");
+  document.getElementById("formStudio_words").value = "";
+  document.getElementById("formStudio_date").value = "";
+  document.getElementById("formStudio_answer").value = "";
+  showBanner("studioError", "");
+  clearResult();
+  setGenerating(false);
+  updateStudioForm();
+}
+
+function studyAnother() {
+  pollToken += 1;
+  state.generating = false;
+  currentRow = 0;
+  document.getElementById("formStudio_words").value = "";
+  document.getElementById("formStudio_date").value = "";
+  document.getElementById("formStudio_answer").value = "";
+  showBanner("studioError", "");
+  clearResult();
+  setGenerating(false);
+  updateStudioForm();
+}
+
+function preselectMethod(method) {
+  if (METHODS.indexOf(method) < 0) return;
+  document.getElementById("formStudio_method").value = method;
+  updateStudioForm();
+}
+
+async function pollResult() {
+  const token = ++pollToken;
+  const start = Date.now();
+  while (Date.now() - start < 1800 * 1000) {
+    if (token !== pollToken) return;
+    try {
+      const text = await callAppBridge({ type: "GetCellValue", data: "词汇学习/默认表格", payload: "学习结果/1" });
+      if (token !== pollToken) return;
+      if (text != null && String(text).trim() !== "") {
+        showResult(String(text));
+        setGenerating(false);
+        return;
+      }
+    } catch (e) {
+      if (token !== pollToken) return;
+      showBanner("studioError", errorText(e));
+      clearResult();
+      setGenerating(false);
+      return;
+    }
+    await sleep(1500);
+  }
+  if (token !== pollToken) return;
+  showBanner("studioError", t("pollTimeout"));
+  clearResult();
+  setGenerating(false);
+}
+
+async function generateStudy() {
+  if (state.generating) return;
+  const data = collectForm("formStudio");
+  if (!canSubmit(data)) return;
+  setGenerating(true);
+  showWaiting();
+  showBanner("studioError", "");
+  try {
+    await callAppBridge({
+      type: "SubmitRecord",
+      data: "词汇学习",
+      payload: JSON.stringify({
+        "学段": data["学段"],
+        "学习方式": data["学习方式"],
+        "词汇或词表": data["词汇或词表"],
+        "上课日期": data["上课日期"],
+        "复习作答": data["复习作答"]
+      })
+    });
+  } catch (e) {
+    showBanner("studioError", errorText(e));
+    clearResult();
+    setGenerating(false);
+    return;
+  }
+  currentRow = 1;
+  await pollResult();
+}
+
+function countKnown(rows, allowed) {
+  const counts = {};
+  for (let i = 0; i < allowed.length; i++) counts[allowed[i]] = 0;
+  for (let r = 0; r < rows.length; r++) {
+    const v = trimEdges(rows[r] && rows[r][0]);
+    if (Object.prototype.hasOwnProperty.call(counts, v)) counts[v] += 1;
+  }
+  return counts;
+}
+
+function fmtCount(n, failed) {
+  if (failed) return "—";
+  if (n === null || n === undefined) return "…";
+  return String(n);
+}
+
+function renderBars(container, items) {
+  if (!container) return;
+  container.textContent = "";
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    const top = document.createElement("div");
+    top.className = "bar-top";
+    const name = document.createElement("span");
+    name.textContent = it.label;
+    const num = document.createElement("span");
+    num.textContent = fmtCount(it.count, it.failed);
+    top.appendChild(name);
+    top.appendChild(num);
+    const track = document.createElement("div");
+    track.className = "bar-track";
+    const fill = document.createElement("div");
+    fill.className = "bar-fill";
+    fill.style.background = it.color;
+    const pct = it.failed || it.count == null || !it.denom ? 0 : Math.max(0, Math.min(100, Math.round(it.count / it.denom * 100)));
+    fill.style.width = pct + "%";
+    track.appendChild(fill);
+    row.appendChild(top);
+    row.appendChild(track);
+    container.appendChild(row);
+  }
+}
+
+function renderHome() {
+  const totalEl = document.getElementById("statTotal");
+  const addEl = document.getElementById("statAdd");
+  const dueEl = document.getElementById("statDue");
+  const warmEl = document.getElementById("statWarm");
+  if (!totalEl) return;
+  totalEl.textContent = fmtCount(homeData.total, homeData.totalFailed);
+  const methods = homeData.methods;
+  addEl.textContent = fmtCount(methods ? methods["录入词汇"] : null, homeData.methodsFailed);
+  dueEl.textContent = fmtCount(methods ? methods["到期复习"] : null, homeData.methodsFailed);
+  warmEl.textContent = fmtCount(methods ? methods["课前预热"] : null, homeData.methodsFailed);
+  const denom = !homeData.totalFailed && homeData.total > 0 ? homeData.total : 0;
+  const methodItems = [];
+  for (let i = 0; i < METHODS.length; i++) {
+    methodItems.push({
+      label: methodLabel(METHODS[i]),
+      count: methods ? methods[METHODS[i]] : null,
+      failed: homeData.methodsFailed,
+      color: METHOD_COLOR[METHODS[i]],
+      denom: denom
+    });
+  }
+  renderBars(document.getElementById("methodBars"), methodItems);
+  const stages = homeData.stages;
+  const stageItems = [];
+  for (let i = 0; i < STAGES.length; i++) {
+    stageItems.push({
+      label: stageLabel(STAGES[i]),
+      count: stages ? stages[STAGES[i]] : null,
+      failed: homeData.stagesFailed,
+      color: STAGE_COLOR[STAGES[i]],
+      denom: denom
+    });
+  }
+  renderBars(document.getElementById("stageBars"), stageItems);
+  const list = document.getElementById("recentList");
+  const empty = document.getElementById("recentEmpty");
+  list.textContent = "";
+  if (homeData.recentFailed) {
+    empty.hidden = true;
+    empty.textContent = "";
+    return;
+  }
+  if (!homeData.recent) {
+    empty.hidden = false;
+    empty.textContent = t("loading");
+    return;
+  }
+  if (!homeData.recent.length) {
+    empty.hidden = false;
+    empty.textContent = t("emptyRecent");
+    return;
+  }
+  empty.hidden = true;
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < homeData.recent.length; i++) frag.appendChild(buildRecentCard(homeData.recent[i]));
+  list.appendChild(frag);
+}
+
+function buildRecentCard(row) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "recent-card lift";
+  btn.setAttribute("data-row", String(row.row));
+  const method = trimEdges(row.method);
+  btn.style.borderLeftColor = METHOD_COLOR[method] || "#e6dcc8";
+  const head = document.createElement("div");
+  head.className = "card-head";
+  const badge = document.createElement("span");
+  badge.className = "badge";
+  const stage = trimEdges(row.stage);
+  badge.textContent = stageLabel(stage);
+  badge.style.background = STAGE_COLOR[stage] || "#6e655c";
+  const methodEl = document.createElement("span");
+  methodEl.className = "method-name";
+  methodEl.textContent = methodLabel(method);
+  head.appendChild(badge);
+  head.appendChild(methodEl);
+  const words = document.createElement("div");
+  words.className = "card-title";
+  const w = trimEdges(row.words);
+  words.textContent = w ? clipText(row.words, 40) : t("dash");
+  const date = document.createElement("div");
+  date.className = "card-meta";
+  const d = trimEdges(row.date);
+  date.textContent = t("dateLabel") + "  " + (d ? d : t("dash"));
+  btn.appendChild(head);
+  btn.appendChild(words);
+  btn.appendChild(date);
+  return btn;
+}
+
+async function refreshHome() {
+  const token = ++homeLoadToken;
+  const errors = [];
+  try {
+    const raw = await callAppBridge({ type: "GetRecordCount", data: "词汇学习/默认表格" });
+    const text = String(raw == null ? "" : raw).trim();
+    if (/^\d+$/.test(text)) {
+      homeData.total = parseInt(text, 10);
+      homeData.totalFailed = false;
+    } else {
+      homeData.total = null;
+      homeData.totalFailed = true;
+      errors.push(text || "GetRecordCount");
+    }
+  } catch (e) {
+    homeData.total = null;
+    homeData.totalFailed = true;
+    errors.push(errorText(e));
+  }
+  if (token !== homeLoadToken) return;
+  try {
+    const csv = await callAppBridge({ type: "GetTableCSV", data: "词汇学习/默认表格", payload: "学习方式" });
+    homeData.methods = countKnown(parseCsvSafe(csv), METHODS);
+    homeData.methodsFailed = false;
+  } catch (e2) {
+    homeData.methods = null;
+    homeData.methodsFailed = true;
+    errors.push(errorText(e2));
+  }
+  if (token !== homeLoadToken) return;
+  try {
+    const csvStage = await callAppBridge({ type: "GetTableCSV", data: "词汇学习/默认表格", payload: "学段" });
+    homeData.stages = countKnown(parseCsvSafe(csvStage), STAGES);
+    homeData.stagesFailed = false;
+  } catch (e3) {
+    homeData.stages = null;
+    homeData.stagesFailed = true;
+    errors.push(errorText(e3));
+  }
+  if (token !== homeLoadToken) return;
+  try {
+    const csvRows = await callAppBridge({
+      type: "GetTableCSV",
+      data: "词汇学习/默认表格",
+      payload: "学段,学习方式,词汇或词表,上课日期,复习作答"
+    });
+    const parsed = parseCsvSafe(csvRows);
+    const recent = [];
+    const recentLimit = Math.min(parsed.length, 5);
+    for (let i = 0; i < recentLimit; i++) {
+      const cells = parsed[i] || [];
+      if (isBlankCells(cells)) continue;
+      recent.push({
+        row: i + 1,
+        stage: cells[0] == null ? "" : String(cells[0]),
+        method: cells[1] == null ? "" : String(cells[1]),
+        words: cells[2] == null ? "" : String(cells[2]),
+        date: cells[3] == null ? "" : String(cells[3]),
+        answer: cells[4] == null ? "" : String(cells[4])
+      });
+    }
+    homeData.recent = recent;
+    homeData.recentFailed = false;
+  } catch (e4) {
+    homeData.recent = null;
+    homeData.recentFailed = true;
+    errors.push(errorText(e4));
+  }
+  if (token !== homeLoadToken) return;
+  showBanner("homeError", errors.join("\n"));
+  renderHome();
+}
+
+function matchRow(row, q, stage, method) {
+  if (stage && trimEdges(row.stage) !== stage) return false;
+  if (method && trimEdges(row.method) !== method) return false;
+  const query = String(q || "").trim().toLowerCase();
+  if (!query) return true;
+  const words = String(row.words || "").toLowerCase();
+  const answer = String(row.answer || "").toLowerCase();
+  return words.indexOf(query) !== -1 || answer.indexOf(query) !== -1;
+}
+
+function renderArchive() {
+  const list = document.getElementById("archiveList");
+  const empty = document.getElementById("archiveEmpty");
+  if (!list || !empty) return;
+  list.textContent = "";
+  if (!archiveReady) {
+    empty.hidden = false;
+    empty.textContent = t("loading");
+    return;
+  }
+  if (archiveFailed && !archiveRows.length) {
+    empty.hidden = true;
+    empty.textContent = "";
+    return;
+  }
+  const q = document.getElementById("archiveSearch").value || "";
+  const stage = document.getElementById("archiveStage").value || "";
+  const method = document.getElementById("archiveMethod").value || "";
+  const frag = document.createDocumentFragment();
+  let shown = 0;
+  for (let i = 0; i < archiveRows.length; i++) {
+    if (!matchRow(archiveRows[i], q, stage, method)) continue;
+    shown += 1;
+    frag.appendChild(buildArchiveCard(archiveRows[i]));
+  }
+  list.appendChild(frag);
+  empty.hidden = shown !== 0;
+  if (!shown) empty.textContent = t("noMatch");
+}
+
+function buildArchiveCard(row) {
+  const art = document.createElement("article");
+  art.className = "record-card lift";
+  art.setAttribute("data-row", String(row.row));
+  const method = trimEdges(row.method);
+  art.style.borderLeftColor = METHOD_COLOR[method] || "#e6dcc8";
+  const main = document.createElement("div");
+  main.className = "record-main";
+  const head = document.createElement("div");
+  head.className = "record-head";
+  const badge = document.createElement("span");
+  badge.className = "badge";
+  const stage = trimEdges(row.stage);
+  badge.textContent = stageLabel(stage);
+  badge.style.background = STAGE_COLOR[stage] || "#6e655c";
+  const methodEl = document.createElement("span");
+  methodEl.className = "method-name";
+  methodEl.textContent = methodLabel(method);
+  head.appendChild(badge);
+  head.appendChild(methodEl);
+  const words = document.createElement("div");
+  words.className = "card-title";
+  const w = trimEdges(row.words);
+  words.textContent = w ? clipText(row.words, 80) : t("dash");
+  const date = document.createElement("div");
+  date.className = "card-meta";
+  const d = trimEdges(row.date);
+  date.textContent = t("dateLabel") + "  " + (d ? d : t("dash"));
+  const answer = document.createElement("div");
+  answer.className = "card-meta";
+  const a = trimEdges(row.answer);
+  answer.textContent = t("answerField") + "  " + (a ? clipText(row.answer, 40) : t("dash"));
+  main.appendChild(head);
+  main.appendChild(words);
+  main.appendChild(date);
+  main.appendChild(answer);
+  const actions = document.createElement("div");
+  actions.className = "record-actions";
+  actions.appendChild(makeAct("view", t("viewResult")));
+  actions.appendChild(makeAct("edit", t("edit")));
+  actions.appendChild(makeAct("del", t("del")));
+  art.appendChild(main);
+  art.appendChild(actions);
+  return art;
+}
+
+function makeAct(act, label) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = act === "del" ? "btn btn-danger btn-sm" : "btn btn-secondary btn-sm";
+  b.setAttribute("data-act", act);
+  b.textContent = label;
+  return b;
+}
+
+async function refreshArchive() {
+  const token = ++archiveLoadToken;
+  try {
+    const csv = await callAppBridge({
+      type: "GetTableCSV",
+      data: "词汇学习/默认表格",
+      payload: "学段,学习方式,词汇或词表,上课日期,复习作答"
+    });
+    if (token !== archiveLoadToken) return;
+    const parsed = parseCsvSafe(csv);
+    const rows = [];
+    for (let i = 0; i < parsed.length; i++) {
+      const cells = parsed[i] || [];
+      if (isBlankCells(cells)) continue;
+      rows.push({
+        row: i + 1,
+        stage: cells[0] == null ? "" : String(cells[0]),
+        method: cells[1] == null ? "" : String(cells[1]),
+        words: cells[2] == null ? "" : String(cells[2]),
+        date: cells[3] == null ? "" : String(cells[3]),
+        answer: cells[4] == null ? "" : String(cells[4])
+      });
+    }
+    archiveRows = rows;
+    archiveReady = true;
+    archiveFailed = false;
+    showBanner("archiveError", "");
+    renderArchive();
+  } catch (e) {
+    if (token !== archiveLoadToken) return;
+    archiveReady = true;
+    archiveFailed = true;
+    showBanner("archiveError", errorText(e));
+    renderArchive();
+  }
+}
+
+function normalizeDate(v) {
+  const s = String(v == null ? "" : v).trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return "";
+  return m[1] + "-" + m[2] + "-" + m[3];
+}
+
+function closeDetail() {
+  document.getElementById("detailOverlay").hidden = true;
+}
+
+function fillDetail(values) {
+  document.getElementById("detailStage").textContent = stageLabel(values["学段"]);
+  document.getElementById("detailMethod").textContent = methodLabel(values["学习方式"]);
+  const words = trimEdges(values["词汇或词表"]);
+  document.getElementById("detailWords").textContent = words ? words : t("dash");
+  const date = trimEdges(values["上课日期"]);
+  document.getElementById("detailDate").textContent = date ? date : t("dash");
+  const answer = trimEdges(values["复习作答"]);
+  document.getElementById("detailAnswer").textContent = answer ? answer : t("dash");
+  const result = values["学习结果"] == null ? "" : String(values["学习结果"]);
+  const box = document.getElementById("detailResult");
+  if (!String(result).trim()) {
+    box.className = "md-body is-empty";
+    box.textContent = t("resultEmpty");
+  } else {
+    box.className = "md-body";
+    mountMarkdown(box, result);
+  }
+}
+
+async function loadDetail() {
+  const row = currentRow;
+  const names = ["学段", "学习方式", "词汇或词表", "上课日期", "复习作答", "学习结果"];
+  const values = {};
+  try {
+    for (let i = 0; i < names.length; i++) {
+      const raw = await callAppBridge({
+        type: "GetCellValue",
+        data: "词汇学习/默认表格",
+        payload: names[i] + "/" + row.toString()
+      });
+      values[names[i]] = raw == null ? "" : String(raw);
+    }
+    const rawCount = await callAppBridge({ type: "GetRecordCount", data: "词汇学习/默认表格" });
+    const count = parseInt(String(rawCount).trim(), 10) || 0;
+    if (currentRow !== row) return;
+    lastDetail = values;
+    fillDetail(values);
+    document.getElementById("btnPrev").disabled = row <= 1;
+    document.getElementById("btnNext").disabled = count <= 0 || row >= count;
+    document.getElementById("detailTitle").focus();
+  } catch (e) {
+    if (currentRow !== row) return;
+    showBanner("detailError", errorText(e));
+  }
+}
+
+async function openDetail(row) {
+  if (!row || row < 1) return;
+  currentRow = row;
+  lastDetail = null;
+  document.getElementById("detailOverlay").hidden = false;
+  showBanner("detailError", "");
+  document.getElementById("detailStage").textContent = t("loading");
+  document.getElementById("detailMethod").textContent = t("loading");
+  document.getElementById("detailWords").textContent = t("loading");
+  document.getElementById("detailDate").textContent = t("loading");
+  document.getElementById("detailAnswer").textContent = t("loading");
+  const box = document.getElementById("detailResult");
+  box.className = "md-body is-empty";
+  box.textContent = t("loading");
+  document.getElementById("btnPrev").disabled = true;
+  document.getElementById("btnNext").disabled = true;
+  await loadDetail();
+}
+
+async function moveDetail(delta) {
+  let count = 0;
+  try {
+    const raw = await callAppBridge({ type: "GetRecordCount", data: "词汇学习/默认表格" });
+    count = parseInt(String(raw).trim(), 10) || 0;
+  } catch (e) {
+    showBanner("detailError", errorText(e));
+    return;
+  }
+  const target = currentRow + delta;
+  if (target < 1 || target > count) {
+    document.getElementById("btnPrev").disabled = currentRow <= 1;
+    document.getElementById("btnNext").disabled = count <= 0 || currentRow >= count;
+    return;
+  }
+  currentRow = target;
+  await loadDetail();
+}
+
+function closeEdit() {
+  editLoadToken += 1;
+  state.saving = false;
+  const cancelBtn = document.getElementById("btnEditCancel");
+  if (cancelBtn) cancelBtn.disabled = false;
+  setEditBusy(false);
+  document.getElementById("editOverlay").hidden = true;
+  showBanner("editError", "");
+}
+
+async function openEdit(row) {
+  if (!row || row < 1) return;
+  currentRow = row;
+  const token = ++editLoadToken;
+  document.getElementById("editOverlay").hidden = false;
+  showBanner("editError", "");
+  document.getElementById("formEdit_method").value = "";
+  setStage(document.getElementById("formEdit"), "");
+  document.getElementById("formEdit_words").value = "";
+  document.getElementById("formEdit_date").value = "";
+  document.getElementById("formEdit_answer").value = "";
+  state.saving = false;
+  setEditBusy(true);
+  const names = ["学段", "学习方式", "词汇或词表", "上课日期", "复习作答"];
+  const values = {};
+  try {
+    for (let i = 0; i < names.length; i++) {
+      const raw = await callAppBridge({
+        type: "GetCellValue",
+        data: "词汇学习/默认表格",
+        payload: names[i] + "/" + row.toString()
+      });
+      values[names[i]] = raw == null ? "" : String(raw);
+    }
+    if (token !== editLoadToken) return;
+    const methodRaw = trimEdges(values["学习方式"]);
+    const stageRaw = trimEdges(values["学段"]);
+    document.getElementById("formEdit_method").value = METHODS.indexOf(methodRaw) >= 0 ? methodRaw : "";
+    setStage(document.getElementById("formEdit"), STAGES.indexOf(stageRaw) >= 0 ? stageRaw : "");
+    document.getElementById("formEdit_words").value = trimEdges(values["词汇或词表"]);
+    document.getElementById("formEdit_date").value = normalizeDate(values["上课日期"]);
+    document.getElementById("formEdit_answer").value = trimEdges(values["复习作答"]);
+    setEditBusy(false);
+    document.getElementById("editTitle").focus();
+  } catch (e) {
+    if (token !== editLoadToken) return;
+    setEditBusy(false);
+    showBanner("editError", errorText(e));
+  }
+}
+
+async function saveEdit() {
+  if (state.saving || currentRow < 1) return;
+  const data = collectForm("formEdit");
+  if (!canSubmit(data)) return;
+  state.saving = true;
+  setEditBusy(true);
+  document.getElementById("btnEditCancel").disabled = true;
+  const names = ["学段", "学习方式", "词汇或词表", "上课日期", "复习作答"];
+  const row = currentRow;
+  try {
+    for (let i = 0; i < names.length; i++) {
+      await callAppBridge({
+        type: "SetCellValue",
+        data: "词汇学习/默认表格",
+        payload: names[i] + "/" + row.toString() + "/" + data[names[i]]
+      });
+    }
+    closeEdit();
+    await refreshArchive();
+    await refreshHome();
+    if (!document.getElementById("detailOverlay").hidden) await loadDetail();
+  } catch (e) {
+    state.saving = false;
+    document.getElementById("btnEditCancel").disabled = false;
+    setEditBusy(false);
+    showBanner("editError", errorText(e));
+  }
+}
+
+function askConfirm(message) {
+  return new Promise(function (resolve) {
+    confirmResolver = resolve;
+    document.getElementById("confirmText").textContent = message;
+    document.getElementById("confirmOverlay").hidden = false;
+    document.getElementById("btnConfirmOk").focus();
+  });
+}
+
+function closeConfirm(result) {
+  document.getElementById("confirmOverlay").hidden = true;
+  const fn = confirmResolver;
+  confirmResolver = null;
+  if (fn) fn(!!result);
+}
+
+async function removeRecord(row) {
+  if (deleting || !row) return;
+  const ok = await askConfirm(t("confirmDelete"));
+  if (!ok) return;
+  deleting = true;
+  try {
+    await callAppBridge({
+      type: "DeleteRecord",
+      data: "词汇学习/默认表格",
+      payload: row.toString()
+    });
+    if (currentRow === row) currentRow = 0;
+    closeDetail();
+    showBanner("detailError", "");
+    showBanner("archiveError", "");
+    await refreshHome();
+    await refreshArchive();
+  } catch (e) {
+    const onDetail = !document.getElementById("detailOverlay").hidden;
+    showBanner(onDetail ? "detailError" : "archiveError", errorText(e));
+  }
+  deleting = false;
+}
+
+function imageHref(src) {
+  const s = String(src || "").trim();
+  if (!s) return "";
+  if (/^https?:\/\//i.test(s) || s.indexOf("data:") === 0 || s.indexOf("blob:") === 0) return s;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+}
+
+function enhanceMarkdownImages(root) {
+  const imgs = root.querySelectorAll("img");
+  for (let i = 0; i < imgs.length; i++) {
+    const img = imgs[i];
+    const href = imageHref(img.getAttribute("src"));
+    if (!href) continue;
+    img.setAttribute("src", href);
+    let anchor = img.parentElement && img.parentElement.tagName === "A" ? img.parentElement : null;
+    if (!anchor) {
+      anchor = document.createElement("a");
+      img.parentNode.insertBefore(anchor, img);
+      anchor.appendChild(img);
+    }
+    anchor.href = href;
+    anchor.setAttribute("download", "");
+    anchor.target = "_blank";
+    anchor.rel = "noopener";
+  }
+}
+
+function wrapTables(root) {
+  const tables = root.querySelectorAll("table");
+  for (let i = 0; i < tables.length; i++) {
+    const table = tables[i];
+    if (table.parentElement && table.parentElement.classList.contains("table-scroll")) continue;
+    const wrap = document.createElement("div");
+    wrap.className = "table-scroll";
+    table.parentNode.insertBefore(wrap, table);
+    wrap.appendChild(table);
+  }
+}
+
+function sanitizeHtml(html) {
+  const source = String(html == null ? "" : html);
+  if (window.DOMPurify && typeof window.DOMPurify.sanitize === "function") {
+    return window.DOMPurify.sanitize(source, { USE_PROFILES: { html: true } });
+  }
+  const wrap = document.createElement("div");
+  wrap.innerHTML = source;
+  const bad = wrap.querySelectorAll("script, iframe, object, embed, link, meta");
+  for (let i = bad.length - 1; i >= 0; i--) bad[i].parentNode.removeChild(bad[i]);
+  const all = wrap.querySelectorAll("*");
+  for (let i = 0; i < all.length; i++) {
+    const attrs = all[i].attributes;
+    for (let j = attrs.length - 1; j >= 0; j--) {
+      const name = attrs[j].name.toLowerCase();
+      const val = attrs[j].value || "";
+      if (name.indexOf("on") === 0) all[i].removeAttribute(attrs[j].name);
+      else if ((name === "href" || name === "src") && /^\s*javascript:/i.test(val)) all[i].removeAttribute(attrs[j].name);
+    }
+  }
+  return wrap.innerHTML;
+}
+
+function mdToHtml(src) {
+  const text = src == null ? "" : String(src);
+  try {
+    if (window.marked && typeof window.marked.parse === "function") {
+      return window.marked.parse(text, { gfm: true, breaks: true, headerIds: false, mangle: false });
+    }
+    if (typeof window.marked === "function") {
+      return window.marked(text, { gfm: true, breaks: true, headerIds: false, mangle: false });
+    }
+  } catch (err) {}
+  return fallbackMarkdown(text);
+}
+
+function mountMarkdown(el, text) {
+  el.innerHTML = sanitizeHtml(mdToHtml(text));
+  enhanceMarkdownImages(el);
+  wrapTables(el);
+}
+
+function escHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function inlineMd(src) {
+  let s = escHtml(src);
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;([^&]*)&quot;)?\)/g, function (_m, alt, href) {
+    return '<img src="' + href + '" alt="' + alt + '">';
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
+  s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  s = s.replace(/(^|[\s(])_([^_]+)_/g, "$1<em>$2</em>");
+  return s;
+}
+
+function isBlockStart(line) {
+  return /^(#{1,6}\s+|```|~~~|\s*([-*+]\s+|\d+[.)]\s+)|\s*>\s?|\s*\|)/.test(line) || /^(-{3,}|\*{3,}|_{3,})\s*$/.test(line);
+}
+
+function fallbackMarkdown(src) {
+  const lines = String(src == null ? "" : src).replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const blocks = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^```/.test(line) || /^~~~/.test(line)) {
+      const buf = [];
+      i += 1;
+      while (i < lines.length && !/^```/.test(lines[i]) && !/^~~~/.test(lines[i])) {
+        buf.push(lines[i]);
+        i += 1;
+      }
+      if (i < lines.length) i += 1;
+      blocks.push("<pre><code>" + escHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+      blocks.push("<hr>");
+      i += 1;
+      continue;
+    }
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) {
+      const level = heading[1].length;
+      blocks.push("<h" + level + ">" + inlineMd(heading[2]) + "</h" + level + ">");
+      i += 1;
+      continue;
+    }
+    if (/^\s*>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+        buf.push(lines[i].replace(/^\s*>\s?/, ""));
+        i += 1;
+      }
+      blocks.push("<blockquote>" + fallbackMarkdown(buf.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (/^\s*[-*+]\s+/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+        const item = lines[i].replace(/^\s*[-*+]\s+/, "");
+        const task = /^\[( |x|X)\]\s+/.exec(item);
+        if (task) {
+          const checked = task[1].toLowerCase() === "x" ? " checked" : "";
+          buf.push("<li><input type=\"checkbox\" disabled" + checked + "> " + inlineMd(item.replace(/^\[( |x|X)\]\s+/, "")) + "</li>");
+        } else {
+          buf.push("<li>" + inlineMd(item) + "</li>");
+        }
+        i += 1;
+      }
+      blocks.push("<ul>" + buf.join("") + "</ul>");
+      continue;
+    }
+    if (/^\s*\d+[.)]\s+/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
+        buf.push("<li>" + inlineMd(lines[i].replace(/^\s*\d+[.)]\s+/, "")) + "</li>");
+        i += 1;
+      }
+      blocks.push("<ol>" + buf.join("") + "</ol>");
+      continue;
+    }
+    if (/^\s*\|/.test(line) && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) {
+      const header = splitMdRow(line);
+      i += 2;
+      let body = "";
+      while (i < lines.length && /^\s*\|/.test(lines[i])) {
+        const cells = splitMdRow(lines[i]);
+        body += "<tr>" + cells.map(function (c) { return "<td>" + inlineMd(c) + "</td>"; }).join("") + "</tr>";
+        i += 1;
+      }
+      const head = "<tr>" + header.map(function (c) { return "<th>" + inlineMd(c) + "</th>"; }).join("") + "</tr>";
+      blocks.push("<table><thead>" + head + "</thead><tbody>" + body + "</tbody></table>");
+      continue;
+    }
+    if (!trimEdges(line)) {
+      i += 1;
+      continue;
+    }
+    const buf = [line];
+    i += 1;
+    while (i < lines.length && trimEdges(lines[i]) && !isBlockStart(lines[i])) {
+      buf.push(lines[i]);
+      i += 1;
+    }
+    blocks.push("<p>" + inlineMd(buf.join("\n")).replace(/\n/g, "<br>") + "</p>");
+  }
+  return blocks.join("\n");
+}
+
+function splitMdRow(line) {
+  let s = String(line).trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  return s.split("|").map(function (c) { return c.trim(); });
+}
+
+function bindKeyboard() {
+  function nudge() {
+    const el = document.activeElement;
+    if (!el || !el.matches || !el.matches("input, textarea, select")) return;
+    const vv = window.visualViewport;
+    if (!vv) {
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+      return;
+    }
+    const rect = el.getBoundingClientRect();
+    const visibleBottom = vv.offsetTop + vv.height - 16;
+    if (rect.bottom > visibleBottom || rect.top < vv.offsetTop + 70) {
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }
+  document.addEventListener("focusin", function (e) {
+    const target = e.target;
+    if (!target || !target.matches || !target.matches("input, textarea, select")) return;
+    setTimeout(nudge, 280);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", nudge);
+    window.visualViewport.addEventListener("scroll", nudge);
+  }
+}
+
+function bindEvents() {
+  document.getElementById("navBrand").addEventListener("click", function (e) {
+    e.preventDefault();
+    closeHost();
+  });
+  const pageButtons = document.querySelectorAll(".nav-tab, .menu-tab");
+  for (let i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener("click", function () {
+      navigateTo(this.getAttribute("data-page"));
+    });
+  }
+  document.getElementById("langToggle").addEventListener("click", function () {
+    setLanguage(state.lang === "en" ? "zh" : "en");
+  });
+  document.getElementById("navBurger").addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (document.getElementById("mobileMenu").hidden) openMobileMenu();
+    else closeMobileMenu();
+  });
+  document.getElementById("menuLangZh").addEventListener("click", function () {
+    setLanguage("zh");
+    closeMobileMenu();
+  });
+  document.getElementById("menuLangEn").addEventListener("click", function () {
+    setLanguage("en");
+    closeMobileMenu();
+  });
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("mobileMenu");
+    const burger = document.getElementById("navBurger");
+    if (!menu || menu.hidden) return;
+    if (menu.contains(e.target) || burger.contains(e.target)) return;
+    closeMobileMenu();
+  });
+  document.getElementById("homeModes").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-method]");
+    if (!btn) return;
+    preselectMethod(btn.getAttribute("data-method"));
+    navigateTo("studio");
+  });
+  document.getElementById("btnViewAll").addEventListener("click", function () { navigateTo("archive"); });
+  document.getElementById("recentList").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    openDetail(parseInt(card.getAttribute("data-row"), 10));
+  });
+  document.getElementById("studioModes").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-method]");
+    if (!btn || btn.disabled) return;
+    document.getElementById("formStudio_method").value = btn.getAttribute("data-method");
+    updateStudioForm();
+  });
+  document.getElementById("formStudio").addEventListener("change", function () { updateStudioForm(); });
+  document.getElementById("formStudio").addEventListener("input", function () { updateGenerateState(); });
+  document.getElementById("formStudio").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("btnGenerate").addEventListener("click", function () { generateStudy(); });
+  document.getElementById("btnClear").addEventListener("click", function () { clearStudio(); });
+  document.getElementById("btnAgain").addEventListener("click", function () { studyAnother(); });
+  document.getElementById("linkToArchive").addEventListener("click", function () { navigateTo("archive"); });
+  document.getElementById("btnStudioToArchive").addEventListener("click", function () { navigateTo("archive"); });
+  document.getElementById("btnNewStudy").addEventListener("click", function () {
+    clearStudio();
+    navigateTo("studio");
+  });
+  document.getElementById("archiveSearch").addEventListener("input", function () { renderArchive(); });
+  document.getElementById("archiveStage").addEventListener("change", function () { renderArchive(); });
+  document.getElementById("archiveMethod").addEventListener("change", function () { renderArchive(); });
+  document.getElementById("archiveList").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    const rowNum = parseInt(card.getAttribute("data-row"), 10);
+    const actBtn = e.target.closest("button[data-act]");
+    if (actBtn) {
+      const act = actBtn.getAttribute("data-act");
+      if (act === "view") openDetail(rowNum);
+      else if (act === "edit") openEdit(rowNum);
+      else if (act === "del") removeRecord(rowNum);
+      return;
+    }
+    if (e.target.closest(".record-main")) openEdit(rowNum);
+  });
+  document.getElementById("detailOverlay").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("detailOverlay")) closeDetail();
+  });
+  document.getElementById("btnPrev").addEventListener("click", function () { moveDetail(-1); });
+  document.getElementById("btnNext").addEventListener("click", function () { moveDetail(1); });
+  document.getElementById("btnDetailEdit").addEventListener("click", function () {
+    if (currentRow >= 1) openEdit(currentRow);
+  });
+  document.getElementById("btnDetailDelete").addEventListener("click", function () {
+    if (currentRow >= 1) removeRecord(currentRow);
+  });
+  document.getElementById("btnDetailClose").addEventListener("click", function () { closeDetail(); });
+  document.getElementById("editModes").addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-method]");
+    if (!btn) return;
+    document.getElementById("formEdit_method").value = btn.getAttribute("data-method");
+    updateEditForm();
+  });
+  document.getElementById("formEdit").addEventListener("change", function () { updateEditForm(); });
+  document.getElementById("formEdit").addEventListener("input", function () { updateEditForm(); });
+  document.getElementById("formEdit").addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("btnEditSave").addEventListener("click", function () { saveEdit(); });
+  document.getElementById("btnEditCancel").addEventListener("click", function () { closeEdit(); });
+  document.getElementById("btnConfirmOk").addEventListener("click", function () { closeConfirm(true); });
+  document.getElementById("btnConfirmCancel").addEventListener("click", function () { closeConfirm(false); });
+  document.getElementById("confirmOverlay").addEventListener("click", function (e) {
+    if (e.target === document.getElementById("confirmOverlay")) closeConfirm(false);
+  });
+  window.addEventListener("resize", updateNavFit);
+}
+
+async function initialize() {
+  state.lang = detectLanguage();
+  applyTheme("light");
+  applyI18n();
+  bindEvents();
+  bindKeyboard();
+  updateNavFit();
+  requestAnimationFrame(function () { updateNavFit(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { updateNavFit(); });
+  showPage("home", true);
+  try {
+    const mode = await callAppBridge({ type: "模式" });
+    if (mode && String(mode).indexOf("暗") !== -1) applyTheme("dark");
+    else applyTheme("light");
+  } catch (e) {
+    applyTheme("light");
+  }
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

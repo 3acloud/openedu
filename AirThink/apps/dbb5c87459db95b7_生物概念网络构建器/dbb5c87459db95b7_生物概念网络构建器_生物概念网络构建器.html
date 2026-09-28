@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>生物概念网络构建器</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+<style>
+:root{color-scheme:light;--bg:#effbf2;--bg2:#e4f6f5;--card:#fff;--ink:#173c3a;--muted:#617a76;--line:#cde5dc;--primary:#159778;--primary2:#0e786d;--amber:#e9b84f;--soft:#eef8f3;--shadow:0 12px 36px #185e4720;--nav:#064e4b;--error:#b33434}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--ink);font-family:PingFang SC,Microsoft YaHei,Arial,sans-serif}button,input,select,textarea{font:inherit}input,select,textarea{box-sizing:border-box}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}a{color:var(--primary2)}.topbar{position:relative;z-index:1001;position:sticky;top:0;background:linear-gradient(105deg,#075953,#073e45);color:#fff;box-shadow:0 5px 24px #093d3850}.nav-inner{max-width:1240px;margin:auto;padding:0 24px;height:70px;display:flex;align-items:center;gap:20px}.brand{display:flex;align-items:center;gap:13px;border:0;background:none;color:#fff;font-weight:800;font-size:19px;padding:0;white-space:nowrap}.brand svg{width:36px;height:36px;flex:none}.nav-links{display:flex;align-items:center;margin-left:auto;gap:8px;white-space:nowrap}.nav-btn,.lang-btn,.menu-btn{border:0;background:transparent;color:#e6f6ef;padding:12px 14px;border-radius:10px;white-space:nowrap}.nav-btn.active{color:#fff;box-shadow:inset 0 -3px var(--amber)}.nav-btn:hover,.lang-btn:hover,.menu-btn:hover{background:#ffffff20}.menu-btn{display:none;margin-left:auto;font-size:20px}.mobile-menu{display:none;position:absolute;top:100%;left:0;right:0;padding:12px 20px 16px;background:#0a514d;box-shadow:0 12px 20px #083e3840}.mobile-menu.open{display:grid;gap:4px}.mobile-menu button{text-align:left}main{max-width:1240px;margin:0 auto;padding:42px 24px 130px}section.view{display:none}section.view.active{display:block}.hero{position:relative;overflow:hidden;padding:50px;min-height:315px;border:1px solid #ffffffa8;border-radius:30px;background:linear-gradient(115deg,#fffefaed,#e6f7ef);box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;right:-30px;top:-45px;width:380px;height:340px;opacity:.45;background:radial-gradient(circle at 20% 28%,#1caf8d 0 10px,transparent 11px),radial-gradient(circle at 70% 17%,#1caf8d 0 16px,transparent 17px),radial-gradient(circle at 78% 70%,#e9b84f 0 11px,transparent 12px),radial-gradient(circle at 32% 83%,#1caf8d 0 14px,transparent 15px),linear-gradient(35deg,transparent 45%,#8bd5bb 45.3% 45.8%,transparent 46%);pointer-events:none}.eyebrow{color:var(--primary2);font-weight:800;letter-spacing:.1em}.hero h1{font-size:clamp(32px,4vw,54px);margin:12px 0}.hero .slogan{font-size:clamp(20px,2.5vw,28px);font-weight:750;margin:0 0 16px}.hero p{max-width:720px;line-height:1.8;color:var(--muted)}.btn{border:0;border-radius:12px;padding:12px 20px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s,box-shadow .2s}.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px #0d786b27}.btn-primary{background:linear-gradient(105deg,var(--primary),var(--primary2));color:#fff}.btn-soft{background:var(--soft);color:var(--primary2)}.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}.btn-danger{background:#fff0ed;color:#a92d2d}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:34px 0 16px}.section-head h2,.panel h2{margin:0;font-size:23px}.section-head p,.panel .intro{color:var(--muted);line-height:1.7;margin:8px 0 0}.steps,.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.step,.stat,.panel,.network-card,.recent-card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.step{padding:20px;display:flex;gap:14px;align-items:center}.step b{height:34px;width:34px;display:grid;place-items:center;flex:none;border-radius:50%;background:#ddf5e8;color:var(--primary2)}.stat{padding:22px;text-align:left;color:var(--ink);transition:.2s}.stat:hover,.network-card:hover,.recent-card:hover{transform:translateY(-4px);box-shadow:0 16px 35px #0a75642b}.stat small{display:block;color:var(--muted);font-size:14px}.stat strong{display:block;font-size:35px;margin-top:8px}.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.recent-card,.network-card{position:relative;text-align:left;padding:20px;transition:.2s;overflow:hidden}.recent-card:after,.network-card:after{content:"";position:absolute;width:95px;height:85px;right:-26px;bottom:-22px;background:radial-gradient(circle at 15% 15%,#79c9ac 0 4px,transparent 5px),radial-gradient(circle at 75% 36%,#79c9ac 0 5px,transparent 6px),linear-gradient(25deg,transparent 48%,#a1d9c6 48.5% 49%,transparent 50%);opacity:0;transition:.2s;pointer-events:none}.recent-card:hover:after,.network-card:hover:after{opacity:.5}.badge{display:inline-block;padding:5px 10px;border-radius:999px;background:#d8f5eb;color:#087c6e;font-size:12px;font-weight:800}.badge.senior{background:#e0f1ff;color:#246ca2}.card-title{display:block;font-size:19px;font-weight:800;margin:12px 0 7px;overflow-wrap:anywhere}.summary{color:var(--muted);font-size:14px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere}.empty,.error-box{grid-column:1/-1;background:var(--card);border:1px dashed var(--line);border-radius:18px;padding:35px;text-align:center;color:var(--muted)}.error-box{color:var(--error)}.build-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:start}.panel{padding:26px;min-width:0}.form-grid{display:grid;gap:17px;margin-top:24px}.field label,.field-title{display:block;font-weight:750;margin-bottom:8px}.field input,.field textarea,.toolbar input,.toolbar select{width:100%;border:1px solid var(--line);border-radius:11px;background:var(--card);color:var(--ink);padding:12px 14px;outline:none}.field input:focus,.field textarea:focus,.toolbar input:focus,.toolbar select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #15977825}.field textarea{min-height:156px;resize:vertical}.radio-row{display:flex;gap:12px}.radio-option{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);border-radius:11px;background:var(--soft)}.radio-option input{accent-color:var(--primary)}.hint{font-size:13px;color:var(--muted);margin:7px 0 0}.topic-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.topic-chip{border:1px solid var(--line);background:var(--soft);color:var(--primary2);padding:8px 10px;border-radius:999px;font-size:13px}.topic-chip:hover{border-color:var(--primary)}.button-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}.journal-head{display:flex;align-items:start;justify-content:space-between;gap:12px}.pager{display:flex;gap:6px}.pager button{border:1px solid var(--line);background:var(--soft);color:var(--primary2);width:34px;height:34px;border-radius:9px}.concept-levels{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0}.concept-levels span{font-size:12px;padding:7px 10px;border-radius:999px;background:var(--soft);color:var(--primary2)}.paper{min-height:260px;padding:23px 26px;border-radius:14px;background:#fcfdf5;border-left:5px solid var(--primary);line-height:1.75;overflow-wrap:anywhere}.paper.waiting{display:flex;align-items:center;gap:14px;color:var(--muted)}.nodes{display:flex;gap:5px}.nodes i{width:9px;height:9px;border-radius:50%;background:var(--primary);animation:pulse 1.2s infinite alternate}.nodes i:nth-child(2){animation-delay:.3s}.nodes i:nth-child(3){animation-delay:.6s}@keyframes pulse{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:scale(1.2)}}.markdown{line-height:1.7;overflow-wrap:anywhere}.markdown h1,.markdown h2,.markdown h3{line-height:1.35;margin:1.1em 0 .5em}.markdown h1{font-size:1.65em}.markdown h2{font-size:1.35em}.markdown h3{font-size:1.15em}.markdown blockquote{margin:1em 0;padding:.4em 1em;border-left:4px solid var(--primary);background:#eaf5ed;color:var(--muted)}.markdown pre{overflow:auto;padding:14px;border-radius:9px;background:#173b3b;color:#e8fff3}.markdown code{font-family:Consolas,monospace}.markdown :not(pre)>code{background:#e8f2e9;padding:2px 4px;border-radius:4px}.markdown table{display:block;overflow-x:auto;border-collapse:collapse;max-width:100%}.markdown td,.markdown th{border:1px solid var(--line);padding:7px 10px}.markdown img{max-width:100%;height:auto}.toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;margin:24px 0 18px}.filter-group{display:flex;gap:5px;background:var(--card);padding:4px;border:1px solid var(--line);border-radius:12px}.filter-group button{border:0;background:none;color:var(--muted);border-radius:8px;padding:7px 12px}.filter-group button.selected{background:var(--primary);color:#fff}.network-card{cursor:pointer}.network-card .card-actions{display:flex;gap:8px;margin-top:15px;position:relative;z-index:1}.card-actions button{border:1px solid var(--line);background:var(--soft);color:var(--primary2);border-radius:8px;padding:7px 10px}.card-actions .delete{color:#a92d2d;background:#fff0ed}.overlay{position:fixed;inset:0;z-index:2000;background:#0b292cb8;display:none;align-items:center;justify-content:center;padding:24px}.overlay.open{display:flex}.dialog{width:min(860px,100%);max-height:calc(100dvh - 48px);overflow:auto;background:var(--card);color:var(--ink);border-radius:22px;padding:28px;box-shadow:0 25px 80px #071f2270}.dialog-header{display:flex;align-items:start;justify-content:space-between;gap:14px}.dialog-header h2{margin:10px 0}.icon-button{border:0;background:var(--soft);color:var(--ink);height:36px;width:36px;border-radius:10px}.quote{padding:14px 18px;background:var(--soft);border-left:4px solid var(--amber);border-radius:0 10px 10px 0;white-space:pre-wrap;overflow-wrap:anywhere}.dialog .paper{min-height:180px}.dialog-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:18px}.toast{position:fixed;z-index:3000;left:50%;bottom:25px;transform:translateX(-50%);max-width:calc(100vw - 30px);background:#153f3e;color:white;padding:12px 18px;border-radius:10px;box-shadow:var(--shadow);display:none}.toast.show{display:block}.hidden{display:none!important}body.dark{color-scheme:dark;--bg:#0d2428;--bg2:#113432;--card:#173438;--ink:#e8f7f1;--muted:#adcbc3;--line:#365958;--soft:#214743;--shadow:0 12px 36px #0005}body.dark .hero{background:linear-gradient(115deg,#1e4845,#173638);border-color:#365958}body.dark .paper{background:#1c3935}body.dark .markdown blockquote{background:#264a45}body.dark .markdown :not(pre)>code{background:#31544e}body.dark .radio-option{background:var(--soft)}body.dark .btn-danger,body.dark .card-actions .delete{background:#51332f;color:#ffd0c9}@media(max-width:800px){.nav-links{display:none}.menu-btn{display:block}.build-layout{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr}.steps,.stats{grid-template-columns:1fr}.hero{padding:30px}.hero:after{opacity:.17}.card-grid{grid-template-columns:1fr}}@media(max-width:600px){.nav-inner{padding:0 16px;height:62px}.brand{font-size:15px}.brand svg{width:30px;height:30px}main{padding:24px 14px 170px}.panel{padding:18px}.dialog{padding:20px}.overlay{padding:0}.dialog{border-radius:0;width:100%;height:100dvh;max-height:100dvh;padding-bottom:42vh}.paper{padding:17px}.section-head{align-items:start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"><div class="nav-inner"><button class="brand" id="brand" aria-label="Home"><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M9 28 20 10 32 27 9 28Z" stroke="#aee9cd" stroke-width="2"/><circle cx="9" cy="28" r="5" fill="#e9b84f"/><circle cx="20" cy="10" r="5" fill="#74d8ad"/><circle cx="32" cy="27" r="5" fill="#74d8ad"/></svg><span data-i18n="appName">生物概念网络构建器</span></button><nav class="nav-links" id="navLinks"><button class="nav-btn active" data-view="home" data-i18n="home">首页</button><button class="nav-btn" data-view="build" data-i18n="build">开始构建</button><button class="nav-btn" data-view="mine" data-i18n="mine">我的网络</button><button class="lang-btn" id="langButton" type="button">EN</button></nav><button class="menu-btn" id="menuButton" aria-label="Menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div><div class="mobile-menu" id="mobileMenu"><button class="nav-btn" data-view="home" data-i18n="home">首页</button><button class="nav-btn" data-view="build" data-i18n="build">开始构建</button><button class="nav-btn" data-view="mine" data-i18n="mine">我的网络</button><button class="lang-btn" id="mobileLangButton" type="button">English</button></div></header>
+<main>
+<section class="view active" id="homeView"><div class="hero"><div class="eyebrow" data-i18n="theme">概念脉络 · 从提问开始</div><h1 data-i18n="appName">生物概念网络构建器</h1><div class="slogan" data-i18n="slogan">先提问，再连线，概念网自己长出来</div><p data-i18n="description">面向初高中生，围绕指定章节或主题梳理生物概念，通过分层提问、关系连线与易混概念辨析，帮助学生用自己的话构建概念网络。</p><button class="btn btn-primary" id="heroStart"><i class="fa-solid fa-diagram-project"></i><span data-i18n="startNow">开始梳理概念</span></button></div><div class="section-head"><h2 data-i18n="threeSteps">三步，长出自己的概念网</h2></div><div class="steps"><div class="step"><b>1</b><span data-i18n="step1">选学段与章节</span></div><div class="step"><b>2</b><span data-i18n="step2">用自己的话写下已有理解和疑问</span></div><div class="step"><b>3</b><span data-i18n="step3">跟着大概念、重要概念、次位概念的提问把概念连起来</span></div></div><div class="section-head"><h2 data-i18n="overview">我的梳理概况</h2></div><div class="stats"><button class="stat" data-stat-filter="all"><small data-i18n="allNetworks">全部概念网</small><strong id="allCount">—</strong></button><button class="stat" data-stat-filter="初中"><small data-i18n="juniorTopics">初中主题</small><strong id="juniorCount">—</strong></button><button class="stat" data-stat-filter="高中"><small data-i18n="seniorTopics">高中主题</small><strong id="seniorCount">—</strong></button></div><div class="section-head"><h2 data-i18n="recent">最近概念网</h2></div><div class="card-grid" id="recentList"></div></section>
+<section class="view" id="buildView"><div class="build-layout"><div class="panel"><h2 data-i18n="fromHere">从这里出发</h2><p class="intro" data-i18n="buildIntro">写下学段、章节，以及你已经知道的和还困惑的。引导会提问，不会直接给你一张供背诵的概念图</p><div class="section-head"><h2 data-i18n="tryTopics">试试这些主题</h2></div><div class="topic-list" id="topicList"></div><form id="conceptForm" class="form-grid"><div class="field"><span class="field-title" data-i18n="stage">学段</span><div class="radio-row"><label class="radio-option"><input type="radio" name="学段" value="初中"><span data-i18n="junior">初中</span></label><label class="radio-option"><input type="radio" name="学段" value="高中"><span data-i18n="senior">高中</span></label></div></div><div class="field"><label for="conceptForm_topic" data-i18n="topic">章节或主题</label><input id="conceptForm_topic" name="章节或主题" autocomplete="off" maxlength="200"></div><div class="field"><label for="conceptForm_understanding" data-i18n="understanding">已有理解与疑问</label><textarea id="conceptForm_understanding" name="已有理解与疑问" data-placeholder="understandingPlaceholder"></textarea></div><p class="hint" id="validationHint"></p><div class="button-row"><button class="btn btn-primary" id="generateButton" type="submit" data-i18n="generate">生成引导</button><button class="btn btn-primary hidden" id="saveButton" type="button" data-i18n="save">保存修改</button><button class="btn btn-soft hidden" id="regenerateButton" type="button" data-i18n="regenerate">再生成一条</button><button class="btn btn-danger hidden" id="deleteCurrentButton" type="button" data-i18n="deleteThis">删除本条</button><button class="btn btn-ghost" id="resetButton" type="button" data-i18n="reset">清空重来</button></div></form></div><div class="panel"><div class="journal-head"><div><h2 data-i18n="journal">概念引导手账</h2><p class="intro" data-i18n="journalIntro">将按大概念、重要概念、次位概念提问，为每条连线提示能读成完整句子的连接词，并辨析易混概念</p></div><div class="pager"><button id="previousButton" type="button" aria-label="Previous">&lt;</button><button id="nextButton" type="button" aria-label="Next">&gt;</button></div></div><div class="concept-levels"><span data-i18n="bigConcept">大概念</span><span data-i18n="keyConcept">重要概念</span><span data-i18n="subConcept">次位概念</span></div><div class="paper" id="journalContent"></div><div class="button-row"><button class="btn btn-soft hidden" id="refreshGuideButton" type="button" data-i18n="refreshGuide">刷新引导</button><span class="hint" id="rowPosition"></span></div></div></div></section>
+<section class="view" id="mineView"><div class="section-head"><div><h2 data-i18n="myNetworks">我的概念网</h2><p data-i18n="mineIntro">回看每一次梳理，改一改自己的理解，或删掉不需要的记录</p></div><button class="btn btn-primary" id="newRecordButton"><i class="fa-solid fa-plus"></i><span data-i18n="newOne">新建一条</span></button></div><div class="toolbar"><input id="searchInput" type="search" data-placeholder="searchPlaceholder" aria-label="Search"><div class="filter-group" id="filterGroup"><button data-filter="all" class="selected" data-i18n="all">全部</button><button data-filter="初中" data-i18n="junior">初中</button><button data-filter="高中" data-i18n="senior">高中</button></div><select id="sortSelect" aria-label="Sort"><option value="newest" data-i18n="newest">最新在前</option><option value="topic" data-i18n="topicSort">章节名称</option></select></div><div class="card-grid" id="networkList"></div></section>
+</main>
+<div class="overlay" id="detailOverlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="dialog-header"><div><span class="badge" id="detailStage"></span><h2 id="detailTitle"></h2></div><button class="icon-button" id="detailCloseIcon" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div><h3 data-i18n="understanding">已有理解与疑问</h3><div class="quote" id="detailUnderstanding"></div><h3 data-i18n="journal">概念引导手账</h3><div class="paper" id="detailGuide"></div><div class="dialog-actions"><button class="btn btn-soft" id="detailEdit" data-i18n="editThis">编辑这条</button><button class="btn btn-danger" id="detailDelete" data-i18n="delete">删除</button><button class="btn btn-ghost" id="detailClose" data-i18n="close">关闭</button></div></div></div><div class="toast" id="toast" role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("dbb5c87459db95b7_生物概念网络构建器")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const SOURCE='概念网络构建/默认表格',TABLE='概念网络构建',FIELDS=['学段','章节或主题','已有理解与疑问'],GUIDE='概念网络引导';
+const zh={appName:'生物概念网络构建器',home:'首页',build:'开始构建',mine:'我的网络',theme:'概念脉络 · 从提问开始',slogan:'先提问，再连线，概念网自己长出来',description:'面向初高中生，围绕指定章节或主题梳理生物概念，通过分层提问、关系连线与易混概念辨析，帮助学生用自己的话构建概念网络。',startNow:'开始梳理概念',threeSteps:'三步，长出自己的概念网',step1:'选学段与章节',step2:'用自己的话写下已有理解和疑问',step3:'跟着大概念、重要概念、次位概念的提问把概念连起来',overview:'我的梳理概况',allNetworks:'全部概念网',juniorTopics:'初中主题',seniorTopics:'高中主题',recent:'最近概念网',fromHere:'从这里出发',buildIntro:'写下学段、章节，以及你已经知道的和还困惑的。引导会提问，不会直接给你一张供背诵的概念图',tryTopics:'试试这些主题',stage:'学段',junior:'初中',senior:'高中',topic:'章节或主题',understanding:'已有理解与疑问',understandingPlaceholder:'我知道叶绿体和光合作用有关，但不清楚光反应和暗反应怎么连',generate:'生成引导',save:'保存修改',regenerate:'再生成一条',deleteThis:'删除本条',reset:'清空重来',journal:'概念引导手账',journalIntro:'将按大概念、重要概念、次位概念提问，为每条连线提示能读成完整句子的连接词，并辨析易混概念',bigConcept:'大概念',keyConcept:'重要概念',subConcept:'次位概念',refreshGuide:'刷新引导',myNetworks:'我的概念网',mineIntro:'回看每一次梳理，改一改自己的理解，或删掉不需要的记录',newOne:'新建一条',searchPlaceholder:'搜索章节或主题、已有理解与疑问',all:'全部',newest:'最新在前',topicSort:'章节名称',editThis:'编辑这条',delete:'删除',close:'关闭',view:'查看',edit:'编辑',noneWritten:'还没写下已有理解',empty:'还没有概念网',first:'去构建第一条',noMatch:'没有找到对应的概念网',retry:'重试',loadError:'列表加载失败，请重试',countError:'统计获取失败',fillRequired:'请选择学段并填写章节或主题',emptyGuide:'填写左侧内容并生成引导后，提问会出现在这里',waiting:'正在按大概念、重要概念、次位概念为你编排提问……',later:'暂时还没有收到引导，可稍后刷新',submitFail:'提交没有成功，请检查后重试',saveOk:'已保存。修改已有理解不会自动重写已生成的引导；若要新的提问，请再生成一条',saveFail:'保存失败，请检查后重试',deleteFail:'删除失败，请重试',deleteConfirm:'确定删除这条概念网络吗？删除后不能恢复。',regenerateConfirm:'将按当前内容新建一条概念网，原来的记录会保留。确定吗？',dirtyConfirm:'有未保存修改，确定离开吗？',deleted:'已删除',row:'第 {row} / {count} 条',readFail:'读取记录失败，请重试'};
+const en={appName:'Biology Concept Network Builder',home:'Home',build:'Start Building',mine:'My Networks',theme:'Concept pathways · start with questions',slogan:'Ask, connect, and grow your own concept network',description:'For middle and high school students: explore biology concepts in a chapter or topic through layered questions, relationship links, and comparisons of easily confused ideas, then build a concept network in your own words.',startNow:'Start exploring concepts',threeSteps:'Three steps to your network',step1:'Choose a school level and topic',step2:'Write what you know and what puzzles you',step3:'Connect ideas through big, key, and supporting concept questions',overview:'My overview',allNetworks:'All networks',juniorTopics:'Middle school topics',seniorTopics:'High school topics',recent:'Recent networks',fromHere:'Start here',buildIntro:'Write your school level, topic, current understanding, and questions. The guide asks questions instead of giving you a chart to memorize.',tryTopics:'Try these topics',stage:'School level',junior:'Middle school',senior:'High school',topic:'Chapter or topic',understanding:'What I know and wonder',understandingPlaceholder:'I know chloroplasts relate to photosynthesis, but I am unsure how the light and dark reactions connect',generate:'Generate guide',save:'Save changes',regenerate:'Generate another',deleteThis:'Delete this',reset:'Start over',journal:'Concept guide journal',journalIntro:'Questions move through big, key, and supporting concepts, suggest readable linking words, and compare easily confused ideas.',bigConcept:'Big concepts',keyConcept:'Key concepts',subConcept:'Supporting concepts',refreshGuide:'Refresh guide',myNetworks:'My concept networks',mineIntro:'Review each exploration, revise your ideas, or remove records you no longer need.',newOne:'New network',searchPlaceholder:'Search topic or understanding',all:'All',newest:'Newest first',topicSort:'Topic name',editThis:'Edit this',delete:'Delete',close:'Close',view:'View',edit:'Edit',noneWritten:'No understanding written yet',empty:'No networks yet',first:'Build your first network',noMatch:'No matching networks',retry:'Retry',loadError:'Could not load records. Please retry.',countError:'Could not load count',fillRequired:'Choose a school level and enter a topic',emptyGuide:'Fill in the form and generate a guide to see questions here',waiting:'Preparing questions across big, key, and supporting concepts…',later:'No guide yet. Please refresh later.',submitFail:'Submission failed. Please check and retry.',saveOk:'Saved. Changes to your understanding will not regenerate the guide; create another record for new questions.',saveFail:'Save failed. Please retry.',deleteFail:'Delete failed. Please retry.',deleteConfirm:'Delete this concept network? This cannot be undone.',regenerateConfirm:'Create a new network from the current content and keep the original?',dirtyConfirm:'You have unsaved changes. Leave anyway?',deleted:'Deleted',row:'Record {row} / {count}',readFail:'Could not read record. Please retry.'};
+const $=id=>document.getElementById(id);const state={lang:'cn',view:'home',history:[],records:[],count:null,loadError:false,filter:'all',sort:'newest',row:0,detailRow:0,baseline:'',busy:false,poll:null,pollToken:0};
+function t(k){return (state.lang==='en'?en:zh)[k]||k}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function responseText(x){return x==null?'':String(x)}function checkResult(x){const s=responseText(x).trim();if(/^(error|失败|错误|false)(\b|[:：])/i.test(s))throw Error(s);return s}
+function setLanguage(lang){state.lang=lang;document.documentElement.lang=lang==='en'?'en':'zh-CN';try{localStorage.setItem('iThinkAir_UiLanguage',lang)}catch(e){}document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));document.querySelectorAll('[data-placeholder]').forEach(el=>el.placeholder=t(el.dataset.placeholder));$('langButton').textContent=lang==='en'?'中文':'EN';$('mobileLangButton').textContent=lang==='en'?'中文':'English';document.querySelectorAll('.topic-chip').forEach(b=>b.textContent=(b.dataset.stage==='初中'?t('junior'):t('senior'))+' · '+b.dataset.topic);renderAll();renderJournal();if(state.detailRow)renderDetailStatic()}
+function chooseLanguage(){let lang='cn';const langs=navigator.languages;if(Array.isArray(langs)&&langs.length)lang=langs.some(x=>String(x).toLowerCase().startsWith('zh'))?'cn':'en';const url=new URL(location.href).searchParams.get('lang');if(url==='cn'||url==='en')lang=url;try{const saved=localStorage.getItem('iThinkAir_UiLanguage');if(saved)lang=saved==='en'?'en':'cn'}catch(e){}return lang}
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),4000)}function dirty(){return state.row>=0&&JSON.stringify(formValues())!==state.baseline}function confirmDirty(){return !dirty()||window.confirm(t('dirtyConfirm'))}
+function formValues(){return {'学段':document.querySelector('#conceptForm input[name="学段"]:checked')?.value||'','章节或主题':$('conceptForm_topic').value.trim(),'已有理解与疑问':$('conceptForm_understanding').value}}function setForm(data){document.querySelectorAll('#conceptForm input[name="学段"]').forEach(el=>el.checked=el.value===(data['学段']||''));$('conceptForm_topic').value=data['章节或主题']||'';$('conceptForm_understanding').value=data['已有理解与疑问']||'';state.baseline=JSON.stringify(formValues());validate()}
+function validate(){const ok=!!formValues()['学段']&&!!formValues()['章节或主题'];$('generateButton').disabled=state.busy||state.polling||!ok;$('saveButton').disabled=state.busy||!ok;$('regenerateButton').disabled=state.busy||state.polling||!ok;$('validationHint').textContent=ok?'':t('fillRequired')}
+function setBusy(v){state.busy=v;validate();$('deleteCurrentButton').disabled=v;$('resetButton').disabled=v;updatePager()}
+function stopPolling(){state.pollToken++;state.polling=false;if(state.poll){clearTimeout(state.poll);state.poll=null}validate()}
+function showView(view,opts={}){if(state.view==='build'&&view!=='build'&&!opts.force&&!confirmDirty())return false;if(state.view!==view){state.history.push({view:state.view,scroll:window.scrollY});state.view=view}document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===view+'View'));document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===view));closeMenu();window.scrollTo(0,0);refreshData();return true}
+function closeMenu(){$('mobileMenu').classList.remove('open');$('menuButton').setAttribute('aria-expanded','false')}
+function resetBuild(force=false){if(!force&&!confirmDirty())return false;stopPolling();state.row=0;setForm({});renderJournal();updateMode();return true}
+function openNew(){if(!resetBuild())return;showView('build',{force:true})}
+function updateMode(){const existing=state.row>=1;$('generateButton').classList.toggle('hidden',existing);for(const id of ['saveButton','regenerateButton','deleteCurrentButton'])$(id).classList.toggle('hidden',!existing);$('refreshGuideButton').classList.toggle('hidden',!existing);updatePager();validate()}
+function updatePager(){$('previousButton').disabled=state.busy||state.row<=1;$('nextButton').disabled=state.busy||state.count==null||(state.row===0?state.count<1:state.row>=state.count);$('rowPosition').textContent=state.row?t('row').replace('{row}',state.row).replace('{count}',state.count??'—'):''}
+function markdown(textValue){const target=String(textValue||'');if(!window.marked||!window.DOMPurify)return '<pre>'+esc(target)+'</pre>';const html=marked.parse(target,{gfm:true,breaks:true});return DOMPurify.sanitize(html,{USE_PROFILES:{html:true},ADD_ATTR:['target','rel']})}
+function setMarkdown(el,value){el.classList.add('markdown');el.innerHTML=markdown(value);el.querySelectorAll('a').forEach(a=>{const u=a.getAttribute('href')||'';if(!/^https?:\/\//i.test(u)){a.removeAttribute('href');return}a.target='_blank';a.rel='noopener noreferrer'});el.querySelectorAll('img').forEach(img=>{const src=img.getAttribute('src')||'';if(!/^https?:\/\//i.test(src)){img.removeAttribute('src');return}img.style.cursor='pointer';img.addEventListener('click',()=>{const a=document.createElement('a');a.href=src;a.target='_blank';a.rel='noopener noreferrer';a.download='';a.click()})})}
+function guideReady(value){const s=String(value??'').trim();return s!==''&&s.toLowerCase()!=='null'}
+function waitingHtml(){return '<span class="nodes"><i></i><i></i><i></i></span><span>'+esc(t('waiting'))+'</span>'}
+function renderJournal(value){const el=$('journalContent');el.classList.remove('waiting');if(value===undefined){if(state.row===0){el.dataset.guide='';el.textContent=t('emptyGuide');return}value=el.dataset.guide||''}el.dataset.guide=value;if(guideReady(value))setMarkdown(el,value);else{el.classList.add('waiting');el.innerHTML=waitingHtml()}}
+function renderDetailStatic(){const el=$('detailGuide');if(guideReady(el.dataset.guide)){setMarkdown(el,el.dataset.guide)}else if(state.detailRow){el.classList.add('waiting');el.innerHTML=waitingHtml()}}
+function renderAll(){renderStats();renderRecent();renderNetwork();updateMode()}
+function recordCard(rec,small){const card=document.createElement('article');card.className=small?'recent-card':'network-card';card.tabIndex=0;card.setAttribute('role','button');const badge=document.createElement('span');badge.className='badge'+(rec.stage==='高中'?' senior':'');badge.textContent=rec.stage==='初中'?t('junior'):rec.stage==='高中'?t('senior'):rec.stage;card.appendChild(badge);const title=document.createElement('span');title.className='card-title';title.textContent=rec.topic||'—';card.appendChild(title);const summary=document.createElement('span');summary.className='summary';summary.textContent=rec.understanding?.trim()||t('noneWritten');card.appendChild(summary);card.onclick=()=>openDetail(rec.row);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(rec.row)}};if(!small){const actions=document.createElement('div');actions.className='card-actions';for(const [key,action] of [['view',()=>openDetail(rec.row)],['edit',()=>loadRow(rec.row)],['delete',()=>deleteRow(rec.row)]]){const btn=document.createElement('button');btn.type='button';btn.textContent=t(key);if(key==='delete')btn.className='delete';btn.onclick=e=>{e.stopPropagation();action()};actions.appendChild(btn)}card.appendChild(actions)}return card}
+function emptyBox(message,button){const box=document.createElement('div');box.className='empty';box.textContent=message;if(button){const btn=document.createElement('button');btn.className='btn btn-primary';btn.style.marginTop='14px';btn.textContent=t('first');btn.onclick=openNew;box.appendChild(document.createElement('br'));box.appendChild(btn)}return box}
+function errorBox(){const box=document.createElement('div');box.className='error-box';box.textContent=t('loadError');const btn=document.createElement('button');btn.className='btn btn-soft';btn.textContent=t('retry');btn.style.margin='12px auto 0';btn.onclick=refreshData;box.appendChild(document.createElement('br'));box.appendChild(btn);return box}
+function renderStats(){$('allCount').textContent=state.count==null?'—':state.count;$('juniorCount').textContent=state.loadError?'—':state.records.filter(r=>r.stage==='初中').length;$('seniorCount').textContent=state.loadError?'—':state.records.filter(r=>r.stage==='高中').length}
+function renderRecent(){const box=$('recentList');box.replaceChildren();if(state.loadError){box.appendChild(errorBox());return}if(!state.records.length){box.appendChild(emptyBox(t('empty'),true));return}state.records.slice(0,4).forEach(rec=>box.appendChild(recordCard(rec,true)))}
+function renderNetwork(){const box=$('networkList');box.replaceChildren();document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('selected',b.dataset.filter===state.filter));if(state.loadError){box.appendChild(errorBox());return}if(!state.records.length){box.appendChild(emptyBox(t('empty'),true));return}const q=$('searchInput').value.trim().toLocaleLowerCase();let rows=state.records.filter(r=>(state.filter==='all'||r.stage===state.filter)&&(!q||r.topic.toLocaleLowerCase().includes(q)||r.understanding.toLocaleLowerCase().includes(q)));if(state.sort==='topic')rows=rows.slice().sort((a,b)=>a.topic.localeCompare(b.topic,'zh-CN'));if(!rows.length){box.appendChild(emptyBox(t('noMatch'),false));return}rows.forEach(rec=>box.appendChild(recordCard(rec,false)))}
+let refreshSerial=0;async function refreshData(){const serial=++refreshSerial;const results=await Promise.allSettled([callAppBridge({type:'GetTableCSV',data:SOURCE,payload:'学段,章节或主题,已有理解与疑问'}),callAppBridge({type:'GetRecordCount',data:SOURCE})]);if(serial!==refreshSerial)return;const [list,count]=results;if(list.status==='fulfilled'){try{const csv=responseText(list.value);state.records=csv.trim()?parseCSV(csv).filter(row=>row.length>=3).map((row,i)=>({row:i+1,stage:row[0],topic:row[1],understanding:row[2]})):[];state.loadError=false}catch(e){state.records=[];state.loadError=true}}else{state.records=[];state.loadError=true}if(count.status==='fulfilled'){const n=Number(responseText(count.value).trim());state.count=Number.isInteger(n)&&n>=0?n:null}else state.count=null;renderAll()}
+async function getCell(field,row){return responseText(await callAppBridge({type:'GetCellValue',data:SOURCE,payload:field+'/'+row}))}
+async function readRow(row){const data={};for(const field of [...FIELDS,GUIDE])data[field]=await getCell(field,row);return data}
+async function loadRow(row){if(state.view==='build'&&!confirmDirty())return;stopPolling();try{const data=await readRow(row);state.row=row;setForm(data);renderJournal(data[GUIDE]);updateMode();showView('build',{force:true});if(!guideReady(data[GUIDE]))pollGuide(row,'journal')}catch(e){toast(t('readFail'))}}
+function pollGuide(row,target){stopPolling();state.polling=true;validate();const token=state.pollToken;const start=Date.now();let failures=0;const tick=async()=>{if(token!==state.pollToken)return;if(Date.now()-start>90000||failures>=3){state.polling=false;validate();showPollEnd(target);return}try{const value=await getCell(GUIDE,row);if(token!==state.pollToken)return;if(guideReady(value)){state.polling=false;validate();if(target==='journal'&&state.row===row)renderJournal(value);if(target==='detail'&&state.detailRow===row){$('detailGuide').dataset.guide=value;setMarkdown($('detailGuide'),value)}return}failures=0}catch(e){failures++}if(token===state.pollToken)state.poll=setTimeout(tick,2000)};tick()}
+function showPollEnd(target){const el=target==='journal'?$('journalContent'):$('detailGuide');el.classList.remove('waiting');el.textContent=t('later')}
+async function submitNew(){const values=formValues();if(!values['学段']||!values['章节或主题']){toast(t('fillRequired'));return}setBusy(true);stopPolling();try{checkResult(await callAppBridge({type:'SubmitRecord',data:TABLE,payload:JSON.stringify(values)}));state.row=1;setForm(values);updateMode();renderJournal('');await refreshData();pollGuide(1,'journal')}catch(e){toast(t('submitFail'))}finally{setBusy(false)}}
+async function saveCurrent(){if(state.row<1)return;const values=formValues();if(!values['学段']||!values['章节或主题']){toast(t('fillRequired'));return}setBusy(true);try{for(const field of FIELDS)checkResult(await callAppBridge({type:'SetCellValue',data:SOURCE,payload:field+'/'+state.row+'/'+values[field]}));state.baseline=JSON.stringify(values);toast(t('saveOk'));await refreshData()}catch(e){toast(t('saveFail'))}finally{setBusy(false)}}
+async function deleteRow(row){if(!window.confirm(t('deleteConfirm')))return;setBusy(true);stopPolling();try{checkResult(await callAppBridge({type:'DeleteRecord',data:SOURCE,payload:row.toString()}));if(state.detailRow)closeDetail();if(state.row===row)resetBuild(true);else if(state.row>row)state.row--;await refreshData();updateMode();toast(t('deleted'))}catch(e){toast(t('deleteFail'))}finally{setBusy(false)}}
+async function openDetail(row){state.detailRow=row;$('detailOverlay').classList.add('open');document.body.style.overflow='hidden';$('detailTitle').textContent='…';$('detailStage').textContent='';$('detailUnderstanding').textContent='';$('detailGuide').textContent=t('waiting');try{const data=await readRow(row);if(state.detailRow!==row)return;$('detailTitle').textContent=data['章节或主题']||'—';$('detailStage').textContent=data['学段']==='初中'?t('junior'):data['学段']==='高中'?t('senior'):data['学段'];$('detailStage').classList.toggle('senior',data['学段']==='高中');$('detailUnderstanding').textContent=data['已有理解与疑问']?.trim()||t('noneWritten');$('detailGuide').dataset.guide=data[GUIDE];if(guideReady(data[GUIDE]))setMarkdown($('detailGuide'),data[GUIDE]);else{renderDetailStatic();pollGuide(row,'detail')}}catch(e){$('detailGuide').textContent=t('readFail')}}
+function closeDetail(){stopPolling();state.detailRow=0;$('detailOverlay').classList.remove('open');document.body.style.overflow='';$('detailGuide').dataset.guide=''}
+function airBack(){if(state.detailRow){closeDetail();return 'false'}if($('mobileMenu').classList.contains('open')){closeMenu();return 'false'}if(state.history.length){if(state.view==='build'&&!confirmDirty())return 'false';const previous=state.history.pop();state.view=previous.view;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===state.view+'View'));document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===state.view));refreshData();requestAnimationFrame(()=>window.scrollTo(0,previous.scroll));return 'false'}return 'true'}window.airBack=airBack;
+async function initialize(){const mode=await callAppBridge({type:'模式'}).catch(()=>null);if(String(mode).trim()==='暗色')document.body.classList.add('dark');setLanguage(chooseLanguage());setForm({});renderJournal();updateMode();$('brand').onclick=()=>{if(state.view==='build'&&!confirmDirty())return;showView('home',{force:true});try{if(parent&&typeof parent.closeFullHtml==='function')parent.closeFullHtml(false)}catch(e){}};document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));$('menuButton').onclick=()=>{const menu=$('mobileMenu');const open=menu.classList.toggle('open');$('menuButton').setAttribute('aria-expanded',String(open))};document.addEventListener('click',e=>{if(!$('topbar').contains(e.target))closeMenu()});$('langButton').onclick=$('mobileLangButton').onclick=()=>{setLanguage(state.lang==='cn'?'en':'cn');closeMenu()};$('heroStart').onclick=openNew;$('newRecordButton').onclick=openNew;document.querySelectorAll('[data-stat-filter]').forEach(b=>b.onclick=()=>{state.filter=b.dataset.statFilter;showView('mine')});$('searchInput').oninput=renderNetwork;document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;renderNetwork()});$('sortSelect').onchange=e=>{state.sort=e.target.value;renderNetwork()};$('conceptForm').oninput=validate;$('conceptForm').onsubmit=e=>{e.preventDefault();if(state.row===0)submitNew()};$('saveButton').onclick=saveCurrent;$('regenerateButton').onclick=()=>{if(window.confirm(t('regenerateConfirm')))submitNew()};$('deleteCurrentButton').onclick=()=>deleteRow(state.row);$('resetButton').onclick=()=>resetBuild();$('refreshGuideButton').onclick=async()=>{if(state.row<1)return;try{const value=await getCell(GUIDE,state.row);renderJournal(value);if(!guideReady(value))pollGuide(state.row,'journal')}catch(e){pollGuide(state.row,'journal')}};$('previousButton').onclick=()=>{if(state.row>1)loadRow(state.row-1)};$('nextButton').onclick=()=>{const target=state.row===0?1:state.row+1;if(state.count!=null&&target<=state.count)loadRow(target)};$('detailClose').onclick=$('detailCloseIcon').onclick=closeDetail;$('detailOverlay').onclick=e=>{if(e.target===$('detailOverlay'))closeDetail()};$('detailEdit').onclick=()=>{const row=state.detailRow;closeDetail();loadRow(row)};$('detailDelete').onclick=()=>deleteRow(state.detailRow);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.detailRow)closeDetail()});const topics=[['初中','细胞是生命活动的基本单位'],['初中','光合作用'],['初中','人体的消化与吸收'],['高中','细胞膜的结构与功能'],['高中','有丝分裂'],['高中','基因的自由组合定律']];for(const [stage,topic] of topics){const b=document.createElement('button');b.className='topic-chip';b.type='button';b.dataset.stage=stage;b.dataset.topic=topic;b.textContent=(stage==='初中'?t('junior'):t('senior'))+' · '+topic;b.onclick=()=>{const current=$('conceptForm_understanding').value;if(!resetBuild())return;setForm({'学段':stage,'章节或主题':topic,'已有理解与疑问':current});state.baseline=JSON.stringify({'学段':'','章节或主题':'','已有理解与疑问':''});renderJournal()};$('topicList').appendChild(b)}window.addEventListener('resize',()=>{if(innerWidth>800)closeMenu()});const focusInput=e=>{if(!e.target.matches('input,textarea,select'))return;setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),250)};document.addEventListener('focusin',focusInput);if(window.visualViewport)visualViewport.addEventListener('resize',()=>{const active=document.activeElement;if(active?.matches('input,textarea,select'))setTimeout(()=>active.scrollIntoView({block:'center',behavior:'smooth'}),150)});await refreshData()}
+document.addEventListener('DOMContentLoaded',()=>{(async()=>{await initialize()})()});
+</script></body></html>

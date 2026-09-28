@@ -1,0 +1,3309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>个性化学习计划</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+  --nav: #1b1848;
+  --nav-text: #f7f1e6;
+  --cream: #f4efe4;
+  --paper: #fffdf8;
+  --ink: #2a241c;
+  --muted: #6f675c;
+  --amber: #c8922a;
+  --amber-deep: #8d6412;
+  --amber-soft: rgba(200, 146, 42, 0.16);
+  --terracotta: #c46a58;
+  --line: rgba(60, 42, 16, 0.12);
+  --shadow: 0 12px 30px rgba(70, 48, 16, 0.08);
+  --sage: #6e8f68;
+  --sky: #3d8f9c;
+  --stage-high: #343f86;
+  --input: #fffdf8;
+  --overlay: rgba(24, 20, 40, 0.48);
+  --code: #241e18;
+  --code-text: #f6efe2;
+  --quote: rgba(200, 146, 42, 0.1);
+  --topbar-h: 72px;
+  --kb-space: 0px;
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  --nav: #12122b;
+  --nav-text: #f6efe2;
+  --cream: #171410;
+  --paper: #26211c;
+  --ink: #f4ecdf;
+  --muted: #c2b6a4;
+  --amber: #e0b15a;
+  --amber-deep: #f0d7a2;
+  --amber-soft: rgba(224, 177, 90, 0.16);
+  --terracotta: #d48474;
+  --line: rgba(244, 236, 223, 0.14);
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+  --sage: #8fb089;
+  --sky: #79c0cb;
+  --stage-high: #9aa6e4;
+  --input: #1d1915;
+  --overlay: rgba(0, 0, 0, 0.62);
+  --code: #120f0c;
+  --code-text: #f6efe2;
+  --quote: rgba(224, 177, 90, 0.1);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(980px 420px at 8% -12%, rgba(232, 196, 120, 0.34), transparent 58%),
+    var(--cream);
+  line-height: 1.55;
+  overflow-x: hidden;
+  padding-top: var(--topbar-h);
+}
+button, input, textarea, select { font-family: inherit; }
+input, select, textarea { box-sizing: border-box; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+::selection { background: rgba(200, 146, 42, 0.35); }
+
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  background: var(--nav);
+  color: var(--nav-text);
+  padding-top: env(safe-area-inset-top);
+  box-shadow: 0 8px 24px rgba(16, 12, 40, 0.18);
+}
+#mainNav { background: var(--nav); }
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 0 16px;
+}
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 750;
+  font-size: 17px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.nav-brand i { color: var(--amber); font-size: 20px; }
+.nav-brand span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
+}
+.nav-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.nav-tabs { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+.nav-tab {
+  border: 0;
+  background: transparent;
+  color: var(--nav-text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  white-space: nowrap;
+  padding: 18px 12px 16px;
+  cursor: pointer;
+}
+.nav-tab.is-active {
+  color: #e7c36a;
+  box-shadow: inset 0 -3px 0 #e2b34a;
+}
+.lang-switch {
+  display: flex;
+  border: 1px solid rgba(247, 241, 230, 0.28);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.lang-switch button, .menu-lang button {
+  border: 0;
+  background: transparent;
+  color: var(--nav-text);
+  font: inherit;
+  font-weight: 700;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.lang-switch button.is-active, .menu-lang button.is-active {
+  background: var(--amber);
+  color: #2a2112;
+}
+.hamburger {
+  display: none;
+  border: 0;
+  background: transparent;
+  color: var(--nav-text);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+}
+#navTabs.nav-measure, #langSwitch.nav-measure {
+  position: absolute !important;
+  visibility: hidden !important;
+  display: flex !important;
+  pointer-events: none !important;
+  height: auto !important;
+  width: auto !important;
+}
+#topbar.is-collapsed #navTabs, #topbar.is-collapsed #langSwitch { display: none; }
+#topbar.is-collapsed .hamburger { display: inline-flex; align-items: center; justify-content: center; }
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  padding: 4px 10px 12px;
+  border-top: 1px solid rgba(247, 241, 230, 0.12);
+  background: var(--nav);
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu .nav-tab { text-align: left; padding: 12px 10px; border-radius: 10px; }
+.menu-lang { display: flex; gap: 8px; padding: 8px 10px 4px; }
+.menu-lang button { border-radius: 999px; border: 1px solid rgba(247, 241, 230, 0.28); }
+
+main { min-height: calc(100vh - var(--topbar-h)); }
+.page {
+  width: min(1120px, calc(100% - 32px));
+  margin: 22px auto 40px;
+  padding-bottom: calc(88px + var(--kb-space) + env(safe-area-inset-bottom));
+}
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+h1 { font-size: 34px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.03em; }
+h2 { font-size: 22px; margin: 0; }
+.lead { margin: 0; color: var(--muted); max-width: 42rem; }
+.error-banner {
+  width: min(1120px, calc(100% - 32px));
+  margin: 16px auto 0;
+  background: rgba(196, 106, 88, 0.14);
+  color: var(--ink);
+  border: 1px solid rgba(196, 106, 88, 0.4);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary { background: var(--amber); color: #2a2112; }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn-danger { background: var(--terracotta); color: #fffaf7; }
+.btn:disabled { opacity: 0.46; cursor: not-allowed; }
+.hero-actions { margin: 18px 0 20px; }
+.stat-grid, .card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.card-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); margin-top: 12px; }
+.stat-card, .note-card, .shelf-card, .paper-card, .manuscript-sheet, .empty-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.stat-card, .note-card {
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  font: inherit;
+  padding: 16px 16px 18px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.shelf-card {
+  padding: 16px;
+  border: 1px solid transparent;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+}
+.stat-card { min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; }
+.stat-label { color: var(--muted); font-size: 14px; font-weight: 700; }
+.stat-num { font-size: 36px; line-height: 1; letter-spacing: -0.04em; }
+#statPrimary { box-shadow: inset 0 4px 0 var(--sage), var(--shadow); }
+#statMiddle { box-shadow: inset 0 4px 0 var(--sky), var(--shadow); }
+#statHigh { box-shadow: inset 0 4px 0 var(--stage-high), var(--shadow); }
+#statAll { box-shadow: inset 0 4px 0 var(--amber), var(--shadow); }
+@media (hover: hover) {
+  .stat-card:hover, .note-card:hover, .shelf-card:hover { transform: translateY(-4px); }
+}
+.section-title { margin: 26px 0 8px; font-size: 22px; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.tag-primary { background: var(--sage); }
+.tag-middle { background: var(--sky); color: #072126; }
+.tag-high { background: var(--stage-high); color: #fff; }
+html[data-theme="dark"] .tag-high { color: #161226; }
+html[data-theme="dark"] .tag-middle { color: #062126; }
+.tag-plain { background: var(--muted); }
+.goal-title { font-size: 18px; font-weight: 780; margin: 8px 0 6px; }
+.meta { margin: 3px 0; color: var(--muted); font-size: 13px; }
+.weak-line { margin: 6px 0 8px; font-size: 14px; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.card-actions .btn { padding: 8px 12px; font-size: 13px; }
+.empty-card { padding: 28px 20px; text-align: center; }
+.empty-card i { font-size: 28px; color: var(--amber); }
+.empty-card p { margin: 10px 0 16px; }
+.tool-bar {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.8fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.tool-bar label, .field label, .field legend, .filter-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 750;
+  margin-bottom: 6px;
+}
+input[type="text"], input[type="number"], input[type="date"], input[type="search"], textarea, select {
+  width: 100%;
+  background: var(--input);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 15px;
+}
+textarea { min-height: 96px; resize: vertical; }
+.plan-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.paper-card, .manuscript-sheet { padding: 18px 18px 22px; }
+.manuscript-sheet { border-left: 8px solid var(--amber); min-height: 460px; }
+.field { margin: 0 0 14px; }
+fieldset.field { border: 0; padding: 0; margin: 0 0 14px; }
+.choice-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice { position: relative; cursor: pointer; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--input);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 700;
+}
+.choice-text::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.choice[data-stage="小学高段"] .choice-text::before { background: var(--sage); }
+.choice[data-stage="初中"] .choice-text::before { background: var(--sky); }
+.choice[data-stage="高中"] .choice-text::before { background: var(--stage-high); }
+.choice input:checked + .choice-text {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+  box-shadow: inset 0 -2px 0 var(--amber);
+}
+.choice input:focus-visible + .choice-text { outline: 2px solid var(--amber); outline-offset: 2px; }
+.minute-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stage-hint, .hint, .save-notice { margin: 0 0 12px; font-size: 14px; }
+.stage-hint { color: var(--amber-deep); font-weight: 700; }
+.hint { color: var(--muted); min-height: 1.2em; }
+.save-notice {
+  background: var(--amber-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.form-actions, .dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.manuscript-head, .dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.manuscript-body, .is-wait, .is-muted { min-height: 220px; }
+.is-wait, .is-muted { color: var(--muted); }
+.status-line { color: var(--muted); margin: 8px 0 12px; }
+.icon-btn {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+#confirmOverlay { z-index: 2300; }
+.dialog {
+  width: min(840px, 100%);
+  max-height: calc(100vh - 48px);
+  background: var(--paper);
+  background-color: var(--paper);
+  opacity: 1;
+  color: var(--ink);
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.dialog-confirm { width: min(440px, 100%); }
+.dialog-head, .dialog-actions { padding: 14px 18px; }
+.dialog-actions { border-top: 1px solid var(--line); }
+.dialog-scroll {
+  overflow: auto;
+  padding: 4px 18px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.detail-row { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.detail-label { color: var(--muted); font-size: 13px; font-weight: 750; }
+.detail-value { white-space: pre-wrap; word-break: break-word; }
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 2400;
+  background: var(--nav);
+  color: var(--nav-text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  box-shadow: var(--shadow);
+}
+.md-body { word-break: break-word; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4, .md-body h5, .md-body h6 { line-height: 1.3; margin: 1em 0 0.4em; }
+.md-body h1 { font-size: 1.7rem; }
+.md-body h2 { font-size: 1.35rem; }
+.md-body p { margin: 0.55em 0; }
+.md-body ul, .md-body ol { margin: 0.4em 0 0.7em; padding-left: 1.3em; }
+.md-body li { margin: 0.2em 0; }
+.md-body blockquote {
+  margin: 0.8em 0;
+  padding: 8px 12px;
+  border-left: 4px solid var(--amber);
+  background: var(--quote);
+}
+.md-body a { color: var(--amber-deep); }
+.md-body hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
+.md-body code { background: var(--amber-soft); border-radius: 6px; padding: 0.1em 0.35em; }
+.md-body pre { margin: 0.8em 0; }
+.md-body pre code { background: transparent; padding: 0; color: inherit; }
+.md-pre {
+  overflow: auto;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--code);
+  color: var(--code-text);
+}
+.md-body img { max-width: 100%; height: auto; border-radius: 12px; }
+.md-image { display: inline-block; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.md-body table { border-collapse: collapse; min-width: 100%; }
+.md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.md-body th { background: var(--amber-soft); }
+.md-body input[type="checkbox"] { width: auto; margin-right: 0.35em; }
+
+@media (max-width: 900px) {
+  .plan-layout, .stat-grid, .minute-row, .tool-bar { grid-template-columns: 1fr 1fr; }
+  .plan-layout, .tool-bar { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  h1 { font-size: 28px; }
+  .page { width: min(1120px, calc(100% - 20px)); padding-bottom: calc(140px + var(--kb-space) + env(safe-area-inset-bottom)); }
+  .page-head { flex-direction: column; align-items: stretch; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .detail-row { grid-template-columns: 1fr; gap: 2px; }
+  .dialog-scroll { padding-bottom: calc(140px + var(--kb-space)); }
+  #detailOverlay { padding: 0; align-items: stretch; }
+  #detailDialog { width: 100%; height: 100%; max-height: none; border-radius: 0; }
+  #confirmOverlay { padding: 16px; }
+}
+@media (max-width: 460px) {
+  .stat-grid, .minute-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav id="mainNav" style="position: relative;z-index: 1001;">
+    <div id="navRow" class="nav-row">
+      <button type="button" id="navBrand" class="nav-brand">
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        <span id="navAppName" data-i18n="appName">个性化学习计划</span>
+      </button>
+      <div id="navTools" class="nav-tools">
+        <div id="navTabs" class="nav-tabs">
+          <button type="button" id="tabHome" class="nav-tab" data-i18n="tabHome">首页</button>
+          <button type="button" id="tabPlan" class="nav-tab" data-i18n="tabPlan">制定计划</button>
+          <button type="button" id="tabShelf" class="nav-tab" data-i18n="tabShelf">计划书架</button>
+        </div>
+        <div id="langSwitch" class="lang-switch">
+          <button type="button" id="langZh">中</button>
+          <button type="button" id="langEn">EN</button>
+        </div>
+        <button type="button" id="hamburgerBtn" class="hamburger" aria-label="菜单" aria-expanded="false">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu">
+      <button type="button" id="mobileTabHome" class="nav-tab" data-i18n="tabHome">首页</button>
+      <button type="button" id="mobileTabPlan" class="nav-tab" data-i18n="tabPlan">制定计划</button>
+      <button type="button" id="mobileTabShelf" class="nav-tab" data-i18n="tabShelf">计划书架</button>
+      <div class="menu-lang">
+        <button type="button" id="mobileLangZh">中文</button>
+        <button type="button" id="mobileLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main id="appMain">
+  <div id="appError" class="error-banner" hidden></div>
+  <section id="pageHome" class="page">
+    <h1 id="homeTitle" data-i18n="appName">个性化学习计划</h1>
+    <p id="homeDesc" class="lead" data-i18n="homeDesc">按学段、目标、薄弱点和可用时间，生成可执行的一周或三十天计划</p>
+    <div class="hero-actions">
+      <button type="button" id="btnNewPlan" class="btn btn-primary"><i class="fa-solid fa-plus" aria-hidden="true"></i><span data-i18n="newPlan">制定新计划</span></button>
+    </div>
+    <div class="stat-grid">
+      <button type="button" id="statAll" class="stat-card"><span id="statAllLabel" class="stat-label" data-i18n="statAll">全部计划</span><strong id="countAll" class="stat-num">…</strong></button>
+      <button type="button" id="statPrimary" class="stat-card"><span id="statPrimaryLabel" class="stat-label" data-i18n="stagePrimary">小学高段</span><strong id="countPrimary" class="stat-num">…</strong></button>
+      <button type="button" id="statMiddle" class="stat-card"><span id="statMiddleLabel" class="stat-label" data-i18n="stageMiddle">初中</span><strong id="countMiddle" class="stat-num">…</strong></button>
+      <button type="button" id="statHigh" class="stat-card"><span id="statHighLabel" class="stat-label" data-i18n="stageHigh">高中</span><strong id="countHigh" class="stat-num">…</strong></button>
+    </div>
+    <div id="homeEmpty" class="empty-card" hidden>
+      <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+      <p id="homeEmptyText" data-i18n="homeEmpty">灯还亮着，这里还没有计划。</p>
+      <button type="button" id="btnFirstPlan" class="btn btn-primary"><span data-i18n="firstPlan">制定第一份计划</span></button>
+    </div>
+    <div id="recentBlock">
+      <h2 id="recentTitle" class="section-title" data-i18n="recentTitle">最近写下的计划</h2>
+      <div id="recentList" class="card-grid"></div>
+    </div>
+  </section>
+  <section id="pagePlan" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 id="planTitle" data-i18n="planTitleNew">制定计划</h1>
+        <p id="planDesc" class="lead" data-i18n="planDesc">告诉系统学段、目标和时间，后台会写成每天可打卡的计划。小学高段生成一周计划，初中和高中生成三十天计划；填写考试日期会按考前阶段调整。</p>
+      </div>
+      <button type="button" id="btnGotoShelf" class="btn btn-ghost"><i class="fa-solid fa-book" aria-hidden="true"></i><span data-i18n="gotoShelf">查看计划书架</span></button>
+    </div>
+    <div class="plan-layout">
+      <div class="paper-card">
+        <form id="formLearnPlan" novalidate>
+          <div id="formFields"></div>
+          <p id="validHint" class="hint"></p>
+          <div class="form-actions">
+            <button type="submit" id="btnGenerate" class="btn btn-primary" disabled><span id="btnGenerateText" data-i18n="generate">生成计划</span></button>
+            <button type="button" id="btnSaveAsNew" class="btn btn-ghost" hidden><span data-i18n="saveAsNew">另存为新计划</span></button>
+            <button type="button" id="btnClear" class="btn btn-ghost"><span data-i18n="clearRewrite">清空重写</span></button>
+            <button type="button" id="btnCancelEdit" class="btn btn-ghost" hidden><span data-i18n="cancelEdit">取消编辑</span></button>
+          </div>
+          <p id="saveNotice" class="save-notice" data-i18n="saveNotice" hidden>已保存修改。已生成的计划正文不会因改字段而自动重写；若要全新计划，请使用「另存为新计划」。</p>
+        </form>
+      </div>
+      <div id="manuscriptCard" class="manuscript-sheet">
+        <div class="manuscript-head">
+          <h2 id="manuscriptTitle" data-i18n="manuscriptTitle">计划手稿</h2>
+          <button type="button" id="btnCopy" class="btn btn-ghost"><i class="fa-regular fa-copy" aria-hidden="true"></i><span data-i18n="copyText">复制正文</span></button>
+        </div>
+        <div id="manuscriptBody" class="manuscript-body md-body is-muted" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+  <section id="pageShelf" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 id="shelfTitle" data-i18n="tabShelf">计划书架</h1>
+        <p id="shelfDesc" class="lead" data-i18n="shelfDesc">回看已经生成的计划，按学段翻找，或打开一份继续改条件</p>
+      </div>
+      <button type="button" id="btnShelfNew" class="btn btn-primary"><i class="fa-solid fa-plus" aria-hidden="true"></i><span data-i18n="newPlan">制定新计划</span></button>
+    </div>
+    <div class="tool-bar">
+      <div>
+        <label id="searchLabel" for="searchInput" data-i18n="searchLabel">搜索</label>
+        <input id="searchInput" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="搜索学习目标、薄弱点或高效学习时段">
+      </div>
+      <div>
+        <label id="filterStageLabel" class="filter-label" for="filterStage" data-i18n="stage">学段</label>
+        <select id="filterStage"></select>
+      </div>
+      <div>
+        <label id="filterExamLabel" class="filter-label" for="filterExam" data-i18n="exam">考试日期</label>
+        <select id="filterExam"></select>
+      </div>
+    </div>
+    <p id="shelfStatus" class="status-line" hidden></p>
+    <div id="shelfList" class="card-grid"></div>
+    <div id="shelfEmpty" class="empty-card" hidden>
+      <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+      <p id="shelfEmptyText" data-i18n="shelfEmpty">这盏灯下还没有对应的计划</p>
+      <button type="button" id="btnClearFilter" class="btn btn-ghost"><span data-i18n="clearFilters">清除筛选</span></button>
+    </div>
+  </section>
+</main>
+<div id="detailOverlay" class="overlay" hidden>
+  <div id="detailDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-head">
+      <h2 id="detailTitle" data-i18n="detailTitle">计划详情</h2>
+      <button type="button" id="btnDetailX" class="icon-btn" aria-label="关闭"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div id="detailScroll" class="dialog-scroll">
+      <div id="detailFields"></div>
+      <h3 id="detailContentTitle" data-i18n="contentTitle">学习计划内容</h3>
+      <div id="detailMd" class="md-body" aria-live="polite"></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" id="btnDetailEdit" class="btn btn-primary"><span data-i18n="goEdit">去编辑</span></button>
+      <button type="button" id="btnDetailCopy" class="btn btn-ghost"><span data-i18n="copyText">复制正文</span></button>
+      <button type="button" id="btnDetailDelete" class="btn btn-danger"><span data-i18n="delete">删除</span></button>
+      <button type="button" id="btnDetailClose" class="btn btn-ghost"><span data-i18n="close">关闭</span></button>
+    </div>
+  </div>
+</div>
+<div id="confirmOverlay" class="overlay" hidden>
+  <div id="confirmDialog" class="dialog dialog-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="dialog-head"><h2 id="confirmTitle" data-i18n="deleteTitle">删除计划</h2></div>
+    <div class="dialog-scroll"><p id="confirmText" data-i18n="deleteConfirm">删除后不能恢复</p></div>
+    <div class="dialog-actions">
+      <button type="button" id="btnConfirmCancel" class="btn btn-ghost"><span data-i18n="cancel">取消</span></button>
+      <button type="button" id="btnConfirmOk" class="btn btn-danger"><span data-i18n="confirmDelete">确认删除</span></button>
+    </div>
+  </div>
+</div>
+<div id="copyToast" class="toast" hidden role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("e0c7c2f5efedc94f_个性化学习计划")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const DATA_SOURCE = "学习计划/默认表格";
+const TABLE_NAME = "学习计划";
+const CSV_FIELDS = "学段,学习目标,薄弱点,平日每天可用分钟,周末每天可用分钟,高效学习时段,考试日期";
+const FIELD_ORDER = ["学段", "学习目标", "薄弱点", "平日每天可用分钟", "周末每天可用分钟", "高效学习时段", "考试日期", "学习计划内容"];
+const EDIT_FIELDS = ["学段", "学习目标", "薄弱点", "平日每天可用分钟", "周末每天可用分钟", "高效学习时段", "考试日期"];
+const FORM_ID = "formLearnPlan";
+const I18N = {
+  zh: {
+    appName: "个性化学习计划",
+    tabHome: "首页",
+    tabPlan: "制定计划",
+    tabShelf: "计划书架",
+    homeDesc: "按学段、目标、薄弱点和可用时间，生成可执行的一周或三十天计划",
+    newPlan: "制定新计划",
+    firstPlan: "制定第一份计划",
+    statAll: "全部计划",
+    stagePrimary: "小学高段",
+    stageMiddle: "初中",
+    stageHigh: "高中",
+    homeEmpty: "灯还亮着，这里还没有计划。",
+    recentTitle: "最近写下的计划",
+    planTitleNew: "制定计划",
+    planTitleEdit: "调整这份计划",
+    planDesc: "告诉系统学段、目标和时间，后台会写成每天可打卡的计划。小学高段生成一周计划，初中和高中生成三十天计划；填写考试日期会按考前阶段调整。",
+    gotoShelf: "查看计划书架",
+    stage: "学段",
+    goal: "学习目标",
+    weak: "薄弱点",
+    weekdayMin: "平日每天可用分钟",
+    weekendMin: "周末每天可用分钟",
+    peak: "高效学习时段",
+    exam: "考试日期",
+    contentTitle: "学习计划内容",
+    stageHint: "小学高段为一周计划，初中和高中为三十天计划。",
+    generate: "生成计划",
+    saveEdit: "保存修改",
+    clearRewrite: "清空重写",
+    cancelEdit: "取消编辑",
+    saveAsNew: "另存为新计划",
+    saveNotice: "已保存修改。已生成的计划正文不会因改字段而自动重写；若要全新计划，请使用「另存为新计划」。",
+    validHint: "请选择学段、填写学习目标，并把两个分钟数写成大于 0 的整数。",
+    manuscriptTitle: "计划手稿",
+    manuscriptPlaceholder: "生成之后，每天的任务会写在这页纸上。",
+    manuscriptEmptyEdit: "这份计划还没有正文。",
+    waiting: "灯还亮着，正在按学段、目标和可用时间编排每天的任务…",
+    pollTimeout: "等了很久，计划正文还没有写好。可以稍后在书架里再打开。",
+    copyText: "复制正文",
+    copied: "已复制",
+    nothingToCopy: "还没有可以复制的正文",
+    copyFailed: "没有写入剪贴板",
+    shelfDesc: "回看已经生成的计划，按学段翻找，或打开一份继续改条件",
+    searchLabel: "搜索",
+    searchPlaceholder: "搜索学习目标、薄弱点或高效学习时段",
+    filterAll: "全部",
+    examFilled: "已填写",
+    examEmpty: "未填写",
+    shelfEmpty: "这盏灯下还没有对应的计划",
+    clearFilters: "清除筛选",
+    viewPlan: "查看计划",
+    edit: "编辑",
+    goEdit: "去编辑",
+    delete: "删除",
+    deleteTitle: "删除计划",
+    deleteConfirm: "删除后不能恢复",
+    confirmDelete: "确认删除",
+    cancel: "取消",
+    close: "关闭",
+    detailTitle: "计划详情",
+    weakEmpty: "未填写薄弱点",
+    goalEmpty: "未填写目标",
+    examUnset: "未定考试日",
+    examPassed: "已过考试日",
+    daysLeft: "还剩 {n} 天",
+    minuteUnit: "分钟",
+    notFilled: "未填写",
+    loading: "正在读取…",
+    requestFailed: "没有读到数据，请再试一次。",
+    menu: "菜单",
+    weekdayShort: "平日",
+    weekendShort: "周末"
+  },
+  en: {
+    appName: "Personalized Study Plan",
+    tabHome: "Home",
+    tabPlan: "Make a Plan",
+    tabShelf: "Plan Shelf",
+    homeDesc: "Build a one-week or thirty-day plan from stage, goals, weak spots, and available time.",
+    newPlan: "New Plan",
+    firstPlan: "Write the first plan",
+    statAll: "All Plans",
+    stagePrimary: "Upper Elementary",
+    stageMiddle: "Middle School",
+    stageHigh: "High School",
+    homeEmpty: "The lamp is on, and no plan has been written yet.",
+    recentTitle: "Recently Written Plans",
+    planTitleNew: "Make a Plan",
+    planTitleEdit: "Adjust This Plan",
+    planDesc: "Tell the system the stage, goal, and time. It will write a plan you can check off each day. Upper elementary gets one week; middle and high school get thirty days. An exam date adjusts the run-up.",
+    gotoShelf: "View Plan Shelf",
+    stage: "Stage",
+    goal: "Learning goal",
+    weak: "Weak spots",
+    weekdayMin: "Weekday minutes per day",
+    weekendMin: "Weekend minutes per day",
+    peak: "Best study hours",
+    exam: "Exam date",
+    contentTitle: "Plan text",
+    stageHint: "Upper elementary is a one-week plan. Middle school and high school are thirty-day plans.",
+    generate: "Generate Plan",
+    saveEdit: "Save Changes",
+    clearRewrite: "Clear and Rewrite",
+    cancelEdit: "Cancel Editing",
+    saveAsNew: "Save as New Plan",
+    saveNotice: "Changes saved. The generated plan text will not be rewritten automatically. For a brand-new plan, use “Save as New Plan”.",
+    validHint: "Choose a stage, enter a learning goal, and set both minute fields to integers greater than 0.",
+    manuscriptTitle: "Plan Draft",
+    manuscriptPlaceholder: "After it is generated, each day's tasks will be written on this page.",
+    manuscriptEmptyEdit: "This plan does not have any text yet.",
+    waiting: "The lamp is still on. Daily tasks are being arranged from the stage, goal, and available time…",
+    pollTimeout: "The plan text is still empty after a long wait. Open it again later from the shelf.",
+    copyText: "Copy Text",
+    copied: "Copied",
+    nothingToCopy: "Nothing to copy yet",
+    copyFailed: "Could not copy",
+    shelfDesc: "Look back at plans already written, browse by stage, or open one and change the conditions.",
+    searchLabel: "Search",
+    searchPlaceholder: "Search goals, weak spots, or study hours",
+    filterAll: "All",
+    examFilled: "Filled in",
+    examEmpty: "Not filled in",
+    shelfEmpty: "No plan matches under this lamp",
+    clearFilters: "Clear Filters",
+    viewPlan: "View Plan",
+    edit: "Edit",
+    goEdit: "Edit",
+    delete: "Delete",
+    deleteTitle: "Delete Plan",
+    deleteConfirm: "This cannot be undone",
+    confirmDelete: "Delete",
+    cancel: "Cancel",
+    close: "Close",
+    detailTitle: "Plan Details",
+    weakEmpty: "No weak spots noted",
+    goalEmpty: "No goal noted",
+    examUnset: "Exam date not set",
+    examPassed: "Exam date passed",
+    daysLeft: "{n} days left",
+    minuteUnit: "min",
+    notFilled: "Not filled",
+    loading: "Reading…",
+    requestFailed: "The data could not be read. Please try again.",
+    menu: "Menu",
+    weekdayShort: "Weekdays",
+    weekendShort: "Weekends"
+  }
+};
+
+let uiLang = "zh";
+let currentPageId = "";
+let pageStack = [];
+let currentRow = 0;
+let editMode = false;
+let planBusy = false;
+let actionToken = 0;
+let planPollToken = 0;
+let detailPollToken = 0;
+let viewToken = 0;
+let lastPack = null;
+let pendingShelfStage = null;
+let pendingDeleteRow = 0;
+let detailRow = 0;
+let detailSource = "home";
+let detailRecord = null;
+let detailMarkdown = "";
+let manuscriptMarkdown = "";
+let toastTimer = 0;
+
+function t(key) {
+  const pack = I18N[uiLang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  return I18N.zh[key] != null ? I18N.zh[key] : key;
+}
+
+function resolveLanguage() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const langParam = String(params.get("lang") || "").toLowerCase();
+    if (langParam === "cn" || langParam === "zh" || langParam === "zh-cn" || langParam === "zh-tw") return "zh";
+    if (langParam === "en") return "en";
+  } catch (err) {}
+  try {
+    const storedLang = localStorage.getItem('iThinkAir_UiLanguage');
+    if (storedLang != null && storedLang !== "") return storedLang === "en" ? "en" : "zh";
+  } catch (err2) {}
+  try {
+    const list = navigator.languages;
+    if (!list || !list.length) return "zh";
+    for (let i = 0; i < list.length; i++) {
+      const code = String(list[i] || "").toLowerCase();
+      if (code === "zh" || code.indexOf("zh-") === 0) return "zh";
+    }
+    return "en";
+  } catch (err3) {
+    return "zh";
+  }
+}
+
+function byId(id) { return document.getElementById(id); }
+
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function withTimeout(promise, ms) {
+  return new Promise(function (resolve, reject) {
+    let settled = false;
+    const timer = setTimeout(function () {
+      if (settled) return;
+      settled = true;
+      reject(new Error("timeout"));
+    }, ms);
+    promise.then(function (value) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    }, function (error) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(error);
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(s) { return escapeHtml(s); }
+
+function safeUrl(url) {
+  const value = String(url || "").trim();
+  if (/^(javascript|vbscript):/i.test(value)) return "#";
+  return value;
+}
+
+function fileDownloadUrl(name) {
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(name);
+}
+
+function imageTag(alt, url) {
+  const raw = String(url || "").trim();
+  let src = raw;
+  let href = raw;
+  if (!/^https?:\/\//i.test(raw) && !/^data:/i.test(raw)) {
+    src = fileDownloadUrl(raw);
+    href = src;
+  }
+  return "<a class=\"md-image\" href=\"" + escapeAttr(href) + "\" download><img src=\"" + escapeAttr(src) + "\" alt=\"" + escapeAttr(alt) + "\"></a>";
+}
+
+function renderInline(text, refs) {
+  const tokens = [];
+  function protect(html) {
+    const key = "\u0000" + tokens.length + "\u0000";
+    tokens.push(html);
+    return key;
+  }
+  let s = String(text == null ? "" : text);
+  s = s.replace(/\\([\\`*_{}\[\]()#+\-.!|>~])/g, function (_, ch) { return protect(escapeHtml(ch)); });
+  s = s.replace(/`([^`]+)`/g, function (_, code) { return protect("<code>" + escapeHtml(code) + "</code>"); });
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function (_, alt, url) { return protect(imageTag(alt, safeUrl(url))); });
+  s = s.replace(/!\[([^\]]*)\]\[([^\]]*)\]/g, function (_, alt, id) {
+    const key = String(id || alt).toLowerCase();
+    const found = refs && refs[key] ? refs[key] : "";
+    return protect(imageTag(alt, safeUrl(found)));
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function (_, label, url) {
+    return protect("<a href=\"" + escapeAttr(safeUrl(url)) + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + renderInline(label, refs) + "</a>");
+  });
+  s = s.replace(/\[([^\]]+)\]\[([^\]]*)\]/g, function (_, label, id) {
+    const key = String(id || label).toLowerCase();
+    const found = refs && refs[key] ? refs[key] : "";
+    if (!found) return "[" + label + "]";
+    return protect("<a href=\"" + escapeAttr(safeUrl(found)) + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + renderInline(label, refs) + "</a>");
+  });
+  s = s.replace(/<((https?:\/\/|mailto:)[^>\s]+)>/g, function (_, url) {
+    return protect("<a href=\"" + escapeAttr(safeUrl(url)) + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + escapeHtml(url) + "</a>");
+  });
+  s = s.replace(/(^|[\s(])((https?:\/\/)[^\s<]+)/g, function (_, pre, url) {
+    let clean = url;
+    let trail = "";
+    while (clean.length && /[),.;!?]$/.test(clean)) {
+      trail = clean.slice(clean.length - 1) + trail;
+      clean = clean.slice(0, -1);
+    }
+    return pre + protect("<a href=\"" + escapeAttr(clean) + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + escapeHtml(clean) + "</a>") + trail;
+  });
+  s = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  s = s.replace(/(^|[^A-Za-z0-9])_([^_\n]+)_(?![A-Za-z0-9])/g, "$1<em>$2</em>");
+  s = s.replace(/\u0000(\d+)\u0000/g, function (_, n) { return tokens[Number(n)]; });
+  return s;
+}
+
+function isHr(line) {
+  const value = String(line || "").trim();
+  if (/^([-*_])\1{2,}$/.test(value)) return true;
+  if (/^(\*(?: +)){2,}\*$/.test(value)) return true;
+  if (/^(-(?: +)){2,}-+$/.test(value)) return true;
+  if (/^(_(?: +)){2,}_+$/.test(value)) return true;
+  return false;
+}
+
+function isSep(line) {
+  const cells = splitRow(line);
+  if (!cells.length || String(line).indexOf("-") === -1) return false;
+  for (let i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i])) return false;
+  }
+  return true;
+}
+
+function splitRow(line) {
+  let value = String(line || "").trim();
+  if (value.charAt(0) === "|") value = value.slice(1);
+  if (value.charAt(value.length - 1) === "|") value = value.slice(0, -1);
+  const cells = [];
+  let cur = "";
+  for (let i = 0; i < value.length; i++) {
+    if (value.charAt(i) === "\\" && i + 1 < value.length) {
+      cur += value.charAt(i + 1);
+      i++;
+      continue;
+    }
+    if (value.charAt(i) === "|") {
+      cells.push(cur.trim());
+      cur = "";
+      continue;
+    }
+    cur += value.charAt(i);
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+function alignOf(cell) {
+  const c = String(cell || "").trim();
+  if (c.charAt(0) === ":" && c.charAt(c.length - 1) === ":") return "center";
+  if (c.charAt(c.length - 1) === ":") return "right";
+  if (c.charAt(0) === ":") return "left";
+  return "";
+}
+
+function listInfo(line) {
+  if (isHr(line)) return null;
+  const matched = String(line).match(/^(\s*)([-*+]|\d+[.)])\s+(.*)$/);
+  if (!matched) return null;
+  return {
+    indent: matched[1].replace(/\t/g, "    ").length,
+    marker: matched[2],
+    content: matched[3],
+    ordered: /^\d/.test(matched[2])
+  };
+}
+
+function isListLine(line) { return !!listInfo(line); }
+
+function buildList(lines, start, refs) {
+  const first = listInfo(lines[start]);
+  const indent = first.indent;
+  const ordered = first.ordered;
+  let i = start;
+  let html = ordered ? "<ol>" : "<ul>";
+  while (i < lines.length) {
+    if (/^\s*$/.test(lines[i])) {
+      let j = i + 1;
+      while (j < lines.length && /^\s*$/.test(lines[j])) j++;
+      const nxt = j < lines.length ? listInfo(lines[j]) : null;
+      if (nxt && nxt.indent >= indent) {
+        i = j;
+        continue;
+      }
+      break;
+    }
+    const info = listInfo(lines[i]);
+    if (!info || info.indent < indent || info.indent > indent || info.ordered !== ordered) break;
+    i++;
+    let content = info.content;
+    let taskHtml = "";
+    const task = content.match(/^\[([ xX])\]\s+(.*)$/);
+    if (task) {
+      content = task[2];
+      taskHtml = "<input type=\"checkbox\" disabled" + (task[1].toLowerCase() === "x" ? " checked" : "") + "> ";
+    }
+    const parts = [content];
+    let childHtml = "";
+    while (i < lines.length && !/^\s*$/.test(lines[i])) {
+      const info2 = listInfo(lines[i]);
+      if (info2 && info2.indent > indent) {
+        const child = buildList(lines, i, refs);
+        childHtml += child.html;
+        i = child.next;
+        continue;
+      }
+      if (info2) break;
+      if (/^\s+/.test(lines[i])) {
+        parts.push(lines[i].trim());
+        i++;
+        continue;
+      }
+      break;
+    }
+    html += "<li>" + taskHtml + renderInline(parts.join(" "), refs) + childHtml + "</li>";
+  }
+  html += ordered ? "</ol>" : "</ul>";
+  return { html: html, next: i };
+}
+
+function isNewBlock(lines, index) {
+  const line = lines[index];
+  if (/^\s*(#{1,6})\s+\S/.test(line)) return true;
+  if (/^\s*(```|~~~)/.test(line)) return true;
+  if (/^\s*>\s?/.test(line)) return true;
+  if (isHr(line)) return true;
+  if (isListLine(line)) return true;
+  if (index + 1 < lines.length && line.indexOf("|") !== -1 && isSep(lines[index + 1])) return true;
+  if (/^(?: {4}|\t)\S/.test(line)) return true;
+  return false;
+}
+
+function renderMarkdown(markdown) {
+  const src = String(markdown == null ? "" : markdown).replace(/\uFEFF/g, "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const rawLines = src.split("\n");
+  const refs = {};
+  const lines = [];
+  for (let r = 0; r < rawLines.length; r++) {
+    const def = rawLines[r].match(/^\s*\[([^\]]+)\]:\s+(\S+)(?:\s+"(.*)")?\s*$/);
+    if (def) refs[def[1].toLowerCase()] = def[2];
+    else lines.push(rawLines[r]);
+  }
+  let html = "";
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^\s*$/.test(line)) { i++; continue; }
+    const fence = line.match(/^\s*(```+|~~~+)\s*([^`~]*)$/);
+    if (fence && fence[1].length >= 3) {
+      const tick = fence[1].charAt(0);
+      const flen = fence[1].length;
+      const lang = (fence[2] || "").trim();
+      i++;
+      const buf = [];
+      while (i < lines.length) {
+        const close = lines[i].match(new RegExp("^\\s*" + tick + "{" + flen + ",}\\s*$"));
+        if (close) { i++; break; }
+        buf.push(lines[i]);
+        i++;
+      }
+      html += "<pre class=\"md-pre\"><code" + (lang ? " class=\"language-" + escapeAttr(lang) + "\"" : "") + ">" + escapeHtml(buf.join("\n")) + "</code></pre>";
+      continue;
+    }
+    if (isHr(line)) { html += "<hr>"; i++; continue; }
+    const atx = line.match(/^\s*(#{1,6})\s+(.+?)\s*#*\s*$/);
+    if (atx) {
+      html += "<h" + atx[1].length + ">" + renderInline(atx[2], refs) + "</h" + atx[1].length + ">";
+      i++;
+      continue;
+    }
+    if (i + 1 < lines.length && /^\s*=+\s*$/.test(lines[i + 1]) && line.trim()) {
+      html += "<h1>" + renderInline(line.trim(), refs) + "</h1>";
+      i += 2;
+      continue;
+    }
+    if (i + 1 < lines.length && /^\s*-+\s*$/.test(lines[i + 1]) && line.trim() && !isListLine(line)) {
+      html += "<h2>" + renderInline(line.trim(), refs) + "</h2>";
+      i += 2;
+      continue;
+    }
+    if (line.indexOf("|") !== -1 && i + 1 < lines.length && isSep(lines[i + 1])) {
+      const header = splitRow(line);
+      const sep = splitRow(lines[i + 1]);
+      const aligns = [];
+      for (let c = 0; c < sep.length; c++) aligns.push(alignOf(sep[c]));
+      i += 2;
+      let table = "<table><thead><tr>";
+      for (let c = 0; c < header.length; c++) {
+        const align = aligns[c] ? " style=\"text-align:" + aligns[c] + "\"" : "";
+        table += "<th" + align + ">" + renderInline(header[c], refs) + "</th>";
+      }
+      table += "</tr></thead><tbody>";
+      while (i < lines.length && lines[i].trim() && lines[i].indexOf("|") !== -1 && !isSep(lines[i])) {
+        const cells = splitRow(lines[i]);
+        table += "<tr>";
+        for (let c = 0; c < header.length; c++) {
+          const align = aligns[c] ? " style=\"text-align:" + aligns[c] + "\"" : "";
+          table += "<td" + align + ">" + renderInline(cells[c] == null ? "" : cells[c], refs) + "</td>";
+        }
+        table += "</tr>";
+        i++;
+      }
+      table += "</tbody></table>";
+      html += "<div class=\"table-scroll\">" + table + "</div>";
+      continue;
+    }
+    if (/^\s*>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+        buf.push(lines[i].replace(/^\s*>\s?/, ""));
+        i++;
+      }
+      html += "<blockquote>" + renderMarkdown(buf.join("\n")) + "</blockquote>";
+      continue;
+    }
+    if (/^(?: {4}|\t)/.test(line)) {
+      const buf = [];
+      while (i < lines.length) {
+        if (/^(?: {4}|\t)/.test(lines[i])) {
+          buf.push(lines[i].replace(/^(?: {4}|\t)/, ""));
+          i++;
+          continue;
+        }
+        if (lines[i].trim() === "") {
+          let j = i + 1;
+          while (j < lines.length && lines[j].trim() === "") j++;
+          if (j < lines.length && /^(?: {4}|\t)/.test(lines[j])) {
+            buf.push("");
+            i++;
+            continue;
+          }
+        }
+        break;
+      }
+      html += "<pre class=\"md-pre\"><code>" + escapeHtml(buf.join("\n")) + "</code></pre>";
+      continue;
+    }
+    if (isListLine(line)) {
+      const built = buildList(lines, i, refs);
+      html += built.html;
+      i = built.next;
+      continue;
+    }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() !== "" && !isNewBlock(lines, i)) {
+      buf.push(lines[i]);
+      i++;
+    }
+    const pieces = [];
+    for (let k = 0; k < buf.length; k++) {
+      let bit = buf[k];
+      const hard = /[ ]{2}$/.test(bit) || /\\$/.test(bit);
+      bit = bit.replace(/[ ]{2}$/, "").replace(/\\$/, "");
+      pieces.push(renderInline(bit, refs));
+      if (k < buf.length - 1) pieces.push(hard ? "<br>" : " ");
+    }
+    html += "<p>" + pieces.join("") + "</p>";
+  }
+  return html;
+}
+
+function paintMarkdown(el, markdown) {
+  el.className = "md-body";
+  el.innerHTML = renderMarkdown(markdown);
+}
+
+function clipText(text, max) {
+  const chars = Array.from(String(text || "").trim());
+  if (chars.length <= max) return chars.join("");
+  return chars.slice(0, max).join("") + "…";
+}
+
+function toDateInput(value) {
+  const matched = String(value || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!matched) return "";
+  return matched[1] + "-" + matched[2] + "-" + matched[3];
+}
+
+function daysUntil(dateStr) {
+  const matched = String(dateStr || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!matched) return null;
+  const target = new Date(Number(matched[1]), Number(matched[2]) - 1, Number(matched[3]));
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((target.getTime() - today.getTime()) / 86400000);
+}
+
+function examLine(exam) {
+  const raw = String(exam || "").trim();
+  if (!raw) return t("examUnset");
+  const dateText = toDateInput(raw) || raw;
+  const days = daysUntil(raw);
+  if (days == null) return dateText;
+  const extra = days < 0 ? t("examPassed") : t("daysLeft").replace("{n}", String(days));
+  return dateText + " · " + extra;
+}
+
+function stageClass(stage) {
+  if (stage === "小学高段") return "tag-primary";
+  if (stage === "初中") return "tag-middle";
+  if (stage === "高中") return "tag-high";
+  return "tag-plain";
+}
+
+function stageLabel(stage) {
+  if (stage === "小学高段") return t("stagePrimary");
+  if (stage === "初中") return t("stageMiddle");
+  if (stage === "高中") return t("stageHigh");
+  return stage || t("notFilled");
+}
+
+function isPositiveInt(value) {
+  return /^[1-9]\d*$/.test(String(value == null ? "" : value).trim());
+}
+
+function parseCount(text) {
+  const s = String(text == null ? "" : text).trim();
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  return 0;
+}
+
+function rowsFromCsv(csvText) {
+  const grid = parseCSV(csvText == null ? "" : String(csvText));
+  const list = [];
+  for (let i = 0; i < grid.length; i++) {
+    const cols = grid[i] || [];
+    list.push({
+      row: i + 1,
+      stage: cols[0] == null ? "" : String(cols[0]),
+      goal: cols[1] == null ? "" : String(cols[1]),
+      weak: cols[2] == null ? "" : String(cols[2]),
+      weekday: cols[3] == null ? "" : String(cols[3]),
+      weekend: cols[4] == null ? "" : String(cols[4]),
+      peak: cols[5] == null ? "" : String(cols[5]),
+      exam: cols[6] == null ? "" : String(cols[6])
+    });
+  }
+  return list;
+}
+
+function countStage(records, stage) {
+  let n = 0;
+  for (let i = 0; i < records.length; i++) {
+    if (String(records[i].stage).trim() === stage) n++;
+  }
+  return n;
+}
+
+function contentPayload(row) {
+  if (String(row) === "1") return "学习计划内容/1";
+  return "学习计划内容/" + String(row);
+}
+
+function showError(message) {
+  const el = byId("appError");
+  el.textContent = message;
+  el.hidden = false;
+}
+
+function clearError() { byId("appError").hidden = true; }
+
+function flashToast(message) {
+  const el = byId("copyToast");
+  el.textContent = message;
+  el.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 1600);
+}
+
+async function writeClipboard(value) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch (err) {}
+  try {
+    const area = document.createElement("textarea");
+    area.value = value;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(area);
+    return !!ok;
+  } catch (err2) {
+    return false;
+  }
+}
+
+async function copyMarkdown(text) {
+  const value = String(text || "");
+  if (!value.trim()) {
+    flashToast(t("nothingToCopy"));
+    return;
+  }
+  const ok = await writeClipboard(value);
+  flashToast(ok ? t("copied") : t("copyFailed"));
+}
+
+function syncBodyOffset() {
+  const bar = byId("topbar");
+  if (!bar) return;
+  document.documentElement.style.setProperty("--topbar-h", bar.offsetHeight + "px");
+}
+
+function closeMobileMenu() {
+  byId("mobileMenu").classList.remove("open");
+  byId("hamburgerBtn").setAttribute("aria-expanded", "false");
+  syncBodyOffset();
+}
+
+function updateNavFit() {
+  const topbar = byId("topbar");
+  const row = byId("navRow");
+  const brand = byId("navBrand");
+  const tabs = byId("navTabs");
+  const lang = byId("langSwitch");
+  tabs.classList.add("nav-measure");
+  lang.classList.add("nav-measure");
+  const rowStyles = window.getComputedStyle(row);
+  const toolStyles = window.getComputedStyle(byId("navTools"));
+  const gap = parseFloat(rowStyles.columnGap || rowStyles.gap || "0") || 0;
+  const toolGap = parseFloat(toolStyles.columnGap || toolStyles.gap || "0") || 0;
+  const needed = tabs.offsetWidth + lang.offsetWidth + toolGap;
+  const available = row.clientWidth - brand.offsetWidth - gap;
+  const collapse = needed > available - 2;
+  tabs.classList.remove("nav-measure");
+  lang.classList.remove("nav-measure");
+  if (collapse) topbar.classList.add("is-collapsed");
+  else {
+    topbar.classList.remove("is-collapsed");
+    closeMobileMenu();
+  }
+  syncBodyOffset();
+}
+
+function updateTabState() {
+  const map = {
+    home: ["tabHome", "mobileTabHome"],
+    plan: ["tabPlan", "mobileTabPlan"],
+    shelf: ["tabShelf", "mobileTabShelf"]
+  };
+  const ids = ["tabHome", "tabPlan", "tabShelf", "mobileTabHome", "mobileTabPlan", "mobileTabShelf"];
+  for (let i = 0; i < ids.length; i++) {
+    byId(ids[i]).classList.remove("is-active");
+    byId(ids[i]).removeAttribute("aria-current");
+  }
+  const active = map[currentPageId] || [];
+  for (let i = 0; i < active.length; i++) {
+    byId(active[i]).classList.add("is-active");
+    byId(active[i]).setAttribute("aria-current", "page");
+  }
+}
+
+function updateLangButtons() {
+  const zh = uiLang !== "en";
+  byId("langZh").classList.toggle("is-active", zh);
+  byId("langEn").classList.toggle("is-active", !zh);
+  byId("mobileLangZh").classList.toggle("is-active", zh);
+  byId("mobileLangEn").classList.toggle("is-active", !zh);
+  byId("hamburgerBtn").setAttribute("aria-label", t("menu"));
+  byId("btnDetailX").setAttribute("aria-label", t("close"));
+}
+
+function addOption(select, value, label) {
+  const opt = document.createElement("option");
+  opt.value = value;
+  opt.textContent = label;
+  select.appendChild(opt);
+}
+
+function rebuildFilters() {
+  const stage = byId("filterStage");
+  const exam = byId("filterExam");
+  const stageValue = stage.value || "all";
+  const examValue = exam.value || "all";
+  stage.innerHTML = "";
+  addOption(stage, "all", t("filterAll"));
+  addOption(stage, "小学高段", t("stagePrimary"));
+  addOption(stage, "初中", t("stageMiddle"));
+  addOption(stage, "高中", t("stageHigh"));
+  exam.innerHTML = "";
+  addOption(exam, "all", t("filterAll"));
+  addOption(exam, "filled", t("examFilled"));
+  addOption(exam, "empty", t("examEmpty"));
+  stage.value = stageValue;
+  exam.value = examValue;
+  if (stage.value !== stageValue) stage.value = "all";
+  if (exam.value !== examValue) exam.value = "all";
+}
+
+function selectedStage() {
+  const checked = document.querySelector("#" + FORM_ID + " input[name='学段']:checked");
+  return checked ? checked.value : "";
+}
+
+function updateStageHint() {
+  const el = byId("stageHint");
+  if (!el) return;
+  if (!selectedStage()) {
+    el.hidden = true;
+    el.textContent = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = t("stageHint");
+}
+
+function formIsValid() {
+  const goal = byId(FORM_ID + "_学习目标");
+  const weekday = byId(FORM_ID + "_平日每天可用分钟");
+  const weekend = byId(FORM_ID + "_周末每天可用分钟");
+  if (!goal || !weekday || !weekend) return false;
+  return selectedStage() !== "" && goal.value.trim() !== "" && isPositiveInt(weekday.value) && isPositiveInt(weekend.value);
+}
+
+function updateSubmitState() {
+  const ok = formIsValid();
+  byId("btnGenerate").disabled = !ok || planBusy;
+  byId("btnSaveAsNew").disabled = !ok || planBusy;
+  const hint = byId("validHint");
+  hint.textContent = !ok && !planBusy ? t("validHint") : "";
+}
+
+function setI18nText(id, key) {
+  const el = byId(id);
+  el.setAttribute("data-i18n", key);
+  el.textContent = t(key);
+}
+
+function updatePlanModeUI() {
+  if (editMode) {
+    setI18nText("planTitle", "planTitleEdit");
+    setI18nText("btnGenerateText", "saveEdit");
+    byId("btnClear").hidden = true;
+    byId("btnCancelEdit").hidden = false;
+    byId("btnSaveAsNew").hidden = false;
+  } else {
+    setI18nText("planTitle", "planTitleNew");
+    setI18nText("btnGenerateText", "generate");
+    byId("btnClear").hidden = false;
+    byId("btnCancelEdit").hidden = true;
+    byId("btnSaveAsNew").hidden = true;
+  }
+  updateStageHint();
+  updateSubmitState();
+}
+
+function showManuscriptMessage(message, muted) {
+  const el = byId("manuscriptBody");
+  el.className = muted === false ? "manuscript-body md-body" : "manuscript-body md-body is-muted";
+  el.textContent = message;
+}
+
+function showWaitingManuscript() {
+  manuscriptMarkdown = "";
+  const el = byId("manuscriptBody");
+  el.className = "manuscript-body md-body is-wait";
+  el.textContent = t("waiting");
+}
+
+function showManuscriptPlaceholder() {
+  manuscriptMarkdown = "";
+  showManuscriptMessage(editMode ? t("manuscriptEmptyEdit") : t("manuscriptPlaceholder"));
+}
+
+function hideSaveNotice() { byId("saveNotice").hidden = true; }
+
+function showSaveNotice() { byId("saveNotice").hidden = false; }
+
+function setFieldValue(id, value) {
+  const el = byId(id);
+  if (el) el.value = value == null ? "" : String(value);
+}
+
+function setStage(value) {
+  const wanted = String(value || "").trim();
+  const radios = document.querySelectorAll("#" + FORM_ID + " input[name='学段']");
+  for (let i = 0; i < radios.length; i++) radios[i].checked = radios[i].value === wanted;
+  updateStageHint();
+}
+
+function clearFormFields() {
+  const radios = document.querySelectorAll("#" + FORM_ID + " input[name='学段']");
+  for (let i = 0; i < radios.length; i++) radios[i].checked = false;
+  setFieldValue(FORM_ID + "_学习目标", "");
+  setFieldValue(FORM_ID + "_薄弱点", "");
+  setFieldValue(FORM_ID + "_平日每天可用分钟", "");
+  setFieldValue(FORM_ID + "_周末每天可用分钟", "");
+  setFieldValue(FORM_ID + "_高效学习时段", "");
+  setFieldValue(FORM_ID + "_考试日期", "");
+  showManuscriptPlaceholder();
+  updateStageHint();
+  updateSubmitState();
+}
+
+function collectPayload() {
+  return {
+    "学段": selectedStage(),
+    "学习目标": byId(FORM_ID + "_学习目标").value.trim(),
+    "薄弱点": byId(FORM_ID + "_薄弱点").value.trim(),
+    "平日每天可用分钟": parseInt(byId(FORM_ID + "_平日每天可用分钟").value.trim(), 10),
+    "周末每天可用分钟": parseInt(byId(FORM_ID + "_周末每天可用分钟").value.trim(), 10),
+    "高效学习时段": byId(FORM_ID + "_高效学习时段").value.trim(),
+    "考试日期": byId(FORM_ID + "_考试日期").value || ""
+  };
+}
+
+function makeTextField(host, name, key, multiline) {
+  const wrap = document.createElement("div");
+  wrap.className = "field";
+  const label = document.createElement("label");
+  const id = FORM_ID + "_" + name;
+  label.htmlFor = id;
+  label.setAttribute("data-i18n", key);
+  label.textContent = t(key);
+  const input = document.createElement(multiline ? "textarea" : "input");
+  input.id = id;
+  input.name = name;
+  if (!multiline) input.type = "text";
+  input.autocomplete = "off";
+  wrap.appendChild(label);
+  wrap.appendChild(input);
+  host.appendChild(wrap);
+}
+
+function makeNumberField(host, name, key) {
+  const wrap = document.createElement("div");
+  wrap.className = "field";
+  const label = document.createElement("label");
+  const id = FORM_ID + "_" + name;
+  label.htmlFor = id;
+  label.setAttribute("data-i18n", key);
+  label.textContent = t(key);
+  const input = document.createElement("input");
+  input.id = id;
+  input.name = name;
+  input.type = "number";
+  input.min = "1";
+  input.step = "1";
+  input.inputMode = "numeric";
+  wrap.appendChild(label);
+  wrap.appendChild(input);
+  host.appendChild(wrap);
+}
+
+function buildForm() {
+  const host = byId("formFields");
+  host.innerHTML = "";
+  const stageWrap = document.createElement("fieldset");
+  stageWrap.className = "field";
+  const legend = document.createElement("legend");
+  legend.id = "labelStage";
+  legend.setAttribute("data-i18n", "stage");
+  legend.textContent = t("stage");
+  stageWrap.appendChild(legend);
+  const choices = document.createElement("div");
+  choices.className = "choice-row";
+  choices.id = "stageChoices";
+  const stages = [["小学高段", "stagePrimary"], ["初中", "stageMiddle"], ["高中", "stageHigh"]];
+  for (let i = 0; i < stages.length; i++) {
+    const label = document.createElement("label");
+    label.className = "choice";
+    label.setAttribute("data-stage", stages[i][0]);
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "学段";
+    input.id = FORM_ID + "_学段_" + stages[i][0];
+    input.value = stages[i][0];
+    const span = document.createElement("span");
+    span.className = "choice-text";
+    span.setAttribute("data-i18n", stages[i][1]);
+    span.textContent = t(stages[i][1]);
+    label.appendChild(input);
+    label.appendChild(span);
+    choices.appendChild(label);
+  }
+  stageWrap.appendChild(choices);
+  host.appendChild(stageWrap);
+  const hint = document.createElement("p");
+  hint.id = "stageHint";
+  hint.className = "stage-hint";
+  hint.hidden = true;
+  host.appendChild(hint);
+  makeTextField(host, "学习目标", "goal", true);
+  makeTextField(host, "薄弱点", "weak", true);
+  const minuteRow = document.createElement("div");
+  minuteRow.className = "minute-row";
+  makeNumberField(minuteRow, "平日每天可用分钟", "weekdayMin");
+  makeNumberField(minuteRow, "周末每天可用分钟", "weekendMin");
+  host.appendChild(minuteRow);
+  makeTextField(host, "高效学习时段", "peak", true);
+  const dateWrap = document.createElement("div");
+  dateWrap.className = "field";
+  const dateLabel = document.createElement("label");
+  dateLabel.htmlFor = FORM_ID + "_考试日期";
+  dateLabel.setAttribute("data-i18n", "exam");
+  dateLabel.textContent = t("exam");
+  const dateInput = document.createElement("input");
+  dateInput.type = "date";
+  dateInput.id = FORM_ID + "_考试日期";
+  dateInput.name = "考试日期";
+  dateWrap.appendChild(dateLabel);
+  dateWrap.appendChild(dateInput);
+  host.appendChild(dateWrap);
+}
+
+function applyLanguage() {
+  document.documentElement.lang = uiLang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  const placeholders = document.querySelectorAll("[data-i18n-placeholder]");
+  for (let i = 0; i < placeholders.length; i++) {
+    placeholders[i].setAttribute("placeholder", t(placeholders[i].getAttribute("data-i18n-placeholder")));
+  }
+  rebuildFilters();
+  updateLangButtons();
+  updatePlanModeUI();
+  updateDetailButtons();
+  if (!byId("detailOverlay").hidden) {
+    if (!detailRecord) setDetailWait(t("loading"));
+    else {
+      fillDetail(detailRecord);
+      if (String(detailMarkdown || "").trim()) paintMarkdown(byId("detailMd"), detailMarkdown);
+      else setDetailWait(t("waiting"));
+    }
+  }
+  if (planBusy && !String(manuscriptMarkdown || "").trim()) showWaitingManuscript();
+  else if (String(manuscriptMarkdown || "").trim()) paintMarkdown(byId("manuscriptBody"), manuscriptMarkdown);
+  else if (byId("formFields").childNodes.length) showManuscriptPlaceholder();
+  if (lastPack && currentPageId === "home") renderHome(lastPack);
+  if (lastPack && currentPageId === "shelf") renderShelf(lastPack);
+  const status = byId("shelfStatus");
+  if (status && !status.hidden) status.textContent = t("loading");
+  updateNavFit();
+}
+
+function setLanguage(lang) {
+  uiLang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", uiLang === "en" ? "en" : "cn"); } catch (err) {}
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("lang")) {
+      url.searchParams.set("lang", uiLang === "en" ? "en" : "cn");
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    }
+  } catch (err2) {}
+  applyLanguage();
+}
+
+function syncScrollLock() {
+  const locked = !byId("detailOverlay").hidden || !byId("confirmOverlay").hidden;
+  document.body.style.overflow = locked ? "hidden" : "";
+}
+
+function closeDetail() {
+  detailPollToken += 1;
+  byId("detailOverlay").hidden = true;
+  syncScrollLock();
+}
+
+function setDetailWait(message) {
+  const el = byId("detailMd");
+  el.className = "md-body is-wait";
+  el.textContent = message;
+}
+
+function updateDetailButtons() {
+  const shelf = detailSource === "shelf";
+  byId("btnDetailCopy").hidden = !shelf;
+  byId("btnDetailClose").hidden = !shelf;
+}
+
+function fillDetail(record) {
+  const host = byId("detailFields");
+  host.innerHTML = "";
+  const items = [
+    ["stage", record["学段"]],
+    ["goal", record["学习目标"]],
+    ["weak", record["薄弱点"]],
+    ["weekdayMin", record["平日每天可用分钟"]],
+    ["weekendMin", record["周末每天可用分钟"]],
+    ["peak", record["高效学习时段"]],
+    ["exam", record["考试日期"]]
+  ];
+  for (let i = 0; i < items.length; i++) {
+    const row = document.createElement("div");
+    row.className = "detail-row";
+    const dt = document.createElement("div");
+    dt.className = "detail-label";
+    dt.textContent = t(items[i][0]);
+    const dd = document.createElement("div");
+    dd.className = "detail-value";
+    const raw = String(items[i][1] == null ? "" : items[i][1]).trim();
+    if (items[i][0] === "stage") {
+      const tag = document.createElement("span");
+      tag.className = "tag " + stageClass(raw);
+      tag.textContent = stageLabel(raw);
+      dd.appendChild(tag);
+    } else if (items[i][0] === "exam") dd.textContent = examLine(raw);
+    else if (items[i][0] === "weekdayMin" || items[i][0] === "weekendMin") dd.textContent = raw ? raw + " " + t("minuteUnit") : t("notFilled");
+    else if (items[i][0] === "weak") dd.textContent = raw || t("weakEmpty");
+    else if (items[i][0] === "goal") dd.textContent = raw || t("goalEmpty");
+    else dd.textContent = raw || t("notFilled");
+    row.appendChild(dt);
+    row.appendChild(dd);
+    host.appendChild(row);
+  }
+}
+
+async function fetchFields(row) {
+  const data = {};
+  for (let i = 0; i < FIELD_ORDER.length; i++) {
+    const field = FIELD_ORDER[i];
+    const value = await callAppBridge({
+      type: "GetCellValue",
+      data: DATA_SOURCE,
+      payload: field + "/" + String(row)
+    });
+    data[field] = value == null ? "" : String(value);
+  }
+  return data;
+}
+
+async function runDetailPoll(row) {
+  const token = ++detailPollToken;
+  const started = Date.now();
+  while (token === detailPollToken) {
+    if (Date.now() - started >= 1800 * 1000) {
+      if (token === detailPollToken && detailRow === row) setDetailWait(t("pollTimeout"));
+      return;
+    }
+    try {
+      const text = await withTimeout(callAppBridge({
+        type: "GetCellValue",
+        data: DATA_SOURCE,
+        payload: contentPayload(row)
+      }), 20000);
+      if (token !== detailPollToken || detailRow !== row) return;
+      if (text != null && String(text).trim() !== "") {
+        detailMarkdown = String(text);
+        paintMarkdown(byId("detailMd"), detailMarkdown);
+        return;
+      }
+    } catch (err) {
+      if (token !== detailPollToken) return;
+    }
+    if (token !== detailPollToken) return;
+    await sleep(2000);
+  }
+}
+
+async function openDetail(row, source) {
+  detailRow = row;
+  detailSource = source;
+  detailMarkdown = "";
+  detailRecord = null;
+  detailPollToken += 1;
+  byId("detailOverlay").hidden = false;
+  syncScrollLock();
+  byId("detailFields").innerHTML = "";
+  setDetailWait(t("loading"));
+  updateDetailButtons();
+  try { byId("btnDetailX").focus(); } catch (err) {}
+  try {
+    const record = await fetchFields(row);
+    if (detailRow !== row || byId("detailOverlay").hidden) return;
+    detailRecord = record;
+    fillDetail(record);
+    detailMarkdown = record["学习计划内容"] || "";
+    if (String(detailMarkdown).trim()) paintMarkdown(byId("detailMd"), detailMarkdown);
+    else {
+      setDetailWait(t("waiting"));
+      await runDetailPoll(row);
+    }
+  } catch (err2) {
+    if (detailRow === row) showError(t("requestFailed"));
+  }
+}
+
+function closeConfirm() {
+  byId("confirmOverlay").hidden = true;
+  pendingDeleteRow = 0;
+  syncScrollLock();
+}
+
+function askDelete(row) {
+  pendingDeleteRow = row;
+  byId("confirmOverlay").hidden = false;
+  syncScrollLock();
+  try { byId("btnConfirmCancel").focus(); } catch (err) {}
+}
+
+async function fetchPlanTable() {
+  const countText = await callAppBridge({ type: "GetRecordCount", data: DATA_SOURCE });
+  const csvText = await callAppBridge({ type: "GetTableCSV", data: DATA_SOURCE, payload: CSV_FIELDS });
+  return { count: parseCount(countText), records: rowsFromCsv(csvText) };
+}
+
+function renderHome(pack) {
+  if (!pack) {
+    byId("countAll").textContent = "—";
+    byId("countPrimary").textContent = "—";
+    byId("countMiddle").textContent = "—";
+    byId("countHigh").textContent = "—";
+    byId("recentList").innerHTML = "";
+    byId("homeEmpty").hidden = true;
+    byId("recentBlock").hidden = false;
+    return;
+  }
+  byId("countAll").textContent = String(pack.count);
+  byId("countPrimary").textContent = String(countStage(pack.records, "小学高段"));
+  byId("countMiddle").textContent = String(countStage(pack.records, "初中"));
+  byId("countHigh").textContent = String(countStage(pack.records, "高中"));
+  const list = byId("recentList");
+  list.innerHTML = "";
+  if (!pack.records.length) {
+    byId("homeEmpty").hidden = false;
+    byId("recentBlock").hidden = true;
+    return;
+  }
+  byId("homeEmpty").hidden = true;
+  byId("recentBlock").hidden = false;
+  const max = Math.min(5, pack.records.length);
+  for (let i = 0; i < max; i++) list.appendChild(buildRecentCard(pack.records[i]));
+}
+
+function metaLine(text) {
+  const p = document.createElement("p");
+  p.className = "meta";
+  p.textContent = text;
+  return p;
+}
+
+function minuteLine(label, value) {
+  const raw = String(value || "").trim();
+  return label + " " + (raw ? raw + " " + t("minuteUnit") : t("notFilled"));
+}
+
+function buildRecentCard(rec) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "note-card";
+  btn.setAttribute("data-row", String(rec.row));
+  const tag = document.createElement("span");
+  tag.className = "tag " + stageClass(String(rec.stage).trim());
+  tag.textContent = stageLabel(String(rec.stage).trim());
+  const title = document.createElement("div");
+  title.className = "goal-title";
+  title.textContent = String(rec.goal || "").trim() || t("goalEmpty");
+  const weak = document.createElement("div");
+  weak.className = "weak-line";
+  const weakRaw = String(rec.weak || "").trim();
+  weak.textContent = weakRaw ? clipText(weakRaw, 40) : t("weakEmpty");
+  btn.appendChild(tag);
+  btn.appendChild(title);
+  btn.appendChild(weak);
+  btn.appendChild(metaLine(minuteLine(t("weekdayShort"), rec.weekday)));
+  btn.appendChild(metaLine(minuteLine(t("weekendShort"), rec.weekend)));
+  btn.appendChild(metaLine(t("peak") + "：" + (String(rec.peak || "").trim() || t("notFilled"))));
+  btn.appendChild(metaLine(t("exam") + "：" + examLine(rec.exam)));
+  return btn;
+}
+
+function recordMatches(rec, filters) {
+  if (filters.stage !== "all" && String(rec.stage).trim() !== filters.stage) return false;
+  const exam = String(rec.exam || "").trim();
+  if (filters.exam === "filled" && !exam) return false;
+  if (filters.exam === "empty" && exam) return false;
+  const q = String(filters.q || "").trim().toLowerCase();
+  if (!q) return true;
+  const blob = (String(rec.goal || "") + "\n" + String(rec.weak || "") + "\n" + String(rec.peak || "")).toLowerCase();
+  return blob.indexOf(q) !== -1;
+}
+
+function currentFilters() {
+  return {
+    q: byId("searchInput").value || "",
+    stage: byId("filterStage").value || "all",
+    exam: byId("filterExam").value || "all"
+  };
+}
+
+function buildShelfCard(rec) {
+  const card = document.createElement("article");
+  card.className = "shelf-card";
+  card.setAttribute("data-row", String(rec.row));
+  card.tabIndex = 0;
+  const tag = document.createElement("span");
+  tag.className = "tag " + stageClass(String(rec.stage).trim());
+  tag.textContent = stageLabel(String(rec.stage).trim());
+  const title = document.createElement("div");
+  title.className = "goal-title";
+  title.textContent = String(rec.goal || "").trim() || t("goalEmpty");
+  const weak = document.createElement("div");
+  weak.className = "weak-line";
+  weak.textContent = String(rec.weak || "").trim() || t("weakEmpty");
+  card.appendChild(tag);
+  card.appendChild(title);
+  card.appendChild(weak);
+  card.appendChild(metaLine(t("weekdayMin") + "：" + (String(rec.weekday || "").trim() || t("notFilled"))));
+  card.appendChild(metaLine(t("weekendMin") + "：" + (String(rec.weekend || "").trim() || t("notFilled"))));
+  card.appendChild(metaLine(t("peak") + "：" + (String(rec.peak || "").trim() || t("notFilled"))));
+  card.appendChild(metaLine(t("exam") + "：" + examLine(rec.exam)));
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(actionButton("view", "fa-solid fa-book-open", t("viewPlan")));
+  actions.appendChild(actionButton("edit", "fa-solid fa-pen", t("edit")));
+  actions.appendChild(actionButton("delete", "fa-solid fa-trash", t("delete"), true));
+  card.appendChild(actions);
+  return card;
+}
+
+function actionButton(action, icon, label, danger) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = danger ? "btn btn-danger" : "btn btn-ghost";
+  btn.setAttribute("data-action", action);
+  const i = document.createElement("i");
+  i.className = icon;
+  i.setAttribute("aria-hidden", "true");
+  btn.appendChild(i);
+  btn.appendChild(document.createTextNode(label));
+  return btn;
+}
+
+function renderShelf(pack) {
+  const host = byId("shelfList");
+  host.innerHTML = "";
+  byId("shelfStatus").hidden = true;
+  if (!pack) {
+    byId("shelfEmpty").hidden = false;
+    return;
+  }
+  const filters = currentFilters();
+  const shown = [];
+  for (let i = 0; i < pack.records.length; i++) {
+    if (recordMatches(pack.records[i], filters)) shown.push(pack.records[i]);
+  }
+  if (!shown.length) {
+    byId("shelfEmpty").hidden = false;
+    return;
+  }
+  byId("shelfEmpty").hidden = true;
+  for (let i = 0; i < shown.length; i++) host.appendChild(buildShelfCard(shown[i]));
+}
+
+async function loadHome() {
+  const token = ++viewToken;
+  byId("countAll").textContent = "…";
+  byId("countPrimary").textContent = "…";
+  byId("countMiddle").textContent = "…";
+  byId("countHigh").textContent = "…";
+  try {
+    const pack = await fetchPlanTable();
+    if (token !== viewToken || currentPageId !== "home") return;
+    lastPack = pack;
+    renderHome(pack);
+    clearError();
+  } catch (err) {
+    if (token !== viewToken || currentPageId !== "home") return;
+    showError(t("requestFailed"));
+    renderHome(null);
+  }
+}
+
+async function loadShelf() {
+  const token = ++viewToken;
+  if (pendingShelfStage != null) {
+    byId("searchInput").value = "";
+    byId("filterExam").value = "all";
+    byId("filterStage").value = pendingShelfStage === "all" ? "all" : pendingShelfStage;
+    pendingShelfStage = null;
+  }
+  byId("shelfList").innerHTML = "";
+  byId("shelfEmpty").hidden = true;
+  byId("shelfStatus").hidden = false;
+  byId("shelfStatus").textContent = t("loading");
+  try {
+    const pack = await fetchPlanTable();
+    if (token !== viewToken || currentPageId !== "shelf") return;
+    lastPack = pack;
+    renderShelf(pack);
+    clearError();
+  } catch (err) {
+    if (token !== viewToken || currentPageId !== "shelf") return;
+    showError(t("requestFailed"));
+    renderShelf(null);
+  }
+}
+
+function switchPage(page, opts) {
+  const options = opts || {};
+  if (page === currentPageId && options.record !== false && options.force !== true) {
+    closeMobileMenu();
+    updateTabState();
+    return Promise.resolve();
+  }
+  if (page !== currentPageId && options.record !== false) {
+    pageStack.push({ page: currentPageId, scroll: window.scrollY || 0 });
+  }
+  currentPageId = page;
+  byId("pageHome").hidden = currentPageId !== "home";
+  byId("pagePlan").hidden = currentPageId !== "plan";
+  byId("pageShelf").hidden = currentPageId !== "shelf";
+  updateTabState();
+  closeMobileMenu();
+  const y = typeof options.scroll === "number" ? options.scroll : 0;
+  if (currentPageId === "home") {
+    return loadHome().then(function () {
+      if (currentPageId === "home") window.scrollTo(0, y);
+    });
+  }
+  if (currentPageId === "shelf") {
+    return loadShelf().then(function () {
+      if (currentPageId === "shelf") window.scrollTo(0, y);
+    });
+  }
+  window.scrollTo(0, y);
+  return Promise.resolve();
+}
+
+function openShelf(stage) {
+  pendingShelfStage = stage;
+  return switchPage("shelf");
+}
+
+function enterNewPlan() {
+  actionToken += 1;
+  planPollToken += 1;
+  detailPollToken += 1;
+  planBusy = false;
+  editMode = false;
+  currentRow = 0;
+  closeDetail();
+  closeConfirm();
+  hideSaveNotice();
+  clearFormFields();
+  updatePlanModeUI();
+  return switchPage("plan");
+}
+
+async function enterEdit(row) {
+  const token = ++actionToken;
+  planPollToken += 1;
+  planBusy = false;
+  editMode = true;
+  currentRow = row;
+  closeDetail();
+  hideSaveNotice();
+  clearFormFields();
+  updatePlanModeUI();
+  await switchPage("plan");
+  if (token !== actionToken) return;
+  planBusy = true;
+  updateSubmitState();
+  showManuscriptMessage(t("loading"));
+  try {
+    const record = await fetchFields(row);
+    if (token !== actionToken || currentRow !== row || !editMode) return;
+    setStage(record["学段"]);
+    setFieldValue(FORM_ID + "_学习目标", record["学习目标"]);
+    setFieldValue(FORM_ID + "_薄弱点", record["薄弱点"]);
+    setFieldValue(FORM_ID + "_平日每天可用分钟", String(record["平日每天可用分钟"] || "").trim());
+    setFieldValue(FORM_ID + "_周末每天可用分钟", String(record["周末每天可用分钟"] || "").trim());
+    setFieldValue(FORM_ID + "_高效学习时段", record["高效学习时段"]);
+    setFieldValue(FORM_ID + "_考试日期", toDateInput(record["考试日期"]));
+    manuscriptMarkdown = record["学习计划内容"] || "";
+    if (String(manuscriptMarkdown).trim()) paintMarkdown(byId("manuscriptBody"), manuscriptMarkdown);
+    else showManuscriptMessage(t("manuscriptEmptyEdit"));
+    updateStageHint();
+  } catch (err) {
+    if (token === actionToken) showError(t("requestFailed"));
+  } finally {
+    if (token === actionToken) {
+      planBusy = false;
+      updateSubmitState();
+    }
+  }
+}
+
+async function runPlanPoll(row) {
+  const token = ++planPollToken;
+  const started = Date.now();
+  showWaitingManuscript();
+  while (token === planPollToken) {
+    if (Date.now() - started >= 1800 * 1000) {
+      if (token === planPollToken) {
+        showManuscriptMessage(t("pollTimeout"), false);
+        planBusy = false;
+        updateSubmitState();
+      }
+      return;
+    }
+    try {
+      const text = await withTimeout(callAppBridge({
+        type: "GetCellValue",
+        data: DATA_SOURCE,
+        payload: contentPayload(row)
+      }), 20000);
+      if (token !== planPollToken) return;
+      if (text != null && String(text).trim() !== "") {
+        manuscriptMarkdown = String(text);
+        paintMarkdown(byId("manuscriptBody"), manuscriptMarkdown);
+        planBusy = false;
+        updateSubmitState();
+        return;
+      }
+    } catch (err) {
+      if (token !== planPollToken) return;
+    }
+    if (token !== planPollToken) return;
+    await sleep(2000);
+  }
+}
+
+async function submitNewFromForm() {
+  if (planBusy || !formIsValid()) return;
+  const token = ++actionToken;
+  planBusy = true;
+  updateSubmitState();
+  try {
+    const payload = collectPayload();
+    await callAppBridge({ type: "SubmitRecord", data: TABLE_NAME, payload: JSON.stringify(payload) });
+    if (token !== actionToken) return;
+    currentRow = 1;
+    editMode = false;
+    updatePlanModeUI();
+    hideSaveNotice();
+    await runPlanPoll(1);
+  } catch (err) {
+    if (token === actionToken) {
+      planBusy = false;
+      updateSubmitState();
+      showError(t("requestFailed"));
+    }
+  }
+}
+
+async function saveEdit() {
+  if (planBusy || !formIsValid() || !editMode || currentRow < 1) return;
+  const token = ++actionToken;
+  planBusy = true;
+  updateSubmitState();
+  const payload = collectPayload();
+  try {
+    for (let i = 0; i < EDIT_FIELDS.length; i++) {
+      const field = EDIT_FIELDS[i];
+      let value = payload[field];
+      if (typeof value === "number") value = String(value);
+      if (value == null) value = "";
+      await callAppBridge({
+        type: "SetCellValue",
+        data: DATA_SOURCE,
+        payload: field + "/" + String(currentRow) + "/" + value
+      });
+      if (token !== actionToken) return;
+    }
+    if (token !== actionToken) return;
+    showSaveNotice();
+  } catch (err) {
+    if (token === actionToken) showError(t("requestFailed"));
+  } finally {
+    if (token === actionToken) {
+      planBusy = false;
+      updateSubmitState();
+    }
+  }
+}
+
+function resetToNew() {
+  actionToken += 1;
+  planPollToken += 1;
+  planBusy = false;
+  editMode = false;
+  currentRow = 0;
+  hideSaveNotice();
+  clearFormFields();
+  updatePlanModeUI();
+}
+
+async function performDelete(row) {
+  const token = ++actionToken;
+  try {
+    await callAppBridge({ type: "DeleteRecord", data: DATA_SOURCE, payload: row.toString() });
+    if (token !== actionToken) return;
+    if (currentRow === row) {
+      planPollToken += 1;
+      planBusy = false;
+      editMode = false;
+      currentRow = 0;
+      clearFormFields();
+      updatePlanModeUI();
+      hideSaveNotice();
+    } else if (currentRow > row) currentRow = currentRow - 1;
+    closeDetail();
+    if (currentPageId === "home") await loadHome();
+    else if (currentPageId === "shelf") await loadShelf();
+  } catch (err) {
+    showError(t("requestFailed"));
+  }
+}
+
+function closeTopLayer() {
+  if (!byId("confirmOverlay").hidden) {
+    closeConfirm();
+    return true;
+  }
+  if (!byId("detailOverlay").hidden) {
+    closeDetail();
+    return true;
+  }
+  if (byId("mobileMenu").classList.contains("open")) {
+    closeMobileMenu();
+    return true;
+  }
+  return false;
+}
+
+function airBack() {
+  if (closeTopLayer()) return "false";
+  if (pageStack.length) {
+    const prev = pageStack.pop();
+    switchPage(prev.page, { record: false, scroll: prev.scroll || 0 });
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+function bindKeyboard() {
+  document.addEventListener("focusin", function (event) {
+    const el = event.target;
+    if (!el || !el.matches || !el.matches("input, textarea, select")) return;
+    setTimeout(function () {
+      try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) { el.scrollIntoView(); }
+    }, 350);
+  });
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const apply = function () {
+    const overlap = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
+    const extra = overlap > 80 ? Math.round(overlap + 32) : 0;
+    document.documentElement.style.setProperty("--kb-space", extra + "px");
+  };
+  vv.addEventListener("resize", apply);
+  vv.addEventListener("scroll", apply);
+}
+
+function bindEvents() {
+  byId("navBrand").addEventListener("click", function () {
+    if (window.parent && typeof window.parent.closeFullHtml === "function") parent.closeFullHtml(false);
+  });
+  byId("tabHome").addEventListener("click", function () { switchPage("home"); });
+  byId("tabPlan").addEventListener("click", function () { switchPage("plan"); });
+  byId("tabShelf").addEventListener("click", function () { switchPage("shelf"); });
+  byId("mobileTabHome").addEventListener("click", function () { switchPage("home"); });
+  byId("mobileTabPlan").addEventListener("click", function () { switchPage("plan"); });
+  byId("mobileTabShelf").addEventListener("click", function () { switchPage("shelf"); });
+  byId("langZh").addEventListener("click", function () { setLanguage("zh"); });
+  byId("langEn").addEventListener("click", function () { setLanguage("en"); });
+  byId("mobileLangZh").addEventListener("click", function () { setLanguage("zh"); closeMobileMenu(); });
+  byId("mobileLangEn").addEventListener("click", function () { setLanguage("en"); closeMobileMenu(); });
+  byId("hamburgerBtn").addEventListener("click", function (event) {
+    event.stopPropagation();
+    const menu = byId("mobileMenu");
+    const open = !menu.classList.contains("open");
+    if (open) menu.classList.add("open");
+    else menu.classList.remove("open");
+    byId("hamburgerBtn").setAttribute("aria-expanded", open ? "true" : "false");
+    syncBodyOffset();
+  });
+  document.addEventListener("click", function (event) {
+    const menu = byId("mobileMenu");
+    if (!menu.classList.contains("open")) return;
+    if (menu.contains(event.target) || byId("hamburgerBtn").contains(event.target)) return;
+    closeMobileMenu();
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") return;
+    closeTopLayer();
+  });
+  byId("btnNewPlan").addEventListener("click", enterNewPlan);
+  byId("btnFirstPlan").addEventListener("click", enterNewPlan);
+  byId("btnShelfNew").addEventListener("click", enterNewPlan);
+  byId("btnGotoShelf").addEventListener("click", function () { switchPage("shelf"); });
+  byId("statAll").addEventListener("click", function () { openShelf("all"); });
+  byId("statPrimary").addEventListener("click", function () { openShelf("小学高段"); });
+  byId("statMiddle").addEventListener("click", function () { openShelf("初中"); });
+  byId("statHigh").addEventListener("click", function () { openShelf("高中"); });
+  byId("recentList").addEventListener("click", function (event) {
+    const card = event.target.closest("[data-row]");
+    if (!card || !byId("recentList").contains(card)) return;
+    openDetail(parseInt(card.getAttribute("data-row"), 10), "home");
+  });
+  byId("shelfList").addEventListener("click", function (event) {
+    const card = event.target.closest("[data-row]");
+    if (!card || !byId("shelfList").contains(card)) return;
+    const row = parseInt(card.getAttribute("data-row"), 10);
+    const action = event.target.closest("[data-action]");
+    if (action) {
+      const kind = action.getAttribute("data-action");
+      if (kind === "view") openDetail(row, "shelf");
+      else if (kind === "edit") enterEdit(row);
+      else if (kind === "delete") askDelete(row);
+      return;
+    }
+    enterEdit(row);
+  });
+  byId("shelfList").addEventListener("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const card = event.target.closest("[data-row]");
+    if (!card || event.target.closest("[data-action]")) return;
+    event.preventDefault();
+    enterEdit(parseInt(card.getAttribute("data-row"), 10));
+  });
+  byId("searchInput").addEventListener("input", function () { if (lastPack) renderShelf(lastPack); });
+  byId("filterStage").addEventListener("change", function () { if (lastPack) renderShelf(lastPack); });
+  byId("filterExam").addEventListener("change", function () { if (lastPack) renderShelf(lastPack); });
+  byId("btnClearFilter").addEventListener("click", function () {
+    byId("searchInput").value = "";
+    byId("filterStage").value = "all";
+    byId("filterExam").value = "all";
+    if (lastPack) renderShelf(lastPack);
+  });
+  const form = byId(FORM_ID);
+  form.addEventListener("input", function () { updateSubmitState(); });
+  form.addEventListener("change", function () { updateStageHint(); updateSubmitState(); });
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (editMode) saveEdit();
+    else submitNewFromForm();
+  });
+  byId("btnSaveAsNew").addEventListener("click", submitNewFromForm);
+  byId("btnClear").addEventListener("click", resetToNew);
+  byId("btnCancelEdit").addEventListener("click", resetToNew);
+  byId("btnCopy").addEventListener("click", function () { copyMarkdown(manuscriptMarkdown); });
+  byId("btnDetailEdit").addEventListener("click", function () { if (detailRow) enterEdit(detailRow); });
+  byId("btnDetailCopy").addEventListener("click", function () { copyMarkdown(detailMarkdown); });
+  byId("btnDetailDelete").addEventListener("click", function () { if (detailRow) askDelete(detailRow); });
+  byId("btnDetailClose").addEventListener("click", closeDetail);
+  byId("btnDetailX").addEventListener("click", closeDetail);
+  byId("detailOverlay").addEventListener("click", function (event) {
+    if (event.target === byId("detailOverlay")) closeDetail();
+  });
+  byId("btnConfirmCancel").addEventListener("click", closeConfirm);
+  byId("btnConfirmOk").addEventListener("click", function () {
+    const row = pendingDeleteRow;
+    closeConfirm();
+    if (row) performDelete(row);
+  });
+  byId("confirmOverlay").addEventListener("click", function (event) {
+    if (event.target === byId("confirmOverlay")) closeConfirm();
+  });
+  window.addEventListener("resize", updateNavFit);
+}
+
+async function applyTheme() {
+  let modeText = "";
+  try {
+    modeText = await callAppBridge({ type: "模式" });
+  } catch (err) {
+    modeText = "";
+  }
+  const text = String(modeText == null ? "" : modeText);
+  document.documentElement.setAttribute("data-theme", text.indexOf("暗") !== -1 ? "dark" : "light");
+}
+
+async function initialize() {
+  uiLang = resolveLanguage();
+  buildForm();
+  bindEvents();
+  bindKeyboard();
+  applyLanguage();
+  showManuscriptPlaceholder();
+  updateNavFit();
+  const themePromise = applyTheme();
+  await switchPage("home", { record: false, scroll: 0 });
+  await themePromise;
+  updateNavFit();
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,4022 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>数学测评设计</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+  --bg: #F6F1E7;
+  --card: #FFFCF7;
+  --ink: #1E2A4A;
+  --nav: #1E2A4A;
+  --nav-text: #F6F1E7;
+  --cinnabar: #C45C26;
+  --teal: #2A6F7F;
+  --amber: #C4841D;
+  --indigo: #1E2A4A;
+  --muted: #5C6478;
+  --line: rgba(30, 42, 74, 0.12);
+  --grid: rgba(30, 42, 74, 0.055);
+  --shadow: 0 10px 28px rgba(30, 42, 74, 0.08);
+  --shadow-hover: 0 16px 36px rgba(30, 42, 74, 0.14);
+  --input-bg: #FFFCF7;
+  --code-bg: #1E2A4A;
+  --code-fg: #F6F1E7;
+  --danger: #A33B2B;
+  --mask: rgba(18, 16, 12, 0.48);
+  --serif: "Iowan Old Style", Palatino, "Palatino Linotype", "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", PMingLiU, serif;
+  --sans: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  --mono: "Cascadia Mono", Consolas, "Sarasa Mono SC", "Courier New", monospace;
+  --kb: 0px;
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg: #121722;
+  --card: #1C2333;
+  --ink: #F6F1E7;
+  --nav: #1E2A4A;
+  --nav-text: #F6F1E7;
+  --cinnabar: #E07A45;
+  --teal: #7EB8C4;
+  --amber: #E2B15A;
+  --indigo: #A9BBEA;
+  --muted: #C4BEB4;
+  --line: rgba(246, 241, 231, 0.14);
+  --grid: rgba(246, 241, 231, 0.045);
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --input-bg: #161C2A;
+  --code-bg: #0E1422;
+  --code-fg: #F6F1E7;
+  --danger: #E08A7A;
+  --mask: rgba(0, 0, 0, 0.62);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+input, select, textarea { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+  line-height: 1.55;
+  font-size: 15px;
+}
+button, input, select, textarea { font-family: inherit; font-size: 16px; color: inherit; }
+button { cursor: pointer; }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 650; line-height: 1.25; }
+#topNav { position: fixed; top: 0; left: 0; right: 0; z-index: 1001; }
+#navBar {
+  position: relative;
+  z-index: 1001;
+  background: var(--nav);
+  color: var(--nav-text);
+}
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 64px;
+  padding: 0 16px 0 18px;
+  flex-wrap: nowrap;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 6px 4px;
+  min-width: 0;
+}
+.logo-svg { width: 32px; height: 32px; flex: 0 0 auto; }
+.brand-name {
+  font-family: var(--serif);
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
+}
+.nav-links {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  margin-left: auto;
+  min-width: 0;
+  gap: 2px;
+}
+.nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: rgba(246, 241, 231, 0.78);
+  padding: 10px 12px;
+  white-space: nowrap;
+  position: relative;
+  border-radius: 10px;
+}
+.nav-tab i { font-size: 13px; }
+#navLinks .nav-tab.active { color: #fff; }
+#navLinks .nav-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 2px;
+  background: #C45C26;
+  border-radius: 2px;
+}
+.nav-tools { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+#langBtn, #hamburgerBtn, .menu-lang button {
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(246, 241, 231, 0.28);
+  border-radius: 999px;
+  height: 36px;
+  padding: 0 12px;
+}
+#hamburgerBtn { width: 42px; padding: 0; display: none; align-items: center; justify-content: center; }
+.ham-icon { width: 16px; height: 12px; display: inline-flex; flex-direction: column; justify-content: space-between; }
+.ham-icon span { display: block; height: 1.5px; background: currentColor; border-radius: 2px; }
+#mobileMenu {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px 12px;
+  border-top: 1px solid rgba(246, 241, 231, 0.12);
+  background: #1E2A4A;
+}
+#mobileMenu[hidden] { display: none !important; }
+#mobileMenu .nav-tab { width: 100%; text-align: left; color: #F6F1E7; padding: 12px 10px; }
+#mobileMenu .nav-tab.active { background: rgba(196, 92, 38, 0.18); box-shadow: inset 3px 0 0 #C45C26; }
+.menu-lang { display: flex; gap: 8px; padding: 8px 8px 2px; }
+.menu-lang button.active { background: rgba(196, 92, 38, 0.28); border-color: #C45C26; }
+main { padding-top: 76px; min-height: calc(100vh - 88px); }
+.wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 22px 0 40px; }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.lede { margin: 0; color: var(--muted); max-width: 46em; }
+h1 { margin: 0 0 6px; font-size: 34px; }
+.hero, .card, .record, .stat-card, .dist-card, .guide, .reader {
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.hero { position: relative; border-radius: 18px; padding: 26px 26px 22px 28px; }
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 16px; bottom: 16px;
+  width: 4px;
+  background: var(--cinnabar);
+  border-radius: 0 4px 4px 0;
+}
+.hero-actions, .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-actions { margin-top: 16px; }
+.btn {
+  border-radius: 999px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-primary { background: var(--cinnabar); color: #fff; box-shadow: 0 8px 18px rgba(196, 92, 38, 0.25); }
+.btn-ghost { border-color: var(--teal); color: var(--teal); background: transparent; }
+.btn-sm {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: 13px;
+  min-height: 34px;
+}
+.btn-sm:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-danger, .btn-sm.danger { color: var(--danger); border-color: rgba(163, 59, 43, 0.35); }
+.btn.is-muted { background: transparent; color: var(--cinnabar); border: 1px solid var(--cinnabar); box-shadow: none; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+.stat-card, .dist-card, .guide, .record { border-radius: 16px; }
+.stat-card { padding: 16px 18px 14px; transition: transform .16s ease, box-shadow .16s ease; }
+.stat-card:hover, .record:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.stat-card .num { font-family: var(--serif); font-size: 40px; line-height: 1; }
+.stat-card .lbl { color: var(--muted); margin-top: 6px; font-size: 13px; }
+.dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+.dist-card, .guide { padding: 16px 16px 12px; }
+.dist-card h2, .sec-title { font-size: 22px; margin: 0 0 12px; }
+.sec-title { margin: 26px 0 10px; }
+.dist-row { display: grid; grid-template-columns: 4.5em 1fr auto; gap: 8px; align-items: center; margin: 8px 0; font-size: 13px; }
+.dist-bar { height: 8px; border-radius: 999px; background: rgba(30, 42, 74, 0.08); overflow: hidden; }
+[data-theme="dark"] .dist-bar { background: rgba(246, 241, 231, 0.08); }
+.dist-bar span { display: block; height: 100%; background: var(--teal); border-radius: 999px; }
+.dist-bar.amber span { background: var(--amber); }
+.dist-bar.indigo span { background: var(--indigo); }
+.dist-num { color: var(--muted); white-space: nowrap; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.list-cards { display: flex; flex-direction: column; gap: 12px; }
+.record { padding: 14px 14px 12px; cursor: pointer; }
+.record h3 { margin: 0 0 6px; font-size: 20px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 10px; color: var(--muted); font-size: 13px; align-items: center; }
+.chip, .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 8px; border-radius: 999px; font-size: 12px;
+}
+.chip { background: rgba(42, 111, 127, 0.1); color: var(--teal); }
+.badge { border: 1px solid var(--line); }
+.badge.junior { color: var(--teal); border-color: var(--teal); }
+.badge.senior { color: var(--cinnabar); border-color: var(--cinnabar); }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--muted); }
+.dot.diag { background: #2A6F7F; }
+.dot.form { background: #C4841D; }
+.dot.sum { background: #1E2A4A; }
+[data-theme="dark"] .dot.diag { background: #7EB8C4; }
+[data-theme="dark"] .dot.form { background: #E2B15A; }
+[data-theme="dark"] .dot.sum { background: #A9BBEA; }
+.ratio { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: rgba(30, 42, 74, 0.08); margin-top: 8px; }
+[data-theme="dark"] .ratio { background: rgba(246, 241, 231, 0.08); }
+.ratio span { display: block; height: 100%; }
+.ratio .b { background: #2A6F7F; }
+.ratio .m { background: #C4841D; }
+.ratio .h { background: #1E2A4A; }
+[data-theme="dark"] .ratio .b { background: #7EB8C4; }
+[data-theme="dark"] .ratio .m { background: #E2B15A; }
+[data-theme="dark"] .ratio .h { background: #A9BBEA; }
+.ratio-legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.scheme-line { margin-top: 8px; font-size: 13px; }
+.file-name { font-family: var(--mono); font-size: 12px; word-break: break-all; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; align-items: center; }
+.toolbar .search { flex: 1 1 220px; min-width: 0; position: relative; }
+.toolbar input[type="search"], .toolbar select, .field input, .field select, .field textarea {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+.toolbar select { flex: 1 1 140px; width: auto; min-width: 120px; }
+.hint-line { color: var(--cinnabar); margin: 0 0 8px; }
+.split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr); gap: 16px; align-items: start; }
+.reader {
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 110px);
+  position: sticky;
+  top: 84px;
+  min-width: 0;
+}
+.reader-head, .modal-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 12px 14px;
+}
+.reader-head h2, .modal-head h2 { margin: 0; font-size: 20px; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line);
+  background: transparent; color: var(--ink);
+}
+.ai-banner {
+  margin: 0 14px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--cinnabar);
+  background: rgba(196, 92, 38, 0.1);
+  border-radius: 0 10px 10px 0;
+  font-size: 13px;
+}
+.reader-actions { padding: 10px 14px 0; }
+.reader-body, .modal-body { overflow: auto; padding: 10px 16px 18px; min-height: 120px; }
+.guide { border-left: 4px solid var(--teal); margin-bottom: 14px; }
+.guide h2 { margin: 0 0 8px; font-size: 18px; }
+.guide p { margin: 0; color: var(--muted); }
+.kv { display: grid; grid-template-columns: 7.2em 1fr; gap: 6px 10px; font-size: 14px; margin: 8px 0 12px; }
+.kv .k { color: var(--muted); }
+.footer {
+  background: #1E2A4A;
+  color: rgba(246, 241, 231, 0.82);
+  text-align: center;
+  padding: 22px 16px calc(26px + env(safe-area-inset-bottom));
+}
+.footer strong { display: block; color: #F6F1E7; font-family: var(--serif); font-size: 18px; margin-bottom: 4px; }
+.empty { text-align: center; padding: 18px 10px 8px; color: var(--muted); }
+.loading { color: var(--muted); padding: 12px 2px; }
+.empty-art { width: 128px; height: 92px; margin: 6px auto 12px; position: relative; }
+.compass {
+  width: 74px; height: 74px; border: 2px solid var(--ink); border-radius: 50%; position: relative;
+}
+.compass::before, .compass::after {
+  content: ""; position: absolute; background: var(--teal);
+}
+.compass::before { left: 50%; top: 10px; bottom: 10px; width: 1px; transform: translateX(-50%); }
+.compass::after { top: 50%; left: 10px; right: 10px; height: 1px; transform: translateY(-50%); }
+.needle {
+  position: absolute; left: 50%; top: 16px; width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-bottom: 22px solid var(--cinnabar);
+  transform: translateX(-50%) rotate(18deg);
+  transform-origin: 50% 22px;
+}
+.hub {
+  position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ink); transform: translate(-50%, -50%);
+}
+.ruler {
+  position: absolute; right: 0; bottom: 8px; width: 84px; height: 16px;
+  border: 1.5px solid var(--ink); border-radius: 2px; background-color: transparent;
+  background-image: repeating-linear-gradient(90deg, var(--ink) 0 1.5px, transparent 1.5px 8px);
+  background-size: 100% 7px; background-repeat: no-repeat;
+}
+.modal-mask {
+  position: fixed; inset: 0; z-index: 1200;
+  background: var(--mask);
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 18px;
+}
+.modal-mask[hidden] { display: none !important; }
+.preview-mask { z-index: 1320; }
+#confirmMask { z-index: 1500; }
+.modal-dialog {
+  width: min(560px, 100%);
+  max-height: calc(100dvh - 56px);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.modal-dialog.wide { width: min(760px, 100%); }
+.modal-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 14px 14px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; margin-bottom: 6px; font-size: 14px; }
+.req { color: var(--cinnabar); margin-left: 4px; }
+.hint { color: var(--muted); font-size: 12px; margin: 6px 0 0; }
+.file-row { display: flex; gap: 8px; align-items: center; }
+.file-row input { flex: 1; min-width: 0; }
+.file-links { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.file-links a { color: var(--teal); }
+.preview-box, .file-frame { width: 100%; }
+.file-frame { height: 280px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.preview-box pre, .plain-pre {
+  white-space: pre-wrap; word-break: break-word;
+  background: rgba(30, 42, 74, 0.04); padding: 10px; border-radius: 10px;
+  font-family: var(--mono); font-size: 12px; max-height: 240px; overflow: auto;
+}
+#toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 1600;
+  background: #1E2A4A; color: #F6F1E7;
+  padding: 10px 16px; border-radius: 999px;
+  max-width: min(560px, calc(100% - 28px));
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
+  text-align: center;
+}
+[data-theme="dark"] #toast { background: #F6F1E7; color: #1E2A4A; }
+#toast[hidden] { display: none !important; }
+.spinner {
+  width: 22px; height: 22px; margin: 12px auto;
+  border: 2px solid var(--line); border-top-color: var(--cinnabar);
+  border-radius: 50%; animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.markdown-body { font-size: 15px; line-height: 1.75; }
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { margin: 1em 0 .4em; }
+.markdown-body h1 { font-size: 1.5em; }
+.markdown-body h2 { font-size: 1.25em; border-bottom: 1px solid var(--line); padding-bottom: .2em; }
+.markdown-body p { margin: .55em 0; }
+.markdown-body blockquote { margin: .8em 0; padding: .1em 0 .1em 12px; border-left: 3px solid var(--cinnabar); color: var(--muted); }
+.markdown-body code { font-family: var(--mono); background: rgba(42, 111, 127, .1); padding: .1em .35em; border-radius: 4px; }
+.markdown-body pre { background: var(--code-bg); color: var(--code-fg); padding: 12px 14px; border-radius: 10px; overflow: auto; }
+.markdown-body pre code { background: transparent; color: inherit; padding: 0; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: 8px; }
+.markdown-body a { color: var(--teal); }
+.markdown-body hr { border: none; border-top: 1px solid var(--line); }
+.md-table-wrap { overflow-x: auto; max-width: 100%; }
+.markdown-body table { border-collapse: collapse; min-width: 420px; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--line); padding: 6px 10px; vertical-align: top; }
+.markdown-body th { background: rgba(30, 42, 74, .06); }
+[data-theme="dark"] .markdown-body th { background: rgba(246, 241, 231, .06); }
+.markdown-body ul, .markdown-body ol { padding-left: 1.3em; }
+.markdown-body li { margin: .2em 0; }
+.markdown-body input[type="checkbox"] { pointer-events: none; }
+details.scheme-fold { margin: 8px 0 12px; }
+details.scheme-fold summary { cursor: pointer; font-family: var(--serif); }
+:focus-visible { outline: 2px solid var(--cinnabar); outline-offset: 2px; }
+::selection { background: rgba(196, 92, 38, .22); }
+@media (max-width: 980px) {
+  .split { grid-template-columns: 1fr; }
+  .reader-mask { display: none; }
+  .reader-mask.open {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: var(--mask);
+    align-items: center;
+    justify-content: center;
+    padding: 22px 16px;
+  }
+  .reader-mask.open .reader {
+    width: min(760px, 100%);
+    max-height: calc(100dvh - 44px);
+    position: relative;
+    top: auto;
+  }
+}
+@media (max-width: 800px) {
+  .stat-grid, .dist-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 28px; }
+  .dist-row { grid-template-columns: 4.2em 1fr; }
+  .dist-num { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .wrap { width: calc(100% - 20px); padding-bottom: 120px; }
+  .modal-body, .reader-body { padding-bottom: calc(140px + var(--kb, 0px)); }
+  #toast { bottom: calc(16px + var(--kb, 0px)); }
+}
+@media (max-width: 720px) {
+  .reader-mask.open { padding: 0; background: var(--bg); }
+  .reader-mask.open .reader {
+    width: 100%; height: 100%; max-height: none; border-radius: 0; border: none;
+  }
+  .preview-mask { padding: 0 !important; }
+  .preview-mask .preview-dialog {
+    width: 100%; height: 100%; max-height: none; border-radius: 0;
+  }
+  .preview-mask .file-frame { height: calc(100dvh - 120px); }
+  .hero { padding: 22px 16px 18px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<header id="topNav">
+  <nav id="navBar" aria-label="主导航">
+    <div class="nav-row" id="navRow">
+      <button type="button" id="logoBtn" class="brand">
+        <svg class="logo-svg" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+          <path d="M24 9.5v29M9.5 24h29" stroke="currentColor" stroke-width="1" opacity=".55"></path>
+          <path d="M24 12l3.2 12.2L24 22.2 20.8 24.2 24 12z" fill="none" stroke="#C45C26" stroke-width="1.4" stroke-linejoin="round"></path>
+          <circle cx="24" cy="24" r="1.7" fill="currentColor"></circle>
+        </svg>
+        <span class="brand-name" data-i18n="appName">数学测评设计</span>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <button type="button" class="nav-tab active" id="tabHome" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="home">首页</span></button>
+        <button type="button" class="nav-tab" id="tabClass" data-page="class"><i class="fa-solid fa-users" aria-hidden="true"></i><span data-i18n="classes">班级名册</span></button>
+        <button type="button" class="nav-tab" id="tabPaper" data-page="paper"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="papers">测评命题</span></button>
+        <button type="button" class="nav-tab" id="tabStat" data-page="stat"><i class="fa-solid fa-chart-column" aria-hidden="true"></i><span data-i18n="stats">题目统计</span></button>
+      </div>
+      <div class="nav-tools" id="navTools">
+        <button type="button" id="langBtn">EN</button>
+        <button type="button" id="hamburgerBtn" aria-expanded="false" data-i18n-aria="menu" aria-label="菜单">
+          <span class="ham-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" hidden>
+      <button type="button" class="nav-tab" id="mTabHome" data-page="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="home">首页</span></button>
+      <button type="button" class="nav-tab" id="mTabClass" data-page="class"><i class="fa-solid fa-users" aria-hidden="true"></i><span data-i18n="classes">班级名册</span></button>
+      <button type="button" class="nav-tab" id="mTabPaper" data-page="paper"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="papers">测评命题</span></button>
+      <button type="button" class="nav-tab" id="mTabStat" data-page="stat"><i class="fa-solid fa-chart-column" aria-hidden="true"></i><span data-i18n="stats">题目统计</span></button>
+      <div class="menu-lang">
+        <button type="button" id="langCnBtn">中文</button>
+        <button type="button" id="langEnBtn">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main id="appMain">
+  <section class="page" id="pageHome" data-page="home">
+    <div class="wrap">
+      <div class="hero">
+        <h1 id="homeTitle" data-i18n="appName">数学测评设计</h1>
+        <p class="lede" id="homeDesc" data-i18n="homeDesc">先定班级与测评类型，再生成双向细目表和待验算候选题，考后只看逐题难度、区分度与信度</p>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-primary" id="btnGoClass"><span data-i18n="btnRegister">登记班级</span></button>
+          <button type="button" class="btn btn-ghost" id="btnGoPaper"><span data-i18n="btnStartPaper">开始命题</span></button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <article class="stat-card" id="statCardClass"><div class="num" id="countClass">…</div><div class="lbl" data-i18n="statClasses">在册班级</div></article>
+        <article class="stat-card" id="statCardPaper"><div class="num" id="countPaper">…</div><div class="lbl" data-i18n="statPapers">已出命题</div></article>
+        <article class="stat-card" id="statCardStat"><div class="num" id="countStat">…</div><div class="lbl" data-i18n="statStats">已做统计</div></article>
+      </div>
+      <div class="dist-grid">
+        <article class="dist-card"><h2 data-i18n="gradeDist">年级分布</h2><div id="gradeDist"></div></article>
+        <article class="dist-card"><h2 data-i18n="typeDist">测评类型分布</h2><div id="typeDist"></div></article>
+      </div>
+      <h2 class="sec-title" data-i18n="recentPapers">最近命题</h2>
+      <div id="recentPapers" class="card-grid"></div>
+      <h2 class="sec-title" data-i18n="recentStats">最近统计</h2>
+      <div id="recentStats" class="card-grid"></div>
+    </div>
+  </section>
+  <section class="page" id="pageClass" data-page="class" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="classes">班级名册</h1>
+          <p class="lede" data-i18n="classPageDesc">测评与统计都从这里的班级出发</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnNewClass"><span data-i18n="newClass">+ 登记班级</span></button>
+      </div>
+      <div class="toolbar">
+        <div class="search"><input type="search" id="searchClass" data-i18n-placeholder="searchClassPh" placeholder="搜索班级名称" autocomplete="off"></div>
+        <select id="filterClassGrade" data-i18n-aria="filterGrade" aria-label="年级">
+          <option value="" data-i18n="all">全部</option>
+          <option value="七年级" data-i18n="grade7">七年级</option>
+          <option value="八年级" data-i18n="grade8">八年级</option>
+          <option value="九年级" data-i18n="grade9">九年级</option>
+          <option value="高一" data-i18n="grade10">高一</option>
+        </select>
+        <button type="button" class="btn btn-ghost" id="btnSearchClass"><span data-i18n="search">搜索</span></button>
+        <button type="button" class="btn btn-ghost" id="btnResetClass"><span data-i18n="reset">重置</span></button>
+      </div>
+      <div id="classList" class="card-grid"></div>
+    </div>
+  </section>
+  <section class="page" id="pagePaper" data-page="paper" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="papers">测评命题</h1>
+          <p class="lede" data-i18n="paperPageDesc">提交后由后台生成命题蓝图、双向细目表和待验算候选题</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnNewPaper"><span id="btnNewPaperLabel" data-i18n="newPaper">+ 新建命题</span></button>
+      </div>
+      <p class="hint-line" id="paperNeedClass" hidden data-i18n="needClassHint">还没有班级，新建命题已关闭</p>
+      <div class="split">
+        <div>
+          <div class="toolbar">
+            <div class="search"><input type="search" id="searchPaper" data-i18n-placeholder="searchPaperPh" placeholder="搜索单元、班级或知识点" autocomplete="off"></div>
+            <select id="filterPaperType" data-i18n-aria="filterType" aria-label="测评类型">
+              <option value="" data-i18n="all">全部</option>
+              <option value="诊断性" data-i18n="diag">诊断性</option>
+              <option value="形成性" data-i18n="formative">形成性</option>
+              <option value="终结性" data-i18n="summative">终结性</option>
+            </select>
+            <select id="filterPaperRatio" data-i18n-aria="filterRatio" aria-label="难度比例">
+              <option value="" data-i18n="all">全部</option>
+              <option value="6:3:1">6:3:1</option>
+              <option value="7:2:1">7:2:1</option>
+              <option value="8:2:0">8:2:0</option>
+            </select>
+            <select id="filterPaperScore" data-i18n-aria="filterScore" aria-label="卷面满分">
+              <option value="" data-i18n="all">全部</option>
+              <option value="100">100</option>
+              <option value="120">120</option>
+              <option value="150">150</option>
+            </select>
+            <select id="filterPaperClass" data-i18n-aria="filterClass" aria-label="班级名称"></select>
+            <button type="button" class="btn btn-ghost" id="btnSearchPaper"><span data-i18n="search">搜索</span></button>
+            <button type="button" class="btn btn-ghost" id="btnResetPaper"><span data-i18n="reset">重置</span></button>
+          </div>
+          <div id="paperList" class="list-cards"></div>
+        </div>
+        <div id="paperReaderMask" class="reader-mask" data-active="0">
+          <aside class="reader" id="paperReader">
+            <div class="reader-head">
+              <h2 id="paperReaderTitle" data-i18n="readerPaper">方案阅读栏</h2>
+              <button type="button" class="icon-btn" id="paperReaderClose" data-i18n-aria="close" aria-label="关闭">×</button>
+            </div>
+            <div class="ai-banner" id="paperAiBanner" data-i18n="aiBanner">【AI 生成，入库前请人工验算】</div>
+            <div class="reader-actions"><button type="button" class="btn btn-ghost" id="btnCopyPaper" disabled><span data-i18n="copyAll">复制全文</span></button></div>
+            <div class="reader-body" id="paperReaderBody"></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="page" id="pageStat" data-page="stat" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="stats">题目统计</h1>
+          <p class="lede" data-i18n="statPageDesc">上传逐题分数文件后，只查看难度P、区分度D、flag、信度、知识点得分率和班级总体统计</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnNewStat"><span data-i18n="newStat">+ 新建统计</span></button>
+      </div>
+      <article class="guide" id="statGuide">
+        <h2 data-i18n="guideTitle">阅读说明</h2>
+        <p data-i18n="guide">P为平均得分除以满分。D为高分组得分率减去低分组得分率，默认取前后27%；样本不足30人时改为上下各半，且D只作参考。flag只可能是正常、偏难、偏易、区分度低、疑似错题。基础题不因D低而判为区分度低。有逐题分数才有Cronbach α；样本不足20人时仅供参考。本页不计算这些指标。</p>
+      </article>
+      <div class="split">
+        <div>
+          <div class="toolbar">
+            <div class="search"><input type="search" id="searchStat" data-i18n-placeholder="searchStatPh" placeholder="搜索班级或单元" autocomplete="off"></div>
+            <select id="filterStatClass" data-i18n-aria="filterClass" aria-label="班级名称"></select>
+            <button type="button" class="btn btn-ghost" id="btnSearchStat"><span data-i18n="search">搜索</span></button>
+            <button type="button" class="btn btn-ghost" id="btnResetStat"><span data-i18n="reset">重置</span></button>
+          </div>
+          <div id="statList" class="list-cards"></div>
+        </div>
+        <div id="statReaderMask" class="reader-mask" data-active="0">
+          <aside class="reader" id="statReader">
+            <div class="reader-head">
+              <h2 id="statReaderTitle" data-i18n="readerStat">报告阅读栏</h2>
+              <button type="button" class="icon-btn" id="statReaderClose" data-i18n-aria="close" aria-label="关闭">×</button>
+            </div>
+            <div class="reader-actions"><button type="button" class="btn btn-ghost" id="btnCopyStat" disabled><span data-i18n="copyAll">复制全文</span></button></div>
+            <div class="reader-body" id="statReaderBody">
+              <div id="statLinked"></div>
+              <details class="scheme-fold" id="statSchemeDetails" hidden>
+                <summary id="statSchemeSummary" data-i18n="schemeFold">命题方案</summary>
+                <div id="statSchemeBody"></div>
+              </details>
+              <div id="statReportBody"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer" id="pageFooter">
+  <strong data-i18n="appName">数学测评设计</strong>
+  <span data-i18n="footerNote">命题与统计入库前请人工验算</span>
+</footer>
+<div id="formMask" class="modal-mask" hidden>
+  <div class="modal-dialog" id="formDialog" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2 id="formTitle">班级信息</h2>
+      <button type="button" class="icon-btn" id="formClose" data-i18n-aria="close" aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body" id="formBody"><div id="formHost"></div></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" id="formCancel"><span data-i18n="cancel">取消</span></button>
+      <button type="button" class="btn btn-primary" id="formSubmit"><span id="formSubmitLabel">保存</span></button>
+    </div>
+  </div>
+</div>
+<div id="confirmMask" class="modal-mask" hidden>
+  <div class="modal-dialog" id="confirmDialog" role="dialog" aria-modal="true">
+    <div class="modal-head"><h2 data-i18n="confirm">确定</h2></div>
+    <div class="modal-body"><p id="confirmText"></p></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" id="confirmCancel"><span data-i18n="cancel">取消</span></button>
+      <button type="button" class="btn btn-primary" id="confirmOk"><span data-i18n="confirm">确定</span></button>
+    </div>
+  </div>
+</div>
+<div id="previewMask" class="modal-mask preview-mask" hidden>
+  <div class="modal-dialog wide preview-dialog" id="previewDialog" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2 id="previewTitle" data-i18n="previewTitle">文件预览</h2>
+      <button type="button" class="icon-btn" id="previewClose" data-i18n-aria="close" aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body" id="previewBody"></div>
+  </div>
+</div>
+<div id="toast" hidden role="status"></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("469942d64f5b0625_数学测评设计")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+var DS_CLASS = "班级信息/默认表格";
+var DS_PAPER = "测评命题/默认表格";
+var DS_STAT = "题目统计/默认表格";
+var CLASS_FIELDS = ["班级名称", "年级", "班级人数"];
+var PAPER_FIELDS = ["单元名称", "班级名称", "测评类型", "知识点", "时长分钟", "卷面满分", "难度比例", "命题方案"];
+var STAT_FIELDS = ["班级名称", "单元名称", "分数文件", "统计报告"];
+var GRADE_ORDER = ["七年级", "八年级", "九年级", "高一"];
+var TYPE_ORDER = ["诊断性", "形成性", "终结性"];
+var I18N = {
+  cn: {
+    appName: "数学测评设计",
+    home: "首页", classes: "班级名册", papers: "测评命题", stats: "题目统计",
+    menu: "菜单", close: "关闭", search: "搜索", reset: "重置", all: "全部",
+    homeDesc: "先定班级与测评类型，再生成双向细目表和待验算候选题，考后只看逐题难度、区分度与信度",
+    btnRegister: "登记班级", btnStartPaper: "开始命题",
+    statClasses: "在册班级", statPapers: "已出命题", statStats: "已做统计",
+    gradeDist: "年级分布", typeDist: "测评类型分布",
+    recentPapers: "最近命题", recentStats: "最近统计",
+    classPageDesc: "测评与统计都从这里的班级出发",
+    paperPageDesc: "提交后由后台生成命题蓝图、双向细目表和待验算候选题",
+    statPageDesc: "上传逐题分数文件后，只查看难度P、区分度D、flag、信度、知识点得分率和班级总体统计",
+    newClass: "+ 登记班级", newPaper: "+ 新建命题", newStat: "+ 新建统计",
+    needClass: "请先登记班级", needClassHint: "还没有班级，新建命题已关闭",
+    searchClassPh: "搜索班级名称", searchPaperPh: "搜索单元、班级或知识点", searchStatPh: "搜索班级或单元",
+    filterGrade: "筛选年级", filterType: "筛选测评类型", filterRatio: "筛选难度比例", filterScore: "筛选卷面满分", filterClass: "筛选班级名称",
+    edit: "编辑", del: "删除", viewScheme: "查看方案", viewReport: "查看报告",
+    refreshScheme: "刷新方案", refreshReport: "刷新报告", downloadFile: "下载分数文件", preview: "预览",
+    copyAll: "复制全文", save: "保存", cancel: "取消", confirm: "确定", register: "登记",
+    generatePaper: "生成命题方案", generateStat: "生成统计报告",
+    loading: "正在读取…", loadFail: "读取失败", submitFail: "提交失败", saveFail: "保存失败", deleteFail: "删除失败",
+    actionFail: "操作失败", saved: "已保存", submitted: "已提交", deleted: "已删除",
+    copied: "已复制", copyFail: "复制失败", nothingCopy: "没有可复制的内容",
+    required: "请完整填写必填项", countInvalid: "班级人数必须是大于0的数值", minutesInvalid: "时长分钟必须大于0",
+    renameWarn: "修改班级名称后，已关联的测评命题和题目统计不会自动级联。是否继续？",
+    deleteAsk: "确定删除「{name}」吗？", thisRecord: "这条记录",
+    waitPaper: "命题方案生成中，正在整理双向细目表与待验算候选题…",
+    waitStat: "正在依据逐题分数整理难度、区分度与信度…",
+    timeoutPaper: "生成超时，可稍后点「刷新方案」查看，本次不会重复提交。",
+    timeoutStat: "统计超时，可稍后点「刷新报告」查看，本次不会重复提交。",
+    waitLock: "请等待生成完成",
+    aiBanner: "【AI 生成，入库前请人工验算】",
+    ratioNote: "基础:中等:较难", base: "基础", mid: "中等", hard: "较难",
+    generated: "已生成", notGenerated: "未生成",
+    minutes: "时长分钟", knowledge: "知识点", unit: "单元名称", file: "分数文件",
+    report: "统计报告", scheme: "命题方案", people: "班级人数", className: "班级名称",
+    grade: "年级", type: "测评类型", ratio: "难度比例", fullScore: "卷面满分",
+    junior: "初中", senior: "高中",
+    stageJunior: "七年级至九年级为初中",
+    stageSenior: "高一为高中，且只覆盖预备知识与函数",
+    pleaseSelect: "请选择",
+    flowPaperNote: "命题方案由后台生成，此处不填写。提交后在阅读栏查看。",
+    flowStatNote: "统计报告由后台生成，此处不填写。",
+    editNoRegenPaper: "修改已有记录不会重新触发指令流；若要重新生成方案，必须新建记录。",
+    editNoRegenStat: "修改已有记录不会重新生成统计报告；要重算必须新建记录。",
+    noPaperForClass: "该班级还没有命题，不能提交。",
+    noClassForStat: "还没有班级，请先登记。",
+    goPaper: "去测评命题", goClass: "去班级名册",
+    selectFile: "选择文件", download: "下载", openBrowser: "浏览器打开",
+    needFile: "请选择分数文件", fileFail: "文件读取失败",
+    fileBinary: "无法作为文本预览，已保留文件名与链接",
+    noLinked: "未找到关联命题", schemeFold: "命题方案",
+    emptyPapers: "还没有命题", emptyStats: "还没有题目统计", emptyClasses: "还没有班级",
+    emptyReaderPaper: "选择一条命题后，在这里阅读方案",
+    emptyReaderStat: "选择一条统计后，在这里阅读报告",
+    searchEmpty: "没有符合条件的记录",
+    notFoundScheme: "尚未生成命题方案", notFoundReport: "尚未生成统计报告",
+    readerPaper: "方案阅读栏", readerStat: "报告阅读栏",
+    footerNote: "命题与统计入库前请人工验算",
+    retry: "重试", previewTitle: "文件预览",
+    formClassTitle: "班级信息", formPaperTitle: "测评命题", formStatTitle: "题目统计",
+    diag: "诊断性", formative: "形成性", summative: "终结性",
+    grade7: "七年级", grade8: "八年级", grade9: "九年级", grade10: "高一",
+    guideTitle: "阅读说明",
+    guide: "P为平均得分除以满分。D为高分组得分率减去低分组得分率，默认取前后27%；样本不足30人时改为上下各半，且D只作参考。flag只可能是正常、偏难、偏易、区分度低、疑似错题。基础题不因D低而判为区分度低。有逐题分数才有Cronbach α；样本不足20人时仅供参考。本页不计算这些指标。",
+    classUnit: "班", peopleUnit: "人", minUnit: "分钟", ptUnit: "分",
+    imgDownload: "点击下载", navLabel: "主导航",
+    pollStopped: "已停止等待，可稍后刷新"
+  },
+  en: {
+    appName: "Math Assessment Design",
+    home: "Home", classes: "Class Roster", papers: "Blueprints", stats: "Item Statistics",
+    menu: "Menu", close: "Close", search: "Search", reset: "Reset", all: "All",
+    homeDesc: "Set the class and assessment type first, then generate the two-way blueprint and candidate items that still need checking. After the test, only item difficulty, discrimination, and reliability are shown.",
+    btnRegister: "Register a class", btnStartPaper: "Start a blueprint",
+    statClasses: "Classes", statPapers: "Blueprints", statStats: "Scored sets",
+    gradeDist: "Grade mix", typeDist: "Assessment types",
+    recentPapers: "Recent blueprints", recentStats: "Recent statistics",
+    classPageDesc: "Assessments and statistics start from these classes",
+    paperPageDesc: "After you submit, the service writes the blueprint, the two-way table, and candidate items to check",
+    statPageDesc: "After you upload item scores, this page only shows difficulty P, discrimination D, flag, reliability, topic rates, and the class summary",
+    newClass: "+ Register", newPaper: "+ New blueprint", newStat: "+ New statistics",
+    needClass: "Register a class first", needClassHint: "No classes yet. New blueprints stay closed.",
+    searchClassPh: "Search class name", searchPaperPh: "Search unit, class, or topic", searchStatPh: "Search class or unit",
+    filterGrade: "Filter grade", filterType: "Filter type", filterRatio: "Filter mix", filterScore: "Filter full mark", filterClass: "Filter class",
+    edit: "Edit", del: "Delete", viewScheme: "Read blueprint", viewReport: "Read report",
+    refreshScheme: "Refresh", refreshReport: "Refresh", downloadFile: "Download scores", preview: "Preview",
+    copyAll: "Copy all", save: "Save", cancel: "Cancel", confirm: "Confirm", register: "Register",
+    generatePaper: "Generate blueprint", generateStat: "Generate report",
+    loading: "Loading…", loadFail: "Couldn't load", submitFail: "Couldn't submit", saveFail: "Couldn't save", deleteFail: "Couldn't delete",
+    actionFail: "Action failed", saved: "Saved", submitted: "Submitted", deleted: "Deleted",
+    copied: "Copied", copyFail: "Couldn't copy", nothingCopy: "Nothing to copy",
+    required: "Fill in the required fields", countInvalid: "Class size must be a number greater than 0", minutesInvalid: "Minutes must be greater than 0",
+    renameWarn: "Linked blueprints and statistics will not update when the class name changes. Continue?",
+    deleteAsk: "Delete \"{name}\"?", thisRecord: "this record",
+    waitPaper: "Building the blueprint, the two-way table, and items to check…",
+    waitStat: "Reading item scores for difficulty, discrimination, and reliability…",
+    timeoutPaper: "Timed out. Use Refresh later. This submit will not be repeated.",
+    timeoutStat: "Timed out. Use Refresh later. This submit will not be repeated.",
+    waitLock: "Wait until generation finishes",
+    aiBanner: "[AI generated. Check every item before you keep it.]",
+    ratioNote: "Basic : Medium : Hard", base: "Basic", mid: "Medium", hard: "Hard",
+    generated: "Ready", notGenerated: "Not ready",
+    minutes: "Minutes", knowledge: "Topics", unit: "Unit", file: "Score file",
+    report: "Report", scheme: "Blueprint", people: "Class size", className: "Class",
+    grade: "Grade", type: "Type", ratio: "Difficulty mix", fullScore: "Full mark",
+    junior: "Junior high", senior: "Senior high",
+    stageJunior: "Grades 7–9 are junior high",
+    stageSenior: "Grade 10 is senior high and covers only preliminary knowledge and functions",
+    pleaseSelect: "Select",
+    flowPaperNote: "The blueprint is written by the service. It is not typed here. Read it in the side panel after you submit.",
+    flowStatNote: "The report is written by the service. It is not typed here.",
+    editNoRegenPaper: "Saving edits does not run the generator again. To rebuild a blueprint, create a new record.",
+    editNoRegenStat: "Saving edits does not rebuild the report. To recompute, create a new record.",
+    noPaperForClass: "This class has no blueprint yet, so this cannot be submitted.",
+    noClassForStat: "There is no class yet. Register one first.",
+    goPaper: "Go to blueprints", goClass: "Go to classes",
+    selectFile: "Choose file", download: "Download", openBrowser: "Open in browser",
+    needFile: "Choose a score file", fileFail: "Couldn't read the file",
+    fileBinary: "This file can't be shown as text. The name and links are kept.",
+    noLinked: "No linked blueprint", schemeFold: "Blueprint",
+    emptyPapers: "No blueprints yet", emptyStats: "No item statistics yet", emptyClasses: "No classes yet",
+    emptyReaderPaper: "Select a blueprint to read it here",
+    emptyReaderStat: "Select a record to read the report",
+    searchEmpty: "No records match",
+    notFoundScheme: "No blueprint yet", notFoundReport: "No report yet",
+    readerPaper: "Blueprint", readerStat: "Report",
+    footerNote: "Check blueprints and statistics before you keep them",
+    retry: "Retry", previewTitle: "File preview",
+    formClassTitle: "Class", formPaperTitle: "Blueprint", formStatTitle: "Item statistics",
+    diag: "Diagnostic", formative: "Formative", summative: "Summative",
+    grade7: "Grade 7", grade8: "Grade 8", grade9: "Grade 9", grade10: "Grade 10",
+    guideTitle: "How to read this",
+    guide: "P is the mean score divided by the full mark. D is the high-group scoring rate minus the low-group scoring rate; the default cut is the top and bottom 27%. When the sample is under 30, use the upper and lower halves and treat D as a reference only. flag can only be normal, too hard, too easy, low discrimination, or suspected miskey. Basic items are not marked low-discrimination merely because D is low. Cronbach’s α exists only when item scores exist; samples under 20 are a reference only. This page does not calculate these figures.",
+    classUnit: "classes", peopleUnit: "students", minUnit: "min", ptUnit: "pts",
+    imgDownload: "Download", navLabel: "Main",
+    pollStopped: "Waiting stopped. Refresh later."
+  }
+};
+var state = {
+  lang: "cn",
+  page: "",
+  history: [],
+  classes: [],
+  papers: [],
+  stats: [],
+  counts: { class: null, paper: null, stat: null },
+  classCount: null,
+  loaded: { home: false, class: false, paper: false, stat: false },
+  errors: {},
+  miss: { class: false, paper: false, stat: false },
+  saving: false,
+  currentRow: { class: 0, paper: 0, stat: 0 },
+  paperViewRow: 0,
+  statViewRow: 0,
+  paperRaw: "",
+  statRaw: "",
+  form: null,
+  polling: false,
+  pollPage: "",
+  pollRow: 0,
+  pollToken: 0,
+  readerToken: 0
+};
+var pollWaiters = [];
+var toastTimer = 0;
+var lastToast = "";
+
+function t(key) {
+  var pack = I18N[state.lang] || I18N.cn;
+  if (pack[key] != null && pack[key] !== "") return pack[key];
+  if (I18N.cn[key] != null) return I18N.cn[key];
+  return key;
+}
+function byId(id) { return document.getElementById(id); }
+function toast(msg) {
+  var text = String(msg || "").slice(0, 160);
+  if (!text) return;
+  var el = byId("toast");
+  if (!el) return;
+  if (text === lastToast && !el.hidden) return;
+  lastToast = text;
+  el.textContent = text;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; lastToast = ""; }, 3400);
+}
+function delay(ms) {
+  return new Promise(function (resolve) {
+    var item = { resolve: resolve, id: 0 };
+    item.id = setTimeout(function () { item.resolve(); }, ms);
+    pollWaiters.push(item);
+  });
+}
+function stopPoll() {
+  state.pollToken += 1;
+  state.polling = false;
+  var i;
+  for (i = 0; i < pollWaiters.length; i++) {
+    clearTimeout(pollWaiters[i].id);
+    pollWaiters[i].resolve();
+  }
+  pollWaiters = [];
+  syncPaperCreateBtn();
+  var statBtn = byId("btnNewStat");
+  if (statBtn) statBtn.disabled = false;
+  var submit = byId("formSubmit");
+  if (submit) submit.disabled = false;
+}
+function stripBom(text) {
+  var s = text == null ? "" : String(text);
+  if (s.charCodeAt(0) === 0xFEFF) s = s.slice(1);
+  return s;
+}
+function like(hay, needle) {
+  if (!needle) return true;
+  return String(hay || "").toLowerCase().indexOf(String(needle).toLowerCase()) >= 0;
+}
+function numOrNull(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (!s) return null;
+  var n = Number(s);
+  if (!isFinite(n)) return null;
+  return n;
+}
+function previewText(s) {
+  var flat = String(s || "").replace(/\s+/g, " ").trim();
+  var chars = Array.from(flat);
+  if (!chars.length) return "";
+  if (chars.length <= 40) return flat;
+  return chars.slice(0, 40).join("") + "…";
+}
+function typeDotClass(type) {
+  if (type === "诊断性") return "dot diag";
+  if (type === "形成性") return "dot form";
+  if (type === "终结性") return "dot sum";
+  return "dot";
+}
+function typeLabel(type) {
+  if (type === "诊断性") return t("diag");
+  if (type === "形成性") return t("formative");
+  if (type === "终结性") return t("summative");
+  return type || "";
+}
+function gradeLabel(grade) {
+  if (grade === "七年级") return t("grade7");
+  if (grade === "八年级") return t("grade8");
+  if (grade === "九年级") return t("grade9");
+  if (grade === "高一") return t("grade10");
+  return grade || "";
+}
+function stageKey(grade) {
+  if (grade === "高一") return "senior";
+  if (grade === "七年级" || grade === "八年级" || grade === "九年级") return "junior";
+  return "";
+}
+function findClass(name) {
+  var i;
+  for (i = 0; i < state.classes.length; i++) {
+    if (state.classes[i]["班级名称"] === name) return state.classes[i];
+  }
+  return null;
+}
+function findPaper(className, unitName) {
+  var i;
+  for (i = 0; i < state.papers.length; i++) {
+    var p = state.papers[i];
+    if (p["班级名称"] === className && p["单元名称"] === unitName) return p;
+  }
+  return null;
+}
+function findByRow(list, row) {
+  var i;
+  for (i = 0; i < list.length; i++) if (list[i].row === row) return list[i];
+  return null;
+}
+function downloadUrl(name) {
+  var s = String(name || "").trim();
+  if (/^https?:\/\//i.test(s)) return s;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+}
+function privateUrl(name) {
+  var s = String(name || "").trim();
+  if (/^https?:\/\//i.test(s)) return s;
+  return "https://www.ithinkair.com:3031/private/" + encodeURIComponent(s);
+}
+function visit(href) {
+  var a = document.createElement("a");
+  a.href = href;
+  a.target = "_blank";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+function escapeHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function safeImageUrl(src) {
+  var s = String(src || "").trim();
+  if (!s || /^\s*javascript:/i.test(s)) return "";
+  if (/^https?:\/\//i.test(s)) return s;
+  if (/^data:image\//i.test(s)) return s;
+  return downloadUrl(s.replace(/^\.\//, ""));
+}
+function imageHtml(alt, src) {
+  var href = safeImageUrl(src);
+  if (!href) return escapeHtml(alt || "");
+  return '<a class="md-image" href="' + escapeHtml(href) + '" download target="_blank" rel="noopener" title="' + escapeHtml(t("imgDownload")) + '"><img src="' + escapeHtml(href) + '" alt="' + escapeHtml(alt || "") + '"></a>';
+}
+function linkHtml(text, href) {
+  var raw = String(href || "").trim();
+  var label = escapeHtml(text);
+  if (/^(https?:|mailto:)/i.test(raw)) {
+    return '<a href="' + escapeHtml(raw) + '" target="_blank" rel="noopener">' + label + "</a>";
+  }
+  if (/^#/.test(raw)) return '<a href="' + escapeHtml(raw) + '">' + label + "</a>";
+  if (/^javascript:/i.test(raw)) return label;
+  return '<a href="#" data-app-link="' + escapeHtml(raw) + '">' + label + "</a>";
+}
+function inlineMd(raw) {
+  var holds = [];
+  function hold(html) {
+    var token = "\u0000" + holds.length + "\u0000";
+    holds.push(html);
+    return token;
+  }
+  var s = String(raw == null ? "" : raw);
+  s = s.replace(/`([^`\n]+)`/g, function (_, code) { return hold("<code>" + escapeHtml(code) + "</code>"); });
+  s = s.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"[^"]*")?\)/g, function (_, alt, src) { return hold(imageHtml(alt, src)); });
+  s = s.replace(/\[([^\]]+)\]\(([^\s)]+)\)/g, function (_, text, href) { return hold(linkHtml(text, href)); });
+  s = s.replace(/<(https?:\/\/[^>\s]+)>/g, function (_, href) {
+    return hold('<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' + escapeHtml(href) + "</a>");
+  });
+  s = escapeHtml(s);
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+  s = s.replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>");
+  s = s.replace(/~~([^~\n]+)~~/g, "<s>$1</s>");
+  s = s.replace(/\u0000(\d+)\u0000/g, function (_, n) { return holds[Number(n)]; });
+  return s;
+}
+function leadingSpaces(line) {
+  var m = /^[ \t]*/.exec(line);
+  return m ? m[0].replace(/\t/g, "    ").length : 0;
+}
+function isFence(line) { return /^(```+|~~~+)/.test(line); }
+function isHr(line) { return /^(?:-{3,}|\*{3,}|_{3,})\s*$/.test(String(line || "").trim()); }
+function isHeading(line) { return /^(#{1,6})\s+\S/.test(line); }
+function isQuote(line) { return /^>\s?/.test(line); }
+function isListLine(line) { return /^(\s*)([-*+]|\d+\.)\s+/.test(line); }
+function isTableStart(lines, i, end) {
+  if (i + 1 >= end) return false;
+  if (lines[i].indexOf("|") < 0) return false;
+  return /\|/.test(lines[i + 1]) && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(lines[i + 1]);
+}
+function isBlockStart(lines, i, end) {
+  var line = lines[i];
+  if (!line || line.trim() === "") return false;
+  return isFence(line) || isHr(line) || isHeading(line) || isQuote(line) || isTableStart(lines, i, end) || isListLine(line) || /^(?: {4}|\t)/.test(line);
+}
+function splitCells(line) {
+  var s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  var out = [];
+  var cur = "";
+  var i;
+  for (i = 0; i < s.length; i++) {
+    var ch = s.charAt(i);
+    if (ch === "\\" && s.charAt(i + 1) === "|") { cur += "|"; i++; continue; }
+    if (ch === "|") { out.push(cur.trim()); cur = ""; continue; }
+    cur += ch;
+  }
+  out.push(cur.trim());
+  return out;
+}
+function buildTable(lines, start, end) {
+  var header = splitCells(lines[start]);
+  var alignSrc = splitCells(lines[start + 1]);
+  var align = [];
+  var c;
+  for (c = 0; c < header.length; c++) {
+    var a = alignSrc[c] || "";
+    var left = a.charAt(0) === ":";
+    var right = a.charAt(a.length - 1) === ":";
+    align.push(left && right ? "center" : (right ? "right" : (left ? "left" : "")));
+  }
+  var i = start + 2;
+  var body = [];
+  while (i < end && lines[i].trim() && lines[i].indexOf("|") >= 0 && !isFence(lines[i]) && !isHeading(lines[i])) {
+    body.push(splitCells(lines[i]));
+    i++;
+  }
+  var html = '<div class="md-table-wrap"><table><thead><tr>';
+  for (c = 0; c < header.length; c++) {
+    var style = align[c] ? ' style="text-align:' + align[c] + '"' : "";
+    html += "<th" + style + ">" + inlineMd(header[c]) + "</th>";
+  }
+  html += "</tr></thead><tbody>";
+  var r;
+  for (r = 0; r < body.length; r++) {
+    html += "<tr>";
+    for (c = 0; c < header.length; c++) {
+      var st = align[c] ? ' style="text-align:' + align[c] + '"' : "";
+      html += "<td" + st + ">" + inlineMd(body[r][c] || "") + "</td>";
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table></div>";
+  return { html: html, next: i };
+}
+function buildList(lines, start, end) {
+  var first = /^(\s*)([-*+]|\d+\.)\s+(.*)$/.exec(lines[start]);
+  var base = first[1].replace(/\t/g, "    ").length;
+  var ordered = /\d+\./.test(first[2]);
+  var items = [];
+  var i = start;
+  while (i < end) {
+    if (lines[i].trim() === "") {
+      var j = i + 1;
+      while (j < end && lines[j].trim() === "") j++;
+      if (j < end && isListLine(lines[j]) && leadingSpaces(lines[j]) >= base) { i = j; continue; }
+      break;
+    }
+    var m = /^(\s*)([-*+]|\d+\.)\s+(.*)$/.exec(lines[i]);
+    if (!m) {
+      if (items.length && leadingSpaces(lines[i]) > base) {
+        items[items.length - 1].text.push(lines[i].trim());
+        i++;
+        continue;
+      }
+      break;
+    }
+    var ind = m[1].replace(/\t/g, "    ").length;
+    if (ind < base) break;
+    if (ind > base) {
+      var sub = buildList(lines, i, end);
+      if (items.length) items[items.length - 1].subs.push(sub.html);
+      if (sub.next === i) i += 1;
+      else i = sub.next;
+      continue;
+    }
+    var isOrd = /\d+\./.test(m[2]);
+    if (isOrd !== ordered) break;
+    var body = m[3];
+    var task = null;
+    var tm = /^\[( |x|X)\]\s+(.*)$/.exec(body);
+    if (tm) { task = tm[1].toLowerCase() === "x"; body = tm[2]; }
+    items.push({ text: [body], task: task, subs: [] });
+    i++;
+  }
+  var tag = ordered ? "ol" : "ul";
+  var html = "<" + tag + ">";
+  var k;
+  for (k = 0; k < items.length; k++) {
+    var it = items[k];
+    html += "<li>";
+    if (it.task !== null) html += '<input type="checkbox" disabled' + (it.task ? " checked" : "") + "> ";
+    html += inlineMd(it.text.join(" "));
+    var sidx;
+    for (sidx = 0; sidx < it.subs.length; sidx++) html += it.subs[sidx];
+    html += "</li>";
+  }
+  html += "</" + tag + ">";
+  return { html: html, next: i };
+}
+function renderBlockLines(lines, start, end) {
+  var i = start;
+  var parts = [];
+  while (i < end) {
+    var line = lines[i];
+    if (!line || line.trim() === "") { i++; continue; }
+    var fence = /^(```+|~~~+)(.*)$/.exec(line);
+    if (fence) {
+      var marker = fence[1].charAt(0);
+      var ticks = fence[1].length;
+      var lang = (fence[2].trim().split(/\s+/)[0] || "").replace(/[^A-Za-z0-9_+-]/g, "");
+      i++;
+      var buf = [];
+      while (i < end) {
+        var close = /^(`{3,}|~{3,})(.*)$/.exec(lines[i]);
+        if (close && close[1].charAt(0) === marker && close[1].length >= ticks && close[2].trim() === "") { i++; break; }
+        buf.push(lines[i]);
+        i++;
+      }
+      var cls = lang ? ' class="language-' + escapeHtml(lang) + '"' : "";
+      parts.push('<pre class="md-pre"><code' + cls + ">" + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (isHr(line)) { parts.push("<hr>"); i++; continue; }
+    var heading = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(line);
+    if (heading && heading[2].trim()) {
+      var level = heading[1].length;
+      parts.push("<h" + level + ">" + inlineMd(heading[2].trim()) + "</h" + level + ">");
+      i++;
+      continue;
+    }
+    if (isQuote(line)) {
+      var inner = [];
+      while (i < end && isQuote(lines[i])) {
+        inner.push(lines[i].replace(/^>\s?/, ""));
+        i++;
+      }
+      parts.push("<blockquote>" + renderBlockLines(inner, 0, inner.length).html + "</blockquote>");
+      continue;
+    }
+    if (isTableStart(lines, i, end)) {
+      var table = buildTable(lines, i, end);
+      parts.push(table.html);
+      i = table.next;
+      continue;
+    }
+    if (isListLine(line)) {
+      var list = buildList(lines, i, end);
+      parts.push(list.html);
+      if (list.next === i) i += 1;
+      else i = list.next;
+      continue;
+    }
+    if (/^(?: {4}|\t)/.test(line)) {
+      var code = [];
+      while (i < end && (/^(?: {4}|\t)/.test(lines[i]) || (lines[i].trim() === "" && i + 1 < end && /^(?: {4}|\t)/.test(lines[i + 1])))) {
+        code.push(lines[i].replace(/^(?: {4}|\t)/, ""));
+        i++;
+      }
+      parts.push('<pre class="md-pre"><code>' + escapeHtml(code.join("\n")) + "</code></pre>");
+      continue;
+    }
+    var para = [];
+    while (i < end && lines[i].trim() !== "" && !isBlockStart(lines, i, end)) {
+      para.push(lines[i].replace(/\s+$/, "").replace(/\\$/, ""));
+      i++;
+    }
+    if (!para.length) { i++; continue; }
+    var rich = [];
+    var p;
+    for (p = 0; p < para.length; p++) rich.push(inlineMd(para[p]));
+    parts.push("<p>" + rich.join("<br>") + "</p>");
+  }
+  return { html: parts.join("\n"), next: i };
+}
+function renderMarkdown(src) {
+  var text = String(src == null ? "" : src).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  if (!text.trim()) return '<div class="markdown-body"></div>';
+  var lines = text.split("\n");
+  return '<div class="markdown-body">' + renderBlockLines(lines, 0, lines.length).html + "</div>";
+}
+function ratioParts(text) {
+  var bits = String(text || "").trim().split(":");
+  if (bits.length !== 3) return null;
+  var nums = [];
+  var i;
+  for (i = 0; i < 3; i++) {
+    var n = parseFloat(bits[i]);
+    if (!isFinite(n) || n < 0) return null;
+    nums.push(n);
+  }
+  var sum = nums[0] + nums[1] + nums[2];
+  if (sum <= 0) return null;
+  return [nums[0] / sum * 100, nums[1] / sum * 100, nums[2] / sum * 100, nums];
+}
+function ratioNode(text) {
+  var wrap = document.createElement("div");
+  var parts = ratioParts(text);
+  if (!parts) {
+    var plain = document.createElement("div");
+    plain.className = "ratio-legend";
+    plain.textContent = String(text || "");
+    wrap.appendChild(plain);
+    return wrap;
+  }
+  var bar = document.createElement("div");
+  bar.className = "ratio";
+  bar.title = t("ratioNote") + " " + text;
+  var classes = ["b", "m", "h"];
+  var i;
+  for (i = 0; i < 3; i++) {
+    var seg = document.createElement("span");
+    seg.className = classes[i];
+    seg.style.width = parts[i] + "%";
+    bar.appendChild(seg);
+  }
+  wrap.appendChild(bar);
+  var legend = document.createElement("div");
+  legend.className = "ratio-legend";
+  var names = [t("base"), t("mid"), t("hard")];
+  for (i = 0; i < 3; i++) {
+    var bit = document.createElement("span");
+    bit.textContent = names[i] + " " + parts[3][i];
+    legend.appendChild(bit);
+  }
+  wrap.appendChild(legend);
+  return wrap;
+}
+function emptyArt() {
+  var wrap = document.createElement("div");
+  wrap.className = "empty-art";
+  wrap.setAttribute("aria-hidden", "true");
+  var compass = document.createElement("div");
+  compass.className = "compass";
+  var needle = document.createElement("div");
+  needle.className = "needle";
+  var hub = document.createElement("div");
+  hub.className = "hub";
+  compass.appendChild(needle);
+  compass.appendChild(hub);
+  var ruler = document.createElement("div");
+  ruler.className = "ruler";
+  wrap.appendChild(compass);
+  wrap.appendChild(ruler);
+  return wrap;
+}
+function emptyBlock(message, buttonLabel, onClick) {
+  var box = document.createElement("div");
+  box.className = "empty";
+  box.appendChild(emptyArt());
+  var p = document.createElement("p");
+  p.textContent = message;
+  box.appendChild(p);
+  if (buttonLabel) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-primary";
+    btn.textContent = buttonLabel;
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var ret = onClick();
+      if (ret && ret.then) ret.catch(function () { toast(t("actionFail")); });
+    });
+    box.appendChild(btn);
+  }
+  return box;
+}
+function loadingBlock() {
+  var p = document.createElement("p");
+  p.className = "loading";
+  p.textContent = t("loading");
+  return p;
+}
+function errorBlock(retry) {
+  return emptyBlock(t("loadFail"), t("retry"), retry);
+}
+function smallBtn(label, className, handler) {
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn-sm" + (className ? " " + className : "");
+  btn.textContent = label;
+  btn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var ret = handler();
+    if (ret && ret.then) ret.catch(function () { toast(t("actionFail")); });
+  });
+  return btn;
+}
+function bindCard(card, handler) {
+  card.addEventListener("click", function () {
+    var ret = handler();
+    if (ret && ret.then) ret.catch(function () { toast(t("actionFail")); });
+  });
+  card.tabIndex = 0;
+  card.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      if (e.target !== card) return;
+      e.preventDefault();
+      var ret = handler();
+      if (ret && ret.then) ret.catch(function () { toast(t("actionFail")); });
+    }
+  });
+}
+async function fetchTable(ds, fields) {
+  var text = await callAppBridge({ type: "GetTableCSV", data: ds, payload: fields.join(",") });
+  var rows = parseCSV(stripBom(text));
+  var list = [];
+  var i;
+  for (i = 0; i < rows.length; i++) {
+    var r = rows[i] || [];
+    var item = { row: i + 1 };
+    var any = false;
+    var c;
+    for (c = 0; c < fields.length; c++) {
+      var v = r[c] == null ? "" : String(r[c]);
+      item[fields[c]] = v;
+      if (String(v).trim() !== "") any = true;
+    }
+    if (any) list.push(item);
+  }
+  return list;
+}
+async function fetchCount(ds) {
+  var text = await callAppBridge({ type: "GetRecordCount", data: ds });
+  var s = String(text == null ? "" : text).trim().replace(/^"|"$/g, "");
+  var n = parseInt(s, 10);
+  if (!isFinite(n)) throw new Error("count");
+  return n;
+}
+async function getCell(ds, field, row) {
+  var text = await callAppBridge({ type: "GetCellValue", data: ds, payload: field + "/" + Number(row).toString() });
+  return text == null ? "" : String(text);
+}
+async function setCell(ds, field, row, value) {
+  await callAppBridge({
+    type: "SetCellValue",
+    data: ds,
+    payload: field + "/" + Number(row).toString() + "/" + (value == null ? "" : String(value))
+  });
+}
+async function deleteRecord(ds, row) {
+  await callAppBridge({ type: "DeleteRecord", data: ds, payload: Number(row).toString() });
+}
+async function submitRecord(table, obj) {
+  await callAppBridge({ type: "SubmitRecord", data: table, payload: JSON.stringify(obj) });
+}
+function paintCount(id, value, ok) {
+  var el = byId(id);
+  if (!ok) { el.textContent = "—"; return; }
+  el.textContent = String(value);
+}
+function renderDist(targetId, rows, kind) {
+  var host = byId(targetId);
+  host.innerHTML = "";
+  var max = 0;
+  var i;
+  for (i = 0; i < rows.length; i++) if (rows[i].n > max) max = rows[i].n;
+  for (i = 0; i < rows.length; i++) {
+    var row = document.createElement("div");
+    row.className = "dist-row";
+    var name = document.createElement("span");
+    if (kind === "type") {
+      var dot = document.createElement("i");
+      dot.className = typeDotClass(rows[i].key);
+      name.appendChild(dot);
+      name.appendChild(document.createTextNode(" " + typeLabel(rows[i].key)));
+    } else {
+      name.textContent = gradeLabel(rows[i].key);
+    }
+    var barWrap = document.createElement("div");
+    barWrap.className = "dist-bar" + (kind === "type" && rows[i].key === "形成性" ? " amber" : "") + (kind === "type" && rows[i].key === "终结性" ? " indigo" : "");
+    var bar = document.createElement("span");
+    bar.style.width = max > 0 ? (rows[i].n / max * 100) + "%" : "0%";
+    barWrap.appendChild(bar);
+    var num = document.createElement("span");
+    num.className = "dist-num";
+    if (kind === "grade") num.textContent = rows[i].n + " " + t("classUnit") + " · " + rows[i].people + " " + t("peopleUnit");
+    else num.textContent = String(rows[i].n);
+    row.appendChild(name);
+    row.appendChild(barWrap);
+    row.appendChild(num);
+    host.appendChild(row);
+  }
+}
+function gradeDistRows() {
+  var map = {};
+  var i;
+  for (i = 0; i < GRADE_ORDER.length; i++) map[GRADE_ORDER[i]] = { key: GRADE_ORDER[i], n: 0, people: 0 };
+  for (i = 0; i < state.classes.length; i++) {
+    var g = state.classes[i]["年级"];
+    if (!map[g]) continue;
+    map[g].n += 1;
+    var people = numOrNull(state.classes[i]["班级人数"]);
+    if (people != null && people > 0) map[g].people += people;
+  }
+  var out = [];
+  for (i = 0; i < GRADE_ORDER.length; i++) out.push(map[GRADE_ORDER[i]]);
+  return out;
+}
+function typeDistRows() {
+  var map = {};
+  var i;
+  for (i = 0; i < TYPE_ORDER.length; i++) map[TYPE_ORDER[i]] = { key: TYPE_ORDER[i], n: 0, people: 0 };
+  for (i = 0; i < state.papers.length; i++) {
+    var ty = state.papers[i]["测评类型"];
+    if (map[ty]) map[ty].n += 1;
+  }
+  var out = [];
+  for (i = 0; i < TYPE_ORDER.length; i++) out.push(map[TYPE_ORDER[i]]);
+  return out;
+}
+function paperCard(item, mode) {
+  var card = document.createElement("article");
+  card.className = "record";
+  var cls = findClass(item["班级名称"]);
+  var h = document.createElement("h3");
+  h.textContent = item["单元名称"] || t("unit");
+  card.appendChild(h);
+  var meta = document.createElement("div");
+  meta.className = "meta";
+  var name = document.createElement("span");
+  name.textContent = item["班级名称"] || "";
+  meta.appendChild(name);
+  if (cls) {
+    var badge = document.createElement("span");
+    var sk = stageKey(cls["年级"]);
+    badge.className = "badge" + (sk ? " " + sk : "");
+    badge.textContent = sk ? t(sk) : gradeLabel(cls["年级"]);
+    meta.appendChild(badge);
+    var grade = document.createElement("span");
+    grade.textContent = gradeLabel(cls["年级"]);
+    meta.appendChild(grade);
+    if (cls["班级人数"]) {
+      var people = document.createElement("span");
+      people.textContent = cls["班级人数"] + " " + t("peopleUnit");
+      meta.appendChild(people);
+    }
+  }
+  var type = document.createElement("span");
+  type.className = "chip";
+  var dot = document.createElement("i");
+  dot.className = typeDotClass(item["测评类型"]);
+  type.appendChild(dot);
+  type.appendChild(document.createTextNode(typeLabel(item["测评类型"])));
+  meta.appendChild(type);
+  card.appendChild(meta);
+  var sub = document.createElement("div");
+  sub.className = "meta";
+  if (item["知识点"]) {
+    var know = document.createElement("span");
+    know.textContent = t("knowledge") + " " + item["知识点"];
+    sub.appendChild(know);
+  }
+  var mins = document.createElement("span");
+  mins.textContent = t("minutes") + " " + (item["时长分钟"] || "—");
+  sub.appendChild(mins);
+  var score = document.createElement("span");
+  score.textContent = t("fullScore") + " " + (item["卷面满分"] || "—");
+  sub.appendChild(score);
+  card.appendChild(sub);
+  card.appendChild(ratioNode(item["难度比例"]));
+  var scheme = document.createElement("div");
+  scheme.className = "scheme-line";
+  var ready = String(item["命题方案"] || "").trim() !== "";
+  scheme.textContent = (ready ? t("generated") : t("notGenerated")) + (ready ? " · " + previewText(item["命题方案"]) : "");
+  card.appendChild(scheme);
+  var actions = document.createElement("div");
+  actions.className = "actions";
+  if (mode === "home") {
+    actions.appendChild(smallBtn(t("viewScheme"), "", function () { return openPaperFromHome(item.row); }));
+  } else {
+    actions.appendChild(smallBtn(t("viewScheme"), "", function () { return openPaperReader(item.row); }));
+    actions.appendChild(smallBtn(t("edit"), "", function () { return openForm("paper", "edit", item.row); }));
+    actions.appendChild(smallBtn(t("del"), "danger", function () { return removePaper(item); }));
+    actions.appendChild(smallBtn(t("refreshScheme"), "", function () { return openPaperReader(item.row); }));
+  }
+  card.appendChild(actions);
+  bindCard(card, function () {
+    if (mode === "home") return openPaperFromHome(item.row);
+    return openForm("paper", "edit", item.row);
+  });
+  return card;
+}
+function statCard(item, mode) {
+  var card = document.createElement("article");
+  card.className = "record";
+  var cls = findClass(item["班级名称"]);
+  var paper = findPaper(item["班级名称"], item["单元名称"]);
+  var h = document.createElement("h3");
+  h.textContent = item["单元名称"] || t("unit");
+  card.appendChild(h);
+  var meta = document.createElement("div");
+  meta.className = "meta";
+  var name = document.createElement("span");
+  name.textContent = item["班级名称"] || "";
+  meta.appendChild(name);
+  if (cls) {
+    var badge = document.createElement("span");
+    var sk = stageKey(cls["年级"]);
+    badge.className = "badge" + (sk ? " " + sk : "");
+    badge.textContent = sk ? t(sk) : "";
+    if (sk) meta.appendChild(badge);
+    var grade = document.createElement("span");
+    grade.textContent = gradeLabel(cls["年级"]);
+    meta.appendChild(grade);
+  }
+  if (paper) {
+    var type = document.createElement("span");
+    type.className = "chip";
+    var dot = document.createElement("i");
+    dot.className = typeDotClass(paper["测评类型"]);
+    type.appendChild(dot);
+    type.appendChild(document.createTextNode(typeLabel(paper["测评类型"])));
+    meta.appendChild(type);
+  }
+  card.appendChild(meta);
+  var file = document.createElement("div");
+  file.className = "file-name";
+  file.textContent = (item["分数文件"] || "").trim() || "—";
+  card.appendChild(file);
+  var report = document.createElement("div");
+  report.className = "scheme-line";
+  var ready = String(item["统计报告"] || "").trim() !== "";
+  report.textContent = t("report") + " " + (ready ? t("generated") : t("notGenerated"));
+  card.appendChild(report);
+  var actions = document.createElement("div");
+  actions.className = "actions";
+  if (mode === "home") {
+    actions.appendChild(smallBtn(t("viewReport"), "", function () { return openStatFromHome(item.row); }));
+  } else {
+    actions.appendChild(smallBtn(t("viewReport"), "", function () { return openStatReader(item.row); }));
+    actions.appendChild(smallBtn(t("edit"), "", function () { return openForm("stat", "edit", item.row); }));
+    actions.appendChild(smallBtn(t("del"), "danger", function () { return removeStat(item); }));
+    actions.appendChild(smallBtn(t("refreshReport"), "", function () { return openStatReader(item.row); }));
+    actions.appendChild(smallBtn(t("downloadFile"), "", function () { downloadScore(item["分数文件"]); }));
+    actions.appendChild(smallBtn(t("preview"), "", function () { return previewScore(item["分数文件"]); }));
+  }
+  card.appendChild(actions);
+  bindCard(card, function () {
+    if (mode === "home") return openStatFromHome(item.row);
+    return openForm("stat", "edit", item.row);
+  });
+  return card;
+}
+function classCard(item) {
+  var card = document.createElement("article");
+  card.className = "record";
+  var h = document.createElement("h3");
+  h.textContent = item["班级名称"] || t("className");
+  card.appendChild(h);
+  var meta = document.createElement("div");
+  meta.className = "meta";
+  var sk = stageKey(item["年级"]);
+  if (sk) {
+    var badge = document.createElement("span");
+    badge.className = "badge " + sk;
+    badge.textContent = t(sk);
+    meta.appendChild(badge);
+  }
+  var grade = document.createElement("span");
+  grade.textContent = gradeLabel(item["年级"]);
+  meta.appendChild(grade);
+  var people = document.createElement("span");
+  people.textContent = t("people") + " " + (item["班级人数"] || "—");
+  meta.appendChild(people);
+  card.appendChild(meta);
+  var actions = document.createElement("div");
+  actions.className = "actions";
+  actions.appendChild(smallBtn(t("edit"), "", function () { return openForm("class", "edit", item.row); }));
+  actions.appendChild(smallBtn(t("del"), "danger", function () { return removeClass(item); }));
+  card.appendChild(actions);
+  bindCard(card, function () { return openForm("class", "edit", item.row); });
+  return card;
+}
+function fillClassFilter(selectId, extraList) {
+  var sel = byId(selectId);
+  if (!sel) return;
+  var current = sel.value;
+  var names = [];
+  var seen = {};
+  function add(v) {
+    var name = String(v || "").trim();
+    if (!name || seen[name]) return;
+    seen[name] = true;
+    names.push(name);
+  }
+  var i;
+  for (i = 0; i < state.classes.length; i++) add(state.classes[i]["班级名称"]);
+  if (extraList) for (i = 0; i < extraList.length; i++) add(extraList[i]["班级名称"]);
+  sel.innerHTML = "";
+  var all = document.createElement("option");
+  all.value = "";
+  all.setAttribute("data-i18n", "all");
+  all.textContent = t("all");
+  sel.appendChild(all);
+  for (i = 0; i < names.length; i++) {
+    var opt = document.createElement("option");
+    opt.value = names[i];
+    opt.textContent = names[i];
+    sel.appendChild(opt);
+  }
+  sel.value = current;
+  if (sel.value !== current) sel.value = "";
+}
+function classVisible(item) {
+  var q = byId("searchClass").value.trim();
+  var g = byId("filterClassGrade").value;
+  if (g && item["年级"] !== g) return false;
+  if (q && !like(item["班级名称"], q)) return false;
+  return true;
+}
+function paperVisible(item) {
+  var q = byId("searchPaper").value.trim();
+  if (byId("filterPaperType").value && item["测评类型"] !== byId("filterPaperType").value) return false;
+  if (byId("filterPaperRatio").value && item["难度比例"] !== byId("filterPaperRatio").value) return false;
+  if (byId("filterPaperScore").value && String(item["卷面满分"]).trim() !== byId("filterPaperScore").value) return false;
+  if (byId("filterPaperClass").value && item["班级名称"] !== byId("filterPaperClass").value) return false;
+  if (q && !like(item["单元名称"], q) && !like(item["班级名称"], q) && !like(item["知识点"], q)) return false;
+  return true;
+}
+function statVisible(item) {
+  var q = byId("searchStat").value.trim();
+  if (byId("filterStatClass").value && item["班级名称"] !== byId("filterStatClass").value) return false;
+  if (q && !like(item["班级名称"], q) && !like(item["单元名称"], q)) return false;
+  return true;
+}
+function renderClassList() {
+  var host = byId("classList");
+  host.innerHTML = "";
+  if (!state.loaded.class) { host.appendChild(state.errors.class ? errorBlock(loadClasses) : loadingBlock()); return; }
+  if (state.errors.class && !state.classes.length) { host.appendChild(errorBlock(loadClasses)); return; }
+  var shown = [];
+  var i;
+  for (i = 0; i < state.classes.length; i++) if (classVisible(state.classes[i])) shown.push(state.classes[i]);
+  if (!state.classes.length) {
+    host.appendChild(emptyBlock(t("emptyClasses"), t("newClass"), function () { return openForm("class", "create", 0); }));
+    return;
+  }
+  if (!shown.length) { host.appendChild(emptyBlock(t("searchEmpty"), "", null)); return; }
+  for (i = 0; i < shown.length; i++) host.appendChild(classCard(shown[i]));
+}
+function renderPaperList() {
+  var host = byId("paperList");
+  host.innerHTML = "";
+  if (!state.loaded.paper) { host.appendChild(state.errors.paper ? errorBlock(loadPapers) : loadingBlock()); return; }
+  if (state.errors.paper && !state.papers.length) { host.appendChild(errorBlock(loadPapers)); return; }
+  var shown = [];
+  var i;
+  for (i = 0; i < state.papers.length; i++) if (paperVisible(state.papers[i])) shown.push(state.papers[i]);
+  if (!state.papers.length) {
+    host.appendChild(emptyBlock(t("emptyPapers"), state.classCount === 0 ? t("needClass") : t("newPaper"), function () { return onNewPaper(); }));
+    return;
+  }
+  if (!shown.length) { host.appendChild(emptyBlock(t("searchEmpty"), "", null)); return; }
+  for (i = 0; i < shown.length; i++) host.appendChild(paperCard(shown[i], "list"));
+}
+function renderStatList() {
+  var host = byId("statList");
+  host.innerHTML = "";
+  if (!state.loaded.stat) { host.appendChild(state.errors.stat ? errorBlock(loadStats) : loadingBlock()); return; }
+  if (state.errors.stat && !state.stats.length) { host.appendChild(errorBlock(loadStats)); return; }
+  var shown = [];
+  var i;
+  for (i = 0; i < state.stats.length; i++) if (statVisible(state.stats[i])) shown.push(state.stats[i]);
+  if (!state.stats.length) {
+    host.appendChild(emptyBlock(t("emptyStats"), t("newStat"), function () { return openForm("stat", "create", 0); }));
+    return;
+  }
+  if (!shown.length) { host.appendChild(emptyBlock(t("searchEmpty"), "", null)); return; }
+  for (i = 0; i < shown.length; i++) host.appendChild(statCard(shown[i], "list"));
+}
+function renderHome() {
+  paintCount("countClass", state.counts.class, state.counts.class != null);
+  paintCount("countPaper", state.counts.paper, state.counts.paper != null);
+  paintCount("countStat", state.counts.stat, state.counts.stat != null);
+  if (state.loaded.home) {
+    if (state.miss.class) byId("gradeDist").textContent = t("loadFail");
+    else renderDist("gradeDist", gradeDistRows(), "grade");
+    if (state.miss.paper) byId("typeDist").textContent = t("loadFail");
+    else renderDist("typeDist", typeDistRows(), "type");
+  }
+  var papers = byId("recentPapers");
+  var stats = byId("recentStats");
+  papers.innerHTML = "";
+  stats.innerHTML = "";
+  if (!state.loaded.home) {
+    papers.appendChild(state.errors.home ? errorBlock(loadHome) : loadingBlock());
+    stats.appendChild(loadingBlock());
+    return;
+  }
+  if (state.miss.paper && !state.papers.length) papers.appendChild(errorBlock(loadHome));
+  else if (!state.papers.length) papers.appendChild(emptyBlock(t("emptyPapers"), t("btnStartPaper"), function () { return switchPage("paper"); }));
+  else {
+    var i;
+    var n = Math.min(3, state.papers.length);
+    for (i = 0; i < n; i++) papers.appendChild(paperCard(state.papers[i], "home"));
+  }
+  if (state.miss.stat && !state.stats.length) stats.appendChild(errorBlock(loadHome));
+  else if (!state.stats.length) stats.appendChild(emptyBlock(t("emptyStats"), "", null));
+  else {
+    var j;
+    var m = Math.min(3, state.stats.length);
+    for (j = 0; j < m; j++) stats.appendChild(statCard(state.stats[j], "home"));
+  }
+}
+function rerender() {
+  if (state.page === "home") renderHome();
+  else if (state.page === "class") renderClassList();
+  else if (state.page === "paper") { fillClassFilter("filterPaperClass", state.papers); renderPaperList(); syncPaperCreateBtn(); }
+  else if (state.page === "stat") { fillClassFilter("filterStatClass", state.stats); renderStatList(); }
+}
+function detectLang() {
+  try {
+    var q = new URLSearchParams(window.location.search).get("lang");
+    if (q === "cn") return "cn";
+    if (q === "en") return "en";
+  } catch (e) {}
+  try {
+    var stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored != null && stored !== "") return stored === "en" ? "en" : "cn";
+  } catch (e2) {}
+  try {
+    var langs = navigator.languages;
+    if (!langs || !langs.length) return "cn";
+    var i;
+    for (i = 0; i < langs.length; i++) {
+      var item = String(langs[i] || "").toLowerCase();
+      if (item === "zh" || item.indexOf("zh-") === 0 || item.indexOf("zh_") === 0) return "cn";
+    }
+    return "en";
+  } catch (e3) {
+    return "cn";
+  }
+}
+function applyI18n() {
+  var nodes = document.querySelectorAll("[data-i18n]");
+  var i;
+  for (i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  var ph = document.querySelectorAll("[data-i18n-placeholder]");
+  for (i = 0; i < ph.length; i++) ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-placeholder")));
+  var aria = document.querySelectorAll("[data-i18n-aria]");
+  for (i = 0; i < aria.length; i++) aria[i].setAttribute("aria-label", t(aria[i].getAttribute("data-i18n-aria")));
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  byId("navBar").setAttribute("aria-label", t("navLabel"));
+  byId("langBtn").textContent = state.lang === "en" ? "中文" : "EN";
+  byId("langCnBtn").classList.toggle("active", state.lang !== "en");
+  byId("langEnBtn").classList.toggle("active", state.lang === "en");
+  refreshFormTexts();
+  if (state.page) rerender();
+  if (state.polling && state.pollPage === "paper") showWait("paper");
+  else if (state.paperViewRow && state.paperRaw) {
+    paintPaperChrome(state.paperViewRow);
+    byId("paperReaderBody").innerHTML = renderMarkdown(state.paperRaw);
+    byId("btnCopyPaper").disabled = false;
+  } else if (!state.paperViewRow) {
+    byId("btnCopyPaper").disabled = true;
+    paintEmpty(byId("paperReaderBody"), t("emptyReaderPaper"));
+  }
+  if (state.polling && state.pollPage === "stat") showWait("stat");
+  else if (state.statViewRow && state.statRaw) {
+    paintStatChrome(state.statViewRow);
+    byId("statReportBody").innerHTML = renderMarkdown(state.statRaw);
+    byId("btnCopyStat").disabled = false;
+    var statItem = findByRow(state.stats, state.statViewRow);
+    if (statItem) {
+      var linked = fillLinked(statItem["班级名称"], statItem["单元名称"], state.readerToken);
+      if (linked && linked.then) linked.catch(function () {});
+    }
+  } else if (!state.statViewRow) {
+    byId("statLinked").innerHTML = "";
+    byId("statSchemeDetails").hidden = true;
+    byId("btnCopyStat").disabled = true;
+    paintEmpty(byId("statReportBody"), t("emptyReaderStat"));
+  }
+  layoutNav();
+}
+function setLang(lang) {
+  state.lang = lang === "en" ? "en" : "cn";
+  try { localStorage.setItem("iThinkAir_UiLanguage", state.lang); } catch (e) {}
+  applyI18n();
+  closeMobileMenu();
+}
+async function applyTheme() {
+  var mode = "";
+  try { mode = await callAppBridge({ type: "模式" }); } catch (e) { mode = "亮色"; }
+  var text = String(mode == null ? "" : mode).trim().replace(/^"|"$/g, "");
+  document.documentElement.setAttribute("data-theme", text.indexOf("暗") >= 0 ? "dark" : "light");
+}
+function layoutNav() {
+  var row = byId("navRow");
+  var links = byId("navLinks");
+  var ham = byId("hamburgerBtn");
+  var lang = byId("langBtn");
+  var tools = byId("navTools");
+  links.style.display = "flex";
+  ham.style.display = "none";
+  lang.style.display = "inline-flex";
+  tools.style.marginLeft = "0";
+  var overflow = links.scrollWidth > links.clientWidth + 1 || row.scrollWidth > row.clientWidth + 1;
+  if (overflow) {
+    links.style.display = "none";
+    ham.style.display = "inline-flex";
+    lang.style.display = "none";
+    tools.style.marginLeft = "auto";
+  } else {
+    closeMobileMenu();
+  }
+}
+function closeMobileMenu() {
+  var menu = byId("mobileMenu");
+  if (!menu) return;
+  menu.hidden = true;
+  var ham = byId("hamburgerBtn");
+  if (ham) ham.setAttribute("aria-expanded", "false");
+}
+function toggleMobileMenu() {
+  var menu = byId("mobileMenu");
+  var willOpen = menu.hidden;
+  menu.hidden = !willOpen;
+  byId("hamburgerBtn").setAttribute("aria-expanded", willOpen ? "true" : "false");
+}
+function anyPopupOpen() {
+  return !byId("formMask").hidden || !byId("confirmMask").hidden || !byId("previewMask").hidden || byId("paperReaderMask").classList.contains("open") || byId("statReaderMask").classList.contains("open");
+}
+function syncLock() {
+  document.body.style.overflow = anyPopupOpen() ? "hidden" : "";
+}
+function setReaderActive(maskId, active) {
+  var mask = byId(maskId);
+  mask.dataset.active = active ? "1" : "0";
+  var narrow = window.matchMedia("(max-width: 980px)").matches;
+  if (active && narrow) mask.classList.add("open");
+  else mask.classList.remove("open");
+  syncLock();
+}
+function syncReaderMode(id) {
+  var mask = byId(id);
+  var narrow = window.matchMedia("(max-width: 980px)").matches;
+  if (mask.dataset.active === "1" && narrow) mask.classList.add("open");
+  else mask.classList.remove("open");
+  syncLock();
+}
+function paintEmpty(host, message) {
+  host.innerHTML = "";
+  host.appendChild(emptyBlock(message, "", null));
+}
+function closePaperReader() {
+  state.paperViewRow = 0;
+  state.paperRaw = "";
+  setReaderActive("paperReaderMask", false);
+  byId("paperReaderTitle").textContent = t("readerPaper");
+  byId("btnCopyPaper").disabled = true;
+  paintEmpty(byId("paperReaderBody"), t("emptyReaderPaper"));
+}
+function closeStatReader() {
+  state.statViewRow = 0;
+  state.statRaw = "";
+  setReaderActive("statReaderMask", false);
+  byId("statReaderTitle").textContent = t("readerStat");
+  byId("btnCopyStat").disabled = true;
+  byId("statLinked").innerHTML = "";
+  byId("statSchemeDetails").hidden = true;
+  byId("statSchemeBody").innerHTML = "";
+  byId("statReportBody").innerHTML = "";
+  paintEmpty(byId("statReportBody"), t("emptyReaderStat"));
+}
+function paintPaperChrome(row) {
+  var item = findByRow(state.papers, row);
+  byId("paperReaderTitle").textContent = item && item["单元名称"] ? item["单元名称"] : t("readerPaper");
+}
+function paintStatChrome(row) {
+  var item = findByRow(state.stats, row);
+  byId("statReaderTitle").textContent = item && item["单元名称"] ? item["单元名称"] : t("readerStat");
+}
+function showWait(kind) {
+  var body = byId(kind === "paper" ? "paperReaderBody" : "statReportBody");
+  if (kind === "stat") {
+    byId("statLinked").innerHTML = "";
+    byId("statSchemeDetails").hidden = true;
+  }
+  body.innerHTML = "";
+  var spin = document.createElement("div");
+  spin.className = "spinner";
+  var p = document.createElement("p");
+  p.textContent = t(kind === "paper" ? "waitPaper" : "waitStat");
+  body.appendChild(spin);
+  body.appendChild(p);
+  byId(kind === "paper" ? "btnCopyPaper" : "btnCopyStat").disabled = true;
+}
+function showTimeout(kind) {
+  var body = byId(kind === "paper" ? "paperReaderBody" : "statReportBody");
+  body.innerHTML = "";
+  var p = document.createElement("p");
+  p.textContent = t(kind === "paper" ? "timeoutPaper" : "timeoutStat");
+  body.appendChild(p);
+  toast(t(kind === "paper" ? "timeoutPaper" : "timeoutStat"));
+}
+function rememberField(list, row, field, value) {
+  var item = findByRow(list, row);
+  if (item) item[field] = value;
+}
+async function openPaperReader(row) {
+  var token = ++state.readerToken;
+  state.currentRow.paper = row;
+  state.paperViewRow = row;
+  setReaderActive("paperReaderMask", true);
+  paintPaperChrome(row);
+  byId("paperReaderBody").textContent = t("loading");
+  byId("btnCopyPaper").disabled = true;
+  try {
+    var text = await getCell(DS_PAPER, "命题方案", row);
+    if (token !== state.readerToken) return;
+    state.paperRaw = String(text || "");
+    rememberField(state.papers, row, "命题方案", state.paperRaw);
+    renderPaperList();
+    paintPaperChrome(row);
+    if (!state.paperRaw.trim()) {
+      byId("btnCopyPaper").disabled = true;
+      paintEmpty(byId("paperReaderBody"), t("notFoundScheme"));
+      return;
+    }
+    byId("btnCopyPaper").disabled = false;
+    byId("paperReaderBody").innerHTML = renderMarkdown(state.paperRaw);
+  } catch (e) {
+    if (token !== state.readerToken) return;
+    toast(t("loadFail"));
+    paintEmpty(byId("paperReaderBody"), t("loadFail"));
+  }
+}
+async function fillLinked(className, unitName, token) {
+  var box = byId("statLinked");
+  var details = byId("statSchemeDetails");
+  var schemeBody = byId("statSchemeBody");
+  box.innerHTML = "";
+  schemeBody.innerHTML = "";
+  var paper = findPaper(className, unitName);
+  if (!paper) {
+    box.textContent = t("noLinked");
+    details.hidden = true;
+    return;
+  }
+  var fields = ["测评类型", "知识点", "时长分钟", "卷面满分", "难度比例", "命题方案"];
+  var values = {};
+  var i;
+  for (i = 0; i < fields.length; i++) {
+    try { values[fields[i]] = await getCell(DS_PAPER, fields[i], paper.row); }
+    catch (e) { values[fields[i]] = ""; }
+    if (token !== state.readerToken) return;
+  }
+  var kv = document.createElement("div");
+  kv.className = "kv";
+  var pairs = [
+    [t("type"), typeLabel(values["测评类型"])],
+    [t("knowledge"), values["知识点"]],
+    [t("minutes"), values["时长分钟"]],
+    [t("fullScore"), values["卷面满分"]],
+    [t("ratio"), values["难度比例"]]
+  ];
+  for (i = 0; i < pairs.length; i++) {
+    var k = document.createElement("div");
+    k.className = "k";
+    k.textContent = pairs[i][0];
+    var v = document.createElement("div");
+    if (pairs[i][0] === t("type")) {
+      var dot = document.createElement("i");
+      dot.className = typeDotClass(values["测评类型"]);
+      v.appendChild(dot);
+      v.appendChild(document.createTextNode(" " + (pairs[i][1] || "—")));
+    } else {
+      v.textContent = pairs[i][1] || "—";
+    }
+    kv.appendChild(k);
+    kv.appendChild(v);
+  }
+  box.appendChild(kv);
+  if (values["难度比例"]) box.appendChild(ratioNode(values["难度比例"]));
+  details.hidden = false;
+  byId("statSchemeSummary").textContent = t("schemeFold");
+  if (!String(values["命题方案"] || "").trim()) {
+    schemeBody.textContent = t("notFoundScheme");
+  } else {
+    schemeBody.innerHTML = renderMarkdown(values["命题方案"]);
+  }
+}
+async function openStatReader(row) {
+  var token = ++state.readerToken;
+  state.currentRow.stat = row;
+  state.statViewRow = row;
+  setReaderActive("statReaderMask", true);
+  paintStatChrome(row);
+  byId("statLinked").innerHTML = "";
+  byId("statSchemeDetails").hidden = true;
+  byId("statReportBody").textContent = t("loading");
+  byId("btnCopyStat").disabled = true;
+  var item = findByRow(state.stats, row);
+  try {
+    var text = await getCell(DS_STAT, "统计报告", row);
+    if (token !== state.readerToken) return;
+    state.statRaw = String(text || "");
+    rememberField(state.stats, row, "统计报告", state.statRaw);
+    renderStatList();
+    paintStatChrome(row);
+    if (item) await fillLinked(item["班级名称"], item["单元名称"], token);
+    if (token !== state.readerToken) return;
+    if (!state.statRaw.trim()) {
+      byId("btnCopyStat").disabled = true;
+      paintEmpty(byId("statReportBody"), t("notFoundReport"));
+      return;
+    }
+    byId("btnCopyStat").disabled = false;
+    byId("statReportBody").innerHTML = renderMarkdown(state.statRaw);
+  } catch (e) {
+    if (token !== state.readerToken) return;
+    toast(t("loadFail"));
+    paintEmpty(byId("statReportBody"), t("loadFail"));
+  }
+}
+async function openPaperFromHome(row) {
+  await switchPage("paper");
+  await openPaperReader(row);
+}
+async function openStatFromHome(row) {
+  await switchPage("stat");
+  await openStatReader(row);
+}
+async function startPoll(kind, row) {
+  stopPoll();
+  var token = state.pollToken;
+  state.polling = true;
+  state.pollPage = kind;
+  state.pollRow = row;
+  syncPaperCreateBtn();
+  if (kind === "stat") byId("btnNewStat").disabled = true;
+  if (kind === "paper") {
+    state.paperViewRow = row;
+    state.currentRow.paper = row;
+    setReaderActive("paperReaderMask", true);
+    paintPaperChrome(row);
+  } else {
+    state.statViewRow = row;
+    state.currentRow.stat = row;
+    setReaderActive("statReaderMask", true);
+    paintStatChrome(row);
+  }
+  showWait(kind);
+  var ds = kind === "paper" ? DS_PAPER : DS_STAT;
+  var field = kind === "paper" ? "命题方案" : "统计报告";
+  var i;
+  for (i = 0; i < 30; i++) {
+    if (token !== state.pollToken) return;
+    var val = "";
+    try { val = await getCell(ds, field, row); } catch (e) { val = ""; }
+    if (token !== state.pollToken) return;
+    if (val && String(val).trim() !== "") {
+      state.polling = false;
+      syncPaperCreateBtn();
+      byId("btnNewStat").disabled = false;
+      if (kind === "paper") {
+        state.paperRaw = String(val);
+        rememberField(state.papers, row, "命题方案", state.paperRaw);
+        renderPaperList();
+        if (state.paperViewRow === row) {
+          byId("btnCopyPaper").disabled = false;
+          byId("paperReaderBody").innerHTML = renderMarkdown(state.paperRaw);
+        }
+      } else {
+        state.statRaw = String(val);
+        rememberField(state.stats, row, "统计报告", state.statRaw);
+        renderStatList();
+        if (state.statViewRow === row) {
+          byId("btnCopyStat").disabled = false;
+          byId("statReportBody").innerHTML = renderMarkdown(state.statRaw);
+          var item = findByRow(state.stats, row);
+          if (item) await fillLinked(item["班级名称"], item["单元名称"], state.readerToken);
+        }
+      }
+      return;
+    }
+    if (i < 29) await delay(2000);
+  }
+  if (token !== state.pollToken) return;
+  state.polling = false;
+  syncPaperCreateBtn();
+  byId("btnNewStat").disabled = false;
+  showTimeout(kind);
+}
+function syncPaperCreateBtn() {
+  var btn = byId("btnNewPaper");
+  var label = byId("btnNewPaperLabel");
+  var hint = byId("paperNeedClass");
+  if (!btn || !label) return;
+  var lock = state.polling && state.pollPage === "paper";
+  if (lock) {
+    btn.disabled = true;
+    btn.classList.remove("is-muted");
+    label.textContent = t("newPaper");
+    return;
+  }
+  btn.disabled = false;
+  if (state.classCount === 0) {
+    label.textContent = t("needClass");
+    btn.classList.add("is-muted");
+    if (hint) hint.hidden = false;
+  } else {
+    label.textContent = t("newPaper");
+    btn.classList.remove("is-muted");
+    if (hint) hint.hidden = true;
+  }
+}
+async function loadHome() {
+  state.loaded.home = false;
+  state.errors.home = false;
+  renderHome();
+  var c1 = fetchCount(DS_CLASS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var c2 = fetchCount(DS_PAPER).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var c3 = fetchCount(DS_STAT).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var t1 = fetchTable(DS_CLASS, CLASS_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var t2 = fetchTable(DS_PAPER, PAPER_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var t3 = fetchTable(DS_STAT, STAT_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var r1 = await c1, r2 = await c2, r3 = await c3, a = await t1, b = await t2, c = await t3;
+  state.counts.class = r1.ok ? r1.v : null;
+  state.counts.paper = r2.ok ? r2.v : null;
+  state.counts.stat = r3.ok ? r3.v : null;
+  if (a.ok) state.classes = a.v;
+  if (b.ok) state.papers = b.v;
+  if (c.ok) state.stats = c.v;
+  state.miss.class = !a.ok;
+  state.miss.paper = !b.ok;
+  state.miss.stat = !c.ok;
+  state.classCount = r1.ok ? r1.v : (a.ok ? state.classes.length : state.classCount);
+  state.loaded.home = true;
+  state.errors.home = !(r1.ok && r2.ok && r3.ok && a.ok && b.ok && c.ok);
+  if (state.errors.home) toast(t("loadFail"));
+  if (state.page === "home") renderHome();
+}
+async function loadClasses() {
+  state.loaded.class = false;
+  state.errors.class = false;
+  if (state.page === "class") renderClassList();
+  try {
+    state.classes = await fetchTable(DS_CLASS, CLASS_FIELDS);
+    state.classCount = state.classes.length;
+    state.miss.class = false;
+    state.loaded.class = true;
+  } catch (e) {
+    state.errors.class = true;
+    state.miss.class = true;
+    state.loaded.class = true;
+    toast(t("loadFail"));
+  }
+  if (state.page === "class") renderClassList();
+}
+async function loadPapers(opts) {
+  opts = opts || {};
+  state.loaded.paper = false;
+  state.errors.paper = false;
+  if (state.page === "paper") renderPaperList();
+  var countP = fetchCount(DS_CLASS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var classP = fetchTable(DS_CLASS, CLASS_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var paperP = fetchTable(DS_PAPER, PAPER_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var rc = await countP, classes = await classP, papers = await paperP;
+  if (classes.ok) state.classes = classes.v;
+  if (papers.ok) state.papers = papers.v;
+  state.miss.class = !classes.ok;
+  state.miss.paper = !papers.ok;
+  if (rc.ok) state.classCount = rc.v;
+  else if (classes.ok) state.classCount = state.classes.length;
+  state.loaded.paper = true;
+  state.errors.paper = !papers.ok;
+  if (!papers.ok || !classes.ok) toast(t("loadFail"));
+  if (state.page === "paper") {
+    fillClassFilter("filterPaperClass", state.papers);
+    renderPaperList();
+    syncPaperCreateBtn();
+  }
+  if (!opts.skipReader && state.paperViewRow && state.page === "paper" && !state.polling) {
+    await openPaperReader(state.paperViewRow);
+  }
+}
+async function loadStats(opts) {
+  opts = opts || {};
+  state.loaded.stat = false;
+  state.errors.stat = false;
+  if (state.page === "stat") renderStatList();
+  var classP = fetchTable(DS_CLASS, CLASS_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var paperP = fetchTable(DS_PAPER, PAPER_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var statP = fetchTable(DS_STAT, STAT_FIELDS).then(function (v) { return { ok: true, v: v }; }, function () { return { ok: false }; });
+  var classes = await classP, papers = await paperP, stats = await statP;
+  if (classes.ok) state.classes = classes.v;
+  if (papers.ok) state.papers = papers.v;
+  if (stats.ok) state.stats = stats.v;
+  if (classes.ok) state.miss.class = false;
+  if (papers.ok) state.miss.paper = false;
+  state.miss.stat = !stats.ok;
+  state.loaded.stat = true;
+  state.errors.stat = !stats.ok;
+  if (!stats.ok) toast(t("loadFail"));
+  if (state.page === "stat") {
+    fillClassFilter("filterStatClass", state.stats);
+    renderStatList();
+  }
+  if (!opts.skipReader && state.statViewRow && state.page === "stat" && !state.polling) {
+    await openStatReader(state.statViewRow);
+  }
+}
+function showOnly(page) {
+  var pages = document.querySelectorAll(".page");
+  var i;
+  for (i = 0; i < pages.length; i++) pages[i].hidden = pages[i].getAttribute("data-page") !== page;
+  var ids = [["home", "tabHome", "mTabHome"], ["class", "tabClass", "mTabClass"], ["paper", "tabPaper", "mTabPaper"], ["stat", "tabStat", "mTabStat"]];
+  for (i = 0; i < ids.length; i++) {
+    var on = ids[i][0] === page;
+    byId(ids[i][1]).classList.toggle("active", on);
+    byId(ids[i][2]).classList.toggle("active", on);
+    if (on) {
+      byId(ids[i][1]).setAttribute("aria-current", "page");
+      byId(ids[i][2]).setAttribute("aria-current", "page");
+    } else {
+      byId(ids[i][1]).removeAttribute("aria-current");
+      byId(ids[i][2]).removeAttribute("aria-current");
+    }
+  }
+}
+async function switchPage(page, opts) {
+  opts = opts || {};
+  if (page === state.page && !opts.force) { closeMobileMenu(); return; }
+  if (state.page === "paper" && page !== "paper") stopPoll();
+  if (state.page === "stat" && page !== "stat") stopPoll();
+  if (!opts.skipHistory && state.page) {
+    state.history.push({ page: state.page, scroll: window.scrollY || document.documentElement.scrollTop || 0 });
+  }
+  state.page = page;
+  showOnly(page);
+  closeMobileMenu();
+  try {
+    if (page === "home") await loadHome();
+    else if (page === "class") await loadClasses();
+    else if (page === "paper") await loadPapers();
+    else if (page === "stat") await loadStats();
+  } catch (e) {
+    toast(t("loadFail"));
+  }
+  if (typeof opts.scroll === "number") {
+    var y = opts.scroll;
+    requestAnimationFrame(function () { window.scrollTo(0, y); });
+  } else {
+    window.scrollTo(0, 0);
+  }
+}
+function closeForm() {
+  byId("formMask").hidden = true;
+  byId("formHost").innerHTML = "";
+  state.form = null;
+  syncLock();
+}
+function closePreview() {
+  byId("previewMask").hidden = true;
+  byId("previewBody").innerHTML = "";
+  syncLock();
+}
+function confirmBox(message, danger) {
+  return new Promise(function (resolve) {
+    var mask = byId("confirmMask");
+    byId("confirmText").textContent = message;
+    var ok = byId("confirmOk");
+    ok.classList.toggle("btn-danger", !!danger);
+    mask.hidden = false;
+    syncLock();
+    function cleanup(val) {
+      ok.removeEventListener("click", onOk);
+      byId("confirmCancel").removeEventListener("click", onCancel);
+      mask.hidden = true;
+      syncLock();
+      resolve(val);
+    }
+    function onOk() { cleanup(true); }
+    function onCancel() { cleanup(false); }
+    ok.addEventListener("click", onOk);
+    byId("confirmCancel").addEventListener("click", onCancel);
+    byId("confirmCancel").focus();
+  });
+}
+function closeTopPopup() {
+  if (!byId("confirmMask").hidden) { byId("confirmCancel").click(); return true; }
+  if (!byId("previewMask").hidden) { closePreview(); return true; }
+  if (!byId("formMask").hidden) { closeForm(); return true; }
+  if (byId("paperReaderMask").classList.contains("open")) { closePaperReader(); return true; }
+  if (byId("statReaderMask").classList.contains("open")) { closeStatReader(); return true; }
+  if (!byId("mobileMenu").hidden) { closeMobileMenu(); return true; }
+  return false;
+}
+function airBack() {
+  if (closeTopPopup()) return "false";
+  if (state.history.length) {
+    var prev = state.history.pop();
+    switchPage(prev.page, { skipHistory: true, scroll: prev.scroll });
+    return "false";
+  }
+  return "true";
+}
+function addField(form, idPrefix, field) {
+  var wrap = document.createElement("div");
+  wrap.className = "field";
+  var label = document.createElement("label");
+  var fid = idPrefix + "_" + field.name;
+  label.htmlFor = fid;
+  label.appendChild(document.createTextNode(t(field.labelKey)));
+  if (field.required) {
+    var star = document.createElement("span");
+    star.className = "req";
+    star.textContent = "*";
+    label.appendChild(star);
+  }
+  wrap.appendChild(label);
+  var input;
+  if (field.type === "select" || field.type === "rel") input = document.createElement("select");
+  else if (field.type === "number") {
+    input = document.createElement("input");
+    input.type = "number";
+    input.step = "any";
+    input.setAttribute("inputmode", "decimal");
+  } else {
+    input = document.createElement("input");
+    input.type = field.type === "file" ? "text" : "text";
+    if (field.type === "file") input.readOnly = true;
+  }
+  input.id = fid;
+  input.name = field.name;
+  wrap.appendChild(input);
+  if (field.hintKey) {
+    var hint = document.createElement("p");
+    hint.className = "hint";
+    hint.setAttribute("data-i18n", field.hintKey);
+    hint.textContent = t(field.hintKey);
+    wrap.appendChild(hint);
+  }
+  form.appendChild(wrap);
+  return input;
+}
+function addOption(select, value, label, i18nKey) {
+  var opt = document.createElement("option");
+  opt.value = value;
+  opt.textContent = label;
+  if (i18nKey) opt.setAttribute("data-i18n", i18nKey);
+  select.appendChild(opt);
+}
+function ensureOption(select, value, label) {
+  if (!value) return;
+  var i;
+  for (i = 0; i < select.options.length; i++) if (select.options[i].value === value) return;
+  addOption(select, value, label || value, "");
+}
+function buildForm(kind, mode, values) {
+  var host = byId("formHost");
+  host.innerHTML = "";
+  var form = document.createElement("form");
+  form.autocomplete = "off";
+  form.addEventListener("submit", function (e) { e.preventDefault(); submitForm(); });
+  if (kind === "class") {
+    form.id = "formClass";
+    var name = addField(form, form.id, { name: "班级名称", type: "text", required: true, labelKey: "className" });
+    var grade = addField(form, form.id, { name: "年级", type: "select", required: true, labelKey: "grade" });
+    var count = addField(form, form.id, { name: "班级人数", type: "number", required: true, labelKey: "people" });
+    addOption(grade, "", t("pleaseSelect"), "pleaseSelect");
+    addOption(grade, "七年级", t("grade7"), "grade7");
+    addOption(grade, "八年级", t("grade8"), "grade8");
+    addOption(grade, "九年级", t("grade9"), "grade9");
+    addOption(grade, "高一", t("grade10"), "grade10");
+    name.value = values["班级名称"] || "";
+    ensureOption(grade, values["年级"] || "", gradeLabel(values["年级"] || ""));
+    grade.value = values["年级"] || "";
+    count.value = values["班级人数"] != null ? String(values["班级人数"]).trim() : "";
+    state.form.originalName = String(values["班级名称"] || "").trim();
+  } else if (kind === "paper") {
+    form.id = "formPaper";
+    var unit = addField(form, form.id, { name: "单元名称", type: "text", required: true, labelKey: "unit" });
+    var cls = addField(form, form.id, { name: "班级名称", type: "rel", required: true, labelKey: "className" });
+    var stage = document.createElement("p");
+    stage.className = "hint";
+    stage.id = "formPaper_stageHint";
+    form.appendChild(stage);
+    var type = addField(form, form.id, { name: "测评类型", type: "select", required: true, labelKey: "type" });
+    var know = addField(form, form.id, { name: "知识点", type: "text", required: true, labelKey: "knowledge" });
+    var mins = addField(form, form.id, { name: "时长分钟", type: "number", required: true, labelKey: "minutes" });
+    var score = addField(form, form.id, { name: "卷面满分", type: "select", required: true, labelKey: "fullScore" });
+    var ratio = addField(form, form.id, { name: "难度比例", type: "select", required: true, labelKey: "ratio", hintKey: "ratioNote" });
+    var note = document.createElement("p");
+    note.className = "hint";
+    note.setAttribute("data-i18n", "flowPaperNote");
+    note.textContent = t("flowPaperNote");
+    form.appendChild(note);
+    if (mode === "edit") {
+      var editNote = document.createElement("p");
+      editNote.className = "hint";
+      editNote.setAttribute("data-i18n", "editNoRegenPaper");
+      editNote.textContent = t("editNoRegenPaper");
+      form.appendChild(editNote);
+    }
+    addOption(cls, "", t("pleaseSelect"), "pleaseSelect");
+    var i;
+    for (i = 0; i < state.classes.length; i++) {
+      var c = state.classes[i];
+      addOption(cls, c["班级名称"], c["班级名称"] + " · " + gradeLabel(c["年级"]) + " · " + (c["班级人数"] || ""), "");
+    }
+    ensureOption(cls, values["班级名称"] || "", values["班级名称"] || "");
+    addOption(type, "", t("pleaseSelect"), "pleaseSelect");
+    addOption(type, "诊断性", t("diag"), "diag");
+    addOption(type, "形成性", t("formative"), "formative");
+    addOption(type, "终结性", t("summative"), "summative");
+    ensureOption(type, values["测评类型"] || "", typeLabel(values["测评类型"] || ""));
+    addOption(score, "", t("pleaseSelect"), "pleaseSelect");
+    addOption(score, "100", "100", "");
+    addOption(score, "120", "120", "");
+    addOption(score, "150", "150", "");
+    ensureOption(score, String(values["卷面满分"] || "").trim(), String(values["卷面满分"] || "").trim());
+    addOption(ratio, "", t("pleaseSelect"), "pleaseSelect");
+    addOption(ratio, "6:3:1", "6:3:1", "");
+    addOption(ratio, "7:2:1", "7:2:1", "");
+    addOption(ratio, "8:2:0", "8:2:0", "");
+    ensureOption(ratio, values["难度比例"] || "", values["难度比例"] || "");
+    unit.value = values["单元名称"] || "";
+    cls.value = values["班级名称"] || "";
+    type.value = values["测评类型"] || "";
+    know.value = values["知识点"] || "";
+    mins.value = values["时长分钟"] != null ? String(values["时长分钟"]).trim() : "";
+    score.value = String(values["卷面满分"] || "").trim();
+    ratio.value = values["难度比例"] || "";
+    cls.addEventListener("change", updateStageHint);
+    updateStageHint();
+  } else {
+    form.id = "formStat";
+    var sClass = addField(form, form.id, { name: "班级名称", type: "rel", required: true, labelKey: "className" });
+    var sUnit = addField(form, form.id, { name: "单元名称", type: "rel", required: true, labelKey: "unit" });
+    var noPaper = document.createElement("p");
+    noPaper.className = "hint";
+    noPaper.id = "statNoPaper";
+    form.appendChild(noPaper);
+    var go = document.createElement("button");
+    go.type = "button";
+    go.className = "btn btn-ghost";
+    go.id = "btnFormGuide";
+    go.textContent = t("goPaper");
+    go.addEventListener("click", function () { closeForm(); switchPage("paper"); });
+    form.appendChild(go);
+    var fileWrap = document.createElement("div");
+    fileWrap.className = "field";
+    var fileLabel = document.createElement("label");
+    fileLabel.htmlFor = "formStat_分数文件";
+    fileLabel.textContent = t("file");
+    var star2 = document.createElement("span");
+    star2.className = "req";
+    star2.textContent = "*";
+    fileLabel.appendChild(star2);
+    fileWrap.appendChild(fileLabel);
+    var fileRow = document.createElement("div");
+    fileRow.className = "file-row";
+    var fileInput = document.createElement("input");
+    fileInput.type = "text";
+    fileInput.readOnly = true;
+    fileInput.id = "formStat_分数文件";
+    fileInput.name = "分数文件";
+    fileInput.value = values["分数文件"] || "";
+    var pick = document.createElement("button");
+    pick.type = "button";
+    pick.className = "btn btn-ghost";
+    pick.id = "btnPickFile";
+    pick.textContent = t("selectFile");
+    pick.addEventListener("click", function () {
+      var ret = onPickFile();
+      if (ret && ret.then) ret.catch(function () { toast(t("fileFail")); });
+    });
+    var prev = document.createElement("button");
+    prev.type = "button";
+    prev.className = "btn btn-ghost";
+    prev.id = "btnPreviewFile";
+    prev.textContent = t("preview");
+    prev.addEventListener("click", function () {
+      var ret = previewScore(byId("formStat_分数文件").value);
+      if (ret && ret.then) ret.catch(function () { toast(t("fileFail")); });
+    });
+    fileRow.appendChild(fileInput);
+    fileRow.appendChild(pick);
+    fileRow.appendChild(prev);
+    fileWrap.appendChild(fileRow);
+    var links = document.createElement("div");
+    links.className = "file-links";
+    links.id = "fileLinks";
+    var dl = document.createElement("a");
+    dl.id = "fileDownloadLink";
+    dl.target = "_blank";
+    dl.rel = "noopener";
+    var op = document.createElement("a");
+    op.id = "fileOpenLink";
+    op.target = "_blank";
+    op.rel = "noopener";
+    links.appendChild(dl);
+    links.appendChild(op);
+    fileWrap.appendChild(links);
+    var box = document.createElement("div");
+    box.id = "filePreviewBox";
+    box.className = "preview-box";
+    box.hidden = true;
+    fileWrap.appendChild(box);
+    form.appendChild(fileWrap);
+    var flow = document.createElement("p");
+    flow.className = "hint";
+    flow.setAttribute("data-i18n", "flowStatNote");
+    flow.textContent = t("flowStatNote");
+    form.appendChild(flow);
+    if (mode === "edit") {
+      var editStat = document.createElement("p");
+      editStat.className = "hint";
+      editStat.setAttribute("data-i18n", "editNoRegenStat");
+      editStat.textContent = t("editNoRegenStat");
+      form.appendChild(editStat);
+    }
+    addOption(sClass, "", t("pleaseSelect"), "pleaseSelect");
+    var n;
+    for (n = 0; n < state.classes.length; n++) {
+      var row = state.classes[n];
+      addOption(sClass, row["班级名称"], row["班级名称"] + " · " + gradeLabel(row["年级"]) + " · " + (row["班级人数"] || ""), "");
+    }
+    ensureOption(sClass, values["班级名称"] || "", values["班级名称"] || "");
+    sClass.value = values["班级名称"] || "";
+    sClass.addEventListener("change", function () { fillStatUnits(sClass.value, ""); });
+    fillStatUnits(sClass.value, values["单元名称"] || "");
+    syncFileLinks(fileInput.value);
+  }
+  host.appendChild(form);
+  syncSubmitLabel();
+}
+function papersOfClass(name) {
+  var out = [];
+  var i;
+  for (i = 0; i < state.papers.length; i++) if (state.papers[i]["班级名称"] === name) out.push(state.papers[i]);
+  return out;
+}
+function fillStatUnits(className, selected) {
+  var sel = byId("formStat_单元名称");
+  var hint = byId("statNoPaper");
+  var guide = byId("btnFormGuide");
+  if (!sel) return;
+  sel.innerHTML = "";
+  addOption(sel, "", t("pleaseSelect"), "pleaseSelect");
+  if (!className) {
+    sel.disabled = true;
+    if (hint) hint.textContent = "";
+    if (guide) guide.hidden = true;
+    return;
+  }
+  if (!state.classes.length) {
+    sel.disabled = true;
+    if (hint) hint.textContent = t("noClassForStat");
+    if (guide) { guide.hidden = false; guide.textContent = t("goClass"); guide.onclick = function () { closeForm(); switchPage("class"); }; }
+    return;
+  }
+  var list = papersOfClass(className);
+  var i;
+  for (i = 0; i < list.length; i++) {
+    var p = list[i];
+    addOption(sel, p["单元名称"], p["单元名称"] + " · " + typeLabel(p["测评类型"]) + " · " + (p["知识点"] || ""), "");
+  }
+  if (selected) ensureOption(sel, selected, selected);
+  if (!list.length && !selected) {
+    sel.disabled = true;
+    if (hint) hint.textContent = t("noPaperForClass");
+    if (guide) { guide.hidden = false; guide.textContent = t("goPaper"); guide.onclick = function () { closeForm(); switchPage("paper"); }; }
+  } else {
+    sel.disabled = false;
+    sel.value = selected || "";
+    if (hint) hint.textContent = list.length ? "" : t("noPaperForClass");
+    if (guide) guide.hidden = list.length > 0;
+  }
+}
+function updateStageHint() {
+  var sel = byId("formPaper_班级名称");
+  var hint = byId("formPaper_stageHint");
+  if (!sel || !hint) return;
+  var info = findClass(sel.value);
+  var grade = info ? info["年级"] : "";
+  if (grade === "高一") hint.textContent = t("stageSenior");
+  else if (grade === "七年级" || grade === "八年级" || grade === "九年级") hint.textContent = t("stageJunior");
+  else hint.textContent = "";
+}
+function syncFileLinks(name) {
+  var dl = byId("fileDownloadLink");
+  var op = byId("fileOpenLink");
+  if (!dl || !op) return;
+  var text = String(name || "").trim();
+  if (!text) { dl.hidden = true; op.hidden = true; return; }
+  dl.hidden = false;
+  op.hidden = false;
+  dl.href = downloadUrl(text);
+  op.href = privateUrl(text);
+  dl.textContent = t("download");
+  op.textContent = t("openBrowser");
+}
+function syncSubmitLabel() {
+  var label = byId("formSubmitLabel");
+  if (!label || !state.form) return;
+  if (state.form.kind === "paper" && state.form.mode === "create") label.textContent = t("generatePaper");
+  else if (state.form.kind === "stat" && state.form.mode === "create") label.textContent = t("generateStat");
+  else if (state.form.kind === "class" && state.form.mode === "create") label.textContent = t("register");
+  else label.textContent = t("save");
+}
+function refreshFormTexts() {
+  syncSubmitLabel();
+  syncPaperCreateBtn();
+  updateStageHint();
+  var file = byId("formStat_分数文件");
+  if (file) syncFileLinks(file.value);
+  var pick = byId("btnPickFile");
+  if (pick) pick.textContent = t("selectFile");
+  var prev = byId("btnPreviewFile");
+  if (prev) prev.textContent = t("preview");
+  if (state.form) byId("formTitle").textContent = t(state.form.kind === "class" ? "formClassTitle" : state.form.kind === "paper" ? "formPaperTitle" : "formStatTitle");
+}
+function formValue(id) {
+  var el = byId(id);
+  return el ? String(el.value || "").trim() : "";
+}
+async function openForm(kind, mode, row) {
+  if (state.polling && state.pollPage === kind && (mode === "create" || row === state.pollRow)) {
+    toast(t("waitLock"));
+    return;
+  }
+  state.form = { kind: kind, mode: mode, row: row || 0, originalName: "" };
+  byId("formTitle").textContent = t(kind === "class" ? "formClassTitle" : kind === "paper" ? "formPaperTitle" : "formStatTitle");
+  byId("formHost").textContent = t("loading");
+  byId("formSubmit").disabled = true;
+  byId("formMask").hidden = false;
+  syncLock();
+  try {
+    if (kind !== "class" || mode === "create") {
+      if (kind === "paper" || kind === "stat" || kind === "class") {
+        if (kind !== "class") state.classes = await fetchTable(DS_CLASS, CLASS_FIELDS);
+        if (kind === "stat") state.papers = await fetchTable(DS_PAPER, PAPER_FIELDS);
+      }
+    }
+    if (kind === "paper" && mode === "create" && state.classes.length === 0) {
+      closeForm();
+      toast(t("needClass"));
+      await switchPage("class");
+      return;
+    }
+    var values = {};
+    if (mode === "edit") {
+      var fields = kind === "class" ? ["班级名称", "年级", "班级人数"] : kind === "paper" ? ["单元名称", "班级名称", "测评类型", "知识点", "时长分钟", "卷面满分", "难度比例"] : ["班级名称", "单元名称", "分数文件"];
+      var ds = kind === "class" ? DS_CLASS : kind === "paper" ? DS_PAPER : DS_STAT;
+      var i;
+      for (i = 0; i < fields.length; i++) values[fields[i]] = String(await getCell(ds, fields[i], row)).trim();
+      state.currentRow[kind] = row;
+    }
+    buildForm(kind, mode, values);
+    byId("formSubmit").disabled = false;
+    var first = document.querySelector("#formHost input, #formHost select, #formHost textarea");
+    if (first) setTimeout(function () { first.focus(); }, 60);
+  } catch (e) {
+    closeForm();
+    toast(t("loadFail"));
+  }
+}
+async function onNewPaper() {
+  if (state.polling && state.pollPage === "paper") { toast(t("waitLock")); return; }
+  if (state.classCount === 0) {
+    toast(t("needClass"));
+    await switchPage("class");
+    return;
+  }
+  await openForm("paper", "create", 0);
+}
+async function onPickFile() {
+  var name = await callAppBridge({ type: "SelectFile" });
+  name = name == null ? "" : String(name).trim();
+  if (!name) return;
+  var input = byId("formStat_分数文件");
+  if (input) input.value = name;
+  syncFileLinks(name);
+}
+function looksBinary(s) {
+  var str = String(s == null ? "" : s);
+  if (!str) return true;
+  if (str.indexOf("\u0000") >= 0) return true;
+  var weird = 0;
+  var n = Math.min(str.length, 2000);
+  var i;
+  for (i = 0; i < n; i++) {
+    var c = str.charCodeAt(i);
+    if (c < 9 || (c > 13 && c < 32)) weird++;
+  }
+  return n > 0 && weird / n > 0.08;
+}
+function isHtmlName(name, content) {
+  var n = String(name || "").toLowerCase();
+  if (/\.html?$/.test(n)) return true;
+  var c = String(content || "").trim().toLowerCase();
+  return c.indexOf("<!doctype html") === 0 || c.indexOf("<html") === 0;
+}
+function openPreview(title, node) {
+  byId("previewTitle").textContent = title || t("previewTitle");
+  var body = byId("previewBody");
+  body.innerHTML = "";
+  body.appendChild(node);
+  byId("previewMask").hidden = false;
+  syncLock();
+}
+async function previewScore(name) {
+  var filename = String(name || "").trim();
+  if (!filename) { toast(t("needFile")); return; }
+  var content = "";
+  var readOk = false;
+  try {
+    content = await callAppBridge({ type: "ReadFile", data: filename });
+    content = content == null ? "" : String(content);
+    readOk = true;
+  } catch (e) {
+    readOk = false;
+  }
+  if (isHtmlName(filename, readOk ? content : "")) {
+    var frame = document.createElement("iframe");
+    frame.className = "file-frame";
+    frame.src = privateUrl(filename);
+    frame.title = filename;
+    openPreview(filename, frame);
+    return;
+  }
+  if (readOk && !looksBinary(content)) {
+    var pre = document.createElement("pre");
+    pre.className = "plain-pre";
+    pre.textContent = content;
+    var box = byId("filePreviewBox");
+    if (box) {
+      box.hidden = false;
+      box.innerHTML = "";
+      var clone = pre.cloneNode(true);
+      box.appendChild(clone);
+    }
+    openPreview(filename, pre);
+    return;
+  }
+  toast(t("fileBinary"));
+  syncFileLinks(filename);
+}
+function downloadScore(name) {
+  var filename = String(name || "").trim();
+  if (!filename) { toast(t("needFile")); return; }
+  visit(downloadUrl(filename));
+}
+async function copyText(text) {
+  if (!text) { toast(t("nothingCopy")); return; }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      toast(t("copied"));
+      return;
+    }
+  } catch (e) {}
+  try {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "readonly");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = document.execCommand("copy");
+    ta.remove();
+    toast(ok ? t("copied") : t("copyFail"));
+  } catch (e2) {
+    toast(t("copyFail"));
+  }
+}
+async function removeClass(item) {
+  var ok = await confirmBox(t("deleteAsk").replace("{name}", item["班级名称"] || t("thisRecord")), true);
+  if (!ok) return;
+  try {
+    await deleteRecord(DS_CLASS, item.row);
+    toast(t("deleted"));
+    if (state.currentRow.class === item.row) state.currentRow.class = 0;
+    await loadClasses();
+  } catch (e) {
+    toast(t("deleteFail"));
+  }
+}
+async function removePaper(item) {
+  var ok = await confirmBox(t("deleteAsk").replace("{name}", item["单元名称"] || t("thisRecord")), true);
+  if (!ok) return;
+  if (state.polling && state.pollPage === "paper" && item.row <= state.pollRow) {
+    stopPoll();
+    toast(t("pollStopped"));
+  }
+  try {
+    await deleteRecord(DS_PAPER, item.row);
+    toast(t("deleted"));
+    if (state.paperViewRow === item.row) closePaperReader();
+    if (state.currentRow.paper === item.row) state.currentRow.paper = 0;
+    await loadPapers({ skipReader: true });
+  } catch (e) {
+    toast(t("deleteFail"));
+  }
+}
+async function removeStat(item) {
+  var ok = await confirmBox(t("deleteAsk").replace("{name}", item["单元名称"] || item["班级名称"] || t("thisRecord")), true);
+  if (!ok) return;
+  if (state.polling && state.pollPage === "stat" && item.row <= state.pollRow) {
+    stopPoll();
+    toast(t("pollStopped"));
+  }
+  try {
+    await deleteRecord(DS_STAT, item.row);
+    toast(t("deleted"));
+    if (state.statViewRow === item.row) closeStatReader();
+    if (state.currentRow.stat === item.row) state.currentRow.stat = 0;
+    await loadStats({ skipReader: true });
+  } catch (e) {
+    toast(t("deleteFail"));
+  }
+}
+async function submitForm() {
+  if (!state.form || state.saving) return;
+  if (state.polling && state.pollPage === state.form.kind && (state.form.mode === "create" || state.form.row === state.pollRow)) {
+    toast(t("waitLock"));
+    return;
+  }
+  var kind = state.form.kind;
+  var mode = state.form.mode;
+  var row = state.form.row;
+  var pollAfter = null;
+  state.saving = true;
+  if (byId("formSubmit")) byId("formSubmit").disabled = true;
+  try {
+    if (kind === "class") {
+      var className = formValue("formClass_班级名称");
+      var grade = formValue("formClass_年级");
+      var count = numOrNull(formValue("formClass_班级人数"));
+      if (!className || !grade || count == null || count <= 0) {
+        toast(!className || !grade ? t("required") : t("countInvalid"));
+        return;
+      }
+      if (mode === "edit" && className !== state.form.originalName) {
+        var goOn = await confirmBox(t("renameWarn"), false);
+        if (!goOn) return;
+      }
+      if (mode === "create") {
+        await submitRecord("班级信息", { "班级名称": className, "年级": grade, "班级人数": count });
+        state.currentRow.class = 1;
+        closeForm();
+        toast(t("submitted"));
+        await loadClasses();
+      } else {
+        await setCell(DS_CLASS, "班级名称", row, className);
+        await setCell(DS_CLASS, "年级", row, grade);
+        await setCell(DS_CLASS, "班级人数", row, String(count));
+        state.currentRow.class = row;
+        closeForm();
+        toast(t("saved"));
+        await loadClasses();
+      }
+      return;
+    }
+    if (kind === "paper") {
+      var unit = formValue("formPaper_单元名称");
+      var cls = formValue("formPaper_班级名称");
+      var type = formValue("formPaper_测评类型");
+      var know = formValue("formPaper_知识点");
+      var mins = numOrNull(formValue("formPaper_时长分钟"));
+      var score = formValue("formPaper_卷面满分");
+      var ratio = formValue("formPaper_难度比例");
+      if (!unit || !cls || !type || !know || !score || !ratio) { toast(t("required")); return; }
+      if (mins == null || mins <= 0) { toast(t("minutesInvalid")); return; }
+      var payload = { "单元名称": unit, "班级名称": cls, "测评类型": type, "知识点": know, "时长分钟": mins, "卷面满分": score, "难度比例": ratio };
+      if (mode === "create") {
+        await submitRecord("测评命题", payload);
+        state.currentRow.paper = 1;
+        state.paperViewRow = 1;
+        closeForm();
+        toast(t("submitted"));
+        await loadPapers({ skipReader: true });
+        pollAfter = { kind: "paper", row: 1, title: unit };
+      } else {
+        await setCell(DS_PAPER, "单元名称", row, unit);
+        await setCell(DS_PAPER, "班级名称", row, cls);
+        await setCell(DS_PAPER, "测评类型", row, type);
+        await setCell(DS_PAPER, "知识点", row, know);
+        await setCell(DS_PAPER, "时长分钟", row, String(mins));
+        await setCell(DS_PAPER, "卷面满分", row, score);
+        await setCell(DS_PAPER, "难度比例", row, ratio);
+        state.currentRow.paper = row;
+        closeForm();
+        toast(t("saved"));
+        await loadPapers({ skipReader: true });
+        if (state.paperViewRow === row) await openPaperReader(row);
+      }
+    } else {
+    var sClass = formValue("formStat_班级名称");
+    var sUnit = formValue("formStat_单元名称");
+    var file = formValue("formStat_分数文件");
+    if (!sClass) { toast(t("required")); return; }
+    if (!state.classes.length) { toast(t("noClassForStat")); return; }
+    if (!papersOfClass(sClass).length) { toast(t("noPaperForClass")); return; }
+    if (!sUnit) { toast(t("required")); return; }
+    if (!file) { toast(t("needFile")); return; }
+    if (mode === "create") {
+      await submitRecord("题目统计", { "班级名称": sClass, "单元名称": sUnit, "分数文件": file });
+      state.currentRow.stat = 1;
+      state.statViewRow = 1;
+      closeForm();
+      toast(t("submitted"));
+      await loadStats({ skipReader: true });
+      pollAfter = { kind: "stat", row: 1, title: sUnit };
+    } else {
+      await setCell(DS_STAT, "班级名称", row, sClass);
+      await setCell(DS_STAT, "单元名称", row, sUnit);
+      await setCell(DS_STAT, "分数文件", row, file);
+      state.currentRow.stat = row;
+      closeForm();
+      toast(t("saved"));
+      await loadStats({ skipReader: true });
+      if (state.statViewRow === row) await openStatReader(row);
+    }
+    }
+  } catch (e) {
+    toast(mode === "edit" ? t("saveFail") : t("submitFail"));
+    pollAfter = null;
+  } finally {
+    state.saving = false;
+    var submitBtn = byId("formSubmit");
+    if (submitBtn && state.form) submitBtn.disabled = false;
+  }
+  if (pollAfter) {
+    if (pollAfter.kind === "paper") byId("paperReaderTitle").textContent = pollAfter.title;
+    else byId("statReaderTitle").textContent = pollAfter.title;
+    await startPoll(pollAfter.kind, pollAfter.row);
+  }
+}
+function updateKb() {
+  var vv = window.visualViewport;
+  if (!vv) return;
+  var overlap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+  document.documentElement.style.setProperty("--kb", overlap + "px");
+}
+function bindKeyboard() {
+  document.addEventListener("focusin", function (e) {
+    var target = e.target;
+    if (!target) return;
+    var tag = target.tagName;
+    if (tag !== "INPUT" && tag !== "TEXTAREA" && tag !== "SELECT") return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" }); } catch (err) { target.scrollIntoView(false); }
+    }, 280);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateKb);
+    window.visualViewport.addEventListener("scroll", updateKb);
+  }
+  updateKb();
+}
+function bindEvents() {
+  byId("logoBtn").addEventListener("click", function () {
+    try {
+      if (window.parent && typeof window.parent.closeFullHtml === "function") window.parent.closeFullHtml(false);
+    } catch (e) {}
+  });
+  var tabs = document.querySelectorAll("#navLinks [data-page], #mobileMenu [data-page]");
+  var i;
+  for (i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener("click", function () {
+      var page = this.getAttribute("data-page");
+      closeMobileMenu();
+      var ret = switchPage(page);
+      if (ret && ret.then) ret.catch(function () { toast(t("loadFail")); });
+    });
+  }
+  byId("langBtn").addEventListener("click", function () { setLang(state.lang === "en" ? "cn" : "en"); });
+  byId("langCnBtn").addEventListener("click", function () { setLang("cn"); });
+  byId("langEnBtn").addEventListener("click", function () { setLang("en"); });
+  byId("hamburgerBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+  document.addEventListener("click", function (e) {
+    var menu = byId("mobileMenu");
+    if (!menu || menu.hidden) return;
+    var ham = byId("hamburgerBtn");
+    if (menu.contains(e.target) || (ham && ham.contains(e.target))) return;
+    e.preventDefault();
+    e.stopPropagation();
+    closeMobileMenu();
+  }, true);
+  byId("btnGoClass").addEventListener("click", function () { switchPage("class"); });
+  byId("btnGoPaper").addEventListener("click", function () { switchPage("paper"); });
+  byId("btnNewClass").addEventListener("click", function () { openForm("class", "create", 0); });
+  byId("btnNewPaper").addEventListener("click", function () { onNewPaper(); });
+  byId("btnNewStat").addEventListener("click", function () { openForm("stat", "create", 0); });
+  byId("searchClass").addEventListener("input", renderClassList);
+  byId("filterClassGrade").addEventListener("change", renderClassList);
+  byId("btnSearchClass").addEventListener("click", renderClassList);
+  byId("btnResetClass").addEventListener("click", function () {
+    byId("searchClass").value = "";
+    byId("filterClassGrade").value = "";
+    renderClassList();
+  });
+  byId("searchPaper").addEventListener("input", renderPaperList);
+  byId("filterPaperType").addEventListener("change", renderPaperList);
+  byId("filterPaperRatio").addEventListener("change", renderPaperList);
+  byId("filterPaperScore").addEventListener("change", renderPaperList);
+  byId("filterPaperClass").addEventListener("change", renderPaperList);
+  byId("btnSearchPaper").addEventListener("click", renderPaperList);
+  byId("btnResetPaper").addEventListener("click", function () {
+    byId("searchPaper").value = "";
+    byId("filterPaperType").value = "";
+    byId("filterPaperRatio").value = "";
+    byId("filterPaperScore").value = "";
+    byId("filterPaperClass").value = "";
+    renderPaperList();
+  });
+  byId("searchStat").addEventListener("input", renderStatList);
+  byId("filterStatClass").addEventListener("change", renderStatList);
+  byId("btnSearchStat").addEventListener("click", renderStatList);
+  byId("btnResetStat").addEventListener("click", function () {
+    byId("searchStat").value = "";
+    byId("filterStatClass").value = "";
+    renderStatList();
+  });
+  byId("paperReaderClose").addEventListener("click", closePaperReader);
+  byId("statReaderClose").addEventListener("click", closeStatReader);
+  byId("paperReaderMask").addEventListener("click", function (e) {
+    if (e.target === this && this.classList.contains("open")) closePaperReader();
+  });
+  byId("statReaderMask").addEventListener("click", function (e) {
+    if (e.target === this && this.classList.contains("open")) closeStatReader();
+  });
+  byId("btnCopyPaper").addEventListener("click", function () { copyText(state.paperRaw); });
+  byId("btnCopyStat").addEventListener("click", function () { copyText(state.statRaw); });
+  byId("formClose").addEventListener("click", closeForm);
+  byId("formCancel").addEventListener("click", closeForm);
+  byId("formSubmit").addEventListener("click", function () { submitForm(); });
+  byId("previewClose").addEventListener("click", closePreview);
+  byId("previewMask").addEventListener("click", function (e) { if (e.target === this) closePreview(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && closeTopPopup()) e.preventDefault();
+  });
+  document.addEventListener("click", function (e) {
+    var node = e.target;
+    if (!node || !node.closest) return;
+    var a = node.closest("a[data-app-link]");
+    if (!a) return;
+    e.preventDefault();
+    var data = a.getAttribute("data-app-link") || "";
+    if (!data) return;
+    callAppBridge({ type: "链接", data: data }).catch(function () { toast(t("actionFail")); });
+  });
+  window.addEventListener("resize", function () {
+    layoutNav();
+    syncReaderMode("paperReaderMask");
+    syncReaderMode("statReaderMask");
+    updateKb();
+  });
+}
+async function initialize() {
+  state.lang = detectLang();
+  bindEvents();
+  bindKeyboard();
+  applyI18n();
+  paintEmpty(byId("paperReaderBody"), t("emptyReaderPaper"));
+  paintEmpty(byId("statReportBody"), t("emptyReaderStat"));
+  window.airBack = airBack;
+  try { await applyTheme(); } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
+  try { await switchPage("home", { skipHistory: true, force: true }); } catch (e2) { toast(t("loadFail")); }
+  layoutNav();
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

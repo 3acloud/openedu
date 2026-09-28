@@ -1,0 +1,3462 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>阅读教学指导</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --paper: #f3ead8;
+    --paper-2: #e7dcc6;
+    --sheet: #fffaf2;
+    --ink: #2a2218;
+    --soft: #6d6256;
+    --line: #e3d5c2;
+    --line-strong: #d2c2ab;
+    --field: #fffdf8;
+    --nav: #1b3a5a;
+    --nav-2: #16324f;
+    --cinnabar: #b64032;
+    --cinnabar-deep: #8d3126;
+    --pine: #2d6a4f;
+    --indigo: #2c3d78;
+    --purple: #6d2e5c;
+    --explain: #1b3a5a;
+    --shadow: 0 10px 24px rgba(62, 42, 18, 0.08);
+    --nav-h: 64px;
+    --kb: 0px;
+    --radius: 12px;
+    color-scheme: light;
+  }
+  [data-theme="dark"] {
+    --paper: #14110e;
+    --paper-2: #1c1814;
+    --sheet: #262119;
+    --ink: #f3eadf;
+    --soft: #cbbba4;
+    --line: rgba(243, 234, 223, 0.14);
+    --line-strong: rgba(243, 234, 223, 0.28);
+    --field: #1c1814;
+    --nav: #0e2438;
+    --nav-2: #0b1c2c;
+    --cinnabar: #e07a6c;
+    --cinnabar-deep: #c45b4e;
+    --pine: #7dcea5;
+    --indigo: #9aace8;
+    --purple: #e0a0cc;
+    --explain: #8fb4dc;
+    --shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    min-height: 100vh;
+    color: var(--ink);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background:
+      radial-gradient(1100px 420px at 8% -10%, rgba(255, 255, 255, 0.55), transparent 55%),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+    padding-top: calc(var(--nav-h) + env(safe-area-inset-top));
+  }
+  [data-theme="dark"] body {
+    background:
+      radial-gradient(900px 380px at 0% 0%, rgba(143, 180, 220, 0.08), transparent 46%),
+      linear-gradient(180deg, #1a1612 0%, #100e0c 100%);
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.48; }
+  h1, h2, h3, .serif { font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif; font-weight: 600; }
+  h1 { font-size: 34px; line-height: 1.25; margin: 0; letter-spacing: 0.04em; }
+  h2 { font-size: 22px; margin: 0; }
+  p { margin: 0; }
+  [hidden] { display: none !important; }
+  #appHeader {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1001;
+    padding-top: env(safe-area-inset-top);
+    background: var(--nav);
+    color: #f6f1e6;
+  }
+  #topNav {
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 0 14px;
+    background: var(--nav);
+    color: #f6f1e6;
+  }
+  #navBrand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+    border: 0;
+    background: transparent;
+    color: #f6f1e6;
+    padding: 6px 4px;
+    text-align: left;
+  }
+  .logo-mark {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(246, 241, 230, 0.35);
+    border-radius: 8px;
+    background: rgba(255, 250, 242, 0.08);
+  }
+  .logo-mark .fa-book-open { font-size: 16px; }
+  .logo-mark .fa-leaf {
+    position: absolute;
+    right: -3px;
+    top: -4px;
+    font-size: 11px;
+    color: #d5e7cf;
+  }
+  #navAppName {
+    font-family: "Songti SC", "STSong", "SimSun", serif;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #navTabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+  #navTabs button, #mobileMenu button.menu-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    border: 0;
+    background: transparent;
+    color: #f6f1e6;
+    border-radius: 999px;
+    padding: 8px 12px;
+  }
+  #navTabs button.is-active {
+    background: rgba(255, 250, 242, 0.14);
+    box-shadow: inset 0 -2px 0 #e7b2a8;
+  }
+  .nav-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex: 0 0 auto;
+  }
+  #langToggle {
+    border: 1px solid rgba(246, 241, 230, 0.35);
+    background: transparent;
+    color: #f6f1e6;
+    border-radius: 999px;
+    padding: 6px 10px;
+    letter-spacing: 0.04em;
+  }
+  #langToggle .is-on { color: #fff; font-weight: 700; }
+  #langToggle .is-off { opacity: 0.55; }
+  #hamburgerBtn {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 250, 242, 0.1);
+    color: #f6f1e6;
+    align-items: center;
+    justify-content: center;
+  }
+  #hamburgerBtn.is-shown { display: inline-flex; }
+  #navTabs.nav-tabs-hidden { display: none !important; }
+  #langToggle.is-hidden { display: none !important; }
+  #mobileMenu {
+    display: none;
+    position: absolute;
+    left: 0; right: 0; top: 100%;
+    background: var(--nav-2);
+    color: #f6f1e6;
+    padding: 8px;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.22);
+  }
+  #mobileMenu.is-open { display: block; }
+  #mobileMenu .menu-tab {
+    display: flex;
+    width: 100%;
+    border-radius: 10px;
+    text-align: left;
+    padding: 12px;
+  }
+  #mobileMenu .menu-tab.is-active { background: rgba(255, 250, 242, 0.12); }
+  .mobile-lang {
+    display: flex;
+    gap: 8px;
+    padding: 8px 4px 4px;
+  }
+  .mobile-lang button {
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid rgba(246, 241, 230, 0.3);
+    background: transparent;
+    color: #f6f1e6;
+    padding: 10px;
+  }
+  .mobile-lang button.is-on { background: rgba(255, 250, 242, 0.16); }
+  .count-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #f6f1e6;
+    color: var(--nav);
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  main {
+    width: min(1120px, calc(100% - 28px));
+    margin: 18px auto 0;
+  }
+  .page-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+  }
+  .page-head p, .lede { color: var(--soft); margin-top: 8px; max-width: 68ch; }
+  .head-actions, .btn-row, .dialog-actions, .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sheet, .stat-card, .scene-card, .lib-card, .recent-card, .empty-state {
+    background: var(--sheet);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .hero {
+    padding: 28px 26px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before, .panel::before {
+    content: "";
+    position: absolute;
+    left: 22px;
+    top: 0;
+    width: 42px;
+    height: 7px;
+    border-radius: 0 0 5px 5px;
+    background: var(--cinnabar);
+  }
+  .hero h1 { margin-top: 8px; }
+  .btn {
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: var(--sheet);
+    color: var(--ink);
+    padding: 9px 16px;
+    line-height: 1.3;
+  }
+  .btn-primary {
+    background: var(--cinnabar);
+    border-color: var(--cinnabar-deep);
+    color: #fffaf6;
+    font-weight: 650;
+  }
+  .btn-primary:hover:not(:disabled) { filter: brightness(1.05); }
+  .btn-ghost { background: transparent; }
+  .btn-danger { color: var(--cinnabar); border-color: var(--cinnabar); background: transparent; }
+  .btn .fa-solid, .btn .fa-regular { margin-right: 6px; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .stat-card { padding: 16px 16px 14px; position: relative; }
+  .stat-card::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--explain);
+  }
+  .stat-card:nth-child(2)::after { background: var(--pine); }
+  .stat-card:nth-child(3)::after { background: var(--indigo); }
+  .stat-card:nth-child(4)::after { background: var(--cinnabar); }
+  .stat-label { color: var(--soft); font-size: 13px; }
+  .stat-num {
+    font-family: "Songti SC", "STSong", "SimSun", serif;
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 4px 0;
+  }
+  .stat-sub { color: var(--soft); font-size: 13px; }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 10px;
+    font-size: 20px;
+  }
+  .section-title::before {
+    content: "";
+    width: 4px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--cinnabar);
+  }
+  .scene-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .scene-card {
+    text-align: left;
+    padding: 14px 12px;
+    border-radius: 10px;
+    min-height: 92px;
+    color: #f7f3ea;
+    border: 0;
+    box-shadow: var(--shadow);
+  }
+  .scene-card b { display: block; font-family: "Songti SC", "STSong", serif; font-size: 16px; font-weight: 600; }
+  .scene-card span { display: block; margin-top: 6px; font-size: 12px; opacity: 0.9; }
+  .tone-explain { background: #1b3a5a; }
+  .tone-strategy { background: #2d6a4f; }
+  .tone-group { background: #2c3d78; }
+  .tone-classic { background: #6d2e5c; }
+  .tone-critical { background: #b64032; }
+  .recent-grid, .lib-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .recent-card, .lib-card { padding: 0; text-align: left; overflow: hidden; }
+  .recent-card { width: 100%; padding: 14px 14px 12px; }
+  .lib-card { display: flex; min-height: 148px; }
+  .lib-card .thumb {
+    width: 86px;
+    flex: 0 0 86px;
+    object-fit: cover;
+    background: var(--paper-2);
+    align-self: stretch;
+  }
+  .lib-main, .recent-main { padding: 12px 12px 10px; min-width: 0; flex: 1; }
+  .card-title {
+    font-family: "Songti SC", "STSong", serif;
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag, .seal {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    background: rgba(27, 58, 90, 0.06);
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  [data-theme="dark"] .tag { background: rgba(255, 250, 242, 0.06); }
+  .seal { color: #f7f3ea; border: 0; letter-spacing: 0.04em; }
+  .file-line, .preview-line, .card-title { margin-top: 8px; color: var(--soft); font-size: 13px; overflow-wrap: anywhere; }
+  .card-title { margin: 0 0 8px; color: var(--ink); font-size: 18px; }
+  .preview-line { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-actions { margin-top: 10px; }
+  .card-actions .btn { padding: 6px 10px; font-size: 13px; }
+  .lib-hit { cursor: pointer; }
+  .empty-state {
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--soft);
+  }
+  .empty-state .fa-solid { font-size: 28px; color: var(--cinnabar); margin-bottom: 8px; }
+  .empty-state p { margin-bottom: 12px; }
+  .workshop-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .panel { position: relative; padding: 20px 16px 16px; }
+  .panel h2 { margin: 6px 0 12px; }
+  .mode-chip {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    background: rgba(182, 64, 50, 0.1);
+    color: var(--cinnabar);
+  }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; margin-bottom: 4px; font-size: 14px; }
+  .req { color: var(--cinnabar); margin-left: 2px; }
+  input[type="text"], input[type="search"], select, textarea {
+    width: 100%;
+    background: var(--field);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 16px;
+    outline: none;
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { border-color: #8aa0b8; }
+  .is-invalid { border-color: var(--cinnabar) !important; }
+  .file-box {
+    border: 1px dashed var(--line-strong);
+    border-radius: 10px;
+    padding: 10px;
+    background: rgba(255, 250, 242, 0.4);
+  }
+  [data-theme="dark"] .file-box { background: rgba(255, 250, 242, 0.03); }
+  .file-name {
+    font-size: 13px;
+    color: var(--soft);
+    word-break: break-all;
+    margin-bottom: 8px;
+  }
+  .index-hint, .hint, .alert, .save-status { font-size: 13px; margin: 8px 0; }
+  .index-hint, .hint { color: var(--soft); }
+  .alert { color: var(--cinnabar-deep); }
+  [data-theme="dark"] .alert { color: #ffb1a8; }
+  .save-status { color: var(--pine); min-height: 1.2em; }
+  .pace { margin-top: 8px; }
+  .pace h3 { font-size: 15px; margin: 0 0 8px; }
+  .pace-track { display: flex; gap: 4px; min-height: 54px; }
+  .pace-seg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px;
+    border-radius: 8px;
+    background: rgba(27, 58, 90, 0.08);
+    font-size: 12px;
+    min-width: 0;
+  }
+  .pace-seg b { font-weight: 600; }
+  .tier-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tier {
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 12px;
+    border: 1px solid var(--line);
+    color: var(--soft);
+  }
+  .tier.is-on { background: var(--nav); color: #f6f1e6; border-color: var(--nav); }
+  .warn-seal {
+    background: #b64032;
+    color: #fff8f4;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .design-status { min-height: 1.5em; color: var(--soft); margin-bottom: 8px; }
+  .tool-card { padding: 14px; margin-bottom: 14px; }
+  .search-wrap { position: relative; margin-bottom: 10px; }
+  .search-wrap .fa-magnifying-glass {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--soft);
+  }
+  .search-wrap input { padding-left: 36px; }
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    align-items: end;
+  }
+  .filters label, .sort-line label { font-size: 12px; color: var(--soft); display: block; }
+  .sort-line { margin-top: 10px; display: flex; gap: 8px; align-items: end; }
+  .sort-line select { width: min(240px, 100%); }
+  .mask {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(28, 22, 16, 0.5);
+  }
+  .mask.is-open { display: flex; }
+  #detailMask { z-index: 1200; }
+  #htmlMask { z-index: 1300; }
+  #confirmMask { z-index: 1400; }
+  .dialog {
+    width: min(880px, 100%);
+    max-height: calc(100vh - 48px);
+    background: var(--sheet);
+    color: var(--ink);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .confirm-dialog { width: min(420px, 100%); }
+  .dialog-bar, .dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--sheet);
+  }
+  .dialog-bar { border-bottom: 1px solid var(--line); }
+  .dialog-actions { border-top: 1px solid var(--line); }
+  .dialog-scroll { overflow: auto; padding: 14px; }
+  .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .field-item { border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: rgba(255,250,242,0.35); }
+  [data-theme="dark"] .field-item { background: rgba(255,250,242,0.03); }
+  .field-item span { display: block; color: var(--soft); font-size: 12px; }
+  .detail-image { margin: 8px 0 12px; }
+  .detail-image img, .markdown-body img { max-width: 100%; border-radius: 8px; }
+  #detailHtmlHost, .html-dialog { background: var(--sheet); }
+  #detailFrame, #htmlFrameModal { width: 100%; border: 0; background: #fff; min-height: 280px; height: 52vh; }
+  .html-dialog { width: min(960px, 100%); height: min(86vh, 860px); }
+  .html-dialog iframe { flex: 1; height: auto; min-height: 0; }
+  .iframe-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 1500;
+    max-width: min(520px, calc(100% - 24px));
+    background: #2a2218;
+    color: #f6f1e6;
+    padding: 10px 14px;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  #toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .page-bottom-gap { height: 28px; }
+  .markdown-body { font-size: 15px; line-height: 1.75; overflow-wrap: anywhere; }
+  .markdown-body > *:first-child { margin-top: 0; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { margin: 1em 0 0.4em; line-height: 1.35; }
+  .markdown-body p, .markdown-body ul, .markdown-body ol, .markdown-body blockquote, .markdown-body pre, .markdown-body table { margin: 0.6em 0; }
+  .markdown-body a { color: var(--explain); }
+  .markdown-body code { font-family: Consolas, "Source Code Pro", monospace; background: rgba(27, 58, 90, 0.08); padding: 0 4px; border-radius: 4px; }
+  .markdown-body pre { overflow: auto; padding: 10px; border-radius: 8px; background: rgba(27, 58, 90, 0.08); }
+  .markdown-body pre code { background: transparent; padding: 0; }
+  .markdown-body blockquote { border-left: 3px solid var(--cinnabar); margin-left: 0; padding-left: 10px; color: var(--soft); }
+  .markdown-body table { border-collapse: collapse; }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  .table-scroll table { min-width: 100%; width: max-content; }
+  .markdown-body th, .markdown-body td { border: 1px solid var(--line-strong); padding: 6px 8px; vertical-align: top; }
+  .markdown-body img { cursor: pointer; }
+  .md-img-link { display: inline-block; }
+  .lib-card.tone-explain { box-shadow: inset 4px 0 0 #1b3a5a, var(--shadow); }
+  .lib-card.tone-strategy { box-shadow: inset 4px 0 0 #2d6a4f, var(--shadow); }
+  .lib-card.tone-group { box-shadow: inset 4px 0 0 #2c3d78, var(--shadow); }
+  .lib-card.tone-classic { box-shadow: inset 4px 0 0 #6d2e5c, var(--shadow); }
+  .lib-card.tone-critical { box-shadow: inset 4px 0 0 #b64032, var(--shadow); }
+  .recent-card:hover, .lib-card:hover, .scene-card:hover, .stat-card:hover {
+    transform: translateY(-2px);
+  }
+  .recent-card, .lib-card, .scene-card, .stat-card { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  @media (max-width: 980px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .scene-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .workshop-grid { grid-template-columns: 1fr; }
+    .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 768px) {
+    main { width: min(100% - 20px, 1120px); }
+    h1 { font-size: 28px; }
+    .page-head { flex-direction: column; align-items: stretch; }
+    .recent-grid, .lib-grid, .scene-row, .field-grid { grid-template-columns: 1fr; }
+    .scene-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .page-bottom-gap { height: 112px; }
+    .dialog-scroll { padding-bottom: 96px; }
+    .form-sheet { padding-bottom: calc(120px + var(--kb)); }
+    .mask.bleed-mobile { padding: 0; align-items: stretch; }
+    .mask.bleed-mobile .dialog {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      border-radius: 0;
+    }
+    .hero, .panel { padding-left: 14px; padding-right: 14px; }
+  }
+  @media (max-width: 420px) {
+    .filters { grid-template-columns: 1fr; }
+    #navAppName { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<header id="appHeader">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <button type="button" id="navBrand">
+      <span id="navLogo" class="logo-mark" aria-hidden="true"><i class="fa-solid fa-leaf"></i><i class="fa-solid fa-book-open"></i></span>
+      <span id="navAppName" data-i18n="appName">阅读教学指导</span>
+    </button>
+    <div id="navTabs">
+      <button type="button" id="tabHome" data-page="pageHome"><i class="fa-solid fa-house"></i><span data-i18n="tabHome">首页</span></button>
+      <button type="button" id="tabWorkshop" data-page="pageWorkshop"><i class="fa-solid fa-pen-to-square"></i><span data-i18n="tabWorkshop">备课工坊</span></button>
+      <button type="button" id="tabLibrary" data-page="pageLibrary"><i class="fa-solid fa-book"></i><span data-i18n="tabLibrary">课例书匣</span><em id="navCount" class="count-pill">…</em></button>
+    </div>
+    <div class="nav-tools">
+      <button type="button" id="langToggle"><span id="langMarkZh">中</span><span class="lang-split"> / </span><span id="langMarkEn">EN</span></button>
+      <button type="button" id="hamburgerBtn" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="menu-tab" id="mTabHome" data-page="pageHome" data-i18n="tabHome">首页</button>
+      <button type="button" class="menu-tab" id="mTabWorkshop" data-page="pageWorkshop" data-i18n="tabWorkshop">备课工坊</button>
+      <button type="button" class="menu-tab" id="mTabLibrary" data-page="pageLibrary"><span data-i18n="tabLibrary">课例书匣</span><em id="mNavCount" class="count-pill">…</em></button>
+      <div class="mobile-lang">
+        <button type="button" id="mLangZh">中文</button>
+        <button type="button" id="mLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main id="main">
+  <section id="pageHome" class="page">
+    <article class="hero sheet">
+      <h1 data-i18n="appName">阅读教学指导</h1>
+      <p id="homeDesc" class="lede" data-i18n="homeDesc">依据课文完成文本三解、阅读策略选择和三阶任务设计，生成结果须经教师审定后再入库使用</p>
+      <div class="btn-row" style="margin-top:16px">
+        <button type="button" class="btn btn-primary" id="btnStart"><i class="fa-solid fa-feather-pointed"></i><span data-i18n="startPrepare">开始备课</span></button>
+      </div>
+    </article>
+    <div class="stats" id="statRow">
+      <article class="stat-card"><p class="stat-label" data-i18n="statTotal">课例总数</p><p class="stat-num" id="statTotalNum">…</p><p class="stat-sub" id="statTotalSub" data-i18n="statTotalSub">已入库的阅读课</p></article>
+      <article class="stat-card"><p class="stat-label" data-i18n="statPrimary">小学高段</p><p class="stat-num" id="statPrimaryNum">…</p><p class="stat-sub" data-i18n="statPrimarySub">学段为小学高段</p></article>
+      <article class="stat-card"><p class="stat-label" data-i18n="statJunior">初中</p><p class="stat-num" id="statJuniorNum">…</p><p class="stat-sub" data-i18n="statJuniorSub">学段为初中</p></article>
+      <article class="stat-card"><p class="stat-label" data-i18n="statReady">已生成设计</p><p class="stat-num" id="statReadyNum">…</p><p class="stat-sub" id="statReadySub">待生成 …</p></article>
+    </div>
+    <h2 class="section-title serif" data-i18n="sceneTitle">场景快捷笺</h2>
+    <div class="scene-row" id="sceneRow"></div>
+    <h2 class="section-title serif" data-i18n="recentTitle">最近课例</h2>
+    <div id="homeLoading" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p data-i18n="homeLoading">正在铺开书页…</p></div>
+    <div id="homeError" class="empty-state" hidden><i class="fa-solid fa-circle-exclamation"></i><p id="homeErrorText"></p><button type="button" class="btn" id="btnRetryHome" data-i18n="retry">重新读取</button></div>
+    <div id="recentEmpty" class="empty-state" hidden><i class="fa-solid fa-book-open"></i><p data-i18n="recentEmpty">还没有课例</p><button type="button" class="btn btn-primary" id="btnRecentPrepare" data-i18n="goPrepare">去备课</button></div>
+    <div class="recent-grid" id="recentList"></div>
+    <div class="page-bottom-gap"></div>
+  </section>
+  <section id="pageWorkshop" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <span class="mode-chip" id="modeChip">新建课例</span>
+        <h1 data-i18n="workshopTitle">备课工坊</h1>
+        <p id="workshopHint"></p>
+      </div>
+      <div class="head-actions">
+        <button type="button" class="btn" id="btnToLibrary" data-i18n="toLibrary">课例书匣</button>
+        <button type="button" class="btn" id="btnReset"><i class="fa-solid fa-rotate-left"></i><span data-i18n="resetAll">清空重备</span></button>
+      </div>
+    </div>
+    <div class="workshop-grid">
+      <section class="panel sheet form-sheet">
+        <h2 data-i18n="sectionForm">课文信息笺</h2>
+        <form id="formLesson" autocomplete="off">
+          <div class="field"><label for="formLesson_课文名称"><span data-i18n="field_课文名称">课文名称</span><span class="req">*</span></label><input type="text" id="formLesson_课文名称" name="课文名称"></div>
+          <div class="field"><label for="formLesson_出处" data-i18n="field_出处">出处</label><input type="text" id="formLesson_出处" name="出处"></div>
+          <div class="field"><label for="formLesson_学段"><span data-i18n="field_学段">学段</span><span class="req">*</span></label><select id="formLesson_学段" name="学段"></select></div>
+          <div class="field"><label for="formLesson_年级"><span data-i18n="field_年级">年级</span><span class="req">*</span></label><select id="formLesson_年级" name="年级"></select></div>
+          <div class="field"><label for="formLesson_教材版本" data-i18n="field_教材版本">教材版本</label><input type="text" id="formLesson_教材版本" name="教材版本"></div>
+          <div class="field"><label for="formLesson_课时分钟"><span data-i18n="field_课时分钟">课时分钟</span><span class="req">*</span></label><select id="formLesson_课时分钟" name="课时分钟"></select></div>
+          <div class="field"><label for="formLesson_体裁"><span data-i18n="field_体裁">体裁</span><span class="req">*</span></label><select id="formLesson_体裁" name="体裁"></select></div>
+          <div class="field"><label for="formLesson_版权状态"><span data-i18n="field_版权状态">版权状态</span><span class="req">*</span></label><select id="formLesson_版权状态" name="版权状态"></select></div>
+          <div class="field"><label for="formLesson_教学场景"><span data-i18n="field_教学场景">教学场景</span><span class="req">*</span></label><select id="formLesson_教学场景" name="教学场景"></select></div>
+          <div class="field">
+            <label data-i18n="field_课文文件">课文文件</label>
+            <input type="hidden" id="formLesson_课文文件" name="课文文件">
+            <p id="fileIndexHint" class="index-hint" hidden data-i18n="indexHint">仅依据篇名和出处，不上传、不引用正文</p>
+            <div id="filePanel" class="file-box">
+              <div class="file-name" id="fileNameText"></div>
+              <div class="btn-row">
+                <button type="button" class="btn" id="btnPickFile"><i class="fa-solid fa-file-arrow-up"></i><span data-i18n="pickFile">选择课文文件</span></button>
+                <button type="button" class="btn" id="btnClearFile" data-i18n="clearFile">清除文件</button>
+                <button type="button" class="btn" id="btnOpenLesson" data-i18n="openFile">打开课文</button>
+                <button type="button" class="btn" id="btnDownloadLesson" data-i18n="downloadFile">下载课文</button>
+              </div>
+            </div>
+          </div>
+          <div class="pace" id="paceBar">
+            <h3 class="serif" data-i18n="paceTitle">课时节奏</h3>
+            <div class="pace-track" id="paceTrack"></div>
+            <div class="tier-row" id="paceTiers"></div>
+            <p class="hint" data-i18n="paceNote">实际以所选课时分钟和生成结果为准</p>
+          </div>
+          <p id="formAlert" class="alert" hidden></p>
+          <p id="formHint" class="hint" hidden></p>
+          <p id="formError" class="alert" hidden></p>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="btnGenerate" data-i18n="generate">生成教学设计</button>
+            <button type="button" class="btn btn-primary" id="btnSave" hidden data-i18n="save">保存修改</button>
+            <button type="button" class="btn" id="btnSaveAs" hidden data-i18n="saveAs">另存为新课例</button>
+          </div>
+          <p id="saveStatus" class="save-status"></p>
+        </form>
+      </section>
+      <section class="panel sheet" id="designPane">
+        <h2 data-i18n="sectionDesign">教学设计卷</h2>
+        <p id="designStatus" class="design-status"></p>
+        <button type="button" class="btn" id="btnKeepWaiting" hidden data-i18n="keepWaiting">继续等待</button>
+        <p id="designBanner" class="warn-seal" hidden></p>
+        <div id="designContent" class="markdown-body"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button type="button" class="btn" id="btnCopyDesign"><i class="fa-solid fa-copy"></i><span data-i18n="copyDesign">复制教学设计</span></button>
+          <button type="button" class="btn" id="btnExportMd"><i class="fa-solid fa-file-export"></i><span data-i18n="exportMd">导出Markdown</span></button>
+        </div>
+      </section>
+    </div>
+    <div class="page-bottom-gap"></div>
+  </section>
+  <section id="pageLibrary" class="page" hidden>
+    <div class="page-head">
+      <div>
+        <h1 data-i18n="libraryTitle">课例书匣</h1>
+        <p data-i18n="libraryDesc">浏览、审定和整理已提交的阅读课例</p>
+      </div>
+      <div class="head-actions">
+        <button type="button" class="btn btn-primary" id="btnNewLesson" data-i18n="newLesson">+ 新建课例</button>
+      </div>
+    </div>
+    <div class="tool-card sheet">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" id="librarySearch" data-i18n-placeholder="searchPlaceholder" placeholder="搜索课文名称或出处">
+      </div>
+      <div class="filters">
+        <label><span data-i18n="field_学段">学段</span><select id="filter_学段"></select></label>
+        <label><span data-i18n="field_年级">年级</span><select id="filter_年级"></select></label>
+        <label><span data-i18n="field_体裁">体裁</span><select id="filter_体裁"></select></label>
+        <label><span data-i18n="field_教学场景">教学场景</span><select id="filter_教学场景"></select></label>
+        <label><span data-i18n="field_版权状态">版权状态</span><select id="filter_版权状态"></select></label>
+        <label><span data-i18n="field_课时分钟">课时分钟</span><select id="filter_课时分钟"></select></label>
+        <button type="button" class="btn" id="btnClearFilter" data-i18n="clearFilters">清空筛选</button>
+      </div>
+      <div class="sort-line">
+        <label><span data-i18n="sortLabel">排序</span><select id="librarySort"></select></label>
+      </div>
+    </div>
+    <div id="libraryLoading" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p data-i18n="libraryLoading">正在打开书匣…</p></div>
+    <div id="libraryError" class="empty-state" hidden><i class="fa-solid fa-circle-exclamation"></i><p id="libraryErrorText"></p><button type="button" class="btn" id="btnRetryLibrary" data-i18n="retry">重新读取</button></div>
+    <div id="libraryEmpty" class="empty-state" hidden><i class="fa-solid fa-book-open"></i><p data-i18n="emptyShelf">书匣还是空的</p><button type="button" class="btn btn-primary" id="btnFirstLesson" data-i18n="firstLesson">开始第一篇备课</button></div>
+    <div id="libraryNoMatch" class="empty-state" hidden><i class="fa-solid fa-magnifying-glass"></i><p data-i18n="noMatch">没有符合条件的课例</p><button type="button" class="btn" id="btnNoMatchClear" data-i18n="clearFilters">清空筛选</button></div>
+    <div class="lib-grid" id="libraryList"></div>
+    <div class="page-bottom-gap"></div>
+  </section>
+</main>
+<div id="detailMask" class="mask bleed-mobile" hidden>
+  <div id="detailDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-bar">
+      <h2 id="detailTitle"></h2>
+      <button type="button" class="btn" id="btnDetailClose" data-i18n="close">关闭</button>
+    </div>
+    <div id="detailScroll" class="dialog-scroll">
+      <p id="detailBanner" class="warn-seal"></p>
+      <div id="detailFields" class="field-grid"></div>
+      <div id="detailImageWrap" class="detail-image" hidden></div>
+      <div id="detailMarkdown" class="markdown-body"></div>
+      <div id="detailHtmlHost" hidden>
+        <div class="iframe-bar">
+          <span data-i18n="lessonPreview">课文预览</span>
+          <button type="button" class="btn" id="btnDetailFrameClose" data-i18n="previewClose">关闭预览</button>
+        </div>
+        <iframe id="detailFrame" title="课文"></iframe>
+      </div>
+    </div>
+    <div class="dialog-actions" id="detailActions">
+      <button type="button" class="btn btn-primary" id="btnDetailEdit" data-i18n="edit">编辑</button>
+      <button type="button" class="btn btn-danger" id="btnDetailDelete" data-i18n="delete">删除</button>
+      <button type="button" class="btn" id="btnDetailOpen" data-i18n="openFile">打开课文</button>
+      <button type="button" class="btn" id="btnDetailDownload" data-i18n="downloadFile">下载课文</button>
+      <button type="button" class="btn" id="btnDetailCopy" data-i18n="copyDesign">复制教学设计</button>
+    </div>
+  </div>
+</div>
+<div id="htmlMask" class="mask bleed-mobile" hidden>
+  <div id="htmlDialog" class="dialog html-dialog" role="dialog" aria-modal="true">
+    <div class="dialog-bar">
+      <h2 data-i18n="lessonPreview">课文预览</h2>
+      <button type="button" class="btn" id="btnHtmlClose" data-i18n="close">关闭</button>
+    </div>
+    <iframe id="htmlFrameModal" title="课文"></iframe>
+  </div>
+</div>
+<div id="confirmMask" class="mask" hidden>
+  <div id="confirmDialog" class="dialog confirm-dialog" role="dialog" aria-modal="true">
+    <div class="dialog-bar"><h2 data-i18n="confirmTitle">删除课例</h2></div>
+    <div class="dialog-scroll"><p id="confirmText"></p></div>
+    <div class="dialog-actions">
+      <button type="button" class="btn" id="btnConfirmCancel" data-i18n="cancel">取消</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmOk" data-i18n="delete">删除</button>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("c3f544b2750de426_阅读教学指导")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+var SOURCE = "阅读课/默认表格";
+var TABLE = "阅读课";
+var INPUT_FIELDS = ["课文名称","出处","学段","年级","教材版本","课时分钟","体裁","版权状态","教学场景","课文文件"];
+var ALL_FIELDS = ["课文名称","出处","学段","年级","教材版本","课时分钟","体裁","版权状态","教学场景","课文文件","教学设计"];
+var REQUIRED = ["课文名称","学段","年级","课时分钟","体裁","版权状态","教学场景"];
+var ENUMS = {
+  "学段": ["小学高段","初中"],
+  "年级": ["五年级","六年级","七年级","八年级","九年级"],
+  "课时分钟": ["30","35","40","45","60","90"],
+  "体裁": ["叙事文","议论文","说明文","文学作品"],
+  "版权状态": ["自有","改编","公开可引用","仅存索引"],
+  "教学场景": ["课文讲解","阅读策略","群文阅读","名著导读","思辨阅读"]
+};
+var SCENE_CLASS = {
+  "课文讲解": "tone-explain",
+  "阅读策略": "tone-strategy",
+  "群文阅读": "tone-group",
+  "名著导读": "tone-classic",
+  "思辨阅读": "tone-critical"
+};
+var SCENE_HINT = {
+  "": "hintNone",
+  "课文讲解": "hintExplain",
+  "阅读策略": "hintStrategy",
+  "群文阅读": "hintGroup",
+  "名著导读": "hintClassic",
+  "思辨阅读": "hintCritical"
+};
+var GRADE_RANK = {"五年级": 1, "六年级": 2, "七年级": 3, "八年级": 4, "九年级": 5};
+var VALUE_EN = {
+  "小学高段": "Upper primary",
+  "初中": "Junior high",
+  "五年级": "Grade 5",
+  "六年级": "Grade 6",
+  "七年级": "Grade 7",
+  "八年级": "Grade 8",
+  "九年级": "Grade 9",
+  "叙事文": "Narrative",
+  "议论文": "Argument",
+  "说明文": "Expository",
+  "文学作品": "Literary work",
+  "自有": "Owned",
+  "改编": "Adapted",
+  "公开可引用": "Publicly citable",
+  "仅存索引": "Index only",
+  "课文讲解": "Text lesson",
+  "阅读策略": "Reading strategy",
+  "群文阅读": "Multi-text reading",
+  "名著导读": "Classic guide",
+  "思辨阅读": "Critical reading"
+};
+var I18N = {
+  zh: {
+    appName: "阅读教学指导",
+    tabHome: "首页",
+    tabWorkshop: "备课工坊",
+    tabLibrary: "课例书匣",
+    homeDesc: "依据课文完成文本三解、阅读策略选择和三阶任务设计，生成结果须经教师审定后再入库使用",
+    startPrepare: "开始备课",
+    statTotal: "课例总数",
+    statTotalSub: "已入库的阅读课",
+    statPrimary: "小学高段",
+    statPrimarySub: "学段为小学高段",
+    statJunior: "初中",
+    statJuniorSub: "学段为初中",
+    statReady: "已生成设计",
+    pendingN: "待生成 {n}",
+    sceneTitle: "场景快捷笺",
+    recentTitle: "最近课例",
+    recentEmpty: "还没有课例",
+    goPrepare: "去备课",
+    homeLoading: "正在铺开书页…",
+    libraryLoading: "正在打开书匣…",
+    loading: "正在读取课例…",
+    loadFail: "暂时无法读取。",
+    retry: "重新读取",
+    workshopTitle: "备课工坊",
+    modeNew: "新建课例",
+    modeEdit: "审定已有课例",
+    hintNone: "先选择教学场景，再填写课文信息",
+    hintExplain: "围绕单篇完成字面解、深层解、外延解",
+    hintStrategy: "生成结果会从预测、提问、联想、比较、概括、评价中匹配一至两个策略并写明用法",
+    hintGroup: "生成结果围绕一个议题给出三至五篇对照篇目，只出提纲与任务",
+    hintClassic: "只生成导读提纲",
+    hintCritical: "突出基础、分析、思辨三阶练习",
+    toLibrary: "课例书匣",
+    resetAll: "清空重备",
+    sectionForm: "课文信息笺",
+    sectionDesign: "教学设计卷",
+    field_课文名称: "课文名称",
+    field_出处: "出处",
+    field_学段: "学段",
+    field_年级: "年级",
+    field_教材版本: "教材版本",
+    field_课时分钟: "课时分钟",
+    field_体裁: "体裁",
+    field_版权状态: "版权状态",
+    field_教学场景: "教学场景",
+    field_课文文件: "课文文件",
+    field_教学设计: "教学设计",
+    choose: "请选择",
+    chooseStageFirst: "请先选择学段",
+    filterAll: "全部",
+    pickFile: "选择课文文件",
+    clearFile: "清除文件",
+    openFile: "打开课文",
+    downloadFile: "下载课文",
+    noFile: "无文件",
+    indexHint: "仅依据篇名和出处，不上传、不引用正文",
+    paceTitle: "课时节奏",
+    pace1: "字面约5分钟",
+    pace2: "分析约15分钟",
+    pace3: "思辨约20分钟",
+    pace4: "总结约5分钟",
+    tierA: "A档 · 30/35分钟",
+    tierB: "B档 · 40/45分钟",
+    tierC: "C档 · 60/90分钟",
+    paceNote: "实际以所选课时分钟和生成结果为准",
+    missingPrefix: "请补全：",
+    listSep: "、",
+    hintSource: "建议补全出处和教材版本",
+    hintNoFile: "未上传课文文件时，主要依据篇名、出处和教学信息",
+    generate: "生成教学设计",
+    save: "保存修改",
+    saveAs: "另存为新课例",
+    savedMsg: "已保存字段。已有教学设计不会因此自动重写",
+    pollWait: "正在依据课文信息生成文本三解、阅读策略和三阶任务，请稍候…",
+    pollSlow: "生成时间较长",
+    keepWaiting: "继续等待",
+    designEmpty: "尚未生成。填写左侧课文信息后生成",
+    aiBanner: "AI生成，入库前请教师审定",
+    copyDesign: "复制教学设计",
+    exportMd: "导出Markdown",
+    copied: "已复制教学设计",
+    copyFail: "复制失败。",
+    exported: "已开始下载",
+    exportedLocal: "已在浏览器中下载",
+    exportFail: "导出失败。",
+    submitFail: "提交失败。",
+    saveFail: "保存失败。",
+    fileFail: "选择文件失败。",
+    failGeneric: "操作没有完成。",
+    libraryTitle: "课例书匣",
+    libraryDesc: "浏览、审定和整理已提交的阅读课例",
+    newLesson: "+ 新建课例",
+    searchPlaceholder: "搜索课文名称或出处",
+    clearFilters: "清空筛选",
+    sortLabel: "排序",
+    sortDefault: "默认顺序",
+    sortName: "课文名称",
+    sortGrade: "年级",
+    sortMinutes: "课时分钟",
+    emptyShelf: "空书匣",
+    firstLesson: "开始第一篇备课",
+    noMatch: "没有符合条件的课例",
+    pendingDesign: "待生成",
+    edit: "编辑",
+    delete: "删除",
+    deleteWarn: "删除后不能恢复",
+    deleted: "已删除",
+    deleteFail: "删除失败。",
+    close: "关闭",
+    goReview: "去审定",
+    confirmTitle: "删除课例",
+    cancel: "取消",
+    lessonPreview: "课文预览",
+    previewClose: "关闭预览",
+    deleting: "正在删除…",
+    menuLabel: "打开导航",
+    minutes: "分钟",
+    emptyDash: "—",
+    sceneBlurb_课文讲解: "单篇三解",
+    sceneBlurb_阅读策略: "策略与用法",
+    sceneBlurb_群文阅读: "议题对照",
+    sceneBlurb_名著导读: "导读提纲",
+    sceneBlurb_思辨阅读: "三阶练习"
+  },
+  en: {
+    appName: "Reading Instruction Guide",
+    tabHome: "Home",
+    tabWorkshop: "Planning studio",
+    tabLibrary: "Lesson shelf",
+    homeDesc: "Prepare a three-layer reading, choose strategies, and design three-tier tasks. A teacher reviews the result before it is kept.",
+    startPrepare: "Start planning",
+    statTotal: "Lessons",
+    statTotalSub: "Reading lessons on file",
+    statPrimary: "Upper primary",
+    statPrimarySub: "Stage is upper primary",
+    statJunior: "Junior high",
+    statJuniorSub: "Stage is junior high",
+    statReady: "Designs ready",
+    pendingN: "Pending {n}",
+    sceneTitle: "Scene cards",
+    recentTitle: "Recent lessons",
+    recentEmpty: "No lessons yet",
+    goPrepare: "Prepare a lesson",
+    homeLoading: "Opening the pages…",
+    libraryLoading: "Opening the shelf…",
+    loading: "Reading the lesson…",
+    loadFail: "Could not read the lessons. ",
+    retry: "Try again",
+    workshopTitle: "Planning studio",
+    modeNew: "New lesson",
+    modeEdit: "Reviewing a saved lesson",
+    hintNone: "Choose a teaching scene, then fill in the lesson information.",
+    hintExplain: "Work through one text: literal, deep, and extended reading.",
+    hintStrategy: "The result matches one or two strategies — predict, question, connect, compare, summarize, evaluate — and explains how to use them.",
+    hintGroup: "The result offers three to five companion texts around one issue, as an outline and tasks only.",
+    hintClassic: "Only a guided-reading outline is generated.",
+    hintCritical: "Emphasize three tiers of practice: foundation, analysis, and critical thinking.",
+    toLibrary: "Lesson shelf",
+    resetAll: "Clear and start over",
+    sectionForm: "Lesson slip",
+    sectionDesign: "Design folio",
+    field_课文名称: "Text title",
+    field_出处: "Source",
+    field_学段: "Stage",
+    field_年级: "Grade",
+    field_教材版本: "Textbook edition",
+    field_课时分钟: "Minutes",
+    field_体裁: "Genre",
+    field_版权状态: "Copyright status",
+    field_教学场景: "Teaching scene",
+    field_课文文件: "Text file",
+    field_教学设计: "Lesson design",
+    choose: "Please choose",
+    chooseStageFirst: "Choose a stage first",
+    filterAll: "All",
+    pickFile: "Choose text file",
+    clearFile: "Clear file",
+    openFile: "Open text",
+    downloadFile: "Download text",
+    noFile: "No file",
+    indexHint: "Index only: use the title and source. Do not upload or quote the text.",
+    paceTitle: "Lesson rhythm",
+    pace1: "Literal, about 5 min",
+    pace2: "Analysis, about 15 min",
+    pace3: "Critical, about 20 min",
+    pace4: "Wrap-up, about 5 min",
+    tierA: "Tier A · 30/35 min",
+    tierB: "Tier B · 40/45 min",
+    tierC: "Tier C · 60/90 min",
+    paceNote: "The selected minutes and the generated result take precedence.",
+    missingPrefix: "Please complete: ",
+    listSep: ", ",
+    hintSource: "Consider adding the source and textbook edition.",
+    hintNoFile: "Without an uploaded text, generation mainly uses the title, source, and teaching information.",
+    generate: "Generate lesson design",
+    save: "Save changes",
+    saveAs: "Save as a new lesson",
+    savedMsg: "Fields saved. The existing lesson design will not be rewritten automatically.",
+    pollWait: "Generating the three-layer reading, strategies, and tiered tasks from the lesson information. Please wait…",
+    pollSlow: "This is taking a while",
+    keepWaiting: "Keep waiting",
+    designEmpty: "Nothing generated yet. Fill in the lesson on the left, then generate.",
+    aiBanner: "Generated by AI. A teacher should review it before it is kept.",
+    copyDesign: "Copy lesson design",
+    exportMd: "Export Markdown",
+    copied: "Lesson design copied",
+    copyFail: "Could not copy. ",
+    exported: "Download started",
+    exportedLocal: "Downloaded in the browser",
+    exportFail: "Export failed. ",
+    submitFail: "Submit failed. ",
+    saveFail: "Save failed. ",
+    fileFail: "Could not choose the file. ",
+    failGeneric: "The action did not finish.",
+    libraryTitle: "Lesson shelf",
+    libraryDesc: "Browse, review, and organize submitted reading lessons.",
+    newLesson: "+ New lesson",
+    searchPlaceholder: "Search title or source",
+    clearFilters: "Clear filters",
+    sortLabel: "Sort",
+    sortDefault: "Default order",
+    sortName: "Title",
+    sortGrade: "Grade",
+    sortMinutes: "Minutes",
+    emptyShelf: "The shelf is empty",
+    firstLesson: "Prepare the first lesson",
+    noMatch: "No lessons match",
+    pendingDesign: "Not generated yet",
+    edit: "Edit",
+    delete: "Delete",
+    deleteWarn: "This cannot be undone",
+    deleted: "Deleted",
+    deleteFail: "Could not delete. ",
+    close: "Close",
+    goReview: "Review",
+    confirmTitle: "Delete lesson",
+    cancel: "Cancel",
+    lessonPreview: "Text preview",
+    previewClose: "Close preview",
+    deleting: "Deleting…",
+    menuLabel: "Open menu",
+    minutes: "min",
+    emptyDash: "—",
+    sceneBlurb_课文讲解: "One text, three layers",
+    sceneBlurb_阅读策略: "Strategy and use",
+    sceneBlurb_群文阅读: "Issue and companions",
+    sceneBlurb_名著导读: "Guide outline",
+    sceneBlurb_思辨阅读: "Three-tier practice"
+  }
+};
+var currentLang = "zh";
+var currentPageId = "";
+var currentRow = 0;
+var historyStack = [];
+var popupStack = [];
+var designRaw = "";
+var polling = false;
+var pollToken = 0;
+var pollCount = 0;
+var pollTimer = null;
+var pollTimedOut = false;
+var busySubmit = false;
+var submitToken = 0;
+var deleteBusy = false;
+var pendingDeleteRow = 0;
+var homeToken = 0;
+var libraryToken = 0;
+var detailToken = 0;
+var homeLoaded = false;
+var libraryLoaded = false;
+var homeStats = null;
+var recentRecords = [];
+var libraryRecords = [];
+var detailData = null;
+var detailFrom = "";
+var toastTimer = null;
+
+function $(id) { return document.getElementById(id); }
+function t(key) {
+  var pack = I18N[currentLang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  if (I18N.zh[key] != null) return I18N.zh[key];
+  return key;
+}
+function norm(s) { return String(s == null ? "" : s).replace(/^\s+|\s+$/g, ""); }
+function humanError(e) {
+  if (!e) return t("failGeneric");
+  var m = e && e.message ? e.message : String(e);
+  m = norm(m);
+  return m || t("failGeneric");
+}
+function throwIfFailed(res) {
+  var s = res == null ? "" : String(res);
+  var trimmed = norm(s);
+  if (!trimmed) return "";
+  if (trimmed.length <= 180 && (/^(error|fail)/i.test(trimmed) || trimmed.indexOf("失败") !== -1 || trimmed.indexOf("通信错误") !== -1 || trimmed.indexOf("请求失败") !== -1)) {
+    throw new Error(trimmed);
+  }
+  return trimmed;
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function displayValue(v) {
+  var raw = v == null ? "" : String(v);
+  if (!norm(raw)) return t("emptyDash");
+  if (currentLang === "en" && VALUE_EN[norm(raw)]) return VALUE_EN[norm(raw)];
+  return raw;
+}
+function extOf(name) {
+  var s = String(name || "");
+  var q = s.split("?")[0];
+  var i = q.lastIndexOf(".");
+  if (i < 0) return "";
+  return q.slice(i + 1).toLowerCase();
+}
+function isImage(name) {
+  var e = extOf(name);
+  return e === "jpg" || e === "jpeg" || e === "png" || e === "gif" || e === "webp";
+}
+function isHtml(name) {
+  var e = extOf(name);
+  return e === "html" || e === "htm";
+}
+function downloadUrl(name) {
+  var s = norm(name);
+  if (/^https?:\/\//i.test(s)) return s;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+}
+function privateUrl(name) {
+  var s = norm(name);
+  if (/^https?:\/\//i.test(s)) return s;
+  return "https://www.ithinkair.com:3031/private/" + encodeURIComponent(s);
+}
+function parseTable(csvText, fields) {
+  var text = csvText == null ? "" : String(csvText);
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  var trimmed = norm(text);
+  if (!trimmed || trimmed === "null" || trimmed === "undefined") return [];
+  var matrix = parseCSV(text);
+  var list = [];
+  for (var i = 0; i < matrix.length; i++) {
+    var r = matrix[i] || [];
+    var obj = { _row: i + 1 };
+    var any = false;
+    for (var c = 0; c < fields.length; c++) {
+      var v = r[c] != null ? String(r[c]) : "";
+      obj[fields[c]] = v;
+      if (norm(v)) any = true;
+    }
+    if (any) list.push(obj);
+  }
+  return list;
+}
+function toast(msg) {
+  var el = $("toast");
+  el.textContent = msg;
+  el.classList.add("is-on");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove("is-on"); }, 4200);
+}
+function detectInitialLang() {
+  var q = "";
+  var search = window.location.search || "";
+  var m = search.match(/[?&]lang=([^&]*)/i);
+  if (m) {
+    try { q = decodeURIComponent(m[1].replace(/\+/g, " ")); } catch (e) { q = m[1]; }
+  }
+  q = String(q || "").toLowerCase();
+  if (q === "cn") return "zh";
+  if (q === "en") return "en";
+  try {
+    var stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored !== null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (e2) {}
+  try {
+    var list = navigator.languages;
+    if (!list || !list.length) return "zh";
+    for (var i = 0; i < list.length; i++) {
+      var tag = String(list[i] || "").toLowerCase();
+      if (tag === "zh" || tag.indexOf("zh-") === 0) return "zh";
+    }
+    return "en";
+  } catch (e3) {
+    return "zh";
+  }
+}
+function setLang(lang) {
+  currentLang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", currentLang === "en" ? "en" : "cn"); } catch (e) {}
+  applyI18n();
+}
+function applyI18n() {
+  document.documentElement.lang = currentLang === "en" ? "en" : "zh-CN";
+  document.title = t("appName");
+  var nodes = document.querySelectorAll("[data-i18n]");
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  var ph = document.querySelectorAll("[data-i18n-placeholder]");
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute("placeholder", t(ph[j].getAttribute("data-i18n-placeholder")));
+  $("hamburgerBtn").setAttribute("aria-label", t("menuLabel"));
+  $("langMarkZh").className = currentLang === "zh" ? "is-on" : "is-off";
+  $("langMarkEn").className = currentLang === "en" ? "is-on" : "is-off";
+  $("mLangZh").className = currentLang === "zh" ? "is-on" : "";
+  $("mLangEn").className = currentLang === "en" ? "is-on" : "";
+  $("detailBanner").textContent = t("aiBanner");
+  fillEnumSelect("formLesson_学段", "学段", true);
+  fillEnumSelect("formLesson_课时分钟", "课时分钟", true);
+  fillEnumSelect("formLesson_体裁", "体裁", true);
+  fillEnumSelect("formLesson_版权状态", "版权状态", true);
+  fillEnumSelect("formLesson_教学场景", "教学场景", true);
+  refreshGradeOptions();
+  fillEnumSelect("filter_学段", "学段", false);
+  fillEnumSelect("filter_年级", "年级", false);
+  fillEnumSelect("filter_体裁", "体裁", false);
+  fillEnumSelect("filter_教学场景", "教学场景", false);
+  fillEnumSelect("filter_版权状态", "版权状态", false);
+  fillEnumSelect("filter_课时分钟", "课时分钟", false);
+  fillSort();
+  renderScenes();
+  updateSceneHint();
+  updateFileUI();
+  updatePace();
+  updateWorkshopMode();
+  renderDesign();
+  if (!homeStats) $("statReadySub").textContent = t("pendingN").replace("{n}", "…");
+  paintHomeStats();
+  if (!$("confirmMask").hidden) $("confirmText").textContent = t("deleteWarn");
+  if (homeLoaded) renderRecent();
+  if (libraryLoaded) renderLibraryView();
+  if (!$("detailMask").hidden) {
+    if (detailData) renderDetail();
+    else $("btnDetailEdit").textContent = detailFrom === "home" ? t("goReview") : t("edit");
+  }
+  layoutNav();
+}
+function fillEnumSelect(id, field, requiredBlank) {
+  var sel = $(id);
+  if (!sel) return;
+  var cur = sel.value;
+  var options = ENUMS[field] || [];
+  sel.innerHTML = "";
+  var blank = document.createElement("option");
+  blank.value = "";
+  blank.textContent = requiredBlank ? t("choose") : t("filterAll");
+  sel.appendChild(blank);
+  for (var i = 0; i < options.length; i++) {
+    var o = document.createElement("option");
+    o.value = options[i];
+    o.textContent = field === "课时分钟" ? (options[i] + " " + t("minutes")) : displayValue(options[i]);
+    sel.appendChild(o);
+  }
+  sel.value = cur;
+  if (sel.value !== cur) sel.value = "";
+}
+function gradesForStage(stage) {
+  if (stage === "小学高段") return ["五年级", "六年级"];
+  if (stage === "初中") return ["七年级", "八年级", "九年级"];
+  return [];
+}
+function refreshGradeOptions() {
+  var stageEl = $("formLesson_学段");
+  var sel = $("formLesson_年级");
+  if (!stageEl || !sel) return;
+  var cur = sel.value;
+  var grades = gradesForStage(stageEl.value);
+  sel.innerHTML = "";
+  var blank = document.createElement("option");
+  blank.value = "";
+  blank.textContent = grades.length ? t("choose") : t("chooseStageFirst");
+  sel.appendChild(blank);
+  for (var i = 0; i < grades.length; i++) {
+    var o = document.createElement("option");
+    o.value = grades[i];
+    o.textContent = displayValue(grades[i]);
+    sel.appendChild(o);
+  }
+  sel.disabled = grades.length === 0;
+  var found = false;
+  for (var j = 0; j < sel.options.length; j++) {
+    if (sel.options[j].value === cur) found = true;
+  }
+  sel.value = found ? cur : "";
+}
+function fillSort() {
+  var sel = $("librarySort");
+  var cur = sel.value || "default";
+  var items = [["default", "sortDefault"], ["name", "sortName"], ["grade", "sortGrade"], ["minutes", "sortMinutes"]];
+  sel.innerHTML = "";
+  for (var i = 0; i < items.length; i++) {
+    var o = document.createElement("option");
+    o.value = items[i][0];
+    o.textContent = t(items[i][1]);
+    sel.appendChild(o);
+  }
+  sel.value = cur;
+  if (!sel.value) sel.value = "default";
+}
+function renderScenes() {
+  var row = $("sceneRow");
+  row.innerHTML = "";
+  var scenes = ENUMS["教学场景"];
+  for (var i = 0; i < scenes.length; i++) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "scene-card " + SCENE_CLASS[scenes[i]];
+    btn.setAttribute("data-scene", scenes[i]);
+    var b = document.createElement("b");
+    b.textContent = displayValue(scenes[i]);
+    var s = document.createElement("span");
+    s.textContent = t("sceneBlurb_" + scenes[i]);
+    btn.appendChild(b);
+    btn.appendChild(s);
+    row.appendChild(btn);
+  }
+}
+function layoutNav() {
+  var nav = $("topNav");
+  var tabs = $("navTabs");
+  var burger = $("hamburgerBtn");
+  var langBtn = $("langToggle");
+  var wasHidden = tabs.classList.contains("nav-tabs-hidden");
+  tabs.classList.remove("nav-tabs-hidden");
+  burger.classList.remove("is-shown");
+  langBtn.classList.remove("is-hidden");
+  var styles = window.getComputedStyle(nav);
+  var pad = (parseFloat(styles.paddingLeft) || 0) + (parseFloat(styles.paddingRight) || 0);
+  var brandNeed = $("navLogo").offsetWidth + $("navAppName").scrollWidth + 16;
+  var need = brandNeed + tabs.scrollWidth + langBtn.offsetWidth + pad + 24;
+  if (need > nav.clientWidth + 1) {
+    tabs.classList.add("nav-tabs-hidden");
+    burger.classList.add("is-shown");
+    langBtn.classList.add("is-hidden");
+  } else if (wasHidden) {
+    closeMobileMenu();
+  }
+}
+function openMobileMenu() {
+  $("mobileMenu").classList.add("is-open");
+  $("hamburgerBtn").setAttribute("aria-expanded", "true");
+}
+function closeMobileMenu() {
+  $("mobileMenu").classList.remove("is-open");
+  $("hamburgerBtn").setAttribute("aria-expanded", "false");
+}
+function mobileMenuIsOpen() {
+  return $("mobileMenu").classList.contains("is-open");
+}
+function updateNavActive() {
+  var ids = [["tabHome", "pageHome"], ["tabWorkshop", "pageWorkshop"], ["tabLibrary", "pageLibrary"], ["mTabHome", "pageHome"], ["mTabWorkshop", "pageWorkshop"], ["mTabLibrary", "pageLibrary"]];
+  for (var i = 0; i < ids.length; i++) {
+    var el = $(ids[i][0]);
+    if (!el) continue;
+    if (ids[i][1] === currentPageId) el.classList.add("is-active");
+    else el.classList.remove("is-active");
+  }
+}
+function setNavCount(text) {
+  $("navCount").textContent = String(text);
+  $("mNavCount").textContent = String(text);
+}
+async function refreshNavCount() {
+  try {
+    var raw = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    var text = norm(raw);
+    var n = parseInt(text, 10);
+    setNavCount(isNaN(n) ? (text || "0") : String(n));
+  } catch (e) {
+    setNavCount("—");
+  }
+}
+async function applyTheme() {
+  var mode = "";
+  try { mode = await callAppBridge({ type: "模式" }); } catch (e) { mode = ""; }
+  var text = norm(mode).replace(/^"|"$/g, "");
+  document.documentElement.setAttribute("data-theme", text === "暗色" ? "dark" : "light");
+}
+async function goPage(id, record) {
+  if (!id) return;
+  if (id === currentPageId && !(record && record.restore)) {
+    closeMobileMenu();
+    updateNavActive();
+    if (id === "pageWorkshop") updateWorkshopMode();
+    return;
+  }
+  var y = 0;
+  if (record && record.restore) y = record.y || 0;
+  else if (currentPageId && id !== currentPageId && record !== false) {
+    historyStack.push({ page: currentPageId, y: window.scrollY || document.documentElement.scrollTop || 0 });
+  }
+  currentPageId = id;
+  var pages = ["pageHome", "pageWorkshop", "pageLibrary"];
+  for (var i = 0; i < pages.length; i++) $(pages[i]).hidden = pages[i] !== id;
+  updateNavActive();
+  closeMobileMenu();
+  window.scrollTo(0, y);
+  if (id === "pageHome") await loadHome();
+  else if (id === "pageLibrary") await loadLibrary();
+  else updateWorkshopMode();
+  window.scrollTo(0, y);
+}
+function syncScrollLock() {
+  document.body.style.overflow = popupStack.length ? "hidden" : "";
+}
+function openPopup(id) {
+  var el = $(id);
+  el.hidden = false;
+  el.classList.add("is-open");
+  var idx = popupStack.indexOf(id);
+  if (idx !== -1) popupStack.splice(idx, 1);
+  popupStack.push(id);
+  syncScrollLock();
+}
+function closePopup(id) {
+  var el = $(id);
+  if (!el) return;
+  el.classList.remove("is-open");
+  el.hidden = true;
+  var idx = popupStack.indexOf(id);
+  if (idx !== -1) popupStack.splice(idx, 1);
+  if (id === "detailMask") {
+    $("detailHtmlHost").hidden = true;
+    $("detailFrame").src = "about:blank";
+  }
+  if (id === "htmlMask") $("htmlFrameModal").src = "about:blank";
+  syncScrollLock();
+}
+function closeTopPopup() {
+  if (popupStack.length) {
+    closePopup(popupStack[popupStack.length - 1]);
+    return true;
+  }
+  if (mobileMenuIsOpen()) {
+    closeMobileMenu();
+    return true;
+  }
+  return false;
+}
+function airBack() {
+  if (closeTopPopup()) return "false";
+  if (historyStack.length) {
+    var prev = historyStack.pop();
+    goPage(prev.page, { restore: true, y: prev.y });
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+function setupMarkdown() {
+  if (!window.marked) return;
+  try {
+    var renderer = new marked.Renderer();
+    renderer.image = function (href, title, text) {
+      var src = href || "";
+      if (src && !/^https?:\/\//i.test(src) && src.indexOf("data:") !== 0) {
+        src = "https://www.ithinkair.com:3031/download/" + encodeURIComponent(src);
+      }
+      return '<a class="md-img-link" href="' + esc(src) + '" target="_blank" rel="noopener"><img src="' + esc(src) + '" alt="' + esc(text || "") + '" title="' + esc(title || "") + '"></a>';
+    };
+    marked.setOptions({ renderer: renderer, gfm: true, breaks: false, headerIds: false, mangle: false });
+  } catch (e) {
+    try { marked.setOptions({ gfm: true, breaks: false }); } catch (e2) {}
+  }
+}
+function renderMarkdown(md) {
+  var text = md == null ? "" : String(md);
+  try {
+    if (window.marked) {
+      var html = marked.parse(text);
+      if (window.DOMPurify) html = DOMPurify.sanitize(html, { ADD_ATTR: ["target", "rel"] });
+      return html;
+    }
+  } catch (e) {}
+  return "<pre>" + esc(text) + "</pre>";
+}
+function enhanceMarkdown(root) {
+  if (!root) return;
+  var tables = root.querySelectorAll("table");
+  for (var i = 0; i < tables.length; i++) {
+    var table = tables[i];
+    if (table.parentNode && table.parentNode.classList && table.parentNode.classList.contains("table-scroll")) continue;
+    var wrap = document.createElement("div");
+    wrap.className = "table-scroll";
+    table.parentNode.insertBefore(wrap, table);
+    wrap.appendChild(table);
+  }
+}
+function stripMarkdown(src) {
+  var s = String(src || "");
+  s = s.replace(/```[\s\S]*?```/g, " ");
+  s = s.replace(/`[^`]*`/g, " ");
+  s = s.replace(/!\[[^\]]*]\([^)]*\)/g, " ");
+  s = s.replace(/\[([^\]]*)]\([^)]*\)/g, "$1");
+  s = s.replace(/^#{1,6}\s+/gm, "");
+  s = s.replace(/^\s{0,3}>\s?/gm, "");
+  s = s.replace(/^\s*([-*+]|\d+\.)\s+/gm, "");
+  s = s.replace(/[*_~]{1,3}/g, "");
+  s = s.replace(/\|/g, " ");
+  s = s.replace(/<[^>]+>/g, " ");
+  s = s.replace(/\s+/g, " ");
+  return norm(s);
+}
+function previewDesign(text) {
+  var plain = stripMarkdown(text);
+  if (!plain) return "";
+  if (plain.length <= 80) return plain;
+  return plain.slice(0, 80) + "…";
+}
+function paintHomeStats() {
+  if (!homeStats) return;
+  $("statTotalNum").textContent = homeStats.total;
+  $("statPrimaryNum").textContent = homeStats.primary;
+  $("statJuniorNum").textContent = homeStats.junior;
+  $("statReadyNum").textContent = homeStats.ready;
+  $("statReadySub").textContent = t("pendingN").replace("{n}", String(homeStats.pending));
+}
+function renderRecent() {
+  var list = $("recentList");
+  list.innerHTML = "";
+  var rows = recentRecords.slice(0, 5);
+  $("recentEmpty").hidden = rows.length !== 0;
+  if (!rows.length) return;
+  for (var i = 0; i < rows.length; i++) {
+    var rec = rows[i];
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "recent-card";
+    btn.setAttribute("data-row", String(rec._row));
+    var title = document.createElement("h3");
+    title.className = "card-title";
+    title.textContent = norm(rec["课文名称"]) || t("emptyDash");
+    btn.appendChild(title);
+    var tags = document.createElement("div");
+    tags.className = "tag-row";
+    var keys = ["出处", "学段", "年级", "体裁"];
+    for (var k = 0; k < keys.length; k++) {
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      var label = t("field_" + keys[k]) + " ";
+      tag.textContent = label + (norm(rec[keys[k]]) ? displayValue(rec[keys[k]]) : t("emptyDash"));
+      tags.appendChild(tag);
+    }
+    var seal = document.createElement("span");
+    seal.className = "seal " + (SCENE_CLASS[norm(rec["教学场景"])] || "tone-explain");
+    seal.textContent = norm(rec["教学场景"]) ? displayValue(rec["教学场景"]) : t("emptyDash");
+    tags.appendChild(seal);
+    btn.appendChild(tags);
+    list.appendChild(btn);
+  }
+}
+async function loadHome() {
+  var token = ++homeToken;
+  homeLoaded = false;
+  $("homeError").hidden = true;
+  $("homeLoading").hidden = false;
+  $("recentEmpty").hidden = true;
+  $("recentList").innerHTML = "";
+  $("statTotalNum").textContent = "…";
+  $("statPrimaryNum").textContent = "…";
+  $("statJuniorNum").textContent = "…";
+  $("statReadyNum").textContent = "…";
+  $("statReadySub").textContent = t("pendingN").replace("{n}", "…");
+  try {
+    var countP = callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    var stageP = callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "学段" });
+    var designP = callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "教学设计" });
+    var recentP = callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "课文名称,出处,学段,年级,体裁,教学场景" });
+    var countRaw = await countP;
+    var stageRaw = await stageP;
+    var designCsv = await designP;
+    var recentRaw = await recentP;
+    if (token !== homeToken) return;
+    var totalText = norm(countRaw);
+    var totalNum = parseInt(totalText, 10);
+    var stageRows = parseTable(stageRaw, ["学段"]);
+    var designRows = parseTable(designCsv, ["教学设计"]);
+    var recentRows = parseTable(recentRaw, ["课文名称", "出处", "学段", "年级", "体裁", "教学场景"]);
+    var primary = 0;
+    var junior = 0;
+    for (var i = 0; i < stageRows.length; i++) {
+      var st = norm(stageRows[i]["学段"]);
+      if (st === "小学高段") primary++;
+      else if (st === "初中") junior++;
+    }
+    var ready = designRows.length;
+    var pending = 0;
+    if (!isNaN(totalNum)) pending = Math.max(0, totalNum - ready);
+    homeStats = {
+      total: isNaN(totalNum) ? (totalText || "0") : String(totalNum),
+      primary: String(primary),
+      junior: String(junior),
+      ready: String(ready),
+      pending: String(pending)
+    };
+    setNavCount(homeStats.total);
+    recentRecords = recentRows;
+    homeLoaded = true;
+    $("homeLoading").hidden = true;
+    paintHomeStats();
+    renderRecent();
+  } catch (e) {
+    if (token !== homeToken) return;
+    $("homeLoading").hidden = true;
+    $("homeError").hidden = false;
+    $("homeErrorText").textContent = t("loadFail") + humanError(e);
+  }
+}
+function findLibrary(row) {
+  for (var i = 0; i < libraryRecords.length; i++) {
+    if (libraryRecords[i]._row === row) return libraryRecords[i];
+  }
+  return null;
+}
+function matchesChoice(recordValue, selected) {
+  if (!selected) return true;
+  var raw = norm(recordValue);
+  if (raw === selected) return true;
+  var parts = raw.split(/[，,;；|]/);
+  for (var i = 0; i < parts.length; i++) {
+    if (norm(parts[i]) === selected) return true;
+  }
+  if (raw.indexOf(selected) !== -1 && /[，,;；]/.test(raw)) return true;
+  return false;
+}
+function sortRows(rows) {
+  var mode = $("librarySort").value;
+  var out = rows.slice();
+  if (mode === "name") {
+    out.sort(function (a, b) { return norm(a["课文名称"]).localeCompare(norm(b["课文名称"]), "zh"); });
+  } else if (mode === "grade") {
+    out.sort(function (a, b) {
+      var ra = GRADE_RANK[norm(a["年级"])] || 99;
+      var rb = GRADE_RANK[norm(b["年级"])] || 99;
+      return ra - rb;
+    });
+  } else if (mode === "minutes") {
+    out.sort(function (a, b) {
+      var ma = parseInt(norm(a["课时分钟"]), 10);
+      var mb = parseInt(norm(b["课时分钟"]), 10);
+      if (isNaN(ma)) ma = 9999;
+      if (isNaN(mb)) mb = 9999;
+      return ma - mb;
+    });
+  }
+  return out;
+}
+function renderLibraryView() {
+  if (!libraryLoaded) return;
+  var q = norm($("librarySearch").value).toLowerCase();
+  var filters = ["学段", "年级", "体裁", "教学场景", "版权状态", "课时分钟"];
+  var chosen = {};
+  for (var f = 0; f < filters.length; f++) chosen[filters[f]] = $("filter_" + filters[f]).value;
+  var view = [];
+  for (var i = 0; i < libraryRecords.length; i++) {
+    var rec = libraryRecords[i];
+    if (q) {
+      var hay = (norm(rec["课文名称"]) + "\n" + norm(rec["出处"])).toLowerCase();
+      if (hay.indexOf(q) === -1) continue;
+    }
+    var ok = true;
+    for (var c = 0; c < filters.length; c++) {
+      if (!matchesChoice(rec[filters[c]], chosen[filters[c]])) ok = false;
+    }
+    if (ok) view.push(rec);
+  }
+  view = sortRows(view);
+  var list = $("libraryList");
+  list.innerHTML = "";
+  var noData = libraryRecords.length === 0;
+  $("libraryEmpty").hidden = !noData;
+  $("libraryNoMatch").hidden = noData || view.length !== 0;
+  $("libraryLoading").hidden = true;
+  $("libraryError").hidden = true;
+  for (var n = 0; n < view.length; n++) {
+    list.appendChild(buildLibraryCard(view[n]));
+  }
+}
+function buildLibraryCard(rec) {
+  var card = document.createElement("article");
+  var scene = norm(rec["教学场景"]);
+  card.className = "lib-card lib-hit " + (SCENE_CLASS[scene] || "");
+  card.setAttribute("data-row", String(rec._row));
+  var file = norm(rec["课文文件"]);
+  if (file && isImage(file)) {
+    var img = document.createElement("img");
+    img.className = "thumb";
+    img.alt = "";
+    img.src = downloadUrl(file);
+    img.addEventListener("error", function () { img.hidden = true; });
+    card.appendChild(img);
+  }
+  var main = document.createElement("div");
+  main.className = "lib-main";
+  var title = document.createElement("h3");
+  title.className = "card-title";
+  title.textContent = norm(rec["课文名称"]) || t("emptyDash");
+  main.appendChild(title);
+  var tags = document.createElement("div");
+  tags.className = "tag-row";
+  var tagFields = ["出处", "教材版本", "学段", "年级", "课时分钟", "体裁", "版权状态"];
+  for (var i = 0; i < tagFields.length; i++) {
+    var tag = document.createElement("span");
+    tag.className = "tag";
+    var val = norm(rec[tagFields[i]]);
+    var shown = val ? displayValue(val) : t("emptyDash");
+    if (tagFields[i] === "课时分钟" && val) shown = val + " " + t("minutes");
+    tag.textContent = t("field_" + tagFields[i]) + " " + shown;
+    tags.appendChild(tag);
+  }
+  var seal = document.createElement("span");
+  seal.className = "seal " + (SCENE_CLASS[scene] || "tone-explain");
+  seal.textContent = scene ? displayValue(scene) : t("emptyDash");
+  tags.appendChild(seal);
+  main.appendChild(tags);
+  var fileLine = document.createElement("div");
+  fileLine.className = "file-line";
+  fileLine.textContent = t("field_课文文件") + "：" + (file || t("noFile"));
+  main.appendChild(fileLine);
+  var preview = document.createElement("div");
+  preview.className = "preview-line";
+  var prev = previewDesign(rec["教学设计"]);
+  preview.textContent = t("field_教学设计") + "：" + (prev || t("pendingDesign"));
+  main.appendChild(preview);
+  var actions = document.createElement("div");
+  actions.className = "card-actions";
+  actions.appendChild(cardButton("edit", t("edit"), false));
+  actions.appendChild(cardButton("delete", t("delete"), false));
+  actions.appendChild(cardButton("open", t("openFile"), !file));
+  actions.appendChild(cardButton("down", t("downloadFile"), !file));
+  main.appendChild(actions);
+  card.appendChild(main);
+  return card;
+}
+function cardButton(act, label, disabled) {
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn" + (act === "delete" ? " btn-danger" : "");
+  btn.setAttribute("data-act", act);
+  btn.textContent = label;
+  btn.disabled = !!disabled;
+  return btn;
+}
+async function loadLibrary() {
+  var token = ++libraryToken;
+  libraryLoaded = false;
+  $("libraryError").hidden = true;
+  $("libraryEmpty").hidden = true;
+  $("libraryNoMatch").hidden = true;
+  $("libraryLoading").hidden = false;
+  $("libraryList").innerHTML = "";
+  try {
+    var csvP = callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "课文名称,出处,学段,年级,教材版本,课时分钟,体裁,版权状态,教学场景,课文文件,教学设计" });
+    var countP = callAppBridge({ type: "GetRecordCount", data: SOURCE });
+    var csvRaw = await csvP;
+    var countRaw = await countP;
+    if (token !== libraryToken) return;
+    libraryRecords = parseTable(csvRaw, ALL_FIELDS);
+    var text = norm(countRaw);
+    var n = parseInt(text, 10);
+    setNavCount(isNaN(n) ? (text || "0") : String(n));
+    libraryLoaded = true;
+    $("libraryLoading").hidden = true;
+    renderLibraryView();
+  } catch (e) {
+    if (token !== libraryToken) return;
+    $("libraryLoading").hidden = true;
+    $("libraryError").hidden = false;
+    $("libraryErrorText").textContent = t("loadFail") + humanError(e);
+  }
+}
+function clearFilters() {
+  $("librarySearch").value = "";
+  var ids = ["filter_学段", "filter_年级", "filter_体裁", "filter_教学场景", "filter_版权状态", "filter_课时分钟"];
+  for (var i = 0; i < ids.length; i++) $(ids[i]).value = "";
+  renderLibraryView();
+}
+async function fetchCells(row) {
+  var data = { _row: row };
+  for (var i = 0; i < ALL_FIELDS.length; i++) {
+    var name = ALL_FIELDS[i];
+    var value = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: name + "/" + row });
+    data[name] = value == null ? "" : String(value);
+  }
+  return data;
+}
+async function openDetail(row, from) {
+  var token = ++detailToken;
+  detailFrom = from;
+  detailData = null;
+  $("detailTitle").textContent = t("loading");
+  $("detailFields").innerHTML = "";
+  $("detailMarkdown").innerHTML = "";
+  $("detailImageWrap").hidden = true;
+  $("detailImageWrap").innerHTML = "";
+  $("detailHtmlHost").hidden = true;
+  $("detailFrame").src = "about:blank";
+  $("detailBanner").textContent = t("aiBanner");
+  $("btnDetailEdit").textContent = from === "home" ? t("goReview") : t("edit");
+  $("btnDetailEdit").disabled = true;
+  $("btnDetailDelete").hidden = from !== "library";
+  $("btnDetailCopy").hidden = from !== "library";
+  $("btnDetailOpen").disabled = true;
+  $("btnDetailDownload").disabled = true;
+  openPopup("detailMask");
+  try {
+    var data = await fetchCells(row);
+    if (token !== detailToken) return;
+    detailData = data;
+    renderDetail();
+  } catch (e) {
+    if (token !== detailToken) return;
+    $("detailTitle").textContent = t("loadFail");
+    $("detailFields").textContent = humanError(e);
+  }
+}
+function renderDetail() {
+  if (!detailData) return;
+  var data = detailData;
+  $("detailTitle").textContent = norm(data["课文名称"]) || t("emptyDash");
+  $("detailBanner").textContent = t("aiBanner");
+  var box = $("detailFields");
+  box.innerHTML = "";
+  for (var i = 0; i < ALL_FIELDS.length; i++) {
+    var name = ALL_FIELDS[i];
+    if (name === "教学设计") continue;
+    var item = document.createElement("div");
+    item.className = "field-item";
+    var lab = document.createElement("span");
+    lab.textContent = t("field_" + name);
+    var val = document.createElement("b");
+    if (name === "课文文件") val.textContent = norm(data[name]) || t("noFile");
+    else if (name === "课时分钟" && norm(data[name])) val.textContent = norm(data[name]) + " " + t("minutes");
+    else val.textContent = displayValue(data[name]);
+    item.appendChild(lab);
+    item.appendChild(val);
+    if (name === "教学场景" && norm(data[name])) {
+      var seal = document.createElement("div");
+      seal.className = "seal " + (SCENE_CLASS[norm(data[name])] || "");
+      seal.textContent = displayValue(data[name]);
+      seal.style.marginTop = "6px";
+      item.appendChild(seal);
+    }
+    box.appendChild(item);
+  }
+  var file = norm(data["课文文件"]);
+  var imgWrap = $("detailImageWrap");
+  imgWrap.innerHTML = "";
+  if (file && isImage(file)) {
+    var img = document.createElement("img");
+    img.src = downloadUrl(file);
+    img.alt = norm(data["课文名称"]);
+    imgWrap.appendChild(img);
+    imgWrap.hidden = false;
+  } else imgWrap.hidden = true;
+  var md = $("detailMarkdown");
+  md.innerHTML = "";
+  if (norm(data["教学设计"])) {
+    md.innerHTML = renderMarkdown(data["教学设计"]);
+    enhanceMarkdown(md);
+  } else {
+    var pending = document.createElement("p");
+    pending.className = "hint";
+    pending.textContent = t("pendingDesign");
+    md.appendChild(pending);
+  }
+  var hasFile = !!file;
+  $("btnDetailEdit").disabled = false;
+  $("btnDetailEdit").textContent = detailFrom === "home" ? t("goReview") : t("edit");
+  $("btnDetailDelete").hidden = detailFrom !== "library";
+  $("btnDetailCopy").hidden = detailFrom !== "library";
+  $("btnDetailCopy").disabled = !norm(data["教学设计"]);
+  $("btnDetailOpen").disabled = !hasFile;
+  $("btnDetailDownload").disabled = !hasFile;
+}
+function openStoredFile(name, preferDetail) {
+  if (!norm(name)) return;
+  if (isHtml(name)) {
+    if (preferDetail) {
+      $("detailHtmlHost").hidden = false;
+      $("detailFrame").src = privateUrl(name);
+      $("detailHtmlHost").scrollIntoView({ block: "nearest" });
+    } else {
+      $("htmlFrameModal").src = privateUrl(name);
+      openPopup("htmlMask");
+    }
+  } else {
+    window.open(privateUrl(name), "_blank");
+  }
+}
+function downloadStoredFile(name) {
+  if (!norm(name)) return;
+  var a = document.createElement("a");
+  a.href = downloadUrl(name);
+  a.target = "_blank";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+function collectPayload() {
+  var obj = {};
+  for (var i = 0; i < INPUT_FIELDS.length; i++) {
+    var name = INPUT_FIELDS[i];
+    var el = $("formLesson_" + name);
+    var v = el ? el.value : "";
+    if (name === "课文名称" || name === "出处" || name === "教材版本" || name === "课文文件") v = norm(v);
+    obj[name] = v;
+  }
+  if (obj["版权状态"] === "仅存索引") obj["课文文件"] = "";
+  return obj;
+}
+function setFieldInvalid(name, invalid) {
+  var el = $("formLesson_" + name);
+  if (!el) return;
+  if (invalid) el.classList.add("is-invalid");
+  else el.classList.remove("is-invalid");
+}
+function renderValidation() {
+  var values = collectPayload();
+  var missing = [];
+  for (var i = 0; i < REQUIRED.length; i++) {
+    if (!norm(values[REQUIRED[i]])) missing.push(t("field_" + REQUIRED[i]));
+    setFieldInvalid(REQUIRED[i], !norm(values[REQUIRED[i]]));
+  }
+  var hints = [];
+  if (!norm(values["出处"]) || !norm(values["教材版本"])) hints.push(t("hintSource"));
+  if (values["版权状态"] !== "仅存索引" && !norm(values["课文文件"])) hints.push(t("hintNoFile"));
+  if (missing.length) {
+    $("formAlert").hidden = false;
+    $("formAlert").textContent = t("missingPrefix") + missing.join(t("listSep"));
+  } else {
+    $("formAlert").hidden = true;
+    $("formAlert").textContent = "";
+  }
+  if (hints.length) {
+    $("formHint").hidden = false;
+    $("formHint").textContent = hints.join(" ");
+  } else {
+    $("formHint").hidden = true;
+    $("formHint").textContent = "";
+  }
+  var block = missing.length > 0 || polling || busySubmit;
+  $("btnGenerate").disabled = block;
+  $("btnSave").disabled = block;
+  $("btnSaveAs").disabled = block;
+  $("btnReset").disabled = busySubmit;
+  return missing.length === 0;
+}
+function updateSceneHint() {
+  var scene = $("formLesson_教学场景").value || "";
+  var key = SCENE_HINT[scene] || "hintNone";
+  $("workshopHint").textContent = t(key);
+}
+function updateFileUI() {
+  var status = $("formLesson_版权状态").value;
+  var indexOnly = status === "仅存索引";
+  if (indexOnly) $("formLesson_课文文件").value = "";
+  var file = norm($("formLesson_课文文件").value);
+  $("filePanel").hidden = indexOnly;
+  $("fileIndexHint").hidden = !indexOnly;
+  $("btnPickFile").disabled = indexOnly;
+  $("fileNameText").textContent = file || t("noFile");
+  $("btnClearFile").disabled = !file;
+  $("btnOpenLesson").hidden = !file;
+  $("btnDownloadLesson").hidden = !file;
+  $("btnOpenLesson").disabled = !file;
+  $("btnDownloadLesson").disabled = !file;
+}
+function updatePace() {
+  var minutes = $("formLesson_课时分钟").value;
+  var tier = "";
+  if (minutes === "30" || minutes === "35") tier = "A";
+  else if (minutes === "40" || minutes === "45") tier = "B";
+  else if (minutes === "60" || minutes === "90") tier = "C";
+  var phases = [["pace1", 5], ["pace2", 15], ["pace3", 20], ["pace4", 5]];
+  var track = $("paceTrack");
+  track.innerHTML = "";
+  for (var i = 0; i < phases.length; i++) {
+    var seg = document.createElement("div");
+    seg.className = "pace-seg";
+    seg.style.flex = String(phases[i][1]);
+    seg.textContent = t(phases[i][0]);
+    track.appendChild(seg);
+  }
+  var box = $("paceTiers");
+  box.innerHTML = "";
+  var tiers = ["A", "B", "C"];
+  for (var j = 0; j < tiers.length; j++) {
+    var chip = document.createElement("span");
+    chip.className = "tier" + (tiers[j] === tier ? " is-on" : "");
+    chip.textContent = t("tier" + tiers[j]);
+    box.appendChild(chip);
+  }
+}
+function updateWorkshopMode() {
+  var editing = currentRow > 0;
+  $("btnGenerate").hidden = editing;
+  $("btnSave").hidden = !editing;
+  $("btnSaveAs").hidden = !editing;
+  $("modeChip").textContent = editing ? t("modeEdit") : t("modeNew");
+  renderValidation();
+}
+function renderDesign() {
+  var has = !!norm(designRaw);
+  $("btnCopyDesign").disabled = !has;
+  $("btnExportMd").disabled = !has;
+  $("btnKeepWaiting").hidden = !pollTimedOut;
+  if (polling) {
+    $("designBanner").hidden = true;
+    $("designContent").innerHTML = "";
+    $("designStatus").textContent = t("pollWait");
+    return;
+  }
+  if (pollTimedOut && !has) {
+    $("designBanner").hidden = true;
+    $("designContent").innerHTML = "";
+    $("designStatus").textContent = t("pollSlow");
+    return;
+  }
+  if (!has) {
+    $("designBanner").hidden = true;
+    $("designContent").innerHTML = "";
+    $("designStatus").textContent = t("designEmpty");
+    return;
+  }
+  $("designStatus").textContent = "";
+  $("designBanner").hidden = false;
+  $("designBanner").textContent = t("aiBanner");
+  $("designContent").innerHTML = renderMarkdown(designRaw);
+  enhanceMarkdown($("designContent"));
+}
+function cancelPoll() {
+  pollToken++;
+  polling = false;
+  if (pollTimer) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+}
+function startPoll() {
+  pollToken++;
+  var token = pollToken;
+  pollCount = 0;
+  polling = true;
+  pollTimedOut = false;
+  if (pollTimer) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+  renderDesign();
+  updateWorkshopMode();
+  pollOnce(token);
+}
+async function pollOnce(token) {
+  if (token !== pollToken) return;
+  pollCount++;
+  var value = "";
+  var failed = "";
+  try {
+    value = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "教学设计/1" });
+  } catch (e) {
+    failed = humanError(e);
+  }
+  if (token !== pollToken) return;
+  if (value && norm(value)) {
+    polling = false;
+    pollTimedOut = false;
+    designRaw = String(value);
+    renderDesign();
+    updateWorkshopMode();
+    return;
+  }
+  if (pollCount >= 60) {
+    polling = false;
+    pollTimedOut = true;
+    renderDesign();
+    updateWorkshopMode();
+    if (failed) toast(failed);
+    return;
+  }
+  pollTimer = setTimeout(function () { pollOnce(token); }, 2000);
+}
+function resetWorkshop() {
+  submitToken++;
+  cancelPoll();
+  currentRow = 0;
+  busySubmit = false;
+  pollTimedOut = false;
+  designRaw = "";
+  for (var i = 0; i < INPUT_FIELDS.length; i++) {
+    var el = $("formLesson_" + INPUT_FIELDS[i]);
+    if (el) el.value = "";
+  }
+  refreshGradeOptions();
+  $("saveStatus").textContent = "";
+  $("formError").hidden = true;
+  $("formError").textContent = "";
+  updateSceneHint();
+  updateFileUI();
+  updatePace();
+  renderDesign();
+  updateWorkshopMode();
+}
+function fillForm(data) {
+  $("formLesson_课文名称").value = data["课文名称"] == null ? "" : String(data["课文名称"]);
+  $("formLesson_出处").value = data["出处"] == null ? "" : String(data["出处"]);
+  $("formLesson_学段").value = norm(data["学段"]);
+  if ($("formLesson_学段").value !== norm(data["学段"])) $("formLesson_学段").value = "";
+  refreshGradeOptions();
+  var grade = norm(data["年级"]);
+  var gradeEl = $("formLesson_年级");
+  var found = false;
+  for (var i = 0; i < gradeEl.options.length; i++) {
+    if (gradeEl.options[i].value === grade) found = true;
+  }
+  gradeEl.value = found ? grade : "";
+  $("formLesson_教材版本").value = data["教材版本"] == null ? "" : String(data["教材版本"]);
+  $("formLesson_课时分钟").value = norm(data["课时分钟"]);
+  $("formLesson_体裁").value = norm(data["体裁"]);
+  $("formLesson_版权状态").value = norm(data["版权状态"]);
+  $("formLesson_教学场景").value = norm(data["教学场景"]);
+  var file = data["课文文件"] == null ? "" : String(data["课文文件"]);
+  if (norm(data["版权状态"]) === "仅存索引") file = "";
+  $("formLesson_课文文件").value = file;
+  $("saveStatus").textContent = "";
+  $("formError").hidden = true;
+  updateSceneHint();
+  updateFileUI();
+  updatePace();
+  updateWorkshopMode();
+}
+function enterEditWithData(data) {
+  cancelPoll();
+  pollTimedOut = false;
+  currentRow = data._row;
+  fillForm(data);
+  designRaw = data["教学设计"] ? String(data["教学设计"]) : "";
+  renderDesign();
+  closePopup("detailMask");
+  goPage("pageWorkshop");
+}
+async function enterEditByRow(row) {
+  toast(t("loading"));
+  try {
+    var data = await fetchCells(row);
+    enterEditWithData(data);
+  } catch (e) {
+    toast(t("loadFail") + humanError(e));
+  }
+}
+function startFresh() {
+  resetWorkshop();
+  goPage("pageWorkshop");
+}
+function startWithScene(scene) {
+  resetWorkshop();
+  $("formLesson_教学场景").value = scene;
+  updateSceneHint();
+  renderValidation();
+  goPage("pageWorkshop");
+}
+async function chooseFile() {
+  if ($("formLesson_版权状态").value === "仅存索引") return;
+  try {
+    var name = await callAppBridge({ type: "SelectFile" });
+    var fn = name == null ? "" : String(name).trim();
+    if (!fn || fn === "null" || fn === "undefined") return;
+    if (fn.indexOf("失败") !== -1 || fn.indexOf("错误") === 0) {
+      toast(fn);
+      return;
+    }
+    $("formLesson_课文文件").value = fn;
+    updateFileUI();
+    renderValidation();
+  } catch (e) {
+    toast(t("fileFail") + humanError(e));
+  }
+}
+async function submitNew() {
+  if (polling || busySubmit) return;
+  if (!renderValidation()) return;
+  var payloadObj = collectPayload();
+  var token = ++submitToken;
+  busySubmit = true;
+  renderValidation();
+  $("formError").hidden = true;
+  try {
+    var res = await callAppBridge({ type: "SubmitRecord", data: TABLE, payload: JSON.stringify(payloadObj) });
+    if (token !== submitToken) return;
+    throwIfFailed(res);
+    currentRow = 1;
+    designRaw = "";
+    pollTimedOut = false;
+    busySubmit = false;
+    polling = true;
+    updateWorkshopMode();
+    renderDesign();
+    await refreshNavCount();
+    if (token !== submitToken) return;
+    startPoll();
+  } catch (e) {
+    if (token !== submitToken) return;
+    busySubmit = false;
+    renderValidation();
+    var msg = t("submitFail") + humanError(e);
+    $("formError").hidden = false;
+    $("formError").textContent = msg;
+    toast(msg);
+  }
+}
+async function saveExisting() {
+  if (polling || busySubmit) return;
+  if (currentRow <= 0) return;
+  if (!renderValidation()) return;
+  var row = currentRow;
+  var values = collectPayload();
+  var token = ++submitToken;
+  busySubmit = true;
+  renderValidation();
+  $("formError").hidden = true;
+  try {
+    for (var i = 0; i < INPUT_FIELDS.length; i++) {
+      var name = INPUT_FIELDS[i];
+      await callAppBridge({ type: "SetCellValue", data: SOURCE, payload: name + "/" + row + "/" + values[name] });
+      if (token !== submitToken) return;
+    }
+    busySubmit = false;
+    renderValidation();
+    $("saveStatus").textContent = t("savedMsg");
+    toast(t("savedMsg"));
+  } catch (e) {
+    if (token !== submitToken) return;
+    busySubmit = false;
+    renderValidation();
+    var msg = t("saveFail") + humanError(e);
+    $("formError").hidden = false;
+    $("formError").textContent = msg;
+    toast(msg);
+  }
+}
+async function copyText(text) {
+  var value = text == null ? "" : String(text);
+  if (!norm(value)) return;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      toast(t("copied"));
+      return;
+    }
+    throw new Error("no-clipboard");
+  } catch (e) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = value;
+      ta.setAttribute("readonly", "readonly");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (ok) toast(t("copied"));
+      else toast(t("copyFail"));
+    } catch (err) {
+      toast(t("copyFail"));
+    }
+  }
+}
+function designFileName() {
+  var name = norm($("formLesson_课文名称").value);
+  name = name.replace(/[\\/:*?"<>|\u0000-\u001f]/g, "").replace(/^\s+|\s+$/g, "").replace(/[. ]+$/g, "");
+  if (!name) name = "课文";
+  return name + "-教学设计.md";
+}
+function blobDownload(filename, text) {
+  var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+}
+async function exportDesign() {
+  var text = designRaw || "";
+  if (!norm(text)) return;
+  var filename = designFileName();
+  try {
+    var ret = await callAppBridge({ type: "WriteFile", data: filename, payload: text });
+    var name = throwIfFailed(ret);
+    if (name) {
+      downloadStoredFile(name);
+      toast(t("exported"));
+    } else {
+      blobDownload(filename, text);
+      toast(t("exportedLocal"));
+    }
+  } catch (e) {
+    toast(t("exportFail") + humanError(e));
+  }
+}
+function confirmDelete(row) {
+  pendingDeleteRow = row;
+  $("confirmText").textContent = t("deleteWarn");
+  $("btnConfirmOk").disabled = false;
+  $("btnConfirmOk").textContent = t("delete");
+  openPopup("confirmMask");
+}
+async function doDelete() {
+  if (deleteBusy) return;
+  var row = pendingDeleteRow;
+  if (!row) return;
+  deleteBusy = true;
+  $("btnConfirmOk").disabled = true;
+  $("btnConfirmOk").textContent = t("deleting");
+  try {
+    var res = await callAppBridge({ type: "DeleteRecord", data: SOURCE, payload: String(row) });
+    throwIfFailed(res);
+    closePopup("confirmMask");
+    closePopup("detailMask");
+    if (currentRow === row) resetWorkshop();
+    else if (currentRow > row) currentRow = currentRow - 1;
+    toast(t("deleted"));
+    await refreshNavCount();
+    if (currentPageId === "pageLibrary") await loadLibrary();
+    else if (currentPageId === "pageHome") await loadHome();
+  } catch (e) {
+    $("btnConfirmOk").disabled = false;
+    $("btnConfirmOk").textContent = t("delete");
+    toast(t("deleteFail") + humanError(e));
+  }
+  deleteBusy = false;
+}
+function onLibraryClick(e) {
+  var btn = e.target.closest("[data-act]");
+  var card = e.target.closest("[data-row]");
+  if (!card) return;
+  var row = parseInt(card.getAttribute("data-row"), 10);
+  if (!row) return;
+  if (btn) {
+    if (btn.disabled) return;
+    var act = btn.getAttribute("data-act");
+    var rec = findLibrary(row);
+    var file = rec ? norm(rec["课文文件"]) : "";
+    if (act === "edit") enterEditByRow(row);
+    else if (act === "delete") confirmDelete(row);
+    else if (act === "open") openStoredFile(file, false);
+    else if (act === "down") downloadStoredFile(file);
+    return;
+  }
+  openDetail(row, "library");
+}
+function onFormChange(e) {
+  var id = e.target && e.target.id;
+  $("formError").hidden = true;
+  if (id === "formLesson_学段") {
+    var prev = $("formLesson_年级").value;
+    refreshGradeOptions();
+    var gradeEl = $("formLesson_年级");
+    var found = false;
+    for (var i = 0; i < gradeEl.options.length; i++) {
+      if (gradeEl.options[i].value === prev) found = true;
+    }
+    gradeEl.value = found ? prev : "";
+  }
+  if (id === "formLesson_版权状态" && e.target.value === "仅存索引") {
+    $("formLesson_课文文件").value = "";
+  }
+  if (id === "formLesson_教学场景") updateSceneHint();
+  if (id === "formLesson_课时分钟") updatePace();
+  if (id === "formLesson_版权状态" || id === "formLesson_课文文件") updateFileUI();
+  renderValidation();
+}
+function bindKeyboardGuard() {
+  function bump(el) {
+    if (!el) return;
+    var keyboard = 0;
+    if (window.visualViewport) {
+      keyboard = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+    }
+    document.documentElement.style.setProperty("--kb", keyboard + "px");
+    var sheet = el.closest(".form-sheet, .dialog-scroll");
+    if (sheet && keyboard > 0) sheet.style.paddingBottom = (keyboard + 72) + "px";
+    setTimeout(function () {
+      try { el.scrollIntoView({ block: "center", inline: "nearest" }); } catch (err) {}
+    }, 280);
+  }
+  document.addEventListener("focusin", function (e) {
+    var tgn = e.target;
+    if (!tgn || !tgn.tagName) return;
+    var tag = tgn.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") bump(tgn);
+  });
+  document.addEventListener("focusout", function () {
+    document.documentElement.style.setProperty("--kb", "0px");
+    var sheets = document.querySelectorAll(".form-sheet, .dialog-scroll");
+    for (var i = 0; i < sheets.length; i++) sheets[i].style.paddingBottom = "";
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () {
+      var ae = document.activeElement;
+      if (!ae || !ae.tagName) return;
+      if (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.tagName === "SELECT") bump(ae);
+    });
+  }
+}
+function bindEvents() {
+  $("navBrand").addEventListener("click", function () {
+    try { parent.closeFullHtml(false); } catch (e) {}
+  });
+  $("topNav").addEventListener("click", function (e) {
+    var tab = e.target.closest("[data-page]");
+    if (!tab || !$("topNav").contains(tab)) return;
+    goPage(tab.getAttribute("data-page"));
+  });
+  $("hamburgerBtn").addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (mobileMenuIsOpen()) closeMobileMenu();
+    else openMobileMenu();
+  });
+  document.addEventListener("pointerdown", function (e) {
+    if (!mobileMenuIsOpen()) return;
+    if ($("mobileMenu").contains(e.target) || $("hamburgerBtn").contains(e.target)) return;
+    closeMobileMenu();
+  });
+  $("langToggle").addEventListener("click", function () { setLang(currentLang === "en" ? "zh" : "en"); });
+  $("mLangZh").addEventListener("click", function () { setLang("zh"); closeMobileMenu(); });
+  $("mLangEn").addEventListener("click", function () { setLang("en"); closeMobileMenu(); });
+  $("btnStart").addEventListener("click", startFresh);
+  $("btnRecentPrepare").addEventListener("click", startFresh);
+  $("btnRetryHome").addEventListener("click", function () { loadHome(); });
+  $("sceneRow").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-scene]");
+    if (!btn) return;
+    startWithScene(btn.getAttribute("data-scene"));
+  });
+  $("recentList").addEventListener("click", function (e) {
+    var card = e.target.closest("[data-row]");
+    if (!card) return;
+    var row = parseInt(card.getAttribute("data-row"), 10);
+    if (row) openDetail(row, "home");
+  });
+  $("btnToLibrary").addEventListener("click", function () { goPage("pageLibrary"); });
+  $("btnReset").addEventListener("click", resetWorkshop);
+  $("formLesson").addEventListener("submit", function (e) { e.preventDefault(); });
+  $("formLesson").addEventListener("input", onFormChange);
+  $("formLesson").addEventListener("change", onFormChange);
+  $("btnPickFile").addEventListener("click", chooseFile);
+  $("btnClearFile").addEventListener("click", function () {
+    $("formLesson_课文文件").value = "";
+    updateFileUI();
+    renderValidation();
+  });
+  $("btnOpenLesson").addEventListener("click", function () { openStoredFile($("formLesson_课文文件").value, false); });
+  $("btnDownloadLesson").addEventListener("click", function () { downloadStoredFile($("formLesson_课文文件").value); });
+  $("btnGenerate").addEventListener("click", function () { submitNew(); });
+  $("btnSave").addEventListener("click", function () { saveExisting(); });
+  $("btnSaveAs").addEventListener("click", function () { submitNew(); });
+  $("btnCopyDesign").addEventListener("click", function () { copyText(designRaw); });
+  $("btnExportMd").addEventListener("click", function () { exportDesign(); });
+  $("btnKeepWaiting").addEventListener("click", function () { startPoll(); });
+  $("btnNewLesson").addEventListener("click", startFresh);
+  $("btnFirstLesson").addEventListener("click", startFresh);
+  $("btnClearFilter").addEventListener("click", clearFilters);
+  $("btnNoMatchClear").addEventListener("click", clearFilters);
+  $("btnRetryLibrary").addEventListener("click", function () { loadLibrary(); });
+  $("librarySearch").addEventListener("input", renderLibraryView);
+  var filterIds = ["filter_学段", "filter_年级", "filter_体裁", "filter_教学场景", "filter_版权状态", "filter_课时分钟", "librarySort"];
+  for (var i = 0; i < filterIds.length; i++) $(filterIds[i]).addEventListener("change", renderLibraryView);
+  $("libraryList").addEventListener("click", onLibraryClick);
+  $("btnDetailClose").addEventListener("click", function () { closePopup("detailMask"); });
+  $("btnDetailEdit").addEventListener("click", function () { if (detailData) enterEditWithData(detailData); });
+  $("btnDetailDelete").addEventListener("click", function () { if (detailData) confirmDelete(detailData._row); });
+  $("btnDetailOpen").addEventListener("click", function () { if (detailData) openStoredFile(detailData["课文文件"], true); });
+  $("btnDetailDownload").addEventListener("click", function () { if (detailData) downloadStoredFile(detailData["课文文件"]); });
+  $("btnDetailCopy").addEventListener("click", function () { if (detailData) copyText(detailData["教学设计"]); });
+  $("btnDetailFrameClose").addEventListener("click", function () {
+    $("detailHtmlHost").hidden = true;
+    $("detailFrame").src = "about:blank";
+  });
+  $("btnHtmlClose").addEventListener("click", function () { closePopup("htmlMask"); });
+  $("btnConfirmCancel").addEventListener("click", function () { closePopup("confirmMask"); });
+  $("btnConfirmOk").addEventListener("click", function () { doDelete(); });
+  $("detailMask").addEventListener("click", function (e) { if (e.target === $("detailMask")) closePopup("detailMask"); });
+  $("htmlMask").addEventListener("click", function (e) { if (e.target === $("htmlMask")) closePopup("htmlMask"); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && (popupStack.length || mobileMenuIsOpen())) closeTopPopup();
+  });
+  window.addEventListener("resize", layoutNav);
+}
+async function initialize() {
+  currentLang = detectInitialLang();
+  setupMarkdown();
+  bindEvents();
+  bindKeyboardGuard();
+  applyI18n();
+  try { await applyTheme(); } catch (e) {}
+  layoutNav();
+  requestAnimationFrame(function () { layoutNav(); });
+  await goPage("pageHome", false);
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,3096 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>地理成因链教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --sea: #0e2438;
+    --sea-2: #16344d;
+    --ochre: #c4622d;
+    --ochre-d: #8c3f16;
+    --moss: #5f7f55;
+    --moss-d: #3f5a38;
+    --paper: #fbf6ee;
+    --paper-2: #f3eadc;
+    --text: #1b2a38;
+    --muted: #5c6b7a;
+    --line: rgba(16, 40, 61, 0.14);
+    --grid: rgba(16, 40, 61, 0.045);
+    --bg: linear-gradient(165deg, #e8d3b0 0%, #f3e6d0 28%, #d5e5f0 70%, #c5d8e8 100%);
+    --shadow: 0 12px 28px rgba(16, 40, 61, 0.1);
+    --danger: #8d3428;
+    --nav-text: #f6f1e8;
+    --contour: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280' fill='none' stroke='%2310283d' stroke-opacity='0.1' stroke-width='1'><ellipse cx='210' cy='46' rx='76' ry='38'/><ellipse cx='210' cy='46' rx='118' ry='60'/><ellipse cx='210' cy='46' rx='164' ry='84'/><ellipse cx='30' cy='230' rx='62' ry='30'/><ellipse cx='30' cy='230' rx='104' ry='52'/></svg>");
+  }
+  html[data-theme="dark"] {
+    --sea: #07131f;
+    --sea-2: #12283b;
+    --ochre: #e08a4f;
+    --ochre-d: #f0b48a;
+    --moss: #8fb583;
+    --moss-d: #b7d1ad;
+    --paper: #1c2836;
+    --paper-2: #243246;
+    --text: #edf2f6;
+    --muted: #b3c0ce;
+    --line: rgba(231, 215, 194, 0.16);
+    --grid: rgba(231, 215, 194, 0.045);
+    --bg: linear-gradient(165deg, #2a241c 0%, #1a2430 46%, #121c28 100%);
+    --shadow: 0 14px 32px rgba(0, 0, 0, 0.38);
+    --danger: #f0a598;
+    --nav-text: #f6f1e8;
+    --contour: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280' fill='none' stroke='%23e7d7c2' stroke-opacity='0.09' stroke-width='1'><ellipse cx='210' cy='46' rx='76' ry='38'/><ellipse cx='210' cy='46' rx='118' ry='60'/><ellipse cx='210' cy='46' rx='164' ry='84'/><ellipse cx='30' cy='230' rx='62' ry='30'/><ellipse cx='30' cy='230' rx='104' ry='52'/></svg>");
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
+  body {
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
+    background: var(--bg);
+    background-attachment: fixed;
+    line-height: 1.55;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: var(--contour);
+    background-size: 280px 280px;
+  }
+  button, input, select, textarea { font-family: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.48; }
+  :focus-visible { outline: 2px solid var(--ochre); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  #headerBar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1001;
+    background: var(--sea);
+  }
+  #topNav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 0 16px;
+    color: var(--nav-text);
+    background: var(--sea);
+    flex-wrap: nowrap;
+  }
+  #logoBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--nav-text);
+    padding: 8px 2px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .logo-mark {
+    width: 36px; height: 36px; flex: 0 0 auto;
+    border-radius: 50%;
+    border: 1px solid rgba(224, 168, 112, 0.7);
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+    color: #f0c08a;
+  }
+  .logo-mark .fa-link { position: absolute; right: -2px; bottom: -2px; font-size: 11px; background: var(--sea); border-radius: 50%; }
+  #brandName { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #navLinks { display: flex; flex: 0 0 auto; flex-wrap: nowrap; gap: 4px; margin-left: auto; min-width: 0; }
+  .nav-tab {
+    white-space: nowrap;
+    flex: 0 0 auto;
+    background: transparent;
+    color: var(--nav-text);
+    border: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 15px;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-tab.is-active { border-bottom-color: var(--ochre); color: #ffe3cc; }
+  #langSwitch, .lang-switch { display: inline-flex; flex: 0 0 auto; border: 1px solid rgba(246, 241, 232, 0.35); border-radius: 999px; overflow: hidden; }
+  .lang-switch button {
+    border: 0; background: transparent; color: var(--nav-text);
+    min-width: 40px; min-height: 36px; padding: 0 10px;
+  }
+  .lang-switch button.is-on { background: var(--ochre); color: #fff; }
+  #navBurger {
+    display: none;
+    margin-left: auto;
+    border: 0;
+    background: transparent;
+    color: var(--nav-text);
+    width: 44px; height: 44px;
+    font-size: 20px;
+  }
+  .nav-compact #navLinks, .nav-compact #langSwitch { display: none !important; }
+  .nav-compact #navBurger { display: inline-flex; align-items: center; justify-content: center; }
+  #mobileMenu {
+    position: absolute;
+    left: 0; right: 0; top: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    background: var(--sea-2);
+    padding: 8px 12px 12px;
+    z-index: 2;
+    -webkit-overflow-scrolling: touch;
+  }
+  #pageRoot { position: relative; z-index: 1; padding: 88px 16px 48px; max-width: 1120px; margin: 0 auto; }
+  .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  h1 { font-size: 32px; line-height: 1.25; margin: 0; font-weight: 700; }
+  h2 { font-size: 22px; margin: 28px 0 12px; }
+  h3 { font-size: 18px; margin: 0 0 8px; }
+  .lead { margin: 8px 0 18px; color: var(--muted); max-width: 720px; }
+  .btn {
+    border-radius: 999px;
+    min-height: 44px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    font-size: 15px;
+    background: var(--ochre);
+    color: #fff;
+  }
+  .btn-line { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+  .btn-sea { background: var(--sea); color: #f6f1e8; }
+  .sheet, .stat-card, .sheet-card, .step-card, .path-card, .paper-card {
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 18px 18px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: none;
+    position: relative;
+  }
+  .stat-card, .sheet-card, .step-card {
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .stat-card:hover, .sheet-card:hover, .step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+  .stat-card:hover::after, .sheet-card:hover::after, .step-card:hover::after {
+    opacity: 1;
+  }
+  .stat-card::after, .sheet-card::after, .step-card::after {
+    content: "";
+    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+    background:
+      radial-gradient(ellipse 90% 46% at 100% 0%, transparent 42%, rgba(196, 98, 45, 0.16) 43%, transparent 44%),
+      radial-gradient(ellipse 70% 50% at 0% 100%, transparent 48%, rgba(95, 127, 85, 0.14) 49%, transparent 50%);
+    transition: opacity .18s ease;
+  }
+  .hero { padding: 22px 22px 18px; margin-bottom: 16px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stat-card {
+    text-align: left; padding: 16px; min-height: 118px; width: 100%;
+    appearance: none; -webkit-appearance: none;
+  }
+  .stat-card i { color: var(--ochre-d); }
+  .stat-num { display: block; font-size: 36px; font-weight: 700; line-height: 1.1; margin: 6px 0; }
+  .stat-label { color: var(--muted); font-size: 14px; }
+  .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .step-card { padding: 16px; }
+  .step-no { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: var(--ochre); color: #fff; align-items: center; justify-content: center; font-weight: 700; }
+  .card-list, .card-grid { display: grid; gap: 14px; }
+  .card-list { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .sheet-card { padding: 14px 14px 12px; }
+  .badge-row, .meta-line, .card-actions, .tool-row, .modal-actions, .seg { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .meta-line { margin: 8px 0; font-size: 13px; }
+  .meta-line em { font-style: normal; color: var(--muted); margin-right: 4px; }
+  .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; font-size: 12px; line-height: 1.6; }
+  .badge.moss { background: rgba(95, 127, 85, 0.16); color: var(--moss-d); }
+  .badge.ink { background: rgba(16, 40, 61, 0.1); color: var(--sea-2); }
+  html[data-theme="dark"] .badge.ink { background: rgba(214, 228, 240, 0.12); color: #d7e6f4; }
+  .badge.ochre { background: rgba(196, 98, 45, 0.16); color: var(--ochre-d); }
+  .badge.quiet { background: rgba(16, 40, 61, 0.06); color: var(--muted); }
+  .field-line { margin: 8px 0; }
+  .field-line .k, .k { display: block; color: var(--muted); font-size: 12px; }
+  .field-line .v { display: block; font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+  .field-line .thought { font-weight: 400; font-size: 14px; color: var(--muted); }
+  .card-actions { margin-top: 10px; }
+  .card-actions button, .modal-actions button { min-height: 40px; }
+  .coach-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .path-card, .paper-card, .form-card { padding: 16px; }
+  .path-list { list-style: none; margin: 0; padding: 0; }
+  .path-list li { position: relative; padding: 0 0 14px 28px; }
+  .path-list li::before {
+    content: ""; position: absolute; left: 8px; top: 4px; bottom: 0; width: 2px; background: rgba(196, 98, 45, 0.45);
+  }
+  .path-list li:last-child::before { bottom: auto; height: 8px; }
+  .path-list i.dot {
+    position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--ochre);
+  }
+  .paper-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .browse-btns { display: flex; gap: 6px; }
+  .browse-btns button { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper-2); }
+  .field { margin: 12px 0; }
+  .field-label { display: block; font-size: 14px; margin-bottom: 6px; font-weight: 600; }
+  textarea, input[type="search"], select {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+  textarea { min-height: 120px; resize: vertical; }
+  .hint { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+  .exam-banner { background: var(--ochre); color: #fff; border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
+  .seg-btn { border: 1px solid var(--line); background: transparent; border-radius: 999px; min-height: 40px; padding: 6px 14px; }
+  .seg-btn.is-on { background: #0e2438; color: #f6f1e8; border-color: #0e2438; }
+  .switch { position: relative; display: flex; align-items: center; gap: 10px; min-height: 44px; }
+  .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .switch-ui { width: 46px; height: 28px; border-radius: 99px; background: #cbbfae; position: relative; flex: 0 0 auto; }
+  .switch-ui::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .16s ease; }
+  .switch input:checked + .switch-ui { background: var(--ochre); }
+  .switch input:checked + .switch-ui::after { transform: translateX(18px); }
+  .switch input:disabled + .switch-ui { opacity: 0.45; }
+  .viewing { display: inline-block; background: rgba(196, 98, 45, 0.14); color: var(--ochre-d); border-radius: 999px; padding: 4px 10px; font-size: 13px; }
+  .tool-row { margin: 12px 0 16px; }
+  .tool-row input[type="search"] { flex: 1 1 220px; width: auto; }
+  .tool-row select { flex: 1 1 140px; width: auto; min-width: 120px; }
+  .area-error { background: var(--paper); border: 1px solid var(--danger); color: var(--text); border-radius: 14px; padding: 12px; margin: 10px 0; }
+  .empty-box { text-align: center; padding: 28px 12px; }
+  .wait-box { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; background: var(--paper-2); }
+  .muted { color: var(--muted); }
+  .modal { position: fixed; inset: 0; z-index: 2400; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #editModal { z-index: 2800; }
+  #htmlModal { z-index: 3200; }
+  #confirmModal { z-index: 4000; }
+  .modal-backdrop { position: absolute; inset: 0; background: rgba(10, 18, 28, 0.48); }
+  .modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(760px, 100%);
+    max-height: calc(100vh - 48px);
+    background: var(--paper);
+    color: var(--text);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    opacity: 1;
+  }
+  #confirmModal .modal-dialog { width: min(440px, 100%); }
+  .modal-scroll { max-height: calc(100vh - 48px); overflow: auto; padding: 18px 18px 24px; }
+  #htmlModal .modal-dialog { width: min(960px, 100%); height: min(80vh, 820px); display: flex; flex-direction: column; background: #fff; }
+  #htmlBar { display: flex; justify-content: flex-end; padding: 8px; background: var(--paper); }
+  #htmlFrame { flex: 1; width: 100%; border: 0; background: #fff; }
+  .md-body { overflow-wrap: anywhere; }
+  .md-body h1, .md-body h2, .md-body h3 { line-height: 1.3; }
+  .md-body pre { overflow-x: auto; padding: 12px; background: var(--paper-2); border-radius: 10px; }
+  .md-body code { font-family: Consolas, "Courier New", monospace; font-size: 0.92em; }
+  .md-body img { max-width: 100%; height: auto; border-radius: 8px; }
+  .md-table-wrap { overflow-x: auto; max-width: 100%; }
+  .md-body table { border-collapse: collapse; min-width: 280px; }
+  .md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+  .md-quote { margin: 8px 0; padding: 4px 12px; border-left: 3px solid var(--moss); color: var(--text); }
+  .md-body p { margin: 8px 0; }
+  dl.paper-dl { display: grid; grid-template-columns: 120px 1fr; gap: 8px 12px; margin: 0 0 12px; }
+  dl.paper-dl dt { color: var(--muted); margin: 0; }
+  dl.paper-dl dd { margin: 0; overflow-wrap: anywhere; }
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .coach-grid, .step-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    h1 { font-size: 26px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    #pageRoot { padding-bottom: 168px; }
+    .modal-scroll { padding-bottom: 200px; }
+    #detailModal, #htmlModal { padding: 0; }
+    #detailModal .modal-dialog, #htmlModal .modal-dialog {
+      width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border-radius: 0;
+    }
+    #detailModal .modal-scroll, #htmlModal .modal-dialog { max-height: 100%; height: 100%; }
+    dl.paper-dl { grid-template-columns: 1fr; }
+  }
+  @media (hover: none) {
+    .stat-card:hover, .sheet-card:hover, .step-card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<div id="headerBar">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <button type="button" id="logoBtn">
+      <span class="logo-mark" aria-hidden="true"><i class="fa-solid fa-compass"></i><i class="fa-solid fa-link"></i></span>
+      <span id="brandName" data-i18n="brand">地理成因链教练</span>
+    </button>
+    <div id="navLinks">
+      <button type="button" class="nav-tab is-active" id="navHome" data-i18n="navHome">首页</button>
+      <button type="button" class="nav-tab" id="navCoach" data-i18n="navCoach">开始辅导</button>
+      <button type="button" class="nav-tab" id="navRecords" data-i18n="navRecords">辅导记录</button>
+    </div>
+    <div id="langSwitch" class="lang-switch">
+      <button type="button" id="langZh">中</button>
+      <button type="button" id="langEn">EN</button>
+    </div>
+    <button type="button" id="navBurger" data-i18n-aria="menu" aria-label="菜单"><i class="fa-solid fa-bars"></i></button>
+    <div id="mobileMenu" hidden>
+      <button type="button" class="nav-tab is-active" id="mobileHome" data-i18n="navHome">首页</button>
+      <button type="button" class="nav-tab" id="mobileCoach" data-i18n="navCoach">开始辅导</button>
+      <button type="button" class="nav-tab" id="mobileRecords" data-i18n="navRecords">辅导记录</button>
+      <div id="langSwitchMenu" class="lang-switch">
+        <button type="button" id="langZhMenu">中</button>
+        <button type="button" id="langEnMenu">EN</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main id="pageRoot">
+  <section id="pageHome" class="page" data-page="home">
+    <div class="hero sheet">
+      <h1 id="homeTitle" data-i18n="brand">地理成因链教练</h1>
+      <p id="homeLead" class="lead" data-i18n="homeLead">不直接给答案。先确认要解释的结果，再顺着起点、过程和因果方向，让学生自己补全成因链。</p>
+      <button type="button" class="btn" id="homeStartBtn" data-i18n="startSession">开始一次辅导</button>
+    </div>
+    <div class="stat-grid" id="statGrid">
+      <button type="button" class="stat-card" id="statTotal"><i class="fa-solid fa-link"></i><span class="stat-num" id="statTotalNum">…</span><span class="stat-label" data-i18n="statTotal">辅导总次数</span></button>
+      <button type="button" class="stat-card" id="statJunior"><i class="fa-solid fa-book-open"></i><span class="stat-num" id="statJuniorNum">…</span><span class="stat-label" data-i18n="statJunior">初中辅导数</span></button>
+      <button type="button" class="stat-card" id="statSenior"><i class="fa-solid fa-graduation-cap"></i><span class="stat-num" id="statSeniorNum">…</span><span class="stat-label" data-i18n="statSenior">高中辅导数</span></button>
+      <button type="button" class="stat-card" id="statExam"><i class="fa-solid fa-hourglass-half"></i><span class="stat-num" id="statExamNum">…</span><span class="stat-label" data-i18n="statExam">考后复盘约定数</span></button>
+    </div>
+    <h2 id="stepsTitle" data-i18n="stepsTitle">接下来怎么用</h2>
+    <div class="step-grid">
+      <article class="step-card"><span class="step-no">1</span><h3 data-i18n="step1">确认要解释的结果</h3></article>
+      <article class="step-card"><span class="step-no">2</span><h3 data-i18n="step2">找出起点</h3></article>
+      <article class="step-card"><span class="step-no">3</span><h3 data-i18n="step3">补上中间环节并核对因果方向</h3></article>
+    </div>
+    <h2 id="recentTitle" data-i18n="recentTitle">最近辅导</h2>
+    <div id="homeError" class="area-error" hidden>
+      <p id="homeErrorText"></p>
+      <button type="button" id="homeRetry" class="btn btn-line"></button>
+    </div>
+    <div id="recentList" class="card-list"></div>
+    <div id="homeEmpty" class="empty-box sheet" hidden>
+      <p id="homeEmptyText" data-i18n="emptyHome">还没有辅导记录。</p>
+      <button type="button" class="btn" id="homeEmptyBtn" data-i18n="firstQuestion">写下第一个问题</button>
+    </div>
+  </section>
+  <section id="pageCoach" class="page" data-page="coach" hidden>
+    <div class="page-head">
+      <div>
+        <h1 id="coachTitle" data-i18n="coachTitle">沿着成因链往回问</h1>
+        <p id="coachLead" class="lead" data-i18n="coachLead">交出地理现象和已有思路。教练只指出缺失环节并继续追问，不代写完整答案。</p>
+      </div>
+      <button type="button" class="btn btn-line" id="coachClearBtn" data-i18n="clearDraft">清空草稿</button>
+    </div>
+    <div id="coachError" class="area-error" hidden>
+      <p id="coachErrorText"></p>
+      <button type="button" id="coachRetry" class="btn btn-line"></button>
+    </div>
+    <div class="coach-grid">
+      <div>
+        <article class="path-card">
+          <h3 id="pathTitle" data-i18n="pathTitle">追问路径</h3>
+          <p class="hint" id="pathNote" data-i18n="pathNote">这是追问顺序，不是答题模板。</p>
+          <ol class="path-list">
+            <li><i class="dot"></i><span data-i18n="path1">确认要解释的结果</span></li>
+            <li><i class="dot"></i><span data-i18n="path2">寻找起点</span></li>
+            <li><i class="dot"></i><span data-i18n="path3">补全中间环节</span></li>
+            <li><i class="dot"></i><span data-i18n="path4">检查因果方向有没有颠倒</span></li>
+          </ol>
+        </article>
+        <article class="form-card sheet" style="margin-top:16px;">
+          <p id="coachViewing" class="viewing" hidden></p>
+          <div id="coachExamBanner" class="exam-banner" hidden data-i18n="examBanner">考试进行中，教练不会讲解这道题，也不会给提示，只会约定考后复盘</div>
+          <form id="formCoach" action="#" autocomplete="off">
+            <div class="field">
+              <span class="field-label" id="formCoachStageLabel" data-i18n="fieldStage">学段</span>
+              <input type="hidden" id="formCoach_学段" name="学段" value="初中">
+              <div class="seg" role="group" aria-labelledby="formCoachStageLabel">
+                <button type="button" class="seg-btn is-on" id="formCoachStageJunior" data-i18n="stageJunior">初中</button>
+                <button type="button" class="seg-btn" id="formCoachStageSenior" data-i18n="stageSenior">高中</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="switch">
+                <input type="checkbox" id="formCoach_高中选考地理" name="高中选考地理" value="是">
+                <span class="switch-ui"></span>
+                <span><span data-i18n="fieldElective">高中选考地理</span> · <span id="formCoachElectState"></span></span>
+              </label>
+              <p id="formCoachElectHint" class="hint" hidden data-i18n="juniorElectHint">初中学段不用选考</p>
+            </div>
+            <div class="field">
+              <label class="switch">
+                <input type="checkbox" id="formCoach_正在考试" name="正在考试" value="是">
+                <span class="switch-ui"></span>
+                <span><span data-i18n="fieldExam">正在考试</span> · <span id="formCoachExamState"></span></span>
+              </label>
+            </div>
+            <div class="field">
+              <label class="field-label" for="formCoach_地理问题" data-i18n="fieldQuestion">地理问题</label>
+              <textarea id="formCoach_地理问题" name="地理问题"></textarea>
+              <p id="formCoachQuestionHint" class="hint" data-i18n="questionHint">先写下要解释的地理现象</p>
+            </div>
+            <div class="field">
+              <label class="field-label" for="formCoach_已有思路" data-i18n="fieldThoughts">已有思路</label>
+              <textarea id="formCoach_已有思路" name="已有思路"></textarea>
+              <p id="formCoachThoughtHint" class="hint" data-i18n="thoughtHint">留空也可以，教练会从确认结果开始追问</p>
+            </div>
+            <button type="button" class="btn" id="coachSubmitBtn" data-i18n="askCoach">请教练追问</button>
+          </form>
+        </article>
+      </div>
+      <article class="paper-card" id="coachPaper">
+        <div class="paper-top">
+          <h3 id="coachPaperTitle" data-i18n="paperTitle">教练追问</h3>
+          <div class="browse-btns">
+            <button type="button" id="browsePrev" data-i18n-aria="prev" aria-label="上一则">&lt;</button>
+            <button type="button" id="browseNext" data-i18n-aria="next" aria-label="下一则">&gt;</button>
+          </div>
+        </div>
+        <div id="coachWait" class="wait-box" hidden><i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i><span id="coachWaitText"></span></div>
+        <div id="coachOutput" class="md-body"></div>
+        <p id="coachIdle" class="muted" data-i18n="paperIdle">提交后，教练的追问会显示在这里。</p>
+      </article>
+    </div>
+  </section>
+  <section id="pageRecords" class="page" data-page="records" hidden>
+    <div class="page-head">
+      <div>
+        <h1 id="recordsTitle" data-i18n="recordsTitle">我的成因链手账</h1>
+        <p id="recordsLead" class="lead" data-i18n="recordsLead">回看每一次追问。点卡片可修改原始记录；修改不会自动重写教练反馈。</p>
+      </div>
+      <button type="button" class="btn" id="recordsNewBtn" data-i18n="newCoach">+ 新的辅导</button>
+    </div>
+    <div class="tool-row">
+      <input type="search" id="recordsSearch" name="keyword" data-i18n-ph="searchPh" placeholder="搜索地理问题或已有思路">
+      <select id="filterStage" name="filterStage">
+        <option value="all">全部</option>
+        <option value="初中">初中</option>
+        <option value="高中">高中</option>
+      </select>
+      <select id="filterExam" name="filterExam">
+        <option value="all">全部</option>
+        <option value="是">是</option>
+        <option value="否">否</option>
+      </select>
+      <button type="button" class="btn btn-line" id="clearFilterBtn" data-i18n="clearFilter">清空筛选</button>
+    </div>
+    <div id="recordsError" class="area-error" hidden>
+      <p id="recordsErrorText"></p>
+      <button type="button" id="recordsRetry" class="btn btn-line"></button>
+    </div>
+    <div id="recordsList" class="card-grid"></div>
+    <div id="recordsEmpty" class="empty-box sheet" hidden>
+      <p id="recordsEmptyText" data-i18n="emptyRecords">没有符合筛选的记录。</p>
+      <button type="button" class="btn btn-line" id="recordsEmptyClear" data-i18n="clearFilter">清空筛选</button>
+    </div>
+  </section>
+</main>
+<div id="detailModal" class="modal" hidden>
+  <div class="modal-backdrop" id="detailBackdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true">
+    <div class="modal-scroll" id="detailScroll">
+      <div id="detailBody"></div>
+      <div id="detailError" class="area-error" hidden>
+        <p id="detailErrorText"></p>
+        <button type="button" id="detailRetry" class="btn btn-line"></button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-line" id="detailClose" data-i18n="close">关闭</button>
+        <button type="button" class="btn" id="detailEdit" data-i18n="editThis">编辑这条</button>
+        <button type="button" class="btn btn-line" id="detailFork" data-i18n="reCoach">重新辅导</button>
+        <button type="button" class="btn btn-danger" id="detailDelete" data-i18n="delete">删除</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="editModal" class="modal" hidden>
+  <div class="modal-backdrop" id="editBackdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="modal-scroll" id="editScroll">
+      <h2 id="editTitle" data-i18n="editTitle">编辑辅导记录</h2>
+      <div id="editExamBanner" class="exam-banner" hidden data-i18n="examBanner">考试进行中，教练不会讲解这道题，也不会给提示，只会约定考后复盘</div>
+      <form id="formEdit" action="#" autocomplete="off">
+        <div class="field">
+          <span class="field-label" id="formEditStageLabel" data-i18n="fieldStage">学段</span>
+          <input type="hidden" id="formEdit_学段" name="学段" value="初中">
+          <div class="seg" role="group" aria-labelledby="formEditStageLabel">
+            <button type="button" class="seg-btn is-on" id="formEditStageJunior" data-i18n="stageJunior">初中</button>
+            <button type="button" class="seg-btn" id="formEditStageSenior" data-i18n="stageSenior">高中</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="formEdit_高中选考地理" name="高中选考地理" value="是">
+            <span class="switch-ui"></span>
+            <span><span data-i18n="fieldElective">高中选考地理</span> · <span id="formEditElectState"></span></span>
+          </label>
+          <p id="formEditElectHint" class="hint" hidden data-i18n="juniorElectHint">初中学段不用选考</p>
+        </div>
+        <div class="field">
+          <label class="switch">
+            <input type="checkbox" id="formEdit_正在考试" name="正在考试" value="是">
+            <span class="switch-ui"></span>
+            <span><span data-i18n="fieldExam">正在考试</span> · <span id="formEditExamState"></span></span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="field-label" for="formEdit_地理问题" data-i18n="fieldQuestion">地理问题</label>
+          <textarea id="formEdit_地理问题" name="地理问题"></textarea>
+          <p id="formEditQuestionHint" class="hint" hidden data-i18n="questionHint">先写下要解释的地理现象</p>
+        </div>
+        <div class="field">
+          <label class="field-label" for="formEdit_已有思路" data-i18n="fieldThoughts">已有思路</label>
+          <textarea id="formEdit_已有思路" name="已有思路"></textarea>
+          <p id="formEditThoughtHint" class="hint" hidden data-i18n="thoughtHint">留空也可以，教练会从确认结果开始追问</p>
+        </div>
+      </form>
+      <p id="editHint" class="hint" data-i18n="editHint">保存只会改问题、思路和选项，不会让教练重写这则反馈。若要新的追问，请使用重新辅导</p>
+      <h3 id="editFeedbackTitle" data-i18n="feedbackTitle">辅导反馈</h3>
+      <div id="editFeedback" class="md-body"></div>
+      <p id="editFeedbackEmpty" class="muted" hidden></p>
+      <div id="editError" class="area-error" hidden>
+        <p id="editErrorText"></p>
+        <button type="button" id="editRetry" class="btn btn-line"></button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="editSave" data-i18n="saveEdit">保存修改</button>
+        <button type="button" class="btn btn-line" id="editCancel" data-i18n="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="confirmModal" class="modal" hidden>
+  <div class="modal-backdrop" id="confirmBackdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true">
+    <div class="modal-scroll">
+      <p id="confirmText"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="confirmOk" data-i18n="ok">确定</button>
+        <button type="button" class="btn btn-line" id="confirmCancel" data-i18n="cancel">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="htmlModal" class="modal" hidden>
+  <div class="modal-backdrop" id="htmlBackdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true">
+    <div id="htmlBar"><button type="button" class="btn btn-line" id="htmlClose" data-i18n="close">关闭</button></div>
+    <iframe id="htmlFrame" title="HTML"></iframe>
+  </div>
+</div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("6065263bb24d8ec4_地理成因链教练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+var I18N = {
+  zh: {
+    brand: "地理成因链教练",
+    navHome: "首页",
+    navCoach: "开始辅导",
+    navRecords: "辅导记录",
+    homeLead: "不直接给答案。先确认要解释的结果，再顺着起点、过程和因果方向，让学生自己补全成因链。",
+    startSession: "开始一次辅导",
+    statTotal: "辅导总次数",
+    statJunior: "初中辅导数",
+    statSenior: "高中辅导数",
+    statExam: "考后复盘约定数",
+    stepsTitle: "接下来怎么用",
+    step1: "确认要解释的结果",
+    step2: "找出起点",
+    step3: "补上中间环节并核对因果方向",
+    recentTitle: "最近辅导",
+    emptyHome: "还没有辅导记录。",
+    firstQuestion: "写下第一个问题",
+    coachTitle: "沿着成因链往回问",
+    coachLead: "交出地理现象和已有思路。教练只指出缺失环节并继续追问，不代写完整答案。",
+    clearDraft: "清空草稿",
+    pathTitle: "追问路径",
+    pathNote: "这是追问顺序，不是答题模板。",
+    path1: "确认要解释的结果",
+    path2: "寻找起点",
+    path3: "补全中间环节",
+    path4: "检查因果方向有没有颠倒",
+    paperTitle: "教练追问",
+    paperIdle: "提交后，教练的追问会显示在这里。",
+    fieldStage: "学段",
+    fieldElective: "高中选考地理",
+    fieldExam: "正在考试",
+    fieldQuestion: "地理问题",
+    fieldThoughts: "已有思路",
+    stageJunior: "初中",
+    stageSenior: "高中",
+    electYes: "选考地理",
+    electNo: "未选考",
+    examYes: "考试中，考后复盘",
+    examNo: "非考试",
+    juniorElectHint: "初中学段不用选考",
+    examBanner: "考试进行中，教练不会讲解这道题，也不会给提示，只会约定考后复盘",
+    questionHint: "先写下要解释的地理现象",
+    thoughtHint: "留空也可以，教练会从确认结果开始追问",
+    askCoach: "请教练追问",
+    bookReview: "约定考后复盘",
+    forkNew: "以此新开一问",
+    viewing: "正在查看第{n}则记录",
+    waitNormal: "教练正在确认要解释的结果，并准备下一问……",
+    waitExam: "已记下这道题。考试期间不会讲解或提示，正在约定考后复盘……",
+    noFeedback: "这则记录还没有辅导反馈",
+    timeoutMsg: "等待已超过时限。可以稍后在辅导记录里查看。",
+    recordsTitle: "我的成因链手账",
+    recordsLead: "回看每一次追问。点卡片可修改原始记录；修改不会自动重写教练反馈。",
+    newCoach: "+ 新的辅导",
+    searchPh: "搜索地理问题或已有思路",
+    filterAll: "全部",
+    yesWord: "是",
+    noWord: "否",
+    clearFilter: "清空筛选",
+    emptyRecords: "没有符合筛选的记录。",
+    viewFeedback: "查看反馈",
+    edit: "编辑",
+    delete: "删除",
+    reCoach: "重新辅导",
+    close: "关闭",
+    editThis: "编辑这条",
+    editTitle: "编辑辅导记录",
+    editHint: "保存只会改问题、思路和选项，不会让教练重写这则反馈。若要新的追问，请使用重新辅导",
+    saveEdit: "保存修改",
+    cancel: "取消",
+    ok: "确定",
+    feedbackTitle: "辅导反馈",
+    confirmOverwrite: "当前草稿还没提交，确定覆盖吗？",
+    confirmDelete: "删除后这则辅导记录无法恢复，确定删除吗？",
+    errorMsg: "暂时连不上辅导记录",
+    retry: "重试",
+    loading: "读取中",
+    menu: "菜单",
+    prev: "上一则",
+    next: "下一则"
+  },
+  en: {
+    brand: "Geographic Cause-Chain Coach",
+    navHome: "Home",
+    navCoach: "Start coaching",
+    navRecords: "Coaching records",
+    homeLead: "No direct answers. Name the result to explain, then follow the start, the process, and the causal direction so you complete the chain yourself.",
+    startSession: "Start a session",
+    statTotal: "Total sessions",
+    statJunior: "Junior-high sessions",
+    statSenior: "Senior-high sessions",
+    statExam: "Post-exam review agreements",
+    stepsTitle: "How to use it",
+    step1: "Name the result you need to explain",
+    step2: "Find the starting point",
+    step3: "Fill the middle links and check the causal direction",
+    recentTitle: "Recent sessions",
+    emptyHome: "No coaching records yet.",
+    firstQuestion: "Write the first question",
+    coachTitle: "Ask backward along the chain",
+    coachLead: "Hand over the geographic phenomenon and what you already think. The coach only points out missing links and keeps asking. It will not write the full answer for you.",
+    clearDraft: "Clear draft",
+    pathTitle: "Question path",
+    pathNote: "This is the order of questions, not an answer sheet.",
+    path1: "Name the result you need to explain",
+    path2: "Look for the starting point",
+    path3: "Fill in the middle links",
+    path4: "Check whether the causal direction is reversed",
+    paperTitle: "Coach's question",
+    paperIdle: "After you submit, the coach's question will appear here.",
+    fieldStage: "Stage",
+    fieldElective: "Senior-high geography elective",
+    fieldExam: "In an exam",
+    fieldQuestion: "Geographic question",
+    fieldThoughts: "Ideas so far",
+    stageJunior: "Junior high",
+    stageSenior: "Senior high",
+    electYes: "Geography elective",
+    electNo: "Not elective",
+    examYes: "In exam, review after",
+    examNo: "Not an exam",
+    juniorElectHint: "Junior high does not use an elective.",
+    examBanner: "An exam is in progress. The coach will not explain this item or give hints. It will only agree to review after the exam.",
+    questionHint: "First write the geographic phenomenon you want explained.",
+    thoughtHint: "Leaving this blank is fine. The coach will start by confirming the result.",
+    askCoach: "Ask the coach",
+    bookReview: "Agree to review after the exam",
+    forkNew: "Start a new question from this",
+    viewing: "Viewing record {n}",
+    waitNormal: "The coach is confirming the result to explain and preparing the next question...",
+    waitExam: "This item is noted. It will not be explained or hinted during the exam. A post-exam review is being arranged...",
+    noFeedback: "This record has no coaching feedback yet.",
+    timeoutMsg: "The wait timed out. You can check the feedback later in coaching records.",
+    recordsTitle: "My cause-chain journal",
+    recordsLead: "Look back at each round of questions. Tap a card to edit the original record. Editing does not make the coach rewrite that feedback.",
+    newCoach: "+ New session",
+    searchPh: "Search the question or your ideas",
+    filterAll: "All",
+    yesWord: "Yes",
+    noWord: "No",
+    clearFilter: "Clear filters",
+    emptyRecords: "No records match the filter.",
+    viewFeedback: "View feedback",
+    edit: "Edit",
+    delete: "Delete",
+    reCoach: "Coach again",
+    close: "Close",
+    editThis: "Edit this one",
+    editTitle: "Edit coaching record",
+    editHint: "Saving only changes the question, your ideas, and the options. It will not make the coach rewrite this feedback. For a new round of questions, use Coach again.",
+    saveEdit: "Save changes",
+    cancel: "Cancel",
+    ok: "OK",
+    feedbackTitle: "Coaching feedback",
+    confirmOverwrite: "The current draft is not submitted. Overwrite it?",
+    confirmDelete: "This coaching record cannot be restored after deletion. Delete it?",
+    errorMsg: "Coaching records are temporarily unreachable.",
+    retry: "Retry",
+    loading: "Loading",
+    menu: "Menu",
+    prev: "Previous",
+    next: "Next"
+  }
+};
+var lang = "zh";
+var theme = "light";
+var page = "home";
+var pageHistory = [];
+var browseRow = 0;
+var recordCount = -1;
+var cachedRows = null;
+var draft = emptyDraft();
+var recordsFilter = { stage: "all", exam: "all", q: "" };
+var modalStack = [];
+var confirmResolver = null;
+var detailRow = 0;
+var detailData = null;
+var editRow = 0;
+var editFeedback = "";
+var submitting = false;
+var saving = false;
+var loadToken = 0;
+var presentToken = 0;
+var coachNoteKey = "paperIdle";
+var retryFns = {};
+var polls = {
+  coach: { token: 0, timer: null, on: false, row: 0, exam: false },
+  detail: { token: 0, timer: null, on: false, row: 0, exam: false }
+};
+var FIELD_ORDER = ["学段", "高中选考地理", "正在考试", "地理问题", "已有思路"];
+
+function emptyDraft() {
+  return { "学段": "初中", "高中选考地理": "否", "正在考试": "否", "地理问题": "", "已有思路": "" };
+}
+function t(key, vars) {
+  var table = I18N[lang] || I18N.zh;
+  var s = table[key];
+  if (s == null) s = I18N.zh[key] || key;
+  if (vars) {
+    for (var k in vars) {
+      if (Object.prototype.hasOwnProperty.call(vars, k)) s = s.split("{" + k + "}").join(String(vars[k]));
+    }
+  }
+  return s;
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function clipText(s, n) {
+  var arr = Array.from(String(s || ""));
+  if (arr.length <= n) return arr.join("");
+  return arr.slice(0, n).join("") + "…";
+}
+function isBlankFeedback(v) {
+  if (v == null) return true;
+  var s = String(v).trim();
+  if (!s) return true;
+  if (s.toLowerCase() === "null") return true;
+  return false;
+}
+function parseCount(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') s = s.slice(1, -1).trim();
+  var n = parseInt(s, 10);
+  if (isNaN(n) || n < 0) return 0;
+  return n;
+}
+function normalizeMode(v) {
+  var s = String(v == null ? "" : v).trim();
+  if (s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') s = s.slice(1, -1).trim();
+  return s;
+}
+function parseRows(csvText) {
+  var text = String(csvText == null ? "" : csvText);
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  if (text.trim() === "" || text.trim().toLowerCase() === "null") return [];
+  var raw = parseCSV(text);
+  while (raw.length) {
+    var last = raw[raw.length - 1] || [];
+    var blank = true;
+    for (var c = 0; c < last.length; c++) {
+      if (String(last[c] || "").trim() !== "") blank = false;
+    }
+    if (!blank) break;
+    raw.pop();
+  }
+  var out = [];
+  for (var i = 0; i < raw.length; i++) {
+    var r = raw[i] || [];
+    var cells = [];
+    for (var k = 0; k < 5; k++) cells.push(r[k] == null ? "" : String(r[k]));
+    out.push({ n: i + 1, stage: cells[0], elective: cells[1], exam: cells[2], question: cells[3], thoughts: cells[4] });
+  }
+  return out;
+}
+function isHtmlName(url) {
+  var clean = String(url || "").split("?")[0].split("#")[0];
+  return /\.html?$/i.test(clean);
+}
+function safeMedia(name, kind) {
+  var u = String(name || "").trim();
+  if (/^\s*javascript:/i.test(u)) return "#";
+  if (/^(https?:|data:image\/)/i.test(u)) return u;
+  var base = kind === "private" ? "https://www.ithinkair.com:3031/private/" : "https://www.ithinkair.com:3031/download/";
+  return base + encodeURIComponent(u);
+}
+function inlineLite(raw) {
+  var src = String(raw == null ? "" : raw);
+  var bucket = [];
+  function hold(html) { bucket.push(html); return "\u0000" + (bucket.length - 1) + "\u0000"; }
+  src = src.replace(/`([^`]+)`/g, function(_m, c) { return hold("<code>" + esc(c) + "</code>"); });
+  src = esc(src);
+  src = src.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  src = src.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  src = src.replace(/\*(?!\s)([^*]+)\*/g, "<em>$1</em>");
+  src = src.replace(/~~([^~]+)~~/g, "<s>$1</s>");
+  src = src.replace(/\u0000(\d+)\u0000/g, function(_m, n) { return bucket[Number(n)]; });
+  return src;
+}
+function makeLink(text, url, title) {
+  var htmlFile = isHtmlName(url);
+  var href = /^(https?:|mailto:)/i.test(url) ? url : safeMedia(url, htmlFile ? "private" : "download");
+  if (/^\s*javascript:/i.test(href)) href = "#";
+  var cls = htmlFile ? "md-link md-file-html" : "md-link";
+  var titleAttr = title ? ' title="' + esc(title) + '"' : "";
+  return '<a class="' + cls + '" href="' + esc(href) + '"' + titleAttr + ">" + inlineLite(text) + "</a>";
+}
+function inlineMd(raw, refs) {
+  var src = String(raw == null ? "" : raw);
+  var bucket = [];
+  function hold(html) { bucket.push(html); return "\u0000" + (bucket.length - 1) + "\u0000"; }
+  src = src.replace(/`([^`]+)`/g, function(_m, c) { return hold("<code>" + esc(c) + "</code>"); });
+  src = src.replace(/!\[([^\]]*)\]\(\s*<?([^>\s)]+)>?(?:\s+"([^"]*)")?\s*\)/g, function(_m, alt, url, title) {
+    var href = safeMedia(url, "download");
+    var titleAttr = title ? ' title="' + esc(title) + '"' : "";
+    return hold('<a class="md-img-link" href="' + esc(href) + '" download' + titleAttr + '><img src="' + esc(href) + '" alt="' + esc(alt) + '"></a>');
+  });
+  src = src.replace(/\[([^\]]+)\]\(\s*<?([^>\s)]+)>?(?:\s+"([^"]*)")?\s*\)/g, function(_m, text, url, title) {
+    return hold(makeLink(text, url, title || ""));
+  });
+  src = src.replace(/\[([^\]]+)\]\[([^\]]*)\]/g, function(m, text, id) {
+    var key = String(id || text).toLowerCase();
+    var ref = refs && refs[key];
+    if (!ref) return m;
+    return hold(makeLink(text, ref.href, ref.title || ""));
+  });
+  src = src.replace(/<((https?:\/\/)[^>\s]+)>/g, function(_m, url) { return hold(makeLink(url, url, "")); });
+  src = src.replace(/(^|[\s(])(https?:\/\/[^\s<]+)/g, function(_m, pre, url) {
+    var trimmed = url.replace(/[.,;:!?]+$/g, "");
+    var tail = url.slice(trimmed.length);
+    return pre + hold(makeLink(trimmed, trimmed, "")) + tail;
+  });
+  src = esc(src);
+  src = src.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  src = src.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  src = src.replace(/\*(?!\s)([^*]+)\*/g, "<em>$1</em>");
+  src = src.replace(/~~([^~]+)~~/g, "<s>$1</s>");
+  src = src.replace(/\u0000(\d+)\u0000/g, function(_m, n) { return bucket[Number(n)]; });
+  return src;
+}
+function listInfo(line) {
+  var m = /^(\s*)([-*+]|\d+[.)])\s+([\s\S]*)$/.exec(line);
+  if (!m) return null;
+  var indent = m[1].replace(/\t/g, "    ").length;
+  var ordered = /\d/.test(m[2]);
+  var rest = m[3];
+  var tm = /^\[([ xX])\]\s+(.*)$/.exec(rest);
+  if (tm) return { indent: indent, ordered: ordered, text: tm[2], hasTask: true, task: tm[1].toLowerCase() === "x" };
+  return { indent: indent, ordered: ordered, text: rest, hasTask: false, task: false };
+}
+function isSepLine(line) {
+  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+}
+function isTableStart(lines, i) {
+  return i + 1 < lines.length && lines[i].indexOf("|") >= 0 && isSepLine(lines[i + 1]);
+}
+function blockStarts(lines, i) {
+  var line = lines[i] || "";
+  if (/^(```|~~~)/.test(line)) return true;
+  if (/^(#{1,6})\s+/.test(line)) return true;
+  if (/^(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) return true;
+  if (/^>\s?/.test(line)) return true;
+  if (listInfo(line)) return true;
+  if (isTableStart(lines, i)) return true;
+  if (i + 1 < lines.length && /^={2,}\s*$/.test(lines[i + 1]) && line.trim() !== "") return true;
+  if (i + 1 < lines.length && /^-{2,}\s*$/.test(lines[i + 1]) && line.trim() !== "") return true;
+  if (/^(?: {4}|\t)/.test(line)) return true;
+  return false;
+}
+function splitTableRow(line) {
+  var s = String(line || "").trim();
+  if (s.charAt(0) === "|") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+  var cells = [];
+  var cur = "";
+  for (var i = 0; i < s.length; i++) {
+    if (s.charAt(i) === "\\" && i + 1 < s.length) { cur += s.charAt(i + 1); i++; continue; }
+    if (s.charAt(i) === "|") { cells.push(cur.trim()); cur = ""; continue; }
+    cur += s.charAt(i);
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+function parseTable(lines, start, refs) {
+  var header = splitTableRow(lines[start]);
+  var i = start + 2;
+  var body = [];
+  while (i < lines.length && lines[i].indexOf("|") >= 0 && lines[i].trim() !== "" && !isSepLine(lines[i])) {
+    body.push(splitTableRow(lines[i]));
+    i++;
+  }
+  var html = '<div class="md-table-wrap"><table><thead><tr>';
+  for (var c = 0; c < header.length; c++) html += "<th>" + inlineMd(header[c], refs) + "</th>";
+  html += "</tr></thead><tbody>";
+  for (var r = 0; r < body.length; r++) {
+    html += "<tr>";
+    for (var c2 = 0; c2 < header.length; c2++) html += "<td>" + inlineMd(body[r][c2] || "", refs) + "</td>";
+    html += "</tr>";
+  }
+  html += "</tbody></table></div>";
+  return { html: html, next: i };
+}
+function parseList(lines, start, refs) {
+  var first = listInfo(lines[start]);
+  if (!first) return { html: "", next: start + 1 };
+  var base = first.indent;
+  var ordered = first.ordered;
+  var tag = ordered ? "ol" : "ul";
+  var i = start;
+  var out = "<" + tag + ">";
+  while (i < lines.length) {
+    if (lines[i].trim() === "") {
+      var k = i + 1;
+      while (k < lines.length && lines[k].trim() === "") k++;
+      var nxt = k < lines.length ? listInfo(lines[k]) : null;
+      if (nxt && nxt.indent === base && nxt.ordered === ordered) i = k;
+      else break;
+    }
+    var info = listInfo(lines[i]);
+    if (!info || info.indent < base || info.indent > base || info.ordered !== ordered) break;
+    var text = info.text;
+    var hasTask = info.hasTask;
+    var checked = info.task;
+    i++;
+    var extras = [];
+    while (i < lines.length && lines[i].trim() !== "" && !listInfo(lines[i]) && /^\s+/.test(lines[i])) {
+      extras.push(lines[i].trim());
+      i++;
+    }
+    var nested = "";
+    if (i < lines.length && listInfo(lines[i]) && listInfo(lines[i]).indent > base) {
+      var sub = parseList(lines, i, refs);
+      nested = sub.html;
+      i = sub.next;
+    }
+    var inner = inlineMd(text, refs);
+    if (extras.length) {
+      var extraHtml = [];
+      for (var ex = 0; ex < extras.length; ex++) extraHtml.push(inlineMd(extras[ex], refs));
+      inner += "<br>" + extraHtml.join("<br>");
+    }
+    inner += nested;
+    if (hasTask) inner = '<input type="checkbox" disabled' + (checked ? " checked" : "") + "> " + inner;
+    out += "<li>" + inner + "</li>";
+  }
+  out += "</" + tag + ">";
+  if (i === start) i = start + 1;
+  return { html: out, next: i };
+}
+function renderMarkdown(src) {
+  var text = String(src == null ? "" : src).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  var lines = text.split("\n");
+  var refs = {};
+  var body = [];
+  for (var d = 0; d < lines.length; d++) {
+    var def = /^\[([^\]]+)\]:\s+(\S+)(?:\s+"([^"]*)")?\s*$/.exec(lines[d]);
+    if (def) refs[def[1].toLowerCase()] = { href: def[2], title: def[3] || "" };
+    else body.push(lines[d]);
+  }
+  var html = [];
+  var i = 0;
+  while (i < body.length) {
+    var line = body[i];
+    if (line.trim() === "") { i++; continue; }
+    var fence = /^(```|~~~)(.*)$/.exec(line);
+    if (fence) {
+      var mark = fence[1];
+      var buf = [];
+      i++;
+      while (i < body.length && body[i].indexOf(mark) !== 0) { buf.push(body[i]); i++; }
+      if (i < body.length) i++;
+      html.push('<pre class="md-pre"><code>' + esc(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (/^(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) { html.push("<hr>"); i++; continue; }
+    var hm = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(line);
+    if (hm) { html.push("<h" + hm[1].length + ">" + inlineMd(hm[2], refs) + "</h" + hm[1].length + ">"); i++; continue; }
+    if (i + 1 < body.length && /^={2,}\s*$/.test(body[i + 1])) { html.push("<h1>" + inlineMd(line.trim(), refs) + "</h1>"); i += 2; continue; }
+    if (i + 1 < body.length && /^-{2,}\s*$/.test(body[i + 1]) && line.trim() !== "") { html.push("<h2>" + inlineMd(line.trim(), refs) + "</h2>"); i += 2; continue; }
+    if (/^>\s?/.test(line)) {
+      var bq = [];
+      while (i < body.length && /^>\s?/.test(body[i])) { bq.push(body[i].replace(/^>\s?/, "")); i++; }
+      html.push('<blockquote class="md-quote">' + renderMarkdown(bq.join("\n")) + "</blockquote>");
+      continue;
+    }
+    if (isTableStart(body, i)) { var table = parseTable(body, i, refs); html.push(table.html); i = table.next; continue; }
+    if (listInfo(line)) { var lst = parseList(body, i, refs); html.push(lst.html); i = lst.next; continue; }
+    if (/^(?: {4}|\t)/.test(line)) {
+      var code = [];
+      while (i < body.length && (/^(?: {4}|\t)/.test(body[i]) || body[i].trim() === "")) {
+        if (body[i].trim() === "") {
+          var k2 = i + 1;
+          while (k2 < body.length && body[k2].trim() === "") k2++;
+          if (k2 >= body.length || !/^(?: {4}|\t)/.test(body[k2])) break;
+          code.push("");
+          i++;
+          continue;
+        }
+        code.push(body[i].replace(/^(?: {4}|\t)/, ""));
+        i++;
+      }
+      html.push('<pre class="md-pre"><code>' + esc(code.join("\n")) + "</code></pre>");
+      continue;
+    }
+    var para = [];
+    while (i < body.length && body[i].trim() !== "" && !blockStarts(body, i)) { para.push(body[i]); i++; }
+    if (!para.length) { i++; continue; }
+    var joined = inlineMd(para.join("\n"), refs).replace(/  \n/g, "<br>").replace(/\n/g, "<br>");
+    html.push("<p>" + joined + "</p>");
+  }
+  return html.join("");
+}
+function resolveLang() {
+  var params = null;
+  try { params = new URLSearchParams(window.location.search); } catch (e) { params = null; }
+  if (params) {
+    var q = params.get("lang");
+    if (q === "cn") return "zh";
+    if (q === "en") return "en";
+  }
+  var stored = null;
+  try { stored = localStorage.getItem("iThinkAir_UiLanguage"); } catch (e2) { stored = null; }
+  if (stored != null && stored !== "") return stored === "en" ? "en" : "zh";
+  var list = null;
+  try { list = navigator.languages; } catch (e3) { list = null; }
+  if (!list) return "zh";
+  for (var i = 0; i < list.length; i++) {
+    var tag = String(list[i] || "").toLowerCase();
+    if (tag === "zh" || tag.indexOf("zh-") === 0) return "zh";
+  }
+  return "en";
+}
+function applyTheme() {
+  document.documentElement.setAttribute("data-theme", theme === "dark" ? "dark" : "light");
+}
+function paintLang() {
+  var onEn = lang === "en";
+  document.getElementById("langZh").classList.toggle("is-on", !onEn);
+  document.getElementById("langEn").classList.toggle("is-on", onEn);
+  document.getElementById("langZhMenu").classList.toggle("is-on", !onEn);
+  document.getElementById("langEnMenu").classList.toggle("is-on", onEn);
+}
+function applyI18n() {
+  var nodes = document.querySelectorAll("[data-i18n]");
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  var ph = document.querySelectorAll("[data-i18n-ph]");
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute("placeholder", t(ph[j].getAttribute("data-i18n-ph")));
+  var aria = document.querySelectorAll("[data-i18n-aria]");
+  for (var a = 0; a < aria.length; a++) aria[a].setAttribute("aria-label", t(aria[a].getAttribute("data-i18n-aria")));
+  document.title = t("brand");
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  var fs = document.getElementById("filterStage");
+  fs.options[0].textContent = t("filterAll");
+  fs.options[1].textContent = t("stageJunior");
+  fs.options[2].textContent = t("stageSenior");
+  var fe = document.getElementById("filterExam");
+  fe.options[0].textContent = t("filterAll");
+  fe.options[1].textContent = t("yesWord");
+  fe.options[2].textContent = t("noWord");
+  paintLang();
+  paintFormHints("formCoach");
+  paintFormHints("formEdit");
+  updateCoachChrome();
+  updateEditChrome();
+  if (!document.getElementById("coachIdle").hidden) document.getElementById("coachIdle").textContent = t(coachNoteKey);
+  var zones = ["home", "coach", "records", "edit", "detail"];
+  for (var zi = 0; zi < zones.length; zi++) {
+    var errBox = document.getElementById(zones[zi] + "Error");
+    if (errBox && !errBox.hidden) {
+      document.getElementById(zones[zi] + "ErrorText").textContent = t(errBox.getAttribute("data-msg") || "errorMsg");
+      document.getElementById(zones[zi] + "Retry").textContent = t("retry");
+    }
+  }
+  if (detailData) renderDetail();
+  if (cachedRows) {
+    renderHomeFromCache();
+    renderRecordsFromCache();
+  }
+}
+function setLang(next) {
+  lang = next === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", lang === "en" ? "en" : "cn"); } catch (e) {}
+  applyI18n();
+  updateNavFit();
+}
+function stageLabel(v) {
+  if (v === "初中") return t("stageJunior");
+  if (v === "高中") return t("stageSenior");
+  return v || "";
+}
+function electiveLabel(v) {
+  if (v === "是") return t("electYes");
+  if (v === "否") return t("electNo");
+  return v || "";
+}
+function examLabel(v) {
+  if (v === "是") return t("examYes");
+  if (v === "否") return t("examNo");
+  return v || "";
+}
+function stageClass(v) {
+  if (v === "初中") return "badge moss";
+  if (v === "高中") return "badge ink";
+  return "badge quiet";
+}
+function examClass(v) {
+  if (v === "是") return "badge ochre";
+  return "badge quiet";
+}
+function badgeHtml(item) {
+  return '<span class="' + stageClass(item.stage) + '">' + esc(stageLabel(item.stage)) + "</span>"
+    + '<span class="badge quiet">' + esc(electiveLabel(item.elective)) + "</span>"
+    + '<span class="' + examClass(item.exam) + '">' + esc(examLabel(item.exam)) + "</span>";
+}
+function cardHtml(item, mode) {
+  var q = mode === "recent" ? clipText(item.question, 40) : item.question;
+  var th = mode === "recent" ? clipText(item.thoughts, 60) : item.thoughts;
+  var html = '<article class="sheet-card" data-row="' + item.n + '"' + (mode === "recent" ? ' tabindex="0" role="button"' : "") + ">";
+  html += '<div class="badge-row">' + badgeHtml(item) + "</div>";
+  html += '<div class="meta-line">';
+  html += "<span><em>" + esc(t("fieldStage")) + "</em>" + esc(stageLabel(item.stage)) + "</span>";
+  html += "<span><em>" + esc(t("fieldElective")) + "</em>" + esc(electiveLabel(item.elective)) + "</span>";
+  html += "<span><em>" + esc(t("fieldExam")) + "</em>" + esc(examLabel(item.exam)) + "</span>";
+  html += "</div>";
+  html += '<div class="field-line"><span class="k">' + esc(t("fieldQuestion")) + '</span><span class="v">' + esc(q) + "</span></div>";
+  html += '<div class="field-line"><span class="k">' + esc(t("fieldThoughts")) + '</span><span class="v thought">' + esc(th) + "</span></div>";
+  if (mode === "records") {
+    html += '<div class="card-actions">';
+    html += '<button type="button" class="btn btn-line" data-act="view">' + esc(t("viewFeedback")) + "</button>";
+    html += '<button type="button" class="btn btn-line" data-act="edit">' + esc(t("edit")) + "</button>";
+    html += '<button type="button" class="btn btn-danger" data-act="del">' + esc(t("delete")) + "</button>";
+    html += '<button type="button" class="btn" data-act="fork">' + esc(t("reCoach")) + "</button>";
+    html += "</div>";
+  }
+  html += "</article>";
+  return html;
+}
+function renderHomeFromCache() {
+  if (!cachedRows || page !== "home") return;
+  var rows = cachedRows;
+  var junior = 0, senior = 0, exam = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].stage === "初中") junior++;
+    if (rows[i].stage === "高中") senior++;
+    if (rows[i].exam === "是") exam++;
+  }
+  document.getElementById("statTotalNum").textContent = String(recordCount < 0 ? 0 : recordCount);
+  document.getElementById("statJuniorNum").textContent = String(junior);
+  document.getElementById("statSeniorNum").textContent = String(senior);
+  document.getElementById("statExamNum").textContent = String(exam);
+  var recent = rows.slice(0, 5);
+  var list = document.getElementById("recentList");
+  if (!recent.length) {
+    list.innerHTML = "";
+    document.getElementById("homeEmpty").hidden = false;
+    return;
+  }
+  document.getElementById("homeEmpty").hidden = true;
+  var html = "";
+  for (var j = 0; j < recent.length; j++) html += cardHtml(recent[j], "recent");
+  list.innerHTML = html;
+}
+function syncFilterUI() {
+  document.getElementById("filterStage").value = recordsFilter.stage;
+  document.getElementById("filterExam").value = recordsFilter.exam;
+  var search = document.getElementById("recordsSearch");
+  if (search.value !== recordsFilter.q) search.value = recordsFilter.q;
+}
+function filteredRows() {
+  var rows = cachedRows || [];
+  var q = String(recordsFilter.q || "").trim().toLowerCase();
+  var out = [];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (recordsFilter.stage !== "all" && r.stage !== recordsFilter.stage) continue;
+    if (recordsFilter.exam !== "all" && r.exam !== recordsFilter.exam) continue;
+    if (q) {
+      var hay = (String(r.question) + "\n" + String(r.thoughts)).toLowerCase();
+      if (hay.indexOf(q) < 0) continue;
+    }
+    out.push(r);
+  }
+  return out;
+}
+function renderRecordsFromCache() {
+  if (!cachedRows || page !== "records") return;
+  syncFilterUI();
+  var rows = filteredRows();
+  var list = document.getElementById("recordsList");
+  if (!rows.length) {
+    list.innerHTML = "";
+    document.getElementById("recordsEmpty").hidden = false;
+    return;
+  }
+  document.getElementById("recordsEmpty").hidden = true;
+  var html = "";
+  for (var i = 0; i < rows.length; i++) html += cardHtml(rows[i], "records");
+  list.innerHTML = html;
+}
+function showAreaError(zone, fn, messageKey) {
+  retryFns[zone] = fn;
+  var box = document.getElementById(zone + "Error");
+  var text = document.getElementById(zone + "ErrorText");
+  var btn = document.getElementById(zone + "Retry");
+  if (!box) return;
+  var key = messageKey || "errorMsg";
+  box.setAttribute("data-msg", key);
+  box.hidden = false;
+  text.textContent = t(key);
+  btn.textContent = t("retry");
+}
+function hideAreaError(zone) {
+  var box = document.getElementById(zone + "Error");
+  if (box) box.hidden = true;
+}
+async function reloadTable() {
+  var countText = await callAppBridge({type:"GetRecordCount", data:"成因链辅导/默认表格"});
+  var csvText = await callAppBridge({type:"GetTableCSV", data:"成因链辅导/默认表格", payload:"学段,高中选考地理,正在考试,地理问题,已有思路"});
+  return { count: parseCount(countText), rows: parseRows(csvText) };
+}
+function applyTableData(data) {
+  recordCount = data.count;
+  cachedRows = data.rows;
+}
+function draftHasContent() {
+  return String(draft["地理问题"] || "").trim() !== "" || String(draft["已有思路"] || "").trim() !== "";
+}
+function formVisibleText() {
+  var q = document.getElementById("formCoach_地理问题").value.trim();
+  var th = document.getElementById("formCoach_已有思路").value.trim();
+  return q !== "" || th !== "";
+}
+function readForm(prefix) {
+  var stage = document.getElementById(prefix + "_学段").value === "高中" ? "高中" : "初中";
+  var elective = document.getElementById(prefix + "_高中选考地理").checked ? "是" : "否";
+  if (stage === "初中") elective = "否";
+  var exam = document.getElementById(prefix + "_正在考试").checked ? "是" : "否";
+  var question = document.getElementById(prefix + "_地理问题").value;
+  var thoughts = document.getElementById(prefix + "_已有思路").value;
+  if (String(thoughts).trim() === "") thoughts = "";
+  return { "学段": stage, "高中选考地理": elective, "正在考试": exam, "地理问题": question, "已有思路": thoughts };
+}
+function stageBtnIds(prefix) {
+  if (prefix === "formCoach") return ["formCoachStageJunior", "formCoachStageSenior"];
+  return ["formEditStageJunior", "formEditStageSenior"];
+}
+function paintStage(prefix) {
+  var stage = document.getElementById(prefix + "_学段").value === "高中" ? "高中" : "初中";
+  var ids = stageBtnIds(prefix);
+  document.getElementById(ids[0]).classList.toggle("is-on", stage !== "高中");
+  document.getElementById(ids[1]).classList.toggle("is-on", stage === "高中");
+}
+function setFormEditable(prefix, editable) {
+  var stage = document.getElementById(prefix + "_学段").value === "高中" ? "高中" : "初中";
+  document.getElementById(prefix + "_地理问题").readOnly = !editable;
+  document.getElementById(prefix + "_已有思路").readOnly = !editable;
+  document.getElementById(prefix + "_正在考试").disabled = !editable;
+  document.getElementById(prefix + "_高中选考地理").disabled = !editable || stage === "初中";
+  var ids = stageBtnIds(prefix);
+  document.getElementById(ids[0]).disabled = !editable;
+  document.getElementById(ids[1]).disabled = !editable;
+}
+function fillForm(prefix, data) {
+  var stage = data["学段"] === "高中" ? "高中" : "初中";
+  document.getElementById(prefix + "_学段").value = stage;
+  var electiveOn = data["高中选考地理"] === "是" && stage === "高中";
+  document.getElementById(prefix + "_高中选考地理").checked = electiveOn;
+  document.getElementById(prefix + "_正在考试").checked = data["正在考试"] === "是";
+  document.getElementById(prefix + "_地理问题").value = data["地理问题"] || "";
+  document.getElementById(prefix + "_已有思路").value = data["已有思路"] || "";
+  paintStage(prefix);
+  paintFormHints(prefix);
+}
+function paintFormHints(prefix) {
+  var stage = document.getElementById(prefix + "_学段").value === "高中" ? "高中" : "初中";
+  var electiveOn = document.getElementById(prefix + "_高中选考地理").checked && stage === "高中";
+  var examOn = document.getElementById(prefix + "_正在考试").checked;
+  var qEmpty = document.getElementById(prefix + "_地理问题").value.trim() === "";
+  var tEmpty = document.getElementById(prefix + "_已有思路").value.trim() === "";
+  var electHint = document.getElementById(prefix === "formCoach" ? "formCoachElectHint" : "formEditElectHint");
+  var qHint = document.getElementById(prefix === "formCoach" ? "formCoachQuestionHint" : "formEditQuestionHint");
+  var tHint = document.getElementById(prefix === "formCoach" ? "formCoachThoughtHint" : "formEditThoughtHint");
+  var banner = document.getElementById(prefix === "formCoach" ? "coachExamBanner" : "editExamBanner");
+  var electState = document.getElementById(prefix === "formCoach" ? "formCoachElectState" : "formEditElectState");
+  var examState = document.getElementById(prefix === "formCoach" ? "formCoachExamState" : "formEditExamState");
+  electHint.hidden = stage !== "初中";
+  qHint.hidden = !qEmpty;
+  tHint.hidden = !tEmpty;
+  banner.hidden = !examOn;
+  electState.textContent = electiveOn ? t("electYes") : t("electNo");
+  examState.textContent = examOn ? t("examYes") : t("examNo");
+}
+function clearCoachPaper() {
+  document.getElementById("coachOutput").innerHTML = "";
+  document.getElementById("coachWait").hidden = true;
+  document.getElementById("coachIdle").hidden = false;
+  coachNoteKey = "paperIdle";
+  document.getElementById("coachIdle").textContent = t("paperIdle");
+}
+function showCoachMarkdown(md) {
+  document.getElementById("coachWait").hidden = true;
+  document.getElementById("coachIdle").hidden = true;
+  document.getElementById("coachOutput").innerHTML = renderMarkdown(md);
+}
+function showCoachWait(examYes) {
+  document.getElementById("coachOutput").innerHTML = "";
+  document.getElementById("coachIdle").hidden = true;
+  document.getElementById("coachWait").hidden = false;
+  document.getElementById("coachWaitText").textContent = examYes ? t("waitExam") : t("waitNormal");
+}
+function showCoachNote(key) {
+  coachNoteKey = key;
+  document.getElementById("coachWait").hidden = true;
+  document.getElementById("coachOutput").innerHTML = "";
+  document.getElementById("coachIdle").hidden = false;
+  document.getElementById("coachIdle").textContent = t(key);
+}
+function updateArrows() {
+  var unknown = recordCount < 0;
+  document.getElementById("browsePrev").disabled = unknown || browseRow <= 1;
+  document.getElementById("browseNext").disabled = unknown || recordCount === 0 || browseRow >= recordCount;
+}
+function updateCoachChrome() {
+  var btn = document.getElementById("coachSubmitBtn");
+  var viewing = document.getElementById("coachViewing");
+  var qEmpty = document.getElementById("formCoach_地理问题").value.trim() === "";
+  var examOn = document.getElementById("formCoach_正在考试").checked;
+  if (browseRow >= 1) {
+    viewing.hidden = false;
+    viewing.textContent = t("viewing", { n: browseRow });
+    btn.textContent = t("forkNew");
+    btn.disabled = false;
+  } else {
+    viewing.hidden = true;
+    btn.textContent = examOn ? t("bookReview") : t("askCoach");
+    btn.disabled = submitting || qEmpty;
+  }
+  updateArrows();
+  if (polls.coach.on && !document.getElementById("coachWait").hidden) showCoachWait(polls.coach.exam);
+}
+function updateEditChrome() {
+  var qEmpty = document.getElementById("formEdit_地理问题").value.trim() === "";
+  document.getElementById("editSave").disabled = saving || qEmpty;
+  document.getElementById("editCancel").disabled = saving;
+}
+function onStageClick(prefix, stage) {
+  if (prefix === "formCoach" && browseRow >= 1) return;
+  document.getElementById(prefix + "_学段").value = stage;
+  if (stage === "初中") document.getElementById(prefix + "_高中选考地理").checked = false;
+  paintStage(prefix);
+  setFormEditable(prefix, prefix === "formEdit" ? true : browseRow < 1);
+  paintFormHints(prefix);
+  if (prefix === "formCoach" && browseRow === 0) draft = readForm("formCoach");
+  if (prefix === "formCoach") updateCoachChrome();
+  else updateEditChrome();
+}
+function onFormInput(prefix) {
+  if (prefix === "formCoach" && browseRow >= 1) return;
+  if (prefix === "formCoach") {
+    var stage = document.getElementById("formCoach_学段").value;
+    if (stage !== "高中") document.getElementById("formCoach_高中选考地理").checked = false;
+    draft = readForm("formCoach");
+    paintFormHints("formCoach");
+    updateCoachChrome();
+    return;
+  }
+  if (document.getElementById("formEdit_学段").value !== "高中") document.getElementById("formEdit_高中选考地理").checked = false;
+  paintFormHints("formEdit");
+  updateEditChrome();
+}
+function stopPoll(which) {
+  var p = polls[which];
+  p.token++;
+  p.on = false;
+  if (p.timer) { clearTimeout(p.timer); p.timer = null; }
+}
+function startPoll(which, row, examYes) {
+  stopPoll(which);
+  var p = polls[which];
+  var token = p.token;
+  p.on = true;
+  p.row = row;
+  p.exam = !!examYes;
+  var started = Date.now();
+  if (which === "coach") { hideAreaError("coach"); showCoachWait(p.exam); }
+  else { hideAreaError("detail"); showDetailWait(p.exam); }
+  async function tick() {
+    if (p.token !== token) return;
+    if (Date.now() - started >= 1800000) {
+      p.on = false;
+      if (which === "coach") {
+        document.getElementById("coachWait").hidden = true;
+        document.getElementById("coachIdle").hidden = true;
+        showAreaError("coach", function() { startPoll("coach", row, examYes); }, "timeoutMsg");
+        updateCoachChrome();
+      } else {
+        showDetailNote(t("timeoutMsg"));
+        showAreaError("detail", function() { startPoll("detail", row, examYes); }, "timeoutMsg");
+      }
+      return;
+    }
+    try {
+      var v = await callAppBridge({type:"GetCellValue", data:"成因链辅导/默认表格", payload:"辅导反馈/" + row});
+      if (p.token !== token) return;
+      if (!isBlankFeedback(v)) {
+        p.on = false;
+        var text = String(v);
+        if (which === "coach") {
+          showCoachMarkdown(text);
+          updateCoachChrome();
+        } else if (detailData && detailRow === row) {
+          detailData.feedback = text;
+          hideAreaError("detail");
+          var box = document.getElementById("detailFeedback");
+          var wait = document.getElementById("detailWait");
+          var empty = document.getElementById("detailEmpty");
+          if (wait) wait.hidden = true;
+          if (empty) empty.hidden = true;
+          if (box) box.innerHTML = renderMarkdown(text);
+        }
+        return;
+      }
+    } catch (err) {
+      if (p.token !== token) return;
+      p.on = false;
+      if (which === "coach") showAreaError("coach", function() { startPoll("coach", row, examYes); });
+      else showAreaError("detail", function() { startPoll("detail", row, examYes); });
+      return;
+    }
+    if (p.token !== token) return;
+    p.timer = setTimeout(tick, 2000);
+  }
+  tick();
+}
+function showDetailWait(examYes) {
+  var wait = document.getElementById("detailWait");
+  var text = document.getElementById("detailWaitText");
+  var box = document.getElementById("detailFeedback");
+  var empty = document.getElementById("detailEmpty");
+  if (!wait) return;
+  wait.hidden = false;
+  if (text) text.textContent = examYes ? t("waitExam") : t("waitNormal");
+  if (box) box.innerHTML = "";
+  if (empty) empty.hidden = true;
+}
+function showDetailNote(message) {
+  var wait = document.getElementById("detailWait");
+  var empty = document.getElementById("detailEmpty");
+  if (wait) wait.hidden = true;
+  if (empty) { empty.hidden = false; empty.textContent = message; }
+}
+async function readRecord(row) {
+  var data = { n: row };
+  for (var i = 0; i < FIELD_ORDER.length; i++) {
+    var field = FIELD_ORDER[i];
+    var v = await callAppBridge({type:"GetCellValue", data:"成因链辅导/默认表格", payload: field + "/" + row});
+    data[field] = v == null ? "" : String(v);
+  }
+  var fb = await callAppBridge({type:"GetCellValue", data:"成因链辅导/默认表格", payload:"辅导反馈/" + row});
+  data.feedback = fb == null ? "" : String(fb);
+  data.stage = data["学段"];
+  data.elective = data["高中选考地理"];
+  data.exam = data["正在考试"];
+  data.question = data["地理问题"];
+  data.thoughts = data["已有思路"];
+  return data;
+}
+async function presentRecord(row, pollIfEmpty) {
+  var token = ++presentToken;
+  stopPoll("coach");
+  showCoachNote("loading");
+  var rec = await readRecord(row);
+  if (token !== presentToken) return;
+  browseRow = row;
+  fillForm("formCoach", rec);
+  setFormEditable("formCoach", false);
+  if (!isBlankFeedback(rec.feedback)) {
+    stopPoll("coach");
+    showCoachMarkdown(rec.feedback);
+  } else if (pollIfEmpty) {
+    startPoll("coach", row, rec["正在考试"] === "是");
+  } else {
+    showCoachNote("noFeedback");
+  }
+  updateCoachChrome();
+}
+function renderDetail() {
+  if (!detailData) return;
+  var d = detailData;
+  var html = '<div class="badge-row">' + badgeHtml(d) + "</div>";
+  html += '<dl class="paper-dl">';
+  html += "<dt>" + esc(t("fieldStage")) + "</dt><dd>" + esc(stageLabel(d.stage)) + "</dd>";
+  html += "<dt>" + esc(t("fieldElective")) + "</dt><dd>" + esc(electiveLabel(d.elective)) + "</dd>";
+  html += "<dt>" + esc(t("fieldExam")) + "</dt><dd>" + esc(examLabel(d.exam)) + "</dd>";
+  html += "<dt>" + esc(t("fieldQuestion")) + "</dt><dd>" + esc(d.question) + "</dd>";
+  html += "<dt>" + esc(t("fieldThoughts")) + "</dt><dd>" + esc(d.thoughts) + "</dd>";
+  html += "</dl>";
+  html += "<h3>" + esc(t("feedbackTitle")) + "</h3>";
+  html += '<div id="detailWait" class="wait-box" hidden><i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i><span id="detailWaitText"></span></div>';
+  html += '<div id="detailFeedback" class="md-body"></div>';
+  html += '<p id="detailEmpty" class="muted" hidden></p>';
+  document.getElementById("detailBody").innerHTML = html;
+  if (polls.detail.on && polls.detail.row === detailRow) showDetailWait(polls.detail.exam);
+  else if (!isBlankFeedback(d.feedback)) document.getElementById("detailFeedback").innerHTML = renderMarkdown(d.feedback);
+  else {
+    document.getElementById("detailEmpty").hidden = false;
+    document.getElementById("detailEmpty").textContent = t("noFeedback");
+  }
+}
+function modalElement(name) {
+  if (name === "detail") return document.getElementById("detailModal");
+  if (name === "edit") return document.getElementById("editModal");
+  if (name === "confirm") return document.getElementById("confirmModal");
+  return document.getElementById("htmlModal");
+}
+function openModal(name) {
+  var el = modalElement(name);
+  var already = !el.hidden;
+  el.hidden = false;
+  if (!already) modalStack.push(name);
+}
+function closeModal(name) {
+  var el = modalElement(name);
+  if (el) el.hidden = true;
+  var next = [];
+  for (var i = 0; i < modalStack.length; i++) if (modalStack[i] !== name) next.push(modalStack[i]);
+  modalStack = next;
+}
+function closeDetail() {
+  stopPoll("detail");
+  closeModal("detail");
+  detailData = null;
+  detailRow = 0;
+}
+function closeEdit() {
+  closeModal("edit");
+  editRow = 0;
+}
+function closeHtml() {
+  closeModal("html");
+  document.getElementById("htmlFrame").setAttribute("src", "about:blank");
+}
+function resolveConfirm(ok) {
+  closeModal("confirm");
+  var fn = confirmResolver;
+  confirmResolver = null;
+  if (fn) fn(!!ok);
+}
+function confirmDialog(message) {
+  return new Promise(function(resolve) {
+    confirmResolver = resolve;
+    document.getElementById("confirmText").textContent = message;
+    openModal("confirm");
+  });
+}
+function openHtmlViewer(href) {
+  document.getElementById("htmlFrame").setAttribute("src", href);
+  openModal("html");
+}
+function onRichClick(e) {
+  var node = e.target;
+  var a = node && node.closest ? node.closest("a") : null;
+  if (!a) return;
+  if (a.classList.contains("md-file-html")) {
+    e.preventDefault();
+    openHtmlViewer(a.getAttribute("href"));
+  }
+}
+async function openDetail(row, zone) {
+  try {
+    var data = await readRecord(row);
+    stopPoll("detail");
+    detailRow = row;
+    detailData = data;
+    hideAreaError("detail");
+    renderDetail();
+    openModal("detail");
+    if (isBlankFeedback(data.feedback)) startPoll("detail", row, data["正在考试"] === "是");
+  } catch (err) {
+    showAreaError(zone, function() { openDetail(row, zone); });
+  }
+}
+async function openEdit(row) {
+  try {
+    var data = await readRecord(row);
+    closeDetail();
+    editRow = row;
+    editFeedback = data.feedback;
+    fillForm("formEdit", data);
+    setFormEditable("formEdit", true);
+    paintFormHints("formEdit");
+    if (isBlankFeedback(data.feedback)) {
+      document.getElementById("editFeedback").innerHTML = "";
+      document.getElementById("editFeedbackEmpty").hidden = false;
+      document.getElementById("editFeedbackEmpty").textContent = t("noFeedback");
+    } else {
+      document.getElementById("editFeedbackEmpty").hidden = true;
+      document.getElementById("editFeedback").innerHTML = renderMarkdown(data.feedback);
+    }
+    hideAreaError("edit");
+    updateEditChrome();
+    openModal("edit");
+  } catch (err) {
+    showAreaError(page === "records" ? "records" : (page === "coach" ? "coach" : "home"), function() { openEdit(row); });
+  }
+}
+async function saveEdit() {
+  if (saving || editRow < 1) return;
+  var data = readForm("formEdit");
+  if (data["学段"] === "初中") data["高中选考地理"] = "否";
+  if (String(data["地理问题"]).trim() === "") {
+    paintFormHints("formEdit");
+    updateEditChrome();
+    return;
+  }
+  if (String(data["已有思路"]).trim() === "") data["已有思路"] = "";
+  saving = true;
+  updateEditChrome();
+  var row = editRow;
+  try {
+    for (var i = 0; i < FIELD_ORDER.length; i++) {
+      var field = FIELD_ORDER[i];
+      await callAppBridge({type:"SetCellValue", data:"成因链辅导/默认表格", payload: field + "/" + row + "/" + data[field]});
+    }
+  } catch (err) {
+    saving = false;
+    updateEditChrome();
+    showAreaError("edit", function() { saveEdit(); });
+    return;
+  }
+  saving = false;
+  if (browseRow === row) {
+    fillForm("formCoach", data);
+    setFormEditable("formCoach", false);
+    updateCoachChrome();
+  }
+  closeEdit();
+  await enterPage(page);
+}
+async function deleteRecord(row) {
+  var ok = await confirmDialog(t("confirmDelete"));
+  if (!ok) return;
+  try {
+    await callAppBridge({type:"DeleteRecord", data:"成因链辅导/默认表格", payload: row.toString()});
+  } catch (err) {
+    var zone = !document.getElementById("detailModal").hidden ? "detail" : (page === "records" ? "records" : (page === "coach" ? "coach" : "home"));
+    showAreaError(zone, function() { deleteRecord(row); });
+    return;
+  }
+  if (browseRow === row) {
+    browseRow = 0;
+    stopPoll("coach");
+    clearCoachPaper();
+    fillForm("formCoach", draft);
+    setFormEditable("formCoach", true);
+    updateCoachChrome();
+  } else if (browseRow > row) {
+    browseRow = browseRow - 1;
+  }
+  if (editRow === row) closeEdit();
+  else if (editRow > row) editRow = editRow - 1;
+  closeDetail();
+  await enterPage(page);
+}
+async function reCoach(row) {
+  if (draftHasContent()) {
+    var ok = await confirmDialog(t("confirmOverwrite"));
+    if (!ok) return;
+  }
+  var data;
+  try { data = await readRecord(row); }
+  catch (err) {
+    var zone = !document.getElementById("detailModal").hidden ? "detail" : (page === "records" ? "records" : "home");
+    showAreaError(zone, function() { reCoach(row); });
+    return;
+  }
+  var next = emptyDraft();
+  next["学段"] = data["学段"] === "高中" ? "高中" : "初中";
+  next["高中选考地理"] = next["学段"] === "高中" && data["高中选考地理"] === "是" ? "是" : "否";
+  next["正在考试"] = data["正在考试"] === "是" ? "是" : "否";
+  next["地理问题"] = data["地理问题"] || "";
+  next["已有思路"] = String(data["已有思路"] || "").trim() === "" ? "" : data["已有思路"];
+  draft = next;
+  browseRow = 0;
+  stopPoll("coach");
+  clearCoachPaper();
+  fillForm("formCoach", draft);
+  setFormEditable("formCoach", true);
+  updateCoachChrome();
+  closeDetail();
+  closeEdit();
+  await navigateTo("coach");
+}
+async function resetToBlankDraft() {
+  stopPoll("coach");
+  browseRow = 0;
+  draft = emptyDraft();
+  clearCoachPaper();
+  fillForm("formCoach", draft);
+  setFormEditable("formCoach", true);
+  updateCoachChrome();
+}
+async function startFresh() {
+  if (draftHasContent()) {
+    var ok = await confirmDialog(t("confirmOverwrite"));
+    if (!ok) return;
+  }
+  await resetToBlankDraft();
+  await navigateTo("coach");
+}
+async function clearDraftAction() {
+  if (draftHasContent() || formVisibleText()) {
+    var ok = await confirmDialog(t("confirmOverwrite"));
+    if (!ok) return;
+  }
+  await resetToBlankDraft();
+}
+async function forkNew() {
+  var data = readForm("formCoach");
+  draft = data;
+  browseRow = 0;
+  stopPoll("coach");
+  clearCoachPaper();
+  fillForm("formCoach", draft);
+  setFormEditable("formCoach", true);
+  updateCoachChrome();
+}
+async function submitCoach() {
+  if (submitting || browseRow !== 0) return;
+  var data = readForm("formCoach");
+  if (data["学段"] === "初中") data["高中选考地理"] = "否";
+  if (String(data["地理问题"]).trim() === "") {
+    paintFormHints("formCoach");
+    updateCoachChrome();
+    return;
+  }
+  if (String(data["已有思路"]).trim() === "") data["已有思路"] = "";
+  submitting = true;
+  updateCoachChrome();
+  var payload = JSON.stringify({
+    "学段": data["学段"],
+    "高中选考地理": data["高中选考地理"],
+    "正在考试": data["正在考试"],
+    "地理问题": data["地理问题"],
+    "已有思路": data["已有思路"]
+  });
+  try {
+    await callAppBridge({type:"SubmitRecord", data:"成因链辅导", payload: payload});
+  } catch (err) {
+    submitting = false;
+    updateCoachChrome();
+    showAreaError("coach", function() { submitCoach(); });
+    return;
+  }
+  submitting = false;
+  draft = emptyDraft();
+  browseRow = 1;
+  try {
+    recordCount = parseCount(await callAppBridge({type:"GetRecordCount", data:"成因链辅导/默认表格"}));
+    await presentRecord(1, true);
+    hideAreaError("coach");
+  } catch (err2) {
+    fillForm("formCoach", data);
+    setFormEditable("formCoach", false);
+    browseRow = 1;
+    updateCoachChrome();
+    showAreaError("coach", function() { recoverSubmitted(data); });
+  }
+}
+async function recoverSubmitted(data) {
+  try {
+    recordCount = parseCount(await callAppBridge({type:"GetRecordCount", data:"成因链辅导/默认表格"}));
+    await presentRecord(1, true);
+    hideAreaError("coach");
+  } catch (err) {
+    fillForm("formCoach", data);
+    setFormEditable("formCoach", false);
+    updateCoachChrome();
+    showAreaError("coach", function() { recoverSubmitted(data); });
+  }
+}
+async function browseBy(delta) {
+  if (browseRow === 0) draft = readForm("formCoach");
+  var countText;
+  try { countText = await callAppBridge({type:"GetRecordCount", data:"成因链辅导/默认表格"}); }
+  catch (err) {
+    showAreaError("coach", function() { browseBy(delta); });
+    return;
+  }
+  recordCount = parseCount(countText);
+  var next = browseRow;
+  if (delta > 0) {
+    if (recordCount === 0 || browseRow >= recordCount) { updateArrows(); return; }
+    next = browseRow < 1 ? 1 : browseRow + 1;
+  } else {
+    if (browseRow <= 1) { updateArrows(); return; }
+    next = browseRow - 1;
+  }
+  stopPoll("coach");
+  try {
+    await presentRecord(next, false);
+    hideAreaError("coach");
+  } catch (err2) {
+    showAreaError("coach", function() { browseBy(delta); });
+  }
+}
+async function enterHome() {
+  var token = ++loadToken;
+  document.getElementById("statTotalNum").textContent = "…";
+  document.getElementById("statJuniorNum").textContent = "…";
+  document.getElementById("statSeniorNum").textContent = "…";
+  document.getElementById("statExamNum").textContent = "…";
+  document.getElementById("recentList").innerHTML = "";
+  document.getElementById("homeEmpty").hidden = true;
+  hideAreaError("home");
+  cachedRows = null;
+  var data;
+  try { data = await reloadTable(); }
+  catch (err) {
+    if (token !== loadToken) return;
+    recordCount = -1;
+    document.getElementById("statTotalNum").textContent = "—";
+    document.getElementById("statJuniorNum").textContent = "—";
+    document.getElementById("statSeniorNum").textContent = "—";
+    document.getElementById("statExamNum").textContent = "—";
+    showAreaError("home", function() { enterHome(); });
+    return;
+  }
+  if (token !== loadToken) return;
+  applyTableData(data);
+  hideAreaError("home");
+  renderHomeFromCache();
+}
+async function enterCoach() {
+  var token = ++loadToken;
+  hideAreaError("coach");
+  var data;
+  try { data = await reloadTable(); }
+  catch (err) {
+    if (token !== loadToken) return;
+    recordCount = -1;
+    updateArrows();
+    showAreaError("coach", function() { enterCoach(); });
+    return;
+  }
+  if (token !== loadToken) return;
+  applyTableData(data);
+  if (polls.coach.on && browseRow === polls.coach.row && browseRow >= 1) {
+    setFormEditable("formCoach", false);
+    updateCoachChrome();
+    return;
+  }
+  if (browseRow >= 1) {
+    if (recordCount === 0 || browseRow > recordCount) {
+      browseRow = 0;
+      fillForm("formCoach", draft);
+      setFormEditable("formCoach", true);
+      if (!polls.coach.on) clearCoachPaper();
+    } else {
+      try { await presentRecord(browseRow, false); }
+      catch (err2) { showAreaError("coach", function() { enterCoach(); }); return; }
+    }
+  } else {
+    fillForm("formCoach", draft);
+    setFormEditable("formCoach", true);
+    if (!polls.coach.on && document.getElementById("coachOutput").innerHTML === "" && document.getElementById("coachWait").hidden) {
+      clearCoachPaper();
+    }
+  }
+  updateCoachChrome();
+}
+async function enterRecords() {
+  var token = ++loadToken;
+  document.getElementById("recordsList").innerHTML = "";
+  document.getElementById("recordsEmpty").hidden = true;
+  hideAreaError("records");
+  cachedRows = null;
+  syncFilterUI();
+  var data;
+  try { data = await reloadTable(); }
+  catch (err) {
+    if (token !== loadToken) return;
+    showAreaError("records", function() { enterRecords(); });
+    return;
+  }
+  if (token !== loadToken) return;
+  applyTableData(data);
+  hideAreaError("records");
+  renderRecordsFromCache();
+}
+async function enterPage(name) {
+  if (name === "home") await enterHome();
+  else if (name === "coach") await enterCoach();
+  else await enterRecords();
+}
+function paintNav() {
+  var ids = { home: ["navHome", "mobileHome"], coach: ["navCoach", "mobileCoach"], records: ["navRecords", "mobileRecords"] };
+  var keys = ["home", "coach", "records"];
+  for (var i = 0; i < keys.length; i++) {
+    var on = keys[i] === page;
+    for (var j = 0; j < ids[keys[i]].length; j++) document.getElementById(ids[keys[i]][j]).classList.toggle("is-active", on);
+  }
+}
+function paintPages() {
+  document.getElementById("pageHome").hidden = page !== "home";
+  document.getElementById("pageCoach").hidden = page !== "coach";
+  document.getElementById("pageRecords").hidden = page !== "records";
+}
+async function navigateTo(name, opt) {
+  opt = opt || {};
+  document.getElementById("mobileMenu").hidden = true;
+  if (!opt.fromHistory && name !== page) pageHistory.push({ page: page, scroll: window.scrollY || window.pageYOffset || 0 });
+  var changed = name !== page;
+  page = name;
+  paintNav();
+  paintPages();
+  if (!opt.fromHistory && changed) window.scrollTo(0, 0);
+  await enterPage(name);
+  if (opt.fromHistory) window.scrollTo(0, opt.scroll || 0);
+}
+function airBack() {
+  if (modalStack.length) {
+    var top = modalStack[modalStack.length - 1];
+    if (top === "confirm") resolveConfirm(false);
+    else if (top === "html") closeHtml();
+    else if (top === "edit") { if (!saving) closeEdit(); }
+    else if (top === "detail") closeDetail();
+    else closeModal(top);
+    return "false";
+  }
+  if (pageHistory.length) {
+    var prev = pageHistory.pop();
+    navigateTo(prev.page, { fromHistory: true, scroll: prev.scroll });
+    return "false";
+  }
+  return "true";
+}
+function clearFilter() {
+  recordsFilter = { stage: "all", exam: "all", q: "" };
+  syncFilterUI();
+  if (cachedRows) renderRecordsFromCache();
+  else enterRecords();
+}
+var fitting = false;
+function updateNavFit() {
+  if (fitting) return;
+  fitting = true;
+  var nav = document.getElementById("topNav");
+  nav.classList.remove("nav-compact");
+  var logo = document.getElementById("logoBtn");
+  var links = document.getElementById("navLinks");
+  var langBtn = document.getElementById("langSwitch");
+  var compact = links.scrollWidth > links.clientWidth + 1 || langBtn.scrollWidth > langBtn.clientWidth + 1 || nav.scrollWidth > nav.clientWidth + 1;
+  if (!compact && logo.scrollWidth > logo.clientWidth + 1 && links.offsetWidth + langBtn.offsetWidth + 96 > nav.clientWidth) compact = true;
+  nav.classList.toggle("nav-compact", compact);
+  if (!compact) document.getElementById("mobileMenu").hidden = true;
+  fitting = false;
+}
+function bindKeyboard() {
+  var vv = window.visualViewport;
+  function focusedField() {
+    var ae = document.activeElement;
+    if (!ae || !ae.matches || !ae.matches("input, textarea, select")) return null;
+    if (ae.type === "hidden" || ae.type === "checkbox") return null;
+    return ae;
+  }
+  function bump() {
+    var ae = focusedField();
+    if (!ae) return;
+    var kb = 0;
+    if (vv) kb = Math.max(0, window.innerHeight - vv.height - (vv.offsetTop || 0));
+    var pad = Math.max(280, kb + 140);
+    document.getElementById("pageRoot").style.paddingBottom = pad + "px";
+    var scroller = ae.closest ? ae.closest(".modal-scroll") : null;
+    if (scroller) scroller.style.paddingBottom = pad + "px";
+    setTimeout(function() {
+      try { ae.scrollIntoView({ block: "center", behavior: "smooth" }); }
+      catch (e) { ae.scrollIntoView(true); }
+    }, 280);
+  }
+  document.addEventListener("focusin", function(e) {
+    if (e.target && e.target.matches && e.target.matches("textarea, input[type='search'], select")) bump();
+  });
+  document.addEventListener("focusout", function() {
+    setTimeout(function() {
+      if (!focusedField()) {
+        document.getElementById("pageRoot").style.paddingBottom = "";
+        var nodes = document.querySelectorAll(".modal-scroll");
+        for (var i = 0; i < nodes.length; i++) nodes[i].style.paddingBottom = "";
+      }
+    }, 180);
+  });
+  if (vv) vv.addEventListener("resize", bump);
+}
+function bindEvents() {
+  document.getElementById("logoBtn").addEventListener("click", function() { parent.closeFullHtml(false); });
+  document.getElementById("navHome").addEventListener("click", function() { navigateTo("home"); });
+  document.getElementById("mobileHome").addEventListener("click", function() { navigateTo("home"); });
+  document.getElementById("navCoach").addEventListener("click", function() { navigateTo("coach"); });
+  document.getElementById("mobileCoach").addEventListener("click", function() { navigateTo("coach"); });
+  document.getElementById("navRecords").addEventListener("click", function() {
+    recordsFilter = { stage: "all", exam: "all", q: "" };
+    navigateTo("records");
+  });
+  document.getElementById("mobileRecords").addEventListener("click", function() {
+    recordsFilter = { stage: "all", exam: "all", q: "" };
+    navigateTo("records");
+  });
+  document.getElementById("navBurger").addEventListener("click", function(e) {
+    e.stopPropagation();
+    var menu = document.getElementById("mobileMenu");
+    menu.hidden = !menu.hidden;
+    document.getElementById("navBurger").setAttribute("aria-expanded", menu.hidden ? "false" : "true");
+  });
+  document.addEventListener("click", function(e) {
+    var nav = document.getElementById("topNav");
+    if (!nav.contains(e.target)) document.getElementById("mobileMenu").hidden = true;
+  });
+  document.getElementById("langZh").addEventListener("click", function() { setLang("zh"); });
+  document.getElementById("langEn").addEventListener("click", function() { setLang("en"); });
+  document.getElementById("langZhMenu").addEventListener("click", function() { setLang("zh"); });
+  document.getElementById("langEnMenu").addEventListener("click", function() { setLang("en"); });
+  document.getElementById("homeStartBtn").addEventListener("click", function() { startFresh(); });
+  document.getElementById("homeEmptyBtn").addEventListener("click", function() { startFresh(); });
+  document.getElementById("statTotal").addEventListener("click", function() { recordsFilter = { stage: "all", exam: "all", q: "" }; navigateTo("records"); });
+  document.getElementById("statJunior").addEventListener("click", function() { recordsFilter = { stage: "初中", exam: "all", q: "" }; navigateTo("records"); });
+  document.getElementById("statSenior").addEventListener("click", function() { recordsFilter = { stage: "高中", exam: "all", q: "" }; navigateTo("records"); });
+  document.getElementById("statExam").addEventListener("click", function() { recordsFilter = { stage: "all", exam: "是", q: "" }; navigateTo("records"); });
+  document.getElementById("recentList").addEventListener("click", function(e) {
+    var card = e.target.closest ? e.target.closest("[data-row]") : null;
+    if (!card) return;
+    openDetail(parseInt(card.getAttribute("data-row"), 10), "home");
+  });
+  document.getElementById("recentList").addEventListener("keydown", function(e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var card = e.target.closest ? e.target.closest("[data-row]") : null;
+    if (!card) return;
+    e.preventDefault();
+    openDetail(parseInt(card.getAttribute("data-row"), 10), "home");
+  });
+  document.getElementById("coachClearBtn").addEventListener("click", function() { clearDraftAction(); });
+  document.getElementById("formCoachStageJunior").addEventListener("click", function() { onStageClick("formCoach", "初中"); });
+  document.getElementById("formCoachStageSenior").addEventListener("click", function() { onStageClick("formCoach", "高中"); });
+  document.getElementById("formEditStageJunior").addEventListener("click", function() { onStageClick("formEdit", "初中"); });
+  document.getElementById("formEditStageSenior").addEventListener("click", function() { onStageClick("formEdit", "高中"); });
+  document.getElementById("formCoach_高中选考地理").addEventListener("change", function() { onFormInput("formCoach"); });
+  document.getElementById("formCoach_正在考试").addEventListener("change", function() { onFormInput("formCoach"); });
+  document.getElementById("formCoach_地理问题").addEventListener("input", function() { onFormInput("formCoach"); });
+  document.getElementById("formCoach_已有思路").addEventListener("input", function() { onFormInput("formCoach"); });
+  document.getElementById("formEdit_高中选考地理").addEventListener("change", function() { onFormInput("formEdit"); });
+  document.getElementById("formEdit_正在考试").addEventListener("change", function() { onFormInput("formEdit"); });
+  document.getElementById("formEdit_地理问题").addEventListener("input", function() { onFormInput("formEdit"); });
+  document.getElementById("formEdit_已有思路").addEventListener("input", function() { onFormInput("formEdit"); });
+  document.getElementById("formCoach").addEventListener("submit", function(e) { e.preventDefault(); });
+  document.getElementById("formEdit").addEventListener("submit", function(e) { e.preventDefault(); });
+  document.getElementById("coachSubmitBtn").addEventListener("click", function() {
+    if (browseRow >= 1) forkNew();
+    else submitCoach();
+  });
+  document.getElementById("browsePrev").addEventListener("click", function() { browseBy(-1); });
+  document.getElementById("browseNext").addEventListener("click", function() { browseBy(1); });
+  document.getElementById("recordsNewBtn").addEventListener("click", function() { startFresh(); });
+  document.getElementById("recordsSearch").addEventListener("input", function() {
+    recordsFilter.q = document.getElementById("recordsSearch").value;
+    if (cachedRows) renderRecordsFromCache();
+  });
+  document.getElementById("filterStage").addEventListener("change", function() {
+    recordsFilter.stage = document.getElementById("filterStage").value;
+    if (cachedRows) renderRecordsFromCache();
+  });
+  document.getElementById("filterExam").addEventListener("change", function() {
+    recordsFilter.exam = document.getElementById("filterExam").value;
+    if (cachedRows) renderRecordsFromCache();
+  });
+  document.getElementById("clearFilterBtn").addEventListener("click", function() { clearFilter(); });
+  document.getElementById("recordsEmptyClear").addEventListener("click", function() { clearFilter(); });
+  document.getElementById("recordsList").addEventListener("click", function(e) {
+    var btn = e.target.closest ? e.target.closest("[data-act]") : null;
+    var card = e.target.closest ? e.target.closest("[data-row]") : null;
+    if (!card) return;
+    var row = parseInt(card.getAttribute("data-row"), 10);
+    if (btn) {
+      var act = btn.getAttribute("data-act");
+      if (act === "view") openDetail(row, "records");
+      else if (act === "edit") openEdit(row);
+      else if (act === "del") deleteRecord(row);
+      else if (act === "fork") reCoach(row);
+      return;
+    }
+    openEdit(row);
+  });
+  document.getElementById("detailClose").addEventListener("click", function() { closeDetail(); });
+  document.getElementById("detailEdit").addEventListener("click", function() { if (detailRow) openEdit(detailRow); });
+  document.getElementById("detailFork").addEventListener("click", function() { if (detailRow) reCoach(detailRow); });
+  document.getElementById("detailDelete").addEventListener("click", function() { if (detailRow) deleteRecord(detailRow); });
+  document.getElementById("detailModal").addEventListener("click", function(e) {
+    if (e.target.id === "detailModal" || e.target.id === "detailBackdrop") closeDetail();
+  });
+  document.getElementById("editSave").addEventListener("click", function() { saveEdit(); });
+  document.getElementById("editCancel").addEventListener("click", function() { closeEdit(); });
+  document.getElementById("confirmOk").addEventListener("click", function() { resolveConfirm(true); });
+  document.getElementById("confirmCancel").addEventListener("click", function() { resolveConfirm(false); });
+  document.getElementById("htmlClose").addEventListener("click", function() { closeHtml(); });
+  document.getElementById("htmlModal").addEventListener("click", function(e) {
+    if (e.target.id === "htmlModal" || e.target.id === "htmlBackdrop") closeHtml();
+  });
+  document.getElementById("homeRetry").addEventListener("click", function() { if (retryFns.home) retryFns.home(); });
+  document.getElementById("coachRetry").addEventListener("click", function() { if (retryFns.coach) retryFns.coach(); });
+  document.getElementById("recordsRetry").addEventListener("click", function() { if (retryFns.records) retryFns.records(); });
+  document.getElementById("editRetry").addEventListener("click", function() { if (retryFns.edit) retryFns.edit(); });
+  document.getElementById("detailRetry").addEventListener("click", function() { if (retryFns.detail) retryFns.detail(); });
+  document.getElementById("detailModal").addEventListener("click", onRichClick);
+  document.getElementById("coachPaper").addEventListener("click", onRichClick);
+  document.getElementById("editScroll").addEventListener("click", onRichClick);
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && modalStack.length) { e.preventDefault(); airBack(); }
+  });
+  window.addEventListener("resize", updateNavFit);
+  if (window.ResizeObserver) new ResizeObserver(function() { updateNavFit(); }).observe(document.getElementById("headerBar"));
+}
+async function initialize() {
+  lang = resolveLang();
+  applyTheme();
+  bindEvents();
+  bindKeyboard();
+  applyI18n();
+  setFormEditable("formCoach", true);
+  setFormEditable("formEdit", true);
+  updateNavFit();
+  setTimeout(updateNavFit, 300);
+  var modePromise = callAppBridge({type:"模式"}).then(function(v) {
+    theme = normalizeMode(v) === "暗色" ? "dark" : "light";
+    applyTheme();
+  }).catch(function() {
+    theme = "light";
+    applyTheme();
+  });
+  await navigateTo("home");
+  await modePromise;
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

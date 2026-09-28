@@ -1,0 +1,3083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>数学错因分析</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --bg: #F3EFE4;
+    --ink: #1B2A4A;
+    --muted: #5E584E;
+    --card: #FFFCF6;
+    --line: #E4DCC8;
+    --gold: #C6A15B;
+    --nav1: #1B2A4A;
+    --nav2: #2C4A7C;
+    --grid: rgba(27, 42, 74, 0.045);
+    --mask: rgba(27, 42, 74, 0.46);
+    --dialog: #FFFCF6;
+    --input: rgba(255, 252, 246, 0.92);
+    --reason: #8A4B1F;
+    --link: #2C4A7C;
+    --pre: #1B2A4A;
+    --code: rgba(27, 42, 74, 0.06);
+    --shadow: rgba(27, 42, 74, 0.08);
+    --kb: 0px;
+  }
+  html[data-theme="dark"] {
+    --bg: #16130F;
+    --ink: #F3EFE4;
+    --muted: #C9BBA6;
+    --card: #241F19;
+    --line: #3D362C;
+    --gold: #C6A15B;
+    --grid: rgba(198, 161, 91, 0.07);
+    --mask: rgba(0, 0, 0, 0.62);
+    --dialog: #241F19;
+    --input: #1B1713;
+    --reason: #E0B07A;
+    --link: #E4C98A;
+    --pre: #0E1528;
+    --code: rgba(243, 239, 228, 0.08);
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
+  html { color-scheme: light; }
+  html[data-theme="dark"] { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse at top, rgba(198, 161, 91, 0.10), transparent 52%);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body.lock-scroll { overflow: hidden; }
+  button, input, textarea { font-family: inherit; }
+  button { cursor: pointer; }
+  button:disabled { opacity: 0.48; cursor: not-allowed; }
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  [hidden] { display: none !important; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); border: 0;
+  }
+  .top-fixed {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+    padding-top: env(safe-area-inset-top);
+    background: #1B2A4A;
+  }
+  .main-nav {
+    background: linear-gradient(90deg, #1B2A4A 0%, #2C4A7C 100%);
+    color: #fff;
+    box-shadow: inset 0 -2px 0 #C6A15B;
+  }
+  .nav-bar {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    background: none; border: 0; color: #fff;
+    font-weight: 700; font-size: 16px; padding: 0; min-height: 44px;
+    flex: 0 0 auto;
+  }
+  .logo { display: block; flex: 0 0 auto; }
+  .nav-tabs {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px;
+    flex: 0 0 auto;
+  }
+  .nav-tabs.is-collapsed { display: none !important; }
+  .nav-tab {
+    background: transparent;
+    color: rgba(255,255,255,0.86);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 8px 12px;
+    min-height: 44px;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .nav-tab.is-active { color: #C6A15B; border-bottom-color: #C6A15B; }
+  .nav-tools { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+  .nav-tabs.is-collapsed + .nav-tools { margin-left: auto; }
+  .lang-btn {
+    min-width: 44px; min-height: 36px; padding: 0 12px;
+    border-radius: 999px; border: 1px solid #C6A15B;
+    background: transparent; color: #C6A15B; font-weight: 700;
+  }
+  .hamburger {
+    width: 44px; height: 44px; border: 0; background: transparent; color: #C6A15B;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  #hamburgerBtn[hidden] { display: none !important; }
+  .lang-btn[hidden] { display: none !important; }
+  @media (max-width: 760px) {
+    html:not(.nav-measured) #navTabs,
+    html:not(.nav-measured) #langToggle { display: none !important; }
+    html:not(.nav-measured) #hamburgerBtn { display: inline-flex !important; }
+  }
+  .mobile-menu {
+    display: none;
+    position: absolute;
+    left: 0; right: 0; top: 100%;
+    background: #1B2A4A;
+    border-top: 1px solid rgba(198, 161, 91, 0.45);
+    padding: 6px 12px 12px;
+    box-shadow: 0 16px 28px rgba(0,0,0,0.22);
+  }
+  .mobile-menu.is-open { display: block; }
+  .mobile-menu .nav-tab {
+    display: block; width: 100%; text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-radius: 0;
+  }
+  .mobile-menu .nav-tab.is-active { box-shadow: inset 3px 0 0 #C6A15B; }
+  .mobile-lang { display: flex; gap: 8px; padding: 10px 0 4px; }
+  .mobile-lang button {
+    flex: 1; min-height: 44px; border-radius: 999px;
+    border: 1px solid rgba(198,161,91,0.7);
+    background: transparent; color: #fff; font-weight: 700;
+  }
+  .mobile-lang button[aria-pressed="true"] {
+    color: #1B2A4A; background: #C6A15B; border-color: #C6A15B;
+  }
+  main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 84px 16px 28px;
+  }
+  .page { display: none; }
+  .page.is-active { display: block; }
+  .paper {
+    background-color: var(--card);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.45) inset;
+  }
+  .hero { padding: 26px 22px 20px; }
+  .hero h1, .page-title {
+    margin: 0 0 8px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .hero h1::after {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 2px;
+    margin-top: 10px;
+    background: #C6A15B;
+  }
+  .lead { margin: 0 0 16px; color: var(--muted); line-height: 1.75; font-size: 15px; }
+  .actions, .btn-row, .drawer-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary { background: linear-gradient(180deg, #2C4A7C, #1B2A4A); color: #fff; border-color: #1B2A4A; }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-gold { background: transparent; color: var(--ink); border-color: var(--gold); }
+  .btn-danger { background: transparent; color: #A33B3B; border-color: #A33B3B; }
+  html[data-theme="dark"] .btn-danger { color: #F0A8A0; }
+  .btn-primary:not(:disabled):hover { filter: brightness(1.08); }
+  .btn-ghost:not(:disabled):hover, .btn-gold:not(:disabled):hover { border-color: var(--gold); }
+  .reason { display: block; color: var(--reason); font-size: 12px; line-height: 1.45; margin-top: 4px; }
+  .reason:empty { display: none; }
+  .stat-grid, .wb-grid, .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .stat-grid { margin: 16px 0; }
+  .stat { padding: 18px 18px 16px; }
+  .stat h2 { margin: 0; font-size: 14px; font-weight: 600; color: var(--muted); }
+  .stat-num {
+    margin: 10px 0 0;
+    font-size: 36px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .stat-link {
+    margin-top: 8px;
+    background: none;
+    border: 0;
+    padding: 0;
+    min-height: 44px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-color: #C6A15B;
+    text-underline-offset: 5px;
+  }
+  #statLatestBtn:disabled {
+    opacity: 1;
+    cursor: default;
+    text-decoration: none;
+    color: var(--muted);
+  }
+  .legend, .sheet, .empty-box { padding: 16px 18px 18px; }
+  .legend { margin-bottom: 16px; }
+  .legend h2, .block h2 { margin: 0 0 12px; font-size: 18px; }
+  .legend-list { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; min-height: 28px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px rgba(198,161,91,0.15); }
+  .block { margin-top: 8px; }
+  .recent-list, .card-grid { margin-top: 4px; }
+  .recent-list { display: flex; flex-direction: column; gap: 10px; }
+  .card-btn {
+    width: 100%;
+    text-align: left;
+    color: var(--ink);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px var(--shadow);
+  }
+  .record-card { padding: 14px 16px; min-height: 64px; font-weight: 600; line-height: 1.6; }
+  .archive-card { padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 8px; min-height: 108px; }
+  .excerpt { margin: 0; font-weight: 650; font-weight: 600; line-height: 1.55; }
+  .sub { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .page-head, .report-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+  }
+  .page-head { margin-bottom: 14px; }
+  .page-title { font-size: 26px; }
+  .wb-grid { align-items: stretch; }
+  .sheet { min-height: 420px; display: flex; flex-direction: column; }
+  .sheet h2 { margin: 0; font-size: 18px; }
+  label.field-label { display: block; font-weight: 700; margin: 12px 0 8px; }
+  textarea, input[type="search"], input[type="text"] {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--input);
+    color: var(--ink);
+    font: inherit;
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+  textarea { min-height: 280px; resize: vertical; line-height: 1.75; }
+  ::placeholder { color: #8A8175; }
+  html[data-theme="dark"] ::placeholder { color: #A89880; }
+  .btn-row { margin-top: 12px; }
+  .report-head { margin-bottom: 8px; }
+  .pager { display: flex; gap: 8px; margin-left: auto; }
+  .report-body { flex: 1; min-height: 180px; }
+  .placeholder { color: var(--muted); margin: 8px 0; }
+  .status-line { min-height: 1.4em; color: var(--muted); margin: 8px 0 0; line-height: 1.6; }
+  .status-line:empty { display: none; }
+  .toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .search-wrap { position: relative; }
+  .search-wrap i {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); pointer-events: none;
+  }
+  .search-wrap input { padding-left: 36px; min-height: 44px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    border-radius: 999px;
+    min-height: 36px;
+    padding: 0 12px;
+    font-weight: 600;
+  }
+  .chip.is-active {
+    border-color: #C6A15B;
+    box-shadow: inset 0 0 0 1px #C6A15B;
+    background: rgba(198, 161, 91, 0.14);
+  }
+  .empty-box { text-align: center; }
+  .empty-box p { margin: 0 0 12px; color: var(--muted); line-height: 1.6; }
+  .mask {
+    position: fixed; inset: 0; z-index: 2000;
+    background: var(--mask);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 16px;
+  }
+  .mask.confirm-mask { z-index: 2100; }
+  .dialog {
+    width: min(880px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    background: var(--dialog);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.24);
+  }
+  .dialog.confirm-dialog { width: min(440px, 100%); }
+  .dialog-body { padding: 20px 20px 28px; }
+  .kicker { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; }
+  .record-full {
+    white-space: pre-wrap; word-break: break-word; line-height: 1.75; margin: 0 0 14px;
+  }
+  .revise-box { margin: 8px 0 12px; }
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + var(--kb));
+    transform: translateX(-50%);
+    z-index: 2200;
+    max-width: min(560px, calc(100% - 32px));
+    background: #1B2A4A; color: #fff;
+    border: 1px solid #C6A15B; border-radius: 12px;
+    padding: 12px 14px; line-height: 1.55;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .md { line-height: 1.75; font-size: 15px; word-break: break-word; }
+  .md h1, .md h2, .md h3, .md h4, .md h5, .md h6 { color: var(--ink); line-height: 1.35; margin: 1em 0 .45em; }
+  .md h1 { font-size: 1.45em; border-bottom: 1px solid var(--line); padding-bottom: .25em; }
+  .md h2 { font-size: 1.25em; }
+  .md p { margin: .55em 0; }
+  .md blockquote { margin: .8em 0; padding: .15em 0 .15em 12px; border-left: 3px solid #C6A15B; color: var(--muted); }
+  .md a { color: var(--link); }
+  .md code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; background: var(--code); padding: .1em .35em; border-radius: 4px; }
+  .md pre { overflow-x: auto; max-width: 100%; padding: 12px 14px; background: var(--pre); color: #F3EFE4; border-radius: 10px; }
+  .md pre code { background: transparent; color: inherit; padding: 0; }
+  .md-table-wrap { overflow-x: auto; max-width: 100%; }
+  .md table { border-collapse: collapse; min-width: 420px; }
+  .md th, .md td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  .md th { background: rgba(198, 161, 91, 0.12); }
+  .md img { max-width: 100%; height: auto; border-radius: 8px; }
+  .md ul, .md ol { padding-left: 1.3em; margin: .4em 0; }
+  .md li { margin: .2em 0; }
+  .md hr { border: 0; border-top: 1px solid var(--line); margin: 1em 0; }
+  .md input[type="checkbox"] { margin-right: 6px; }
+  @media (max-width: 800px) {
+    .stat-grid, .wb-grid, .card-grid { grid-template-columns: 1fr; }
+    .legend-list { flex-direction: column; align-items: flex-start; }
+    .page-head { flex-direction: column; }
+    .hero h1, .page-title { font-size: 26px; }
+    .pager { margin-left: 0; }
+  }
+  @media (max-width: 768px) {
+    .page { padding-bottom: calc(128px + var(--kb)); }
+    .dialog-body { padding-bottom: calc(150px + var(--kb)); }
+    .sheet { padding-bottom: calc(24px + var(--kb)); }
+  }
+  @media (max-width: 640px) {
+    .mask.edge { padding: 0; align-items: stretch; }
+    .mask.edge .dialog {
+      width: 100%; max-height: none; height: 100%;
+      border-radius: 0; border: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="topFixed" class="top-fixed">
+  <nav id="mainNav" class="main-nav" style="position: relative; z-index: 1001;" aria-label="数学错因分析">
+    <div id="navBar" class="nav-bar">
+      <button type="button" id="brandLink" class="brand">
+        <svg class="logo" viewBox="0 0 48 32" width="42" height="28" aria-hidden="true">
+          <path d="M3 25 H45" fill="none" stroke="#C6A15B" stroke-width="1"></path>
+          <path d="M4 22 C10 22 11 8 17 8 C23 8 24 24 30 24 C36 24 37 12 44 6" fill="none" stroke="#C6A15B" stroke-width="2.2" stroke-linecap="round"></path>
+        </svg>
+        <span id="brandName" data-i18n="appName">数学错因分析</span>
+      </button>
+      <div id="navTabs" class="nav-tabs">
+        <button type="button" class="nav-tab is-active" id="tabHome" data-page="home" data-i18n="tabHome">首页</button>
+        <button type="button" class="nav-tab" id="tabWorkbench" data-page="workbench" data-i18n="tabWb">错题工作台</button>
+        <button type="button" class="nav-tab" id="tabArchive" data-page="archive" data-i18n="tabAr">分析档案</button>
+      </div>
+      <div id="navTools" class="nav-tools">
+        <button type="button" id="langToggle" class="lang-btn" data-i18n="langBtn">EN</button>
+        <button type="button" id="hamburgerBtn" class="hamburger" hidden aria-expanded="false" aria-controls="mobileMenu" data-i18n-aria="menu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu">
+      <button type="button" class="nav-tab is-active" id="mobileTabHome" data-page="home" data-i18n="tabHome">首页</button>
+      <button type="button" class="nav-tab" id="mobileTabWorkbench" data-page="workbench" data-i18n="tabWb">错题工作台</button>
+      <button type="button" class="nav-tab" id="mobileTabArchive" data-page="archive" data-i18n="tabAr">分析档案</button>
+      <div class="mobile-lang">
+        <button type="button" id="mobileLangZh" aria-pressed="true">中文</button>
+        <button type="button" id="mobileLangEn" aria-pressed="false">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<main id="mainContent">
+  <section id="pageHome" class="page is-active">
+    <article class="paper hero">
+      <h1 id="homeTitle" data-i18n="appName">数学错因分析</h1>
+      <p id="homeLead" class="lead" data-i18n="homeLead">汇总匿名化数学错题记录，识别七类错因和知识点薄弱环节，形成班级共性与学员画像，并给出教学干预、复测与重复错因追踪建议。请只使用已匿名化的记录。</p>
+      <div class="actions">
+        <button type="button" id="btnStart" class="btn btn-primary"><span data-i18n="btnStart">开始错因分析</span></button>
+        <button type="button" id="btnViewArchive" class="btn btn-gold"><span data-i18n="btnView">查看分析档案</span></button>
+      </div>
+    </article>
+    <div class="stat-grid">
+      <article class="paper stat">
+        <h2 data-i18n="totalLabel">档案总数</h2>
+        <p id="statTotal" class="stat-num">—</p>
+      </article>
+      <article class="paper stat">
+        <h2 data-i18n="latestLabel">最新报告</h2>
+        <button type="button" id="statLatestBtn" class="stat-link" disabled><span id="statLatestText">—</span></button>
+        <small id="statLatestReason" class="reason"></small>
+      </article>
+    </div>
+    <section class="paper legend">
+      <h2 id="legendTitle" data-i18n="legendTitle">错因分类图例，不是统计</h2>
+      <div id="legendList" class="legend-list"></div>
+    </section>
+    <section class="block">
+      <h2 data-i18n="recentTitle">最近分析</h2>
+      <div id="recentList" class="recent-list"></div>
+      <div id="recentEmpty" class="paper empty-box" hidden>
+        <p id="recentEmptyText"></p>
+        <button type="button" id="btnRecentStart" class="btn btn-primary"><span data-i18n="btnStart">开始错因分析</span></button>
+      </div>
+    </section>
+  </section>
+
+  <section id="pageWorkbench" class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title" data-i18n="tabWb">错题工作台</h1>
+        <p class="lead" data-i18n="wbLead">左侧贴入匿名错题记录，右侧等待后台生成的 Markdown 报告。证据不足时报告会写待核实，界面不要补写结论。</p>
+      </div>
+      <button type="button" id="btnNewWorkbench" class="btn btn-gold"><i class="fa-solid fa-plus" aria-hidden="true"></i><span data-i18n="btnNew">新建</span></button>
+    </div>
+    <div class="wb-grid">
+      <form id="form错因分析" class="paper sheet" autocomplete="off">
+        <label class="field-label" id="label错题记录" for="form错因分析_错题记录" data-i18n="fieldRecord">错题记录</label>
+        <textarea id="form错因分析_错题记录" name="错题记录" data-i18n-ph="placeholder" placeholder="粘贴匿名化错题记录。不要写真实姓名、学号或联系方式。"></textarea>
+        <div class="btn-row">
+          <button type="button" id="btnReadFile" class="btn btn-ghost"><i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="btnRead">从文本文件读入</span></button>
+          <div>
+            <button type="button" id="btnGenerate" class="btn btn-primary" disabled><span data-i18n="btnGen">生成分析</span></button>
+            <small id="btnGenerateReason" class="reason"></small>
+          </div>
+          <div>
+            <button type="button" id="btnSaveRevise" class="btn btn-gold" disabled><span data-i18n="btnSave">保存修订</span></button>
+            <small id="btnSaveReviseReason" class="reason"></small>
+          </div>
+        </div>
+      </form>
+      <section class="paper sheet" aria-live="polite">
+        <div class="report-head">
+          <h2 id="reportTitle" data-i18n="reportTitle">分析报告</h2>
+          <div class="pager">
+            <div>
+              <button type="button" id="btnPrev" class="btn btn-ghost" disabled><span data-i18n="prev">上一条</span></button>
+              <small id="btnPrevReason" class="reason"></small>
+            </div>
+            <div>
+              <button type="button" id="btnNext" class="btn btn-ghost" disabled><span data-i18n="next">下一条</span></button>
+              <small id="btnNextReason" class="reason"></small>
+            </div>
+          </div>
+        </div>
+        <div id="reportStatus" class="status-line"></div>
+        <div id="reportBody" class="md report-body"></div>
+      </section>
+    </div>
+  </section>
+
+  <section id="pageArchive" class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title" data-i18n="tabAr">分析档案</h1>
+        <p class="lead" data-i18n="arLead">回看每次分析的错题记录与报告。只按记录先后浏览，不排名。</p>
+      </div>
+      <button type="button" id="btnNewArchive" class="btn btn-gold"><i class="fa-solid fa-plus" aria-hidden="true"></i><span data-i18n="btnNewAnalysis">新建分析</span></button>
+    </div>
+    <div class="toolbar">
+      <form id="form档案筛选" autocomplete="off">
+        <label class="sr-only" for="form档案筛选_关键字" data-i18n="searchPh">搜索错题记录</label>
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="form档案筛选_关键字" name="关键字" type="search" data-i18n-ph="searchPh" placeholder="搜索错题记录">
+        </div>
+      </form>
+      <div id="filterBar" class="chips" role="toolbar"></div>
+    </div>
+    <div id="archiveList" class="card-grid"></div>
+    <div id="archiveEmpty" class="paper empty-box" hidden>
+      <p id="archiveEmptyText"></p>
+      <button type="button" id="btnArchiveEmptyStart" class="btn btn-primary" hidden><span data-i18n="btnStart">开始错因分析</span></button>
+    </div>
+  </section>
+</main>
+
+<div id="drawerMask" class="mask edge" hidden>
+  <div id="detailDrawer" class="dialog" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="dialog-body">
+      <h2 id="drawerTitle" data-i18n="detailTitle">分析详情</h2>
+      <p class="kicker" data-i18n="fieldRecord">错题记录</p>
+      <div id="drawerRecord" class="record-full"></div>
+      <div id="reviseBox" class="revise-box" hidden>
+        <form id="form修订错题记录" autocomplete="off">
+          <label class="field-label" for="form修订错题记录_错题记录" data-i18n="fieldRecord">错题记录</label>
+          <textarea id="form修订错题记录_错题记录" name="错题记录"></textarea>
+          <div class="btn-row">
+            <button type="button" id="btnSaveDrawer" class="btn btn-primary"><span data-i18n="btnSave">保存修订</span></button>
+            <small id="btnSaveDrawerReason" class="reason"></small>
+          </div>
+        </form>
+      </div>
+      <p class="kicker" data-i18n="reportTitle">分析报告</p>
+      <div id="drawerStatus" class="status-line"></div>
+      <div id="drawerReport" class="md report-body"></div>
+      <div class="btn-row">
+        <button type="button" id="btnKeepWaiting" class="btn btn-gold" hidden><span data-i18n="keepWaiting">继续等待</span></button>
+        <small id="btnKeepWaitingReason" class="reason"></small>
+      </div>
+      <div class="drawer-actions">
+        <button type="button" id="btnRevise" class="btn btn-gold"><span data-i18n="btnRevise">修订错题记录</span></button>
+        <button type="button" id="btnOpenWb" class="btn btn-primary"><span data-i18n="btnOpenWb">在工作台打开</span></button>
+        <button type="button" id="btnDelete" class="btn btn-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i><span data-i18n="btnDelete">删除</span></button>
+        <button type="button" id="btnCloseDrawer" class="btn btn-ghost"><span data-i18n="btnClose">关闭</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="confirmMask" class="mask confirm-mask" hidden>
+  <div id="confirmDialog" class="dialog confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmText">
+    <div class="dialog-body">
+      <p id="confirmText" data-i18n="confirmText">删除后无法恢复，确定删除这条错因分析吗？</p>
+      <div class="drawer-actions">
+        <button type="button" id="btnConfirmDelete" class="btn btn-danger"><span data-i18n="confirmOk">确定删除</span></button>
+        <button type="button" id="btnCancelDelete" class="btn btn-ghost"><span data-i18n="confirmCancel">取消</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("85859d58a543eb56_数学错因分析")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+        const SOURCE = "错因分析/默认表格";
+        const TABLE = "错因分析";
+        const FORM_SPEC = {
+          表单标题: "错因分析",
+          表: "错因分析",
+          字段: [
+            { 字段名: "错题记录", 类型: "文本" },
+            { 字段名: "分析报告", 类型: "指令流", 指令类型: "任务智能体", 指令描述: "使用技能 xiaozhi-teach-math-error-analyzer 分析以下匿名化数学错题记录：{{错题记录}}。按概念模糊、规则错误、审题错误、策略错误、计算错误、粗心大意、知识漏洞七类识别错因，关联相关及前置知识点，形成班级共性与学员个体画像，给出具体教学干预、复测与重复错因追踪建议。仅依据记录中的信息分析；证据不足时说明待核实，不编造人数、比例或趋势；使用化名或编号，不排名。以一份 Markdown 文本报告输出。" }
+          ]
+        };
+        const CATS = [
+          { key: "概念模糊", color: "#7C6A9A", en: "Conceptual vagueness" },
+          { key: "规则错误", color: "#C45C26", en: "Rule error" },
+          { key: "审题错误", color: "#2F6F8F", en: "Misreading the question" },
+          { key: "策略错误", color: "#3D6B4F", en: "Strategy error" },
+          { key: "计算错误", color: "#A33B3B", en: "Calculation error" },
+          { key: "粗心大意", color: "#B8860B", en: "Carelessness" },
+          { key: "知识漏洞", color: "#5C4A3A", en: "Knowledge gap" }
+        ];
+        const I18N = {
+          zh: {
+            appName: "数学错因分析",
+            tabHome: "首页",
+            tabWb: "错题工作台",
+            tabAr: "分析档案",
+            langBtn: "EN",
+            menu: "菜单",
+            homeLead: "汇总匿名化数学错题记录，识别七类错因和知识点薄弱环节，形成班级共性与学员画像，并给出教学干预、复测与重复错因追踪建议。请只使用已匿名化的记录。",
+            btnStart: "开始错因分析",
+            btnView: "查看分析档案",
+            totalLabel: "档案总数",
+            latestLabel: "最新报告",
+            noneYet: "尚无",
+            generating: "生成中",
+            generated: "已生成",
+            legendTitle: "错因分类图例，不是统计",
+            recentTitle: "最近分析",
+            recentEmpty: "还没有错因分析，从一条匿名错题记录开始",
+            dash: "—",
+            loadFail: "暂时无法获取档案数据，请稍后重试",
+            latestNoneReason: "尚无分析报告，无法打开详情",
+            wbLead: "左侧贴入匿名错题记录，右侧等待后台生成的 Markdown 报告。证据不足时报告会写待核实，界面不要补写结论。",
+            btnNew: "新建",
+            fieldRecord: "错题记录",
+            placeholder: "粘贴匿名化错题记录。不要写真实姓名、学号或联系方式。",
+            btnRead: "从文本文件读入",
+            btnGen: "生成分析",
+            btnSave: "保存修订",
+            reportTitle: "分析报告",
+            prev: "上一条",
+            next: "下一条",
+            reportEmptyHint: "生成分析后，报告将出现在这里",
+            waiting: "正在识别七类错因并撰写干预与复测建议…",
+            pollTimeout: "等待已超过 90 秒，报告仍未生成。请稍后在分析档案查看。",
+            pollMoved: "已改看其他记录。这条报告若仍在生成，请稍后在分析档案查看。",
+            readFail: "无法读取该文件，请改为粘贴文本",
+            saveOk: "错题记录已更新。修订不会自动重跑分析；要新报告请点新建后再生成。",
+            saveFail: "修订没有保存，请稍后重试",
+            submitFail: "提交失败，请稍后重试",
+            submitting: "正在提交错题记录…",
+            deleteFail: "删除失败，请稍后重试",
+            reasonPolling: "正在生成分析报告，请稍候",
+            reasonNeedNew: "当前正在查看已有记录，请先点「新建」",
+            reasonEmpty: "请先填写错题记录",
+            reasonBusy: "正在提交，请稍候",
+            reasonNoRow: "新建的记录请使用「生成分析」",
+            reasonClean: "错题记录没有改动",
+            reasonFirst: "已经是第一条",
+            reasonNoNext: "请先生成或打开一条记录",
+            reasonLast: "已经是最后一条",
+            arLead: "回看每次分析的错题记录与报告。只按记录先后浏览，不排名。",
+            btnNewAnalysis: "新建分析",
+            searchPh: "搜索错题记录",
+            filterAll: "全部",
+            noMatch: "没有符合条件的分析档案",
+            reportPendingCard: "报告生成中",
+            detailTitle: "分析详情",
+            reportNotReady: "报告尚未生成",
+            keepWaiting: "继续等待",
+            reasonWaitingBtn: "正在等待分析报告",
+            btnRevise: "修订错题记录",
+            btnOpenWb: "在工作台打开",
+            btnDelete: "删除",
+            btnClose: "关闭",
+            confirmText: "删除后无法恢复，确定删除这条错因分析吗？",
+            confirmOk: "确定删除",
+            confirmCancel: "取消",
+            loading: "正在读取…",
+            formTitle: "错因分析"
+          },
+          en: {
+            appName: "Math Error Analysis",
+            tabHome: "Home",
+            tabWb: "Error Workbench",
+            tabAr: "Analysis Archive",
+            langBtn: "中文",
+            menu: "Menu",
+            homeLead: "Summarize anonymized math error records, identify the seven error types and weak knowledge points, form class-wide patterns and individual student profiles, and give teaching interventions, retests, and repeated-error tracking advice. Use only anonymized records.",
+            btnStart: "Start Error Analysis",
+            btnView: "View Analysis Archive",
+            totalLabel: "Archive total",
+            latestLabel: "Latest report",
+            noneYet: "None yet",
+            generating: "Generating",
+            generated: "Generated",
+            legendTitle: "Error-type legend, not statistics",
+            recentTitle: "Recent analyses",
+            recentEmpty: "No error analyses yet. Start with one anonymized error record.",
+            dash: "—",
+            loadFail: "The archive could not be loaded. Try again later.",
+            latestNoneReason: "There is no report yet, so the detail cannot be opened.",
+            wbLead: "Paste an anonymized error record on the left. The Markdown report generated in the background appears on the right. When evidence is insufficient, the report marks items as pending verification. This screen does not fill in conclusions.",
+            btnNew: "New",
+            fieldRecord: "Error record",
+            placeholder: "Paste an anonymized error record. Do not include real names, student IDs, or contact details.",
+            btnRead: "Read from text file",
+            btnGen: "Generate analysis",
+            btnSave: "Save revision",
+            reportTitle: "Analysis report",
+            prev: "Previous",
+            next: "Next",
+            reportEmptyHint: "After you generate an analysis, the report will appear here.",
+            waiting: "Identifying the seven error types and writing intervention and retest advice…",
+            pollTimeout: "More than 90 seconds have passed and the report is still empty. Please check the analysis archive later.",
+            pollMoved: "Another record is now open. If this report is still generating, check the analysis archive later.",
+            readFail: "Unable to read this file. Please paste the text instead.",
+            saveOk: "The error record has been updated. A revision does not rerun the analysis. For a new report, click New and then generate.",
+            saveFail: "The revision was not saved. Try again later.",
+            submitFail: "Submit failed. Try again later.",
+            submitting: "Submitting the error record…",
+            deleteFail: "Delete failed. Try again later.",
+            reasonPolling: "An analysis report is being generated. Please wait.",
+            reasonNeedNew: "An existing record is open. Click New first.",
+            reasonEmpty: "Enter an error record first.",
+            reasonBusy: "Submitting. Please wait.",
+            reasonNoRow: "For a new record, use Generate analysis.",
+            reasonClean: "The error record has no changes.",
+            reasonFirst: "This is already the first record.",
+            reasonNoNext: "Generate or open a record first.",
+            reasonLast: "This is already the last record.",
+            arLead: "Review the error record and report from each analysis. Browse only in record order. There is no ranking.",
+            btnNewAnalysis: "New analysis",
+            searchPh: "Search error records",
+            filterAll: "All",
+            noMatch: "No analysis records match the conditions.",
+            reportPendingCard: "Report generating",
+            detailTitle: "Analysis detail",
+            reportNotReady: "The report has not been generated yet.",
+            keepWaiting: "Keep waiting",
+            reasonWaitingBtn: "Waiting for the analysis report.",
+            btnRevise: "Revise error record",
+            btnOpenWb: "Open in workbench",
+            btnDelete: "Delete",
+            btnClose: "Close",
+            confirmText: "This cannot be undone. Delete this error analysis?",
+            confirmOk: "Delete",
+            confirmCancel: "Cancel",
+            loading: "Loading…",
+            formTitle: "Error analysis"
+          }
+        };
+
+        const state = {
+          lang: "zh",
+          page: "home",
+          currentRow: 0,
+          wbRow: 0,
+          total: 0,
+          rows: [],
+          latestReport: null,
+          savedRecord: "",
+          drawerRecord: "",
+          drawerReport: "",
+          history: [],
+          mobileOpen: false,
+          drawerOpen: false,
+          confirmOpen: false,
+          revising: false,
+          polling: false,
+          pollToken: 0,
+          pollTimer: 0,
+          pollRow: 0,
+          pollTarget: "",
+          pollGaveUpRow: 0,
+          busy: false,
+          search: "",
+          filter: "all",
+          loadError: false,
+          csvError: false,
+          booted: false
+        };
+        let refreshSeq = 0;
+        let wbSeq = 0;
+        let toastTimer = 0;
+
+        function byId(id) { return document.getElementById(id); }
+        function t(key) {
+          const pack = I18N[state.lang] || I18N.zh;
+          if (pack[key] != null) return pack[key];
+          if (I18N.zh[key] != null) return I18N.zh[key];
+          return key;
+        }
+        function escapeHtml(s) {
+          return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+        function escapeAttr(s) {
+          return escapeHtml(s).replace(/'/g, "&#39;");
+        }
+        function preview(s, n) {
+          const raw = String(s || "");
+          const cut = raw.length > n;
+          let text = raw.slice(0, n).replace(/\s+/g, " ").trim();
+          if (cut && text) text += "…";
+          return text;
+        }
+        function containsText(hay, needle) {
+          if (!needle) return true;
+          return String(hay).toLowerCase().indexOf(String(needle).toLowerCase()) !== -1;
+        }
+        function workbenchDirty() {
+          const ta = byId("form错因分析_错题记录");
+          if (!ta) return false;
+          return ta.value !== state.savedRecord;
+        }
+
+        function detectLang() {
+          let param = "";
+          try { param = new URLSearchParams(window.location.search).get("lang") || ""; } catch (e) { param = ""; }
+          if (param === "cn") return "zh";
+          if (param === "en") return "en";
+          let stored = null;
+          try { stored = localStorage.getItem("iThinkAir_UiLanguage"); } catch (e) { stored = null; }
+          if (stored !== null && stored !== "") return stored === "en" ? "en" : "zh";
+          let list = null;
+          try { list = navigator.languages; } catch (e) { return "zh"; }
+          if (!list || typeof list.length !== "number") return "zh";
+          if (!list.length) return "en";
+          for (let i = 0; i < list.length; i++) {
+            const tag = String(list[i] || "").toLowerCase();
+            if (tag === "zh" || tag.indexOf("zh-") === 0 || tag.indexOf("zh_") === 0) return "zh";
+          }
+          return "en";
+        }
+
+        function applyI18n() {
+          const nodes = document.querySelectorAll("[data-i18n]");
+          for (let i = 0; i < nodes.length; i++) {
+            nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+          }
+          const ph = document.querySelectorAll("[data-i18n-ph]");
+          for (let i = 0; i < ph.length; i++) {
+            ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-ph")));
+          }
+          const aria = document.querySelectorAll("[data-i18n-aria]");
+          for (let i = 0; i < aria.length; i++) {
+            aria[i].setAttribute("aria-label", t(aria[i].getAttribute("data-i18n-aria")));
+          }
+          document.title = t("appName");
+          document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+          const langBtn = byId("langToggle");
+          if (langBtn) langBtn.textContent = t("langBtn");
+          const zh = byId("mobileLangZh");
+          const en = byId("mobileLangEn");
+          if (zh) zh.setAttribute("aria-pressed", state.lang === "zh" ? "true" : "false");
+          if (en) en.setAttribute("aria-pressed", state.lang === "en" ? "true" : "false");
+          const form1 = byId("form错因分析");
+          if (form1) form1.setAttribute("aria-label", t("formTitle"));
+          const form2 = byId("form修订错题记录");
+          if (form2) form2.setAttribute("aria-label", t("btnRevise"));
+          byId("mainNav").setAttribute("aria-label", t("appName"));
+          updateCatLabels();
+        }
+
+        function updateCatLabels() {
+          const nodes = document.querySelectorAll("[data-cat]");
+          for (let i = 0; i < nodes.length; i++) {
+            const key = nodes[i].getAttribute("data-cat");
+            let label = key;
+            for (let c = 0; c < CATS.length; c++) {
+              if (CATS[c].key === key) {
+                label = state.lang === "en" ? CATS[c].en : CATS[c].key;
+                break;
+              }
+            }
+            nodes[i].textContent = label;
+          }
+          const all = byId("chipAll");
+          if (all) all.textContent = t("filterAll");
+        }
+
+        function applyLanguage(lang, persist) {
+          state.lang = lang === "en" ? "en" : "zh";
+          if (persist) {
+            try { localStorage.setItem("iThinkAir_UiLanguage", state.lang === "en" ? "en" : "zh"); } catch (e) {}
+          }
+          applyI18n();
+          renderHome();
+          paintArchiveCards();
+          paintChips();
+          updateWbButtons();
+          refreshLiveStatus();
+          if (state.drawerOpen) paintDrawer();
+        }
+
+        function buildStaticCats() {
+          const legend = byId("legendList");
+          const bar = byId("filterBar");
+          legend.innerHTML = "";
+          bar.innerHTML = "";
+          const all = document.createElement("button");
+          all.type = "button";
+          all.className = "chip is-active";
+          all.id = "chipAll";
+          all.setAttribute("data-filter", "all");
+          all.setAttribute("aria-pressed", "true");
+          all.addEventListener("click", function () { setFilter("all"); });
+          bar.appendChild(all);
+          for (let i = 0; i < CATS.length; i++) {
+            const cat = CATS[i];
+            const item = document.createElement("div");
+            item.className = "legend-item";
+            const dot = document.createElement("span");
+            dot.className = "dot";
+            dot.style.background = cat.color;
+            const name = document.createElement("span");
+            name.setAttribute("data-cat", cat.key);
+            item.appendChild(dot);
+            item.appendChild(name);
+            legend.appendChild(item);
+            const chip = document.createElement("button");
+            chip.type = "button";
+            chip.className = "chip";
+            chip.setAttribute("data-filter", cat.key);
+            chip.setAttribute("data-cat", cat.key);
+            chip.setAttribute("aria-pressed", "false");
+            chip.addEventListener("click", function () { setFilter(cat.key); });
+            bar.appendChild(chip);
+          }
+        }
+
+        function setFilter(key) {
+          state.filter = key;
+          paintChips();
+          paintArchiveCards();
+        }
+        function paintChips() {
+          const chips = byId("filterBar").querySelectorAll(".chip");
+          for (let i = 0; i < chips.length; i++) {
+            const on = chips[i].getAttribute("data-filter") === state.filter;
+            chips[i].classList.toggle("is-active", on);
+            chips[i].setAttribute("aria-pressed", on ? "true" : "false");
+          }
+        }
+
+        function setActiveTab(page) {
+          const ids = [["home", "tabHome", "mobileTabHome"], ["workbench", "tabWorkbench", "mobileTabWorkbench"], ["archive", "tabArchive", "mobileTabArchive"]];
+          for (let i = 0; i < ids.length; i++) {
+            const on = ids[i][0] === page;
+            byId(ids[i][1]).classList.toggle("is-active", on);
+            byId(ids[i][2]).classList.toggle("is-active", on);
+            if (on) {
+              byId(ids[i][1]).setAttribute("aria-current", "page");
+              byId(ids[i][2]).setAttribute("aria-current", "page");
+            } else {
+              byId(ids[i][1]).removeAttribute("aria-current");
+              byId(ids[i][2]).removeAttribute("aria-current");
+            }
+          }
+        }
+
+        function closeMobileMenu() {
+          state.mobileOpen = false;
+          const menu = byId("mobileMenu");
+          if (menu) menu.classList.remove("is-open");
+          const burger = byId("hamburgerBtn");
+          if (burger) burger.setAttribute("aria-expanded", "false");
+        }
+        function toggleMobile() {
+          if (state.mobileOpen) {
+            closeMobileMenu();
+            return;
+          }
+          state.mobileOpen = true;
+          byId("mobileMenu").classList.add("is-open");
+          byId("hamburgerBtn").setAttribute("aria-expanded", "true");
+        }
+
+        function showPage(page, opt) {
+          opt = opt || {};
+          if (page !== state.page && opt.record !== false) {
+            state.history.push({ page: state.page, scroll: window.scrollY || document.documentElement.scrollTop || 0 });
+          }
+          state.page = page;
+          byId("pageHome").classList.toggle("is-active", page === "home");
+          byId("pageWorkbench").classList.toggle("is-active", page === "workbench");
+          byId("pageArchive").classList.toggle("is-active", page === "archive");
+          setActiveTab(page);
+          closeMobileMenu();
+          if (typeof opt.scroll === "number") {
+            const y = opt.scroll;
+            requestAnimationFrame(function () { window.scrollTo(0, y); });
+          } else if (opt.keepScroll !== true) {
+            window.scrollTo(0, 0);
+          }
+          if (page === "workbench") syncWorkbench(!!opt.force);
+        }
+
+        function syncWorkbench(force) {
+          if (state.wbRow === state.currentRow && !force) return;
+          if (!force && workbenchDirty()) {
+            state.currentRow = state.wbRow;
+            updateWbButtons();
+            return;
+          }
+          if (state.currentRow >= 1) loadWorkbenchRow(state.currentRow);
+          else clearWorkbench();
+        }
+
+        function onBrand() {
+          try {
+            if (window.parent && typeof window.parent.closeFullHtml === "function") {
+              window.parent.closeFullHtml(false);
+            }
+          } catch (e) {}
+        }
+
+        function updateNavMode() {
+          document.documentElement.classList.add("nav-measured");
+          const tabs = byId("navTabs");
+          const bar = byId("navBar");
+          const brand = byId("brandLink");
+          const langBtn = byId("langToggle");
+          const burger = byId("hamburgerBtn");
+          tabs.classList.remove("is-collapsed");
+          langBtn.hidden = false;
+          burger.hidden = true;
+          const need = brand.offsetWidth + tabs.scrollWidth + langBtn.offsetWidth + 48;
+          const collapse = need > bar.clientWidth || tabs.scrollWidth > tabs.clientWidth + 2;
+          if (collapse) {
+            tabs.classList.add("is-collapsed");
+            langBtn.hidden = true;
+            burger.hidden = false;
+          } else {
+            closeMobileMenu();
+          }
+        }
+
+        function showToast(msg) {
+          const el = byId("toast");
+          el.textContent = msg;
+          el.hidden = false;
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { el.hidden = true; }, 5200);
+        }
+
+        function showWbHint() {
+          byId("reportBody").innerHTML = '<p class="placeholder">' + escapeHtml(t("reportEmptyHint")) + "</p>";
+          byId("reportStatus").textContent = "";
+        }
+        function clearWorkbench() {
+          stopPoll();
+          wbSeq += 1;
+          state.currentRow = 0;
+          state.wbRow = 0;
+          state.savedRecord = "";
+          const ta = byId("form错因分析_错题记录");
+          if (ta) ta.value = "";
+          showWbHint();
+          updateWbButtons();
+        }
+        function startFresh() {
+          state.currentRow = 0;
+          showPage("workbench", { sync: false, force: false });
+          clearWorkbench();
+        }
+
+        function updateWbButtons() {
+          const ta = byId("form错因分析_错题记录");
+          const text = ta ? ta.value : "";
+          const trimmed = text.trim();
+          const gen = byId("btnGenerate");
+          const genR = byId("btnGenerateReason");
+          const save = byId("btnSaveRevise");
+          const saveR = byId("btnSaveReviseReason");
+          const prev = byId("btnPrev");
+          const prevR = byId("btnPrevReason");
+          const next = byId("btnNext");
+          const nextR = byId("btnNextReason");
+          let genWhy = "";
+          if (state.polling) genWhy = t("reasonPolling");
+          else if (state.busy) genWhy = t("reasonBusy");
+          else if (state.currentRow !== 0) genWhy = t("reasonNeedNew");
+          else if (!trimmed) genWhy = t("reasonEmpty");
+          gen.disabled = !!genWhy;
+          genR.textContent = genWhy;
+          gen.title = genWhy;
+          let saveWhy = "";
+          if (state.busy) saveWhy = t("reasonBusy");
+          else if (state.currentRow < 1 || state.wbRow < 1) saveWhy = t("reasonNoRow");
+          else if (text === state.savedRecord) saveWhy = t("reasonClean");
+          save.disabled = !!saveWhy;
+          saveR.textContent = saveWhy;
+          save.title = saveWhy;
+          let prevWhy = "";
+          if (state.currentRow <= 1) prevWhy = t("reasonFirst");
+          prev.disabled = !!prevWhy;
+          prevR.textContent = prevWhy;
+          prev.title = prevWhy;
+          let nextWhy = "";
+          if (state.currentRow === 0) nextWhy = t("reasonNoNext");
+          else if (state.currentRow >= state.total) nextWhy = t("reasonLast");
+          next.disabled = !!nextWhy;
+          nextR.textContent = nextWhy;
+          next.title = nextWhy;
+        }
+
+        function updateDrawerSaveBtn() {
+          const btn = byId("btnSaveDrawer");
+          const reason = byId("btnSaveDrawerReason");
+          const ta = byId("form修订错题记录_错题记录");
+          if (!btn || !ta) return;
+          let why = "";
+          if (!state.revising) why = "";
+          else if (state.busy) why = t("reasonBusy");
+          else if (ta.value === state.drawerRecord) why = t("reasonClean");
+          btn.disabled = !state.revising || !!why;
+          reason.textContent = state.revising ? why : "";
+          btn.title = why;
+        }
+
+        function fileHref(url) {
+          const u = String(url || "").trim();
+          if (/^(https?:|data:|blob:)/i.test(u)) return u;
+          return "https://www.ithinkair.com:3031/download/" + u.replace(/^\.\//, "").replace(/ /g, "%20");
+        }
+        function safeUrl(url) {
+          const u = String(url || "").trim();
+          if (/^(https?:|mailto:)/i.test(u)) return u;
+          if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return "#";
+          return u;
+        }
+        function isTableSep(line) {
+          const s = String(line).trim();
+          if (s.indexOf("-") < 0) return false;
+          return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(s);
+        }
+        function splitRow(line) {
+          let s = String(line).trim();
+          if (s.charAt(0) === "|") s = s.slice(1);
+          if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+          const cells = [];
+          let cur = "";
+          for (let k = 0; k < s.length; k++) {
+            if (s.charAt(k) === "\\" && k + 1 < s.length && s.charAt(k + 1) === "|") {
+              cur += "|";
+              k++;
+              continue;
+            }
+            if (s.charAt(k) === "|") {
+              cells.push(cur.trim());
+              cur = "";
+              continue;
+            }
+            cur += s.charAt(k);
+          }
+          cells.push(cur.trim());
+          return cells;
+        }
+        function listInfo(line) {
+          const m = String(line).match(/^(\s*)([-*+]|\d+[.)])\s+(.*)$/);
+          if (!m) return null;
+          const indent = m[1].replace(/\t/g, "    ").length;
+          const ordered = /^\d/.test(m[2]);
+          let content = m[3];
+          let isTask = false;
+          let checked = false;
+          const task = content.match(/^\[([ xX])\]\s*(.*)$/);
+          if (task) {
+            isTask = true;
+            checked = task[1] !== " ";
+            content = task[2];
+          }
+          return { indent: indent, ordered: ordered, content: content, isTask: isTask, checked: checked };
+        }
+        function blockStart(lines, i) {
+          const line = lines[i];
+          if (/^(```+|~~~+)/.test(line)) return true;
+          if (/^(#{1,6})\s+/.test(line)) return true;
+          if (/^\s*>/.test(line)) return true;
+          if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) return true;
+          if (listInfo(line)) return true;
+          if (/^( {4}|\t)/.test(line)) return true;
+          if (line.indexOf("|") !== -1 && i + 1 < lines.length && isTableSep(lines[i + 1])) return true;
+          if (i + 1 < lines.length && /^(?:=|-){3,}\s*$/.test(lines[i + 1]) && line.trim() !== "") return true;
+          return false;
+        }
+        function inlineMd(raw, refs) {
+          refs = refs || {};
+          const bucket = [];
+          function keep(html) {
+            bucket.push(html);
+            return "\u0000K" + (bucket.length - 1) + "\u0000";
+          }
+          let s = String(raw);
+          s = s.replace(/\\([\\`*_{}\[\]()#+\-.!|~>])/g, function (_, ch) { return keep(escapeHtml(ch)); });
+          s = s.replace(/`([^`\n]+)`/g, function (_, c) { return keep("<code>" + escapeHtml(c) + "</code>"); });
+          s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, function (_, alt, url) {
+            const href = fileHref(url);
+            return keep('<a class="md-img-link" href="' + escapeAttr(href) + '" target="_blank" rel="noopener"><img alt="' + escapeAttr(alt) + '" src="' + escapeAttr(href) + '"></a>');
+          });
+          s = s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g, function (_, text, url) {
+            return keep('<a href="' + escapeAttr(safeUrl(url)) + '" target="_blank" rel="noopener">' + inlineMd(text, refs) + "</a>");
+          });
+          s = s.replace(/\[([^\]]+)\]\[([^\]]*)\]/g, function (full, text, id) {
+            const key = (id || text).toLowerCase();
+            const url = refs[key];
+            if (!url) return keep(escapeHtml(full));
+            return keep('<a href="' + escapeAttr(safeUrl(url)) + '" target="_blank" rel="noopener">' + inlineMd(text, refs) + "</a>");
+          });
+          s = escapeHtml(s);
+          s = s.replace(/&lt;(https?:\/\/[^&\s]+)&gt;/g, function (_, url) {
+            return '<a href="' + escapeAttr(url) + '" target="_blank" rel="noopener">' + escapeHtml(url) + "</a>";
+          });
+          s = s.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+          s = s.replace(/___([^_]+)___/g, "<strong><em>$1</em></strong>");
+          s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+          s = s.replace(/__([^_\n]+)__/g, "<strong>$1</strong>");
+          s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+          s = s.replace(/(^|\s)_([^_\n]+)_(?=\s|$)/g, "$1<em>$2</em>");
+          s = s.replace(/~~([^~\n]+)~~/g, "<s>$1</s>");
+          s = s.replace(/\u0000K(\d+)\u0000/g, function (_, n) { return bucket[Number(n)]; });
+          return s;
+        }
+        function consumeList(lines, start, refs) {
+          const first = listInfo(lines[start]);
+          if (!first) return { html: "", next: start + 1 };
+          const base = first.indent;
+          const ordered = first.ordered;
+          const tag = ordered ? "ol" : "ul";
+          let html = "<" + tag + ">";
+          let i = start;
+          while (i < lines.length) {
+            if (String(lines[i]).trim() === "") {
+              let j = i + 1;
+              while (j < lines.length && String(lines[j]).trim() === "") j++;
+              const peek = j < lines.length ? listInfo(lines[j]) : null;
+              if (peek && peek.indent >= base) { i = j; continue; }
+              break;
+            }
+            const info = listInfo(lines[i]);
+            if (!info || info.indent < base || info.indent > base || info.ordered !== ordered) break;
+            i++;
+            const extras = [];
+            while (i < lines.length) {
+              if (String(lines[i]).trim() === "") {
+                let j = i + 1;
+                while (j < lines.length && String(lines[j]).trim() === "") j++;
+                const peek = j < lines.length ? listInfo(lines[j]) : null;
+                if (peek && peek.indent > base) { extras.push(lines[i]); i++; continue; }
+                break;
+              }
+              const n = listInfo(lines[i]);
+              if (n && n.indent <= base) break;
+              extras.push(lines[i]);
+              i++;
+            }
+            let inner = "";
+            if (info.isTask) inner += '<input type="checkbox" disabled' + (info.checked ? " checked" : "") + "> ";
+            inner += inlineMd(info.content, refs);
+            if (extras.length) {
+              const childList = [];
+              const childText = [];
+              for (let k = 0; k < extras.length; k++) {
+                const n = listInfo(extras[k]);
+                if (n && n.indent > base) childList.push(extras[k]);
+                else if (String(extras[k]).trim() !== "") childText.push(String(extras[k]).trim());
+              }
+              if (childText.length) inner += "<br>" + inlineMd(childText.join("\n"), refs).replace(/\n/g, "<br>");
+              if (childList.length) inner += consumeList(childList, 0, refs).html;
+            }
+            html += "<li>" + inner + "</li>";
+          }
+          html += "</" + tag + ">";
+          return { html: html, next: i };
+        }
+        function renderMarkdown(src) {
+          try { return renderMarkdownInner(src); }
+          catch (e) { return '<pre class="md-pre">' + escapeHtml(String(src || "")) + "</pre>"; }
+        }
+        function renderMarkdownInner(src) {
+          let text = String(src || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+          const refs = {};
+          text = text.replace(/^\[([^\]]+)\]:\s+(\S+)(?:\s+"([^"]*)")?\s*$/gm, function (_, id, url) {
+            refs[id.toLowerCase()] = url;
+            return "";
+          });
+          const lines = text.split("\n");
+          let i = 0;
+          const html = [];
+          while (i < lines.length) {
+            const line = lines[i];
+            if (String(line).trim() === "") { i++; continue; }
+            const fence = line.match(/^(```+|~~~+)(.*)$/);
+            if (fence) {
+              const tick = fence[1].charAt(0);
+              const n = fence[1].length;
+              i++;
+              const buf = [];
+              const closeRe = new RegExp("^" + tick + "{" + n + ",}\\s*$");
+              while (i < lines.length && !closeRe.test(lines[i])) { buf.push(lines[i]); i++; }
+              if (i < lines.length) i++;
+              html.push('<pre class="md-pre"><code>' + escapeHtml(buf.join("\n")) + "</code></pre>");
+              continue;
+            }
+            if (/^( {4}|\t)/.test(line)) {
+              const buf = [];
+              while (i < lines.length && (/^( {4}|\t)/.test(lines[i]) || String(lines[i]).trim() === "")) {
+                if (String(lines[i]).trim() === "") {
+                  if (i + 1 < lines.length && /^( {4}|\t)/.test(lines[i + 1])) { buf.push(""); i++; continue; }
+                  break;
+                }
+                buf.push(lines[i].replace(/^( {4}|\t)/, ""));
+                i++;
+              }
+              html.push('<pre class="md-pre"><code>' + escapeHtml(buf.join("\n")) + "</code></pre>");
+              continue;
+            }
+            const h = line.match(/^(#{1,6})\s+(.*?)\s*#*\s*$/);
+            if (h) {
+              html.push("<h" + h[1].length + ">" + inlineMd(h[2], refs) + "</h" + h[1].length + ">");
+              i++;
+              continue;
+            }
+            if (i + 1 < lines.length && /^={3,}\s*$/.test(lines[i + 1]) && line.trim() !== "") {
+              html.push("<h1>" + inlineMd(line.trim(), refs) + "</h1>");
+              i += 2;
+              continue;
+            }
+            if (i + 1 < lines.length && /^-{3,}\s*$/.test(lines[i + 1]) && line.trim() !== "" && !/^[-*+]\s+/.test(line)) {
+              html.push("<h2>" + inlineMd(line.trim(), refs) + "</h2>");
+              i += 2;
+              continue;
+            }
+            if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(line)) { html.push("<hr>"); i++; continue; }
+            if (line.indexOf("|") !== -1 && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+              const header = splitRow(line);
+              i += 2;
+              const body = [];
+              while (i < lines.length && lines[i].indexOf("|") !== -1 && String(lines[i]).trim() !== "") {
+                body.push(splitRow(lines[i]));
+                i++;
+              }
+              let table = '<div class="md-table-wrap"><table><thead><tr>';
+              for (let c = 0; c < header.length; c++) table += "<th>" + inlineMd(header[c], refs) + "</th>";
+              table += "</tr></thead><tbody>";
+              for (let r = 0; r < body.length; r++) {
+                table += "<tr>";
+                for (let c = 0; c < header.length; c++) table += "<td>" + inlineMd(body[r][c] || "", refs) + "</td>";
+                table += "</tr>";
+              }
+              table += "</tbody></table></div>";
+              html.push(table);
+              continue;
+            }
+            if (/^\s*>/.test(line)) {
+              const buf = [];
+              while (i < lines.length && (/^\s*>/.test(lines[i]) || (String(lines[i]).trim() === "" && i + 1 < lines.length && /^\s*>/.test(lines[i + 1])))) {
+                buf.push(String(lines[i]).replace(/^\s*>\s?/, ""));
+                i++;
+              }
+              html.push("<blockquote>" + renderMarkdownInner(buf.join("\n")) + "</blockquote>");
+              continue;
+            }
+            if (listInfo(line)) {
+              const res = consumeList(lines, i, refs);
+              html.push(res.html);
+              i = res.next;
+              continue;
+            }
+            const buf = [line];
+            i++;
+            while (i < lines.length && String(lines[i]).trim() !== "" && !blockStart(lines, i)) {
+              buf.push(lines[i]);
+              i++;
+            }
+            html.push("<p>" + inlineMd(buf.join("\n"), refs).replace(/\n/g, "<br>") + "</p>");
+          }
+          return html.join("\n");
+        }
+
+        function csvToRows(csvText) {
+          let text = csvText == null ? "" : String(csvText);
+          if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+          if (!text.trim()) return [];
+          const parsed = parseCSV(text);
+          while (parsed.length) {
+            const last = parsed[parsed.length - 1];
+            const a = String((last && last[0]) || "").trim();
+            const b = String((last && last[1]) || "").trim();
+            if (a === "" && b === "") parsed.pop();
+            else break;
+          }
+          const out = [];
+          for (let i = 0; i < parsed.length; i++) {
+            out.push({
+              row: i + 1,
+              record: parsed[i][0] == null ? "" : String(parsed[i][0]),
+              reportFull: ""
+            });
+          }
+          return out;
+        }
+
+        async function fetchCount() {
+          const text = await callAppBridge({ type: "GetRecordCount", data: SOURCE });
+          const n = parseInt(String(text).trim(), 10);
+          if (!isFinite(n) || n < 0) throw new Error("count");
+          return n;
+        }
+
+        async function hydrateReports(seq) {
+          for (let i = 0; i < state.rows.length; i++) {
+            if (seq !== refreshSeq) return;
+            const item = state.rows[i];
+            try {
+              const report = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "分析报告/" + item.row });
+              item.reportFull = report == null ? "" : String(report);
+            } catch (e) {
+              item.reportFull = "";
+            }
+          }
+        }
+
+        async function refreshData() {
+          const seq = ++refreshSeq;
+          let count = 0;
+          try {
+            count = await fetchCount();
+          } catch (e) {
+            if (seq !== refreshSeq) return;
+            state.loadError = true;
+            state.csvError = true;
+            state.booted = true;
+            state.total = 0;
+            state.rows = [];
+            state.latestReport = null;
+            renderHome();
+            paintArchiveCards();
+            updateWbButtons();
+            return;
+          }
+          if (seq !== refreshSeq) return;
+          state.loadError = false;
+          state.total = count;
+          state.booted = true;
+          if (count === 0) {
+            state.rows = [];
+            state.csvError = false;
+            state.latestReport = null;
+            renderHome();
+            paintArchiveCards();
+            updateWbButtons();
+            return;
+          }
+          state.csvError = false;
+          try {
+            const csv = await callAppBridge({ type: "GetTableCSV", data: SOURCE, payload: "错题记录,分析报告" });
+            if (seq !== refreshSeq) return;
+            state.rows = csvToRows(csv);
+          } catch (e) {
+            if (seq !== refreshSeq) return;
+            state.rows = [];
+            state.csvError = true;
+          }
+          renderHome();
+          paintArchiveCards();
+          await hydrateReports(seq);
+          if (seq !== refreshSeq) return;
+          if (state.rows.length && state.rows[0].row === 1) {
+            state.latestReport = state.rows[0].reportFull || "";
+          } else {
+            try {
+              const latest = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "分析报告/1" });
+              if (seq !== refreshSeq) return;
+              state.latestReport = latest == null ? "" : String(latest);
+            } catch (e2) {
+              state.latestReport = "";
+            }
+          }
+          renderHome();
+          paintArchiveCards();
+          updateWbButtons();
+          if (state.drawerOpen) {
+            for (let i = 0; i < state.rows.length; i++) {
+              if (state.rows[i].row === state.currentRow) state.rows[i].reportFull = state.drawerReport || state.rows[i].reportFull;
+            }
+            paintArchiveCards();
+          }
+        }
+
+        function renderHome() {
+          const totalEl = byId("statTotal");
+          const latestText = byId("statLatestText");
+          const latestBtn = byId("statLatestBtn");
+          const latestReason = byId("statLatestReason");
+          const list = byId("recentList");
+          const empty = byId("recentEmpty");
+          list.innerHTML = "";
+          if (!state.booted) {
+            totalEl.textContent = t("dash");
+            latestText.textContent = t("dash");
+            latestBtn.disabled = true;
+            latestReason.textContent = "";
+            empty.hidden = true;
+            return;
+          }
+          if (state.loadError) {
+            totalEl.textContent = t("dash");
+            latestText.textContent = t("dash");
+            latestBtn.disabled = true;
+            latestReason.textContent = t("loadFail");
+            empty.hidden = false;
+            byId("recentEmptyText").textContent = t("loadFail");
+            byId("btnRecentStart").hidden = true;
+            return;
+          }
+          totalEl.textContent = String(state.total);
+          if (state.total <= 0) {
+            latestText.textContent = t("noneYet");
+            latestBtn.disabled = true;
+            latestReason.textContent = t("latestNoneReason");
+          } else if (!state.latestReport || !String(state.latestReport).trim()) {
+            latestText.textContent = t("generating");
+            latestBtn.disabled = false;
+            latestReason.textContent = "";
+            latestBtn.title = "";
+          } else {
+            latestText.textContent = t("generated");
+            latestBtn.disabled = false;
+            latestReason.textContent = "";
+            latestBtn.title = "";
+          }
+          if (state.csvError) {
+            empty.hidden = false;
+            byId("recentEmptyText").textContent = t("loadFail");
+            byId("btnRecentStart").hidden = true;
+            return;
+          }
+          const recent = state.rows.slice(0, 4);
+          if (!recent.length) {
+            empty.hidden = false;
+            byId("recentEmptyText").textContent = state.total > 0 ? t("loadFail") : t("recentEmpty");
+            byId("btnRecentStart").hidden = state.total > 0;
+            return;
+          }
+          empty.hidden = true;
+          for (let i = 0; i < recent.length; i++) {
+            const item = recent[i];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "paper card-btn record-card";
+            btn.textContent = preview(item.record, 80) || t("dash");
+            btn.setAttribute("data-row", String(item.row));
+            btn.addEventListener("click", function () {
+              const row = Number(this.getAttribute("data-row"));
+              showPage("archive");
+              openDrawer(row);
+            });
+            list.appendChild(btn);
+          }
+        }
+
+        function paintArchiveCards() {
+          const list = byId("archiveList");
+          const empty = byId("archiveEmpty");
+          if (!list || !empty) return;
+          list.innerHTML = "";
+          if (!state.booted) {
+            empty.hidden = true;
+            return;
+          }
+          if (state.loadError || state.csvError) {
+            empty.hidden = false;
+            byId("archiveEmptyText").textContent = t("loadFail");
+            byId("btnArchiveEmptyStart").hidden = true;
+            return;
+          }
+          const kw = state.search.trim();
+          const shown = [];
+          for (let i = 0; i < state.rows.length; i++) {
+            const item = state.rows[i];
+            if (kw && !containsText(item.record, kw)) continue;
+            if (state.filter !== "all") {
+              const report = item.reportFull || "";
+              if (report.indexOf(state.filter) === -1) continue;
+            }
+            shown.push(item);
+          }
+          if (!shown.length) {
+            empty.hidden = false;
+            byId("archiveEmptyText").textContent = t("noMatch");
+            const showStart = state.total === 0 && !kw && state.filter === "all";
+            byId("btnArchiveEmptyStart").hidden = !showStart;
+            return;
+          }
+          empty.hidden = true;
+          for (let i = 0; i < shown.length; i++) {
+            const item = shown[i];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "paper card-btn archive-card";
+            btn.setAttribute("data-row", String(item.row));
+            const title = document.createElement("p");
+            title.className = "excerpt";
+            title.textContent = preview(item.record, 120) || t("dash");
+            const sub = document.createElement("p");
+            sub.className = "sub";
+            const rep = item.reportFull || "";
+            sub.textContent = rep.trim() ? preview(rep, 40) : t("reportPendingCard");
+            btn.appendChild(title);
+            btn.appendChild(sub);
+            btn.addEventListener("click", function () {
+              openDrawer(Number(this.getAttribute("data-row")));
+            });
+            list.appendChild(btn);
+          }
+        }
+
+        function stopPoll() {
+          state.pollToken += 1;
+          state.polling = false;
+          if (state.pollTimer) {
+            clearTimeout(state.pollTimer);
+            state.pollTimer = 0;
+          }
+        }
+        function blankReport(row) {
+          if (state.wbRow === row) byId("reportBody").innerHTML = "";
+          if (state.drawerOpen && state.currentRow === row) {
+            byId("drawerReport").innerHTML = "";
+            state.drawerReport = "";
+          }
+        }
+        function setWaiting(row) {
+          blankReport(row);
+          if (state.wbRow === row) byId("reportStatus").textContent = t("waiting");
+          if (state.drawerOpen && state.currentRow === row) {
+            byId("drawerStatus").textContent = t("waiting");
+            const b = byId("btnKeepWaiting");
+            b.hidden = false;
+            b.disabled = true;
+            byId("btnKeepWaitingReason").textContent = t("reasonWaitingBtn");
+          }
+        }
+        function setTimeoutStatus(row) {
+          blankReport(row);
+          if (state.wbRow === row) byId("reportStatus").textContent = t("pollTimeout");
+          if (state.drawerOpen && state.currentRow === row) {
+            byId("drawerStatus").textContent = t("pollTimeout");
+            const b = byId("btnKeepWaiting");
+            b.hidden = false;
+            b.disabled = false;
+            byId("btnKeepWaitingReason").textContent = "";
+          }
+        }
+        function setReportMarkdown(row, text) {
+          if (state.wbRow === row) {
+            byId("reportStatus").textContent = "";
+            byId("reportBody").innerHTML = renderMarkdown(text);
+          }
+          if (state.drawerOpen && state.currentRow === row) {
+            state.drawerReport = text;
+            byId("drawerStatus").textContent = "";
+            byId("drawerReport").innerHTML = renderMarkdown(text);
+            byId("btnKeepWaiting").hidden = true;
+            byId("btnKeepWaitingReason").textContent = "";
+          }
+          for (let i = 0; i < state.rows.length; i++) {
+            if (state.rows[i].row === row) state.rows[i].reportFull = text;
+          }
+          if (row === 1) state.latestReport = text;
+          renderHome();
+          paintArchiveCards();
+        }
+        function startPoll(row, target) {
+          const prevRow = state.polling ? state.pollRow : 0;
+          stopPoll();
+          if (prevRow && prevRow !== row && state.wbRow === prevRow) {
+            const body = byId("reportBody");
+            if (body && !String(body.innerHTML || "").trim()) byId("reportStatus").textContent = t("pollMoved");
+          }
+          const token = state.pollToken;
+          state.polling = true;
+          state.pollRow = row;
+          state.pollTarget = target;
+          state.pollGaveUpRow = 0;
+          setWaiting(row);
+          updateWbButtons();
+          const started = Date.now();
+          const loop = async function () {
+            if (token !== state.pollToken) return;
+            if (Date.now() - started >= 90000) {
+              state.polling = false;
+              state.pollGaveUpRow = row;
+              setTimeoutStatus(row);
+              updateWbButtons();
+              return;
+            }
+            const tickStart = Date.now();
+            let text = "";
+            try {
+              text = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "分析报告/" + row });
+            } catch (e) {
+              text = "";
+            }
+            if (token !== state.pollToken) return;
+            if (text != null && String(text).trim() !== "") {
+              state.polling = false;
+              state.pollRow = 0;
+              setReportMarkdown(row, String(text));
+              updateWbButtons();
+              return;
+            }
+            if (Date.now() - started >= 90000) {
+              state.polling = false;
+              state.pollGaveUpRow = row;
+              setTimeoutStatus(row);
+              updateWbButtons();
+              return;
+            }
+            const wait = Math.max(0, 2000 - (Date.now() - tickStart));
+            state.pollTimer = setTimeout(loop, wait);
+          };
+          loop();
+        }
+        function refreshLiveStatus() {
+          if (state.wbRow === 0 && !state.polling) {
+            const body = byId("reportBody");
+            if (body && body.querySelector && body.querySelector(".placeholder")) showWbHint();
+          }
+          if (state.polling && state.pollRow) setWaiting(state.pollRow);
+          else if (state.pollGaveUpRow && state.wbRow === state.pollGaveUpRow) {
+            const body = byId("reportBody");
+            if (body && body.innerHTML.trim() === "") byId("reportStatus").textContent = t("pollTimeout");
+          }
+        }
+
+        async function loadWorkbenchRow(row) {
+          const seq = ++wbSeq;
+          const prevRow = state.currentRow;
+          const prevWb = state.wbRow;
+          const prevSaved = state.savedRecord;
+          const prevText = byId("form错因分析_错题记录").value;
+          const prevReportHtml = byId("reportBody").innerHTML;
+          const prevStatus = byId("reportStatus").textContent;
+          const wasPollingPrev = state.polling && state.pollRow === prevWb;
+          stopPoll();
+          state.currentRow = row;
+          state.wbRow = row;
+          byId("reportBody").innerHTML = "";
+          byId("reportStatus").textContent = t("loading");
+          updateWbButtons();
+          let record = "";
+          let report = "";
+          try {
+            record = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "错题记录/" + row });
+            report = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "分析报告/" + row });
+          } catch (e) {
+            if (seq !== wbSeq) return;
+            state.currentRow = prevRow;
+            state.wbRow = prevWb;
+            state.savedRecord = prevSaved;
+            byId("form错因分析_错题记录").value = prevText;
+            showToast(t("loadFail"));
+            if (wasPollingPrev && prevWb >= 1) startPoll(prevWb, "workbench");
+            else {
+              byId("reportBody").innerHTML = prevReportHtml;
+              byId("reportStatus").textContent = prevStatus || t("loadFail");
+            }
+            updateWbButtons();
+            return;
+          }
+          if (seq !== wbSeq) return;
+          const rec = record == null ? "" : String(record);
+          const rep = report == null ? "" : String(report);
+          byId("form错因分析_错题记录").value = rec;
+          state.savedRecord = rec;
+          if (rep.trim()) {
+            byId("reportBody").innerHTML = renderMarkdown(rep);
+            byId("reportStatus").textContent = "";
+            updateWbButtons();
+            return;
+          }
+          if (state.pollGaveUpRow === row) {
+            byId("reportBody").innerHTML = "";
+            byId("reportStatus").textContent = t("pollTimeout");
+            updateWbButtons();
+            return;
+          }
+          startPoll(row, "workbench");
+        }
+
+        async function goPrev() {
+          if (state.currentRow <= 1 || state.busy) return;
+          await loadWorkbenchRow(state.currentRow - 1);
+        }
+        async function goNext() {
+          if (state.busy || state.currentRow === 0) return;
+          try { state.total = await fetchCount(); } catch (e) {}
+          if (state.currentRow >= state.total) {
+            updateWbButtons();
+            return;
+          }
+          await loadWorkbenchRow(state.currentRow + 1);
+        }
+
+        async function generateAnalysis() {
+          if (state.polling || state.busy || state.currentRow !== 0) return;
+          const text = byId("form错因分析_错题记录").value;
+          if (!text.trim()) return;
+          state.busy = true;
+          updateWbButtons();
+          byId("reportStatus").textContent = t("submitting");
+          try {
+            const payload = JSON.stringify({ "错题记录": text });
+            await callAppBridge({ type: "SubmitRecord", data: TABLE, payload: payload });
+          } catch (e) {
+            state.busy = false;
+            byId("reportStatus").textContent = t("submitFail");
+            updateWbButtons();
+            return;
+          }
+          state.busy = false;
+          state.currentRow = 1;
+          state.wbRow = 1;
+          state.savedRecord = text;
+          state.pollGaveUpRow = 0;
+          updateWbButtons();
+          startPoll(1, "workbench");
+          refreshData();
+        }
+
+        async function saveWorkbench() {
+          if (state.busy || state.currentRow < 1) return;
+          const text = byId("form错因分析_错题记录").value;
+          if (text === state.savedRecord) return;
+          const row = state.currentRow;
+          state.busy = true;
+          updateWbButtons();
+          try {
+            await callAppBridge({ type: "SetCellValue", data: SOURCE, payload: "错题记录/" + row + "/" + text });
+          } catch (e) {
+            state.busy = false;
+            showToast(t("saveFail"));
+            updateWbButtons();
+            return;
+          }
+          state.savedRecord = text;
+          state.busy = false;
+          if (state.drawerOpen && state.currentRow === row) {
+            state.drawerRecord = text;
+            paintDrawer();
+          }
+          for (let i = 0; i < state.rows.length; i++) {
+            if (state.rows[i].row === row) state.rows[i].record = text;
+          }
+          showToast(t("saveOk"));
+          updateWbButtons();
+          paintArchiveCards();
+          renderHome();
+          refreshData();
+        }
+
+        async function readTextFile() {
+          if (state.busy) return;
+          let name = "";
+          try {
+            name = await callAppBridge({ type: "SelectFile" });
+          } catch (e) {
+            showToast(t("readFail"));
+            return;
+          }
+          if (name == null || String(name).trim() === "") return;
+          let content = null;
+          try {
+            content = await callAppBridge({ type: "ReadFile", data: String(name) });
+          } catch (e) {
+            showToast(t("readFail"));
+            return;
+          }
+          if (content == null) {
+            showToast(t("readFail"));
+            return;
+          }
+          byId("form错因分析_错题记录").value = String(content);
+          updateWbButtons();
+        }
+
+        function paintDrawer() {
+          if (!state.drawerOpen) return;
+          byId("drawerRecord").textContent = state.drawerRecord || "";
+          const reportEl = byId("drawerReport");
+          const statusEl = byId("drawerStatus");
+          const waitBtn = byId("btnKeepWaiting");
+          const rep = state.drawerReport || "";
+          const pollingThis = state.polling && state.pollRow === state.currentRow;
+          if (pollingThis) {
+            reportEl.innerHTML = "";
+            statusEl.textContent = t("waiting");
+            waitBtn.hidden = false;
+            waitBtn.disabled = true;
+            byId("btnKeepWaitingReason").textContent = t("reasonWaitingBtn");
+          } else if (String(rep).trim()) {
+            reportEl.innerHTML = renderMarkdown(rep);
+            statusEl.textContent = "";
+            waitBtn.hidden = true;
+            waitBtn.disabled = false;
+            byId("btnKeepWaitingReason").textContent = "";
+          } else if (state.pollGaveUpRow === state.currentRow) {
+            reportEl.innerHTML = "";
+            statusEl.textContent = t("pollTimeout");
+            waitBtn.hidden = false;
+            waitBtn.disabled = false;
+            byId("btnKeepWaitingReason").textContent = "";
+          } else {
+            reportEl.innerHTML = "";
+            statusEl.textContent = t("reportNotReady");
+            waitBtn.hidden = false;
+            waitBtn.disabled = false;
+            byId("btnKeepWaitingReason").textContent = "";
+          }
+          byId("reviseBox").hidden = !state.revising;
+          updateDrawerSaveBtn();
+        }
+
+        async function openDrawer(row) {
+          state.currentRow = row;
+          state.revising = false;
+          state.drawerRecord = "";
+          state.drawerReport = "";
+          byId("drawerRecord").textContent = "";
+          byId("drawerReport").innerHTML = "";
+          byId("drawerStatus").textContent = t("loading");
+          byId("reviseBox").hidden = true;
+          byId("btnKeepWaiting").hidden = true;
+          state.drawerOpen = true;
+          byId("drawerMask").hidden = false;
+          document.body.classList.add("lock-scroll");
+          let record = "";
+          let report = "";
+          try {
+            record = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "错题记录/" + row });
+            report = await callAppBridge({ type: "GetCellValue", data: SOURCE, payload: "分析报告/" + row });
+          } catch (e) {
+            if (!state.drawerOpen || state.currentRow !== row) return;
+            byId("drawerStatus").textContent = t("loadFail");
+            return;
+          }
+          if (!state.drawerOpen || state.currentRow !== row) return;
+          state.drawerRecord = record == null ? "" : String(record);
+          state.drawerReport = report == null ? "" : String(report);
+          for (let i = 0; i < state.rows.length; i++) {
+            if (state.rows[i].row === row) state.rows[i].reportFull = state.drawerReport;
+          }
+          paintDrawer();
+          paintArchiveCards();
+          setTimeout(function () { byId("btnCloseDrawer").focus(); }, 0);
+        }
+        function closeDrawer() {
+          const row = state.currentRow;
+          state.drawerOpen = false;
+          state.revising = false;
+          byId("drawerMask").hidden = true;
+          if (!state.confirmOpen) document.body.classList.remove("lock-scroll");
+          if (state.pollTarget === "drawer" && state.pollRow === row) stopPoll();
+          if (state.page === "workbench") syncWorkbench(false);
+          updateWbButtons();
+        }
+        function beginRevise() {
+          state.revising = true;
+          const ta = byId("form修订错题记录_错题记录");
+          ta.value = state.drawerRecord || "";
+          byId("reviseBox").hidden = false;
+          updateDrawerSaveBtn();
+          setTimeout(function () {
+            ta.focus();
+            try { ta.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+          }, 40);
+        }
+        async function saveDrawer() {
+          if (state.busy || state.currentRow < 1 || !state.revising) return;
+          const text = byId("form修订错题记录_错题记录").value;
+          if (text === state.drawerRecord) return;
+          const row = state.currentRow;
+          state.busy = true;
+          updateDrawerSaveBtn();
+          try {
+            await callAppBridge({ type: "SetCellValue", data: SOURCE, payload: "错题记录/" + row + "/" + text });
+          } catch (e) {
+            state.busy = false;
+            showToast(t("saveFail"));
+            updateDrawerSaveBtn();
+            return;
+          }
+          state.drawerRecord = text;
+          state.revising = false;
+          state.busy = false;
+          if (state.wbRow === row) {
+            byId("form错因分析_错题记录").value = text;
+            state.savedRecord = text;
+            updateWbButtons();
+          }
+          for (let i = 0; i < state.rows.length; i++) {
+            if (state.rows[i].row === row) state.rows[i].record = text;
+          }
+          showToast(t("saveOk"));
+          paintDrawer();
+          paintArchiveCards();
+          renderHome();
+          refreshData();
+        }
+        function openInWorkbench() {
+          const row = state.currentRow;
+          if (row < 1) return;
+          closeDrawer();
+          state.currentRow = row;
+          showPage("workbench", { force: true });
+        }
+        function askDelete() {
+          if (state.currentRow < 1) return;
+          state.confirmOpen = true;
+          byId("confirmMask").hidden = false;
+          setTimeout(function () { byId("btnCancelDelete").focus(); }, 0);
+        }
+        function closeConfirm() {
+          state.confirmOpen = false;
+          byId("confirmMask").hidden = true;
+          if (!state.drawerOpen) document.body.classList.remove("lock-scroll");
+        }
+        async function confirmDelete() {
+          if (state.busy || state.currentRow < 1) return;
+          const row = state.currentRow;
+          state.busy = true;
+          try {
+            await callAppBridge({ type: "DeleteRecord", data: SOURCE, payload: String(row) });
+          } catch (e) {
+            state.busy = false;
+            showToast(t("deleteFail"));
+            return;
+          }
+          state.busy = false;
+          closeConfirm();
+          closeDrawer();
+          state.currentRow = 0;
+          clearWorkbench();
+          refreshData();
+        }
+        function keepWaiting() {
+          if (state.currentRow < 1 || state.polling) return;
+          state.pollGaveUpRow = 0;
+          state.drawerReport = "";
+          startPoll(state.currentRow, "drawer");
+          paintDrawer();
+        }
+
+        function airBack() {
+          if (state.confirmOpen) {
+            closeConfirm();
+            return "false";
+          }
+          if (state.drawerOpen) {
+            closeDrawer();
+            return "false";
+          }
+          if (state.mobileOpen) {
+            closeMobileMenu();
+            return "false";
+          }
+          if (state.history.length) {
+            const prev = state.history.pop();
+            showPage(prev.page, { record: false, scroll: prev.scroll });
+            return "false";
+          }
+          return "true";
+        }
+        window.airBack = airBack;
+
+        function bindKeyboardGuard() {
+          function bump() {
+            const vv = window.visualViewport;
+            if (!vv) return;
+            const overlap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+            document.documentElement.style.setProperty("--kb", overlap + "px");
+            const ae = document.activeElement;
+            if (ae && ae.matches && ae.matches("input, textarea, select")) {
+              try { ae.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+            }
+          }
+          if (window.visualViewport) {
+            window.visualViewport.addEventListener("resize", bump);
+            window.visualViewport.addEventListener("scroll", bump);
+          }
+          document.addEventListener("focusin", function (e) {
+            const el = e.target;
+            if (!el || !el.matches || !el.matches("input, textarea, select")) return;
+            setTimeout(function () {
+              try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) {}
+            }, 280);
+          });
+        }
+
+        function bindEvents() {
+          byId("brandLink").addEventListener("click", onBrand);
+          const pages = ["home", "workbench", "archive"];
+          const tabIds = ["tabHome", "tabWorkbench", "tabArchive", "mobileTabHome", "mobileTabWorkbench", "mobileTabArchive"];
+          for (let i = 0; i < tabIds.length; i++) {
+            byId(tabIds[i]).addEventListener("click", function () {
+              showPage(this.getAttribute("data-page"));
+            });
+          }
+          byId("langToggle").addEventListener("click", function () {
+            applyLanguage(state.lang === "en" ? "zh" : "en", true);
+          });
+          byId("mobileLangZh").addEventListener("click", function () { applyLanguage("zh", true); closeMobileMenu(); });
+          byId("mobileLangEn").addEventListener("click", function () { applyLanguage("en", true); closeMobileMenu(); });
+          byId("hamburgerBtn").addEventListener("click", function (e) {
+            e.stopPropagation();
+            toggleMobile();
+          });
+          document.addEventListener("click", function (e) {
+            if (!state.mobileOpen) return;
+            const menu = byId("mobileMenu");
+            const burger = byId("hamburgerBtn");
+            if (menu.contains(e.target) || burger.contains(e.target)) return;
+            closeMobileMenu();
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+              const handled = airBack();
+              if (handled === "false") e.preventDefault();
+            }
+          });
+          byId("btnStart").addEventListener("click", startFresh);
+          byId("btnViewArchive").addEventListener("click", function () { showPage("archive"); });
+          byId("btnRecentStart").addEventListener("click", startFresh);
+          byId("btnArchiveEmptyStart").addEventListener("click", startFresh);
+          byId("statLatestBtn").addEventListener("click", function () {
+            if (this.disabled || state.total <= 0) return;
+            openDrawer(1);
+          });
+          byId("btnNewWorkbench").addEventListener("click", startFresh);
+          byId("btnNewArchive").addEventListener("click", startFresh);
+          byId("btnReadFile").addEventListener("click", function () { readTextFile(); });
+          byId("btnGenerate").addEventListener("click", function () { generateAnalysis(); });
+          byId("btnSaveRevise").addEventListener("click", function () { saveWorkbench(); });
+          byId("form错因分析").addEventListener("submit", function (e) { e.preventDefault(); });
+          byId("form错因分析_错题记录").addEventListener("input", updateWbButtons);
+          byId("btnPrev").addEventListener("click", function () { goPrev(); });
+          byId("btnNext").addEventListener("click", function () { goNext(); });
+          byId("form档案筛选").addEventListener("submit", function (e) { e.preventDefault(); });
+          byId("form档案筛选_关键字").addEventListener("input", function () {
+            state.search = this.value;
+            paintArchiveCards();
+          });
+          byId("drawerMask").addEventListener("click", function (e) {
+            if (e.target === this) closeDrawer();
+          });
+          byId("btnRevise").addEventListener("click", beginRevise);
+          byId("btnSaveDrawer").addEventListener("click", function () { saveDrawer(); });
+          byId("form修订错题记录").addEventListener("submit", function (e) { e.preventDefault(); });
+          byId("form修订错题记录_错题记录").addEventListener("input", updateDrawerSaveBtn);
+          byId("btnOpenWb").addEventListener("click", openInWorkbench);
+          byId("btnDelete").addEventListener("click", askDelete);
+          byId("btnCloseDrawer").addEventListener("click", closeDrawer);
+          byId("btnKeepWaiting").addEventListener("click", keepWaiting);
+          byId("confirmMask").addEventListener("click", function (e) {
+            if (e.target === this) closeConfirm();
+          });
+          byId("btnConfirmDelete").addEventListener("click", function () { confirmDelete(); });
+          byId("btnCancelDelete").addEventListener("click", closeConfirm);
+          window.addEventListener("resize", updateNavMode);
+        }
+
+        async function applyHostMode() {
+          try {
+            const mode = await callAppBridge({ type: "模式" });
+            const text = mode == null ? "" : String(mode);
+            if (text.indexOf("暗") !== -1) document.documentElement.setAttribute("data-theme", "dark");
+            else document.documentElement.setAttribute("data-theme", "light");
+          } catch (e) {
+            document.documentElement.setAttribute("data-theme", "light");
+          }
+        }
+
+        async function initialize() {
+          buildStaticCats();
+          bindEvents();
+          bindKeyboardGuard();
+          applyLanguage(detectLang(), false);
+          updateNavMode();
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function () { updateNavMode(); });
+          }
+          showPage("home", { record: false });
+          showWbHint();
+          updateWbButtons();
+          state.currentRow = 0;
+          const modePromise = applyHostMode();
+          const dataPromise = refreshData();
+          await modePromise;
+          await dataPromise;
+          void FORM_SPEC;
+        }
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

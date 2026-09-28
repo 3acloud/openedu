@@ -1,0 +1,3262 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#1E2746">
+<title>数学解题教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --bg: #F3EDE2;
+    --ink: #243044;
+    --card: #ffffff;
+    --nav: #1E2746;
+    --chalk: #E4B15A;
+    --board: #1E2746;
+    --board-ink: #F7F1E3;
+    --muted: #6d6458;
+    --paper: #FFFBF4;
+    --grid: rgba(36, 48, 68, 0.045);
+    --shadow: 0 10px 24px rgba(36, 48, 68, 0.08);
+    --line: rgba(36, 48, 68, 0.14);
+    --danger: #9C4A38;
+    --kb: 0px;
+  }
+  html.theme-dark {
+    --bg: #14120E;
+    --ink: #F7F1E3;
+    --card: #262119;
+    --nav: #0E1324;
+    --chalk: #E4B15A;
+    --board: #0E1324;
+    --board-ink: #F7F1E3;
+    --muted: #CDBFA9;
+    --paper: #1C1914;
+    --grid: rgba(228, 177, 90, 0.06);
+    --shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    --line: rgba(247, 241, 227, 0.16);
+    --danger: #E08A78;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body {
+    color: var(--ink);
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    line-height: 1.6;
+  }
+  body.lock-scroll { position: fixed; width: 100%; overflow: hidden; }
+  h1, h2, h3, .serif { font-family: "Source Han Serif SC", "Songti SC", "Noto Serif SC", serif; font-weight: 600; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  input, select, textarea { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  #appHeader { position: fixed; top: 0; left: 0; right: 0; z-index: 1001; }
+  #mainNav {
+    background: var(--nav);
+    border-bottom: 2px solid var(--chalk);
+    padding-top: env(safe-area-inset-top);
+  }
+  #navInner {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    overflow: hidden;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+  }
+  .brand:hover .brand-name { color: var(--chalk); }
+  .sigma-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    color: #1E2746;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Times New Roman", "Source Han Serif SC", serif;
+    font-weight: 700;
+    font-size: 20px;
+    flex: 0 0 auto;
+  }
+  .brand-name {
+    color: #fff;
+    font-family: "Source Han Serif SC", "Songti SC", serif;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 46vw;
+  }
+  #navTabs {
+    margin-left: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+  }
+  .nav-tab {
+    background: transparent;
+    border: none;
+    color: #F7F1E3;
+    padding: 8px 12px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+  }
+  .nav-tab:hover { color: var(--chalk); }
+  .nav-tab.active { color: var(--chalk); }
+  .nav-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 2px;
+    height: 2px;
+    background: var(--chalk);
+  }
+  .lang-switch {
+    display: inline-flex;
+    border: 1px solid rgba(228, 177, 90, 0.5);
+    border-radius: 999px;
+    overflow: hidden;
+    flex: 0 0 auto;
+  }
+  .lang-switch button {
+    background: transparent;
+    color: #F7F1E3;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .lang-switch button.selected { background: var(--chalk); color: #1E2746; }
+  .hamburger {
+    margin-left: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(247, 241, 227, 0.28);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .hamburger:hover { color: var(--chalk); border-color: var(--chalk); }
+  #navTabs.is-hidden, #langToggle.is-hidden, #hamburgerBtn.is-hidden { display: none !important; }
+  #mobileMenu {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--nav);
+    border-top: 1px solid rgba(228, 177, 90, 0.35);
+    padding: 6px 10px 12px;
+    z-index: 1002;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.25);
+  }
+  #mobileMenu.open { display: block; }
+  .menu-tab, .menu-lang button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    color: #F7F1E3;
+    border: none;
+    padding: 12px 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .menu-tab.active, .menu-lang button.selected { color: var(--chalk); }
+  .menu-lang { display: flex; gap: 8px; padding: 4px 8px 8px; }
+  .menu-lang button {
+    width: auto;
+    border: 1px solid rgba(228, 177, 90, 0.45);
+    border-radius: 999px;
+    padding: 6px 14px;
+  }
+  .menu-lang button.selected { background: var(--chalk); color: #1E2746; }
+  #appMain { padding-top: calc(68px + env(safe-area-inset-top)); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 56px; }
+  .page-kicker { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; margin: 0 0 6px; }
+  h1 { font-size: 40px; line-height: 1.25; margin: 0 0 10px; }
+  .lede { font-size: 17px; margin: 0 0 8px; max-width: 40em; }
+  .fine { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+  .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+  .page-head h1 { font-size: 34px; }
+  .btn {
+    border: none;
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 11px 18px;
+    font-weight: 600;
+    background: var(--card);
+    color: var(--ink);
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-chalk { background: var(--chalk); color: #1E2746; }
+  .btn-chalk:hover { box-shadow: 0 8px 18px rgba(228, 177, 90, 0.35); }
+  .btn-ink { background: #1E2746; color: var(--chalk); }
+  .btn-ink:hover { box-shadow: 0 8px 18px rgba(30, 39, 70, 0.25); }
+  .btn-ghost { background: transparent; border: 1px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--chalk); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-line { background: transparent; color: var(--chalk); border: 1px solid var(--chalk); }
+  .btn-line:hover { background: rgba(228, 177, 90, 0.12); }
+  .entry-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 18px 0 22px; }
+  .entry {
+    text-align: left;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    min-height: 132px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .entry:hover { transform: translateY(-3px); box-shadow: 0 16px 28px rgba(36, 48, 68, 0.16); }
+  .entry-name { font-family: "Source Han Serif SC", "Songti SC", serif; font-size: 18px; }
+  .entry-ph { font-size: 13px; line-height: 1.5; }
+  .bg-stuck { background: #E4B15A; color: #1E2746; }
+  .bg-wrong { background: #9C4A38; color: #fff; }
+  .bg-formula { background: #5F7C86; color: #fff; }
+  .bg-similar { background: #3C4C9A; color: #fff; }
+  .bg-review { background: #6A7D3C; color: #fff; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 18px; }
+  .stat-card, .item-card, .panel {
+    background: var(--card);
+    border-left: 4px solid var(--chalk);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+  .stat-card { padding: 16px 18px; }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 16px 28px rgba(36, 48, 68, 0.16); }
+  .stat-num { font-family: "Source Han Serif SC", "Songti SC", serif; font-size: 36px; line-height: 1.1; color: var(--ink); }
+  .stat-label { color: var(--muted); font-size: 14px; }
+  .section-title { font-size: 22px; margin: 12px 0 10px; }
+  .capsule-row, .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .capsule { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+  .capsule b { font-family: "Source Han Serif SC", "Songti SC", serif; font-size: 16px; }
+  .card-list { display: flex; flex-direction: column; gap: 12px; }
+  .item-card {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+  }
+  button.item-card { border-left: 4px solid var(--chalk); }
+  .item-card:hover { transform: translateY(-3px); box-shadow: 0 16px 28px rgba(36, 48, 68, 0.16); }
+  .item-main { flex: 1; min-width: 0; }
+  .item-title { margin: 0 0 6px; font-size: 18px; overflow-wrap: anywhere; }
+  .item-idea { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; font-size: 12px; line-height: 1.7; }
+  .badge-junior { background: #E7F0EA; color: #245243; }
+  .badge-senior { background: #E4E7F6; color: #2C3A78; }
+  html.theme-dark .badge-junior { background: #24362C; color: #D5E8DC; }
+  html.theme-dark .badge-senior { background: #232844; color: #D5DCF8; }
+  .badge-plain { background: rgba(36, 48, 68, 0.08); }
+  .thumb {
+    width: 72px;
+    height: 72px;
+    flex: 0 0 72px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #efe6d6;
+    background-image:
+      linear-gradient(rgba(36, 48, 68, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(36, 48, 68, 0.1) 1px, transparent 1px);
+    background-size: 12px 12px;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .item-actions { display: flex; flex-direction: column; gap: 8px; }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .icon-btn:hover { transform: translateY(-1px); border-color: var(--chalk); color: #9a7430; }
+  .icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
+  .blank-box { padding: 12px 0 8px; }
+  .blank-box p { font-family: "Source Han Serif SC", "Songti SC", serif; font-size: 22px; margin: 0 0 12px; }
+  .error-line {
+    color: #9C4A38;
+    background: rgba(156, 74, 56, 0.08);
+    border-left: 4px solid #9C4A38;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin: 12px 0;
+  }
+  html.theme-dark .error-line { color: #F0C2B6; }
+  .solve-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 18px; align-items: start; }
+  .paper, .paper-dialog {
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 22px 22px;
+    border-left: 4px solid var(--chalk);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .paper { padding: 18px 18px 22px; }
+  .board {
+    background: var(--board);
+    color: var(--board-ink);
+    border-left: 4px solid var(--chalk);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 18px 18px 22px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+  }
+  .board h2 { color: var(--chalk); margin: 0 0 12px; }
+  .board-body { flex: 1; }
+  .field { margin: 0 0 14px; }
+  .lbl { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+  textarea, input[type="search"], input[type="text"] {
+    width: 100%;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  textarea { resize: vertical; min-height: 96px; }
+  textarea:focus, input:focus, select:focus { outline: 2px solid var(--chalk); border-color: var(--chalk); }
+  .choice-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stage-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+  .choice:hover { transform: translateY(-1px); }
+  .stage-row .choice { padding: 16px 12px; font-family: "Source Han Serif SC", "Songti SC", serif; font-size: 18px; }
+  .stage-row .choice.selected { background: #1E2746; color: var(--chalk); border-color: transparent; }
+  .choice.sel-stuck.selected, .chip.sel-stuck.selected { background: #E4B15A; color: #1E2746; border-color: transparent; }
+  .choice.sel-wrong.selected, .chip.sel-wrong.selected { background: #9C4A38; color: #fff; border-color: transparent; }
+  .choice.sel-formula.selected, .chip.sel-formula.selected { background: #5F7C86; color: #fff; border-color: transparent; }
+  .choice.sel-similar.selected, .chip.sel-similar.selected { background: #3C4C9A; color: #fff; border-color: transparent; }
+  .choice.sel-review.selected, .chip.sel-review.selected { background: #6A7D3C; color: #fff; border-color: transparent; }
+  .choice.sel-stuck::before, .choice.sel-wrong::before, .choice.sel-formula::before, .choice.sel-similar::before, .choice.sel-review::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .choice.sel-stuck::before { background: #E4B15A; }
+  .choice.sel-wrong::before { background: #9C4A38; }
+  .choice.sel-formula::before { background: #5F7C86; }
+  .choice.sel-similar::before { background: #3C4C9A; }
+  .choice.sel-review::before { background: #6A7D3C; }
+  .choice.selected::before { display: none; }
+  .hs-note { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+  .preview-box {
+    min-height: 140px;
+    border-radius: 12px;
+    border: 1px dashed var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 8px;
+    background-color: rgba(255, 251, 244, 0.55);
+    background-image:
+      linear-gradient(rgba(36, 48, 68, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(36, 48, 68, 0.08) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .preview-box img { max-width: 100%; max-height: 240px; object-fit: contain; display: block; }
+  .board .btn-line { margin-top: 16px; align-self: flex-start; }
+  .img-actions, .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .img-actions .btn { border-radius: 12px; padding: 8px 12px; font-size: 14px; font-weight: 600; }
+  .hint { font-size: 13px; color: var(--muted); }
+  .search-wrap { position: relative; margin: 12px 0; }
+  .search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .search-wrap input { padding-left: 36px; }
+  .chip {
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .chip:hover { transform: translateY(-1px); }
+  .chip.chip-all.selected, .chip.chip-stage.selected { background: #1E2746; color: var(--chalk); border-color: transparent; }
+  .overlay { position: fixed; inset: 0; }
+  #detailOverlay { z-index: 2000; background: rgba(20, 16, 12, 0.35); }
+  #editOverlay { z-index: 2100; }
+  #deleteOverlay { z-index: 2200; }
+  .center-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(20, 16, 12, 0.45);
+  }
+  #detailPanel {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: min(480px, calc(100% - 32px));
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    overflow: auto;
+    animation: slideIn 0.22s ease;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(28px); opacity: 0.4; }
+    to { transform: none; opacity: 1; }
+  }
+  .detail-body, .paper-dialog, .confirm-dialog { padding: 18px 18px 28px; }
+  .paper-dialog, .confirm-dialog {
+    width: min(720px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  }
+  .confirm-dialog {
+    width: min(420px, 100%);
+    background: var(--card);
+    color: var(--ink);
+    border-left: 4px solid var(--danger);
+  }
+  .detail-photo img { width: 100%; max-height: 320px; object-fit: contain; border-radius: 12px; background: #efe6d6; }
+  .idea-block { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .md-body { line-height: 1.75; font-size: 15px; overflow-wrap: anywhere; }
+  .md-body h1, .md-body h2, .md-body h3, .md-body h4, .md-body h5, .md-body h6 {
+    font-family: "Source Han Serif SC", "Songti SC", serif;
+    line-height: 1.35;
+    margin: 1em 0 0.4em;
+  }
+  .md-body h1 { font-size: 1.6rem; }
+  .md-body h2 { font-size: 1.35rem; }
+  .md-body h3 { font-size: 1.15rem; }
+  .md-body p { margin: 0.5em 0; }
+  .md-body ul, .md-body ol { margin: 0.4em 0; padding-left: 1.3em; }
+  .md-body blockquote {
+    margin: 0.6em 0;
+    padding: 0.2em 0 0.2em 12px;
+    border-left: 3px solid var(--chalk);
+    color: var(--muted);
+  }
+  .md-body code { font-family: Consolas, "Source Code Pro", monospace; background: rgba(36, 48, 68, 0.08); padding: 0 4px; border-radius: 4px; }
+  .md-body pre {
+    overflow: auto;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(36, 48, 68, 0.06);
+  }
+  .md-body pre code { background: transparent; padding: 0; }
+  .md-body img { max-width: 100%; border-radius: 8px; }
+  .md-body table { border-collapse: collapse; width: 100%; }
+  .md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  .md-table-wrap { overflow-x: auto; max-width: 100%; }
+  .md-math, .md-math-inline { font-family: "Cambria Math", "Times New Roman", serif; }
+  .md-math { text-align: center; font-size: 1.15rem; padding: 8px 0; }
+  .md-hr { border: none; border-top: 1px solid var(--line); margin: 1em 0; }
+  .board .md-body { color: var(--board-ink); }
+  .board .md-body h1, .board .md-body h2, .board .md-body h3, .board .md-body h4 { color: var(--chalk); }
+  .board .md-body a { color: #F0D59A; }
+  .board .md-body code, .board .md-body pre { background: rgba(255, 255, 255, 0.08); }
+  .board .md-body blockquote { color: #F0D59A; }
+  .board .md-body th, .board .md-body td { border-color: rgba(247, 241, 227, 0.22); }
+  .board .md-math, .board .md-math-inline { color: #F0D59A; }
+  .board .pending-note, .pending-note { color: var(--muted); }
+  .board .board-body:not(.md-body) { font-family: "Source Han Serif SC", "Songti SC", serif; font-size: 18px; line-height: 1.7; }
+  @media (max-width: 1000px) {
+    .entry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 860px) {
+    .solve-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+  @media (max-width: 700px) {
+    .stat-grid { grid-template-columns: 1fr; }
+    .wrap { padding: 20px 14px 48px; }
+  }
+  @media (max-width: 640px) {
+    .entry-grid { grid-template-columns: 1fr; }
+    #detailOverlay { background: var(--card); }
+    #detailPanel {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-radius: 0;
+      margin: 0;
+    }
+    .center-overlay { padding: 12px; }
+  }
+  @media (max-width: 768px) {
+    .page { padding-bottom: calc(128px + env(safe-area-inset-bottom) + var(--kb)); }
+    .detail-body, .paper-dialog, .confirm-dialog {
+      padding-bottom: calc(120px + env(safe-area-inset-bottom) + var(--kb));
+    }
+  }
+  @media (hover: none) {
+    .entry:hover, .item-card:hover, .stat-card:hover, .btn:hover, .chip:hover, .choice:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<div id="appHeader">
+  <nav id="mainNav" style="position: relative;z-index: 1001;">
+    <div id="navInner">
+      <button type="button" id="logoBtn" class="brand">
+        <span class="sigma-badge" aria-hidden="true">Σ</span>
+        <span id="appName" class="brand-name" data-i18n="appName">数学解题教练</span>
+      </button>
+      <div id="navTabs">
+        <button type="button" class="nav-tab active" id="navHome" data-nav="pageHome"><span data-i18n="navHome">首页</span></button>
+        <button type="button" class="nav-tab" id="navSolve" data-nav="pageSolve"><span data-i18n="navSolve">解题台</span></button>
+        <button type="button" class="nav-tab" id="navBook" data-nav="pageBook"><span data-i18n="navBook">辅导册</span></button>
+      </div>
+      <div id="langToggle" class="lang-switch" role="group">
+        <button type="button" id="btnLangZh" class="selected">中文</button>
+        <button type="button" id="btnLangEn">EN</button>
+      </div>
+      <button type="button" id="hamburgerBtn" class="hamburger is-hidden" aria-expanded="false" data-i18n-aria="menuLabel" aria-label="菜单">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="menu-tab active" id="menuHome" data-nav="pageHome"><span data-i18n="navHome">首页</span></button>
+      <button type="button" class="menu-tab" id="menuSolve" data-nav="pageSolve"><span data-i18n="navSolve">解题台</span></button>
+      <button type="button" class="menu-tab" id="menuBook" data-nav="pageBook"><span data-i18n="navBook">辅导册</span></button>
+      <div class="menu-lang">
+        <button type="button" id="btnLangZhM" class="selected">中文</button>
+        <button type="button" id="btnLangEnM">EN</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main id="appMain">
+  <section id="pageHome" class="page">
+    <div class="wrap">
+      <h1 class="serif" data-i18n="appName">数学解题教练</h1>
+      <p class="lede" data-i18n="heroDesc">把卡住的那一步交给教练。先写出你的尝试，教练只推一把，不先甩答案。</p>
+      <p class="fine" data-i18n="heroNote">高中只陪伴高一预备知识与函数；正在考试或测验时，不要提交这道题。</p>
+      <button type="button" id="btnStart" class="btn btn-ink"><span data-i18n="startBtn">开始这道题</span></button>
+      <div class="entry-grid" id="entryGrid">
+        <button type="button" class="entry bg-stuck" id="entryStuck" data-help="卡住了">
+          <span class="entry-name" data-i18n="helpStuck">卡住了</span>
+          <span class="entry-ph" data-i18n="phStuck">你试到哪一步了？</span>
+        </button>
+        <button type="button" class="entry bg-wrong" id="entryWrong" data-help="做错了">
+          <span class="entry-name" data-i18n="helpWrong">做错了</span>
+          <span class="entry-ph" data-i18n="phWrong">把步骤写出来，圈出最可疑的一步</span>
+        </button>
+        <button type="button" class="entry bg-formula" id="entryFormula" data-help="不知道怎么列式">
+          <span class="entry-name" data-i18n="helpFormula">不知道怎么列式</span>
+          <span class="entry-ph" data-i18n="phFormula">先写已知和要求</span>
+        </button>
+        <button type="button" class="entry bg-similar" id="entrySimilar" data-help="出同类题">
+          <span class="entry-name" data-i18n="helpSimilar">出同类题</span>
+          <span class="entry-ph" data-i18n="phSimilar">写出原题，或只写考查点</span>
+        </button>
+        <button type="button" class="entry bg-review" id="entryReview" data-help="考前梳理">
+          <span class="entry-name" data-i18n="helpReview">考前梳理</span>
+          <span class="entry-ph" data-i18n="phReview">写要梳理的章节，和最没底的内容</span>
+        </button>
+      </div>
+      <p id="homeError" class="error-line" hidden></p>
+      <div id="homeData" hidden>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-num" id="statTotal"></div><div class="stat-label" data-i18n="statCount">辅导次数</div></article>
+          <article class="stat-card"><div class="stat-num" id="statJunior"></div><div class="stat-label" data-i18n="statJunior">初中题数</div></article>
+          <article class="stat-card"><div class="stat-num" id="statSenior"></div><div class="stat-label" data-i18n="statSenior">高中题数</div></article>
+        </div>
+        <h2 class="section-title" data-i18n="helpDist">求助分布</h2>
+        <div class="capsule-row" id="helpCapsules">
+          <div class="capsule bg-stuck"><span data-i18n="helpStuck">卡住了</span><b id="capStuck"></b></div>
+          <div class="capsule bg-wrong"><span data-i18n="helpWrong">做错了</span><b id="capWrong"></b></div>
+          <div class="capsule bg-formula"><span data-i18n="helpFormula">不知道怎么列式</span><b id="capFormula"></b></div>
+          <div class="capsule bg-similar"><span data-i18n="helpSimilar">出同类题</span><b id="capSimilar"></b></div>
+          <div class="capsule bg-review"><span data-i18n="helpReview">考前梳理</span><b id="capReview"></b></div>
+        </div>
+        <h2 class="section-title" id="recentHead" data-i18n="recentTitle">最近看过的题</h2>
+        <div id="recentList" class="card-list"></div>
+        <div id="homeBlank" class="blank-box" hidden>
+          <p data-i18n="blankBook">辅导册还是空白的</p>
+          <button type="button" id="btnFirst" class="btn btn-chalk"><span data-i18n="firstProblem">去做第一题</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="pageSolve" class="page" hidden>
+    <div class="wrap">
+      <div class="solve-grid">
+        <form id="formSolve" class="paper" novalidate>
+          <div class="page-head">
+            <div>
+              <h1 data-i18n="solveTitle">解题台</h1>
+              <p class="fine" data-i18n="solveDesc">一次只交一道题。题目文字和题目图片至少要有一个。</p>
+            </div>
+            <button type="button" id="btnClearPaper" class="btn btn-ghost"><span data-i18n="clearPaper">清空稿纸</span></button>
+          </div>
+          <div class="field">
+            <label class="lbl" for="formSolve_题目" data-i18n="fieldTitle">题目</label>
+            <textarea id="formSolve_题目" name="题目" rows="5"></textarea>
+          </div>
+          <div class="field">
+            <div class="lbl" data-i18n="fieldImage">题目图片</div>
+            <input type="hidden" id="formSolve_题目图片" name="题目图片" value="">
+            <div class="preview-box"><img id="formSolve_preview" alt="" hidden></div>
+            <div class="img-actions">
+              <button type="button" id="btnSolveCapture" class="btn btn-ghost"><i class="fa-solid fa-camera"></i> <span data-i18n="takePhoto">拍题目</span></button>
+              <button type="button" id="btnSolvePick" class="btn btn-ghost"><i class="fa-solid fa-image"></i> <span data-i18n="pickAlbum">从相册选</span></button>
+              <button type="button" id="btnSolveRemove" class="btn btn-ghost"><i class="fa-solid fa-xmark"></i> <span data-i18n="removeImage">去掉图片</span></button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="lbl" data-i18n="fieldStage">学段</div>
+            <input type="hidden" id="formSolve_学段" name="学段" value="初中">
+            <div class="choice-row stage-row" id="formSolve_学段_choices">
+              <button type="button" class="choice selected" id="formSolve_学段_初中" data-value="初中" aria-pressed="true"><span data-i18n="stageJunior">初中</span></button>
+              <button type="button" class="choice" id="formSolve_学段_高中" data-value="高中" aria-pressed="false"><span data-i18n="stageSenior">高中</span></button>
+            </div>
+            <p id="formSolve_hsNote" class="hs-note" hidden data-i18n="hsNote">高中只覆盖高一预备知识与函数。几何与代数、概率与统计、选择性必修，教练只会帮你整理已知、所求和卡点。</p>
+          </div>
+          <div class="field">
+            <div class="lbl" data-i18n="fieldHelp">求助</div>
+            <input type="hidden" id="formSolve_求助" name="求助" value="卡住了">
+            <div class="choice-row" id="formSolve_求助_choices">
+              <button type="button" class="choice sel-stuck selected" id="formSolve_求助_卡住了" data-value="卡住了" aria-pressed="true"><span data-i18n="helpStuck">卡住了</span></button>
+              <button type="button" class="choice sel-wrong" id="formSolve_求助_做错了" data-value="做错了" aria-pressed="false"><span data-i18n="helpWrong">做错了</span></button>
+              <button type="button" class="choice sel-formula" id="formSolve_求助_不知道怎么列式" data-value="不知道怎么列式" aria-pressed="false"><span data-i18n="helpFormula">不知道怎么列式</span></button>
+              <button type="button" class="choice sel-similar" id="formSolve_求助_出同类题" data-value="出同类题" aria-pressed="false"><span data-i18n="helpSimilar">出同类题</span></button>
+              <button type="button" class="choice sel-review" id="formSolve_求助_考前梳理" data-value="考前梳理" aria-pressed="false"><span data-i18n="helpReview">考前梳理</span></button>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="formSolve_已有思路" data-i18n="fieldIdea">已有思路</label>
+            <textarea id="formSolve_已有思路" name="已有思路" rows="6" placeholder="你试到哪一步了？"></textarea>
+          </div>
+          <button type="button" id="btnAskCoach" class="btn btn-chalk" disabled><span data-i18n="askCoach">请教练看看</span></button>
+          <p id="solveStatus" class="error-line" hidden></p>
+        </form>
+        <section class="board" id="boardCard">
+          <h2 data-i18n="boardTitle">教练黑板</h2>
+          <div id="boardBody" class="board-body"></div>
+          <button type="button" id="btnGotoBook" class="btn btn-line" disabled><span data-i18n="gotoBook">到辅导册看这一题</span></button>
+        </section>
+      </div>
+    </div>
+  </section>
+  <section id="pageBook" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="bookTitle">辅导册</h1>
+          <p class="fine" data-i18n="bookDesc">每张卡片是一次提问。点卡片看教练怎么说，编辑只改题目信息，不会重写黑板。</p>
+        </div>
+        <button type="button" id="btnAskAnother" class="btn btn-ink"><span data-i18n="askAnother">+ 再问一题</span></button>
+      </div>
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input id="bookSearch" name="search" type="search" data-i18n-ph="searchPh" placeholder="搜索题目或已有思路">
+      </div>
+      <div class="chip-row" id="filterChips">
+        <button type="button" class="chip chip-all selected" data-chip="全部" data-kind="all" aria-pressed="true"><span data-i18n="chipAll">全部</span></button>
+        <button type="button" class="chip chip-stage" data-chip="初中" data-kind="stage" aria-pressed="false"><span data-i18n="stageJunior">初中</span></button>
+        <button type="button" class="chip chip-stage" data-chip="高中" data-kind="stage" aria-pressed="false"><span data-i18n="stageSenior">高中</span></button>
+        <button type="button" class="chip sel-stuck" data-chip="卡住了" data-kind="help" aria-pressed="false"><span data-i18n="helpStuck">卡住了</span></button>
+        <button type="button" class="chip sel-wrong" data-chip="做错了" data-kind="help" aria-pressed="false"><span data-i18n="helpWrong">做错了</span></button>
+        <button type="button" class="chip sel-formula" data-chip="不知道怎么列式" data-kind="help" aria-pressed="false"><span data-i18n="helpFormula">不知道怎么列式</span></button>
+        <button type="button" class="chip sel-similar" data-chip="出同类题" data-kind="help" aria-pressed="false"><span data-i18n="helpSimilar">出同类题</span></button>
+        <button type="button" class="chip sel-review" data-chip="考前梳理" data-kind="help" aria-pressed="false"><span data-i18n="helpReview">考前梳理</span></button>
+      </div>
+      <p id="bookError" class="error-line" hidden></p>
+      <div id="bookList" class="card-list"></div>
+      <div id="bookEmpty" class="blank-box" hidden>
+        <p data-i18n="blankBook">辅导册还是空白的</p>
+        <button type="button" id="btnBookFirst" class="btn btn-chalk"><span data-i18n="firstProblem">去做第一题</span></button>
+      </div>
+      <div id="bookNoMatch" class="blank-box" hidden>
+        <p data-i18n="noMatch">这叠卡片里没有这样的题</p>
+        <button type="button" id="btnClearFilters" class="btn btn-ghost"><span data-i18n="clearFilters">清空筛选</span></button>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="detailOverlay" class="overlay" hidden>
+  <aside id="detailPanel" role="dialog" aria-modal="true">
+    <div class="detail-body">
+      <p id="detailError" class="error-line" hidden></p>
+      <div id="detailContent" hidden>
+        <div id="detailImageWrap" class="detail-photo" hidden>
+          <a id="detailImageLink" href="#"><img id="detailImage" alt=""></a>
+        </div>
+        <h2 id="detailTitle" class="serif"></h2>
+        <div class="badge-row">
+          <span id="detailStage" class="badge"></span>
+          <span id="detailHelp" class="badge"></span>
+        </div>
+        <p id="detailIdea" class="idea-block"></p>
+        <h3 data-i18n="coachTitle">解题辅导</h3>
+        <div id="detailCoach"></div>
+        <div class="btn-row">
+          <button type="button" id="btnRevise" class="btn btn-chalk"><span data-i18n="reviseBtn">改一改再问</span></button>
+          <button type="button" id="btnDetailEdit" class="btn btn-ghost"><span data-i18n="editThis">编辑这条</span></button>
+          <button type="button" id="btnDetailDelete" class="btn btn-danger"><span data-i18n="deleteThis">删除这条</span></button>
+          <button type="button" id="btnDetailClose" class="btn btn-ghost"><span data-i18n="closeBtn">关闭</span></button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+<div id="editOverlay" class="overlay center-overlay" hidden>
+  <div id="editDialog" class="paper-dialog" role="dialog" aria-modal="true">
+    <form id="formEdit" novalidate>
+      <h2 data-i18n="editThis">编辑这条</h2>
+      <p id="editStatus" class="error-line" hidden></p>
+      <div class="field">
+        <label class="lbl" for="formEdit_题目" data-i18n="fieldTitle">题目</label>
+        <textarea id="formEdit_题目" name="题目" rows="5"></textarea>
+      </div>
+      <div class="field">
+        <div class="lbl" data-i18n="fieldImage">题目图片</div>
+        <input type="hidden" id="formEdit_题目图片" name="题目图片" value="">
+        <div class="preview-box"><img id="formEdit_preview" alt="" hidden></div>
+        <div class="img-actions">
+          <button type="button" id="btnEditCapture" class="btn btn-ghost"><i class="fa-solid fa-camera"></i> <span data-i18n="takePhoto">拍题目</span></button>
+          <button type="button" id="btnEditPick" class="btn btn-ghost"><i class="fa-solid fa-image"></i> <span data-i18n="pickAlbum">从相册选</span></button>
+          <button type="button" id="btnEditRemove" class="btn btn-ghost"><i class="fa-solid fa-xmark"></i> <span data-i18n="removeImage">去掉图片</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="lbl" data-i18n="fieldStage">学段</div>
+        <input type="hidden" id="formEdit_学段" name="学段" value="">
+        <div class="choice-row stage-row" id="formEdit_学段_choices">
+          <button type="button" class="choice" id="formEdit_学段_初中" data-value="初中" aria-pressed="false"><span data-i18n="stageJunior">初中</span></button>
+          <button type="button" class="choice" id="formEdit_学段_高中" data-value="高中" aria-pressed="false"><span data-i18n="stageSenior">高中</span></button>
+        </div>
+        <p id="formEdit_hsNote" class="hs-note" hidden data-i18n="hsNote">高中只覆盖高一预备知识与函数。几何与代数、概率与统计、选择性必修，教练只会帮你整理已知、所求和卡点。</p>
+      </div>
+      <div class="field">
+        <div class="lbl" data-i18n="fieldHelp">求助</div>
+        <input type="hidden" id="formEdit_求助" name="求助" value="">
+        <div class="choice-row" id="formEdit_求助_choices">
+          <button type="button" class="choice sel-stuck" id="formEdit_求助_卡住了" data-value="卡住了" aria-pressed="false"><span data-i18n="helpStuck">卡住了</span></button>
+          <button type="button" class="choice sel-wrong" id="formEdit_求助_做错了" data-value="做错了" aria-pressed="false"><span data-i18n="helpWrong">做错了</span></button>
+          <button type="button" class="choice sel-formula" id="formEdit_求助_不知道怎么列式" data-value="不知道怎么列式" aria-pressed="false"><span data-i18n="helpFormula">不知道怎么列式</span></button>
+          <button type="button" class="choice sel-similar" id="formEdit_求助_出同类题" data-value="出同类题" aria-pressed="false"><span data-i18n="helpSimilar">出同类题</span></button>
+          <button type="button" class="choice sel-review" id="formEdit_求助_考前梳理" data-value="考前梳理" aria-pressed="false"><span data-i18n="helpReview">考前梳理</span></button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="formEdit_已有思路" data-i18n="fieldIdea">已有思路</label>
+        <textarea id="formEdit_已有思路" name="已有思路" rows="6"></textarea>
+      </div>
+      <p class="hint" data-i18n="editHint">编辑不会重写教练黑板</p>
+      <div class="btn-row">
+        <button type="button" id="btnEditSave" class="btn btn-chalk" disabled><span data-i18n="saveEdit">保存修改</span></button>
+        <button type="button" id="btnEditCancel" class="btn btn-ghost"><span data-i18n="cancelEdit">取消修改</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="deleteOverlay" class="overlay center-overlay" hidden>
+  <div id="deleteDialog" class="confirm-dialog" role="dialog" aria-modal="true">
+    <p id="deleteMessage" class="serif" data-i18n="deleteAsk">从辅导册抽走这张卡片？</p>
+    <p id="deleteError" class="error-line" hidden></p>
+    <div class="btn-row">
+      <button type="button" id="btnDeleteConfirm" class="btn btn-danger"><span data-i18n="deleteConfirm">确认</span></button>
+      <button type="button" id="btnDeleteCancel" class="btn btn-ghost"><span data-i18n="deleteCancel">取消</span></button>
+    </div>
+  </div>
+</div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("311916e55346e71c_数学解题")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+var state = {
+  lang: 'zh',
+  page: 'pageHome',
+  history: [],
+  currentRow: 0,
+  records: [],
+  count: null,
+  junior: null,
+  senior: null,
+  helpCounts: {},
+  loadError: false,
+  loaded: false,
+  polling: false,
+  pollToken: 0,
+  saving: false,
+  deleting: false,
+  filterStage: '',
+  filterHelp: '',
+  search: '',
+  detailOpen: false,
+  editOpen: false,
+  deleteOpen: false,
+  detailData: null,
+  pendingDeleteRow: 0,
+  boardMode: 'text',
+  boardKey: 'boardIdle',
+  boardMarkdown: '',
+  navTimer: 0
+};
+
+var I18N = {
+  zh: {
+    appName: '数学解题教练',
+    navHome: '首页',
+    navSolve: '解题台',
+    navBook: '辅导册',
+    heroDesc: '把卡住的那一步交给教练。先写出你的尝试，教练只推一把，不先甩答案。',
+    heroNote: '高中只陪伴高一预备知识与函数；正在考试或测验时，不要提交这道题。',
+    startBtn: '开始这道题',
+    helpStuck: '卡住了',
+    helpWrong: '做错了',
+    helpFormula: '不知道怎么列式',
+    helpSimilar: '出同类题',
+    helpReview: '考前梳理',
+    phStuck: '你试到哪一步了？',
+    phWrong: '把步骤写出来，圈出最可疑的一步',
+    phFormula: '先写已知和要求',
+    phSimilar: '写出原题，或只写考查点',
+    phReview: '写要梳理的章节，和最没底的内容',
+    statCount: '辅导次数',
+    statJunior: '初中题数',
+    statSenior: '高中题数',
+    helpDist: '求助分布',
+    recentTitle: '最近看过的题',
+    picProblem: '图片题',
+    blankBook: '辅导册还是空白的',
+    firstProblem: '去做第一题',
+    solveTitle: '解题台',
+    solveDesc: '一次只交一道题。题目文字和题目图片至少要有一个。',
+    clearPaper: '清空稿纸',
+    fieldTitle: '题目',
+    fieldImage: '题目图片',
+    fieldStage: '学段',
+    fieldHelp: '求助',
+    fieldIdea: '已有思路',
+    stageJunior: '初中',
+    stageSenior: '高中',
+    hsNote: '高中只覆盖高一预备知识与函数。几何与代数、概率与统计、选择性必修，教练只会帮你整理已知、所求和卡点。',
+    takePhoto: '拍题目',
+    pickAlbum: '从相册选',
+    removeImage: '去掉图片',
+    askCoach: '请教练看看',
+    boardTitle: '教练黑板',
+    boardIdle: '先写下你的尝试。教练不会在你开口前给出原题答案。',
+    boardWaiting: '教练在黑板另一侧看你的稿纸…',
+    boardTimeout: '这题还在批，可稍后到辅导册打开最新一条',
+    gotoBook: '到辅导册看这一题',
+    bookTitle: '辅导册',
+    bookDesc: '每张卡片是一次提问。点卡片看教练怎么说，编辑只改题目信息，不会重写黑板。',
+    askAnother: '+ 再问一题',
+    searchPh: '搜索题目或已有思路',
+    chipAll: '全部',
+    noMatch: '这叠卡片里没有这样的题',
+    clearFilters: '清空筛选',
+    coachTitle: '解题辅导',
+    coachPending: '教练还没写完',
+    reviseBtn: '改一改再问',
+    editThis: '编辑这条',
+    deleteThis: '删除这条',
+    closeBtn: '关闭',
+    editHint: '编辑不会重写教练黑板',
+    saveEdit: '保存修改',
+    cancelEdit: '取消修改',
+    deleteAsk: '从辅导册抽走这张卡片？',
+    deleteConfirm: '确认',
+    deleteCancel: '取消',
+    loadFail: '暂时没取到辅导册，请再试一次',
+    menuLabel: '菜单'
+  },
+  en: {
+    appName: 'Math Coach',
+    navHome: 'Home',
+    navSolve: 'Desk',
+    navBook: 'Workbook',
+    heroDesc: 'Hand the stuck step to the coach. Write what you tried. The coach gives one nudge and does not drop the answer first.',
+    heroNote: 'Senior high covers only Grade 10 prep and functions. Do not submit a problem during an exam or a quiz.',
+    startBtn: 'Start this problem',
+    helpStuck: 'Stuck',
+    helpWrong: 'Got it wrong',
+    helpFormula: 'Cannot set up the equation',
+    helpSimilar: 'A similar problem',
+    helpReview: 'Review before a test',
+    phStuck: 'Where did you get to?',
+    phWrong: 'Write the steps and circle the one you trust least',
+    phFormula: 'Write what is known and what is asked',
+    phSimilar: 'Write the original problem, or only the point being tested',
+    phReview: 'Write the chapter to review, and what feels least solid',
+    statCount: 'Sessions',
+    statJunior: 'Junior-high problems',
+    statSenior: 'Senior-high problems',
+    helpDist: 'How the questions split',
+    recentTitle: 'Recently viewed problems',
+    picProblem: 'Picture problem',
+    blankBook: 'The workbook is still blank',
+    firstProblem: 'Try the first problem',
+    solveTitle: 'Desk',
+    solveDesc: 'One problem at a time. The wording and the photo need at least one of them.',
+    clearPaper: 'Clear the paper',
+    fieldTitle: 'Problem',
+    fieldImage: 'Problem photo',
+    fieldStage: 'Stage',
+    fieldHelp: 'Where you need help',
+    fieldIdea: 'What you already tried',
+    stageJunior: 'Junior high',
+    stageSenior: 'Senior high',
+    hsNote: 'Senior high covers only Grade 10 prep and functions. For geometry and algebra, probability and statistics, and elective modules, the coach will only help you sort what is known, what is asked, and where you are stuck.',
+    takePhoto: 'Take a photo',
+    pickAlbum: 'Choose from album',
+    removeImage: 'Remove photo',
+    askCoach: 'Ask the coach',
+    boardTitle: "Coach's blackboard",
+    boardIdle: 'Write your attempt first. The coach will not give the original answer before you start.',
+    boardWaiting: 'The coach is reading your paper from the other side of the board…',
+    boardTimeout: 'This one is still being marked. Open the latest card in the workbook later.',
+    gotoBook: 'Open this one in the workbook',
+    bookTitle: 'Workbook',
+    bookDesc: 'Each card is one question. Tap a card to see what the coach said. Editing changes the problem only and does not rewrite the board.',
+    askAnother: '+ Ask another',
+    searchPh: 'Search the problem or your attempt',
+    chipAll: 'All',
+    noMatch: 'No card in this stack matches',
+    clearFilters: 'Clear filters',
+    coachTitle: 'Coaching',
+    coachPending: 'The coach has not finished writing',
+    reviseBtn: 'Revise and ask again',
+    editThis: 'Edit this',
+    deleteThis: 'Delete this',
+    closeBtn: 'Close',
+    editHint: "Editing will not rewrite the coach's board",
+    saveEdit: 'Save changes',
+    cancelEdit: 'Cancel changes',
+    deleteAsk: 'Pull this card out of the workbook?',
+    deleteConfirm: 'Confirm',
+    deleteCancel: 'Cancel',
+    loadFail: 'The workbook could not be loaded. Please try again.',
+    menuLabel: 'Menu'
+  }
+};
+
+function t(key) {
+  var pack = I18N[state.lang] || I18N.zh;
+  return Object.prototype.hasOwnProperty.call(pack, key) ? pack[key] : key;
+}
+
+function detectLang() {
+  try {
+    var lp = new URLSearchParams(window.location.search).get('lang');
+    if (lp === 'cn') return 'zh';
+    if (lp === 'en') return 'en';
+  } catch (err) {}
+  try {
+    var stored = localStorage.getItem('iThinkAir_UiLanguage');
+    if (stored) return stored === 'en' ? 'en' : 'zh';
+  } catch (err2) {}
+  try {
+    var list = navigator.languages;
+    if (!list || !list.length) return 'zh';
+    for (var i = 0; i < list.length; i++) {
+      var tag = String(list[i] || '').toLowerCase();
+      if (tag === 'zh' || tag.indexOf('zh-') === 0) return 'zh';
+    }
+    return 'en';
+  } catch (err3) {
+    return 'zh';
+  }
+}
+
+function applyTheme(mode) {
+  var dark = mode === 'dark';
+  document.documentElement.classList.toggle('theme-dark', dark);
+  document.documentElement.classList.toggle('theme-light', !dark);
+  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+}
+
+function labelKey(val) {
+  if (val === '初中') return 'stageJunior';
+  if (val === '高中') return 'stageSenior';
+  if (val === '卡住了') return 'helpStuck';
+  if (val === '做错了') return 'helpWrong';
+  if (val === '不知道怎么列式') return 'helpFormula';
+  if (val === '出同类题') return 'helpSimilar';
+  if (val === '考前梳理') return 'helpReview';
+  return '';
+}
+
+function vLabel(val) {
+  var key = labelKey(val);
+  if (!key) return val || '';
+  return t(key);
+}
+
+function placeholderFor(help) {
+  if (help === '做错了') return t('phWrong');
+  if (help === '不知道怎么列式') return t('phFormula');
+  if (help === '出同类题') return t('phSimilar');
+  if (help === '考前梳理') return t('phReview');
+  return t('phStuck');
+}
+
+function badgeClass(value) {
+  if (value === '初中') return 'badge badge-junior';
+  if (value === '高中') return 'badge badge-senior';
+  if (value === '卡住了') return 'badge bg-stuck';
+  if (value === '做错了') return 'badge bg-wrong';
+  if (value === '不知道怎么列式') return 'badge bg-formula';
+  if (value === '出同类题') return 'badge bg-similar';
+  if (value === '考前梳理') return 'badge bg-review';
+  return 'badge badge-plain';
+}
+
+function fileHref(url) {
+  var u = String(url || '').trim();
+  if (!u) return '';
+  if (/^https?:\/\//i.test(u) || u.indexOf('data:') === 0) return u;
+  return 'http://' + window.location.hostname + ':3130/download/' + encodeURIComponent(u.replace(/^\.\//, ''));
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function mdTarget(raw) {
+  var u = String(raw || '').trim();
+  if (u.charAt(0) === '<' && u.charAt(u.length - 1) === '>') u = u.slice(1, -1).trim();
+  var titled = u.match(/^([\s\S]+?)\s+"[^"]*"$/);
+  if (titled) u = titled[1].trim();
+  return u;
+}
+
+function inlineMd(raw) {
+  var slots = [];
+  function hold(html) {
+    slots.push(html);
+    return '\u0000S' + (slots.length - 1) + '\u0000';
+  }
+  var s = String(raw);
+  s = s.replace(/`([^`\n]+)`/g, function (_, c) {
+    return hold('<code class="md-code">' + escapeHtml(c) + '</code>');
+  });
+  s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (full, alt, url) {
+    var href = fileHref(mdTarget(url));
+    if (!href) return full;
+    return hold('<a class="md-img-link" href="' + escapeHtml(href) + '"><img src="' + escapeHtml(href) + '" alt="' + escapeHtml(alt) + '"></a>');
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (full, text, url) {
+    var href = fileHref(mdTarget(url));
+    if (!href) return full;
+    return hold('<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(text) + '</a>');
+  });
+  s = s.replace(/<(https?:\/\/[^>\s]+)>/g, function (_, url) {
+    return hold('<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(url) + '</a>');
+  });
+  s = escapeHtml(s);
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,;:!?]|$)/g, '$1<em>$2</em>');
+  s = s.replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/g, '$1<em>$2</em>');
+  s = s.replace(/\$([^\$\n]{1,200}?)\$/g, '<span class="md-math-inline">$1</span>');
+  s = s.replace(/\u0000S(\d+)\u0000/g, function (_, n) {
+    var idx = parseInt(n, 10);
+    return slots[idx] || '';
+  });
+  return s;
+}
+
+function isFence(line) { return /^(\s*)(`{3,}|~{3,})(.*)$/.test(line); }
+function isHeading(line) { return /^(#{1,6})\s+\S/.test(line); }
+function isHr(line) { return /^(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$/.test(String(line || '').trim()); }
+function isQuote(line) { return /^>\s?/.test(line); }
+function isListLine(line) { return /^(\s*)([-*+]|\d+\.)\s+/.test(line); }
+function isMathLine(line) {
+  var tline = String(line || '').trim();
+  return tline === '$$' || tline.indexOf('$$') === 0 || tline === '\\[' || tline.indexOf('\\[') === 0;
+}
+function isTableSep(line) {
+  if (String(line).indexOf('-') < 0) return false;
+  var cells = splitRow(line);
+  if (!cells.length) return false;
+  for (var i = 0; i < cells.length; i++) {
+    if (!/^:?-{3,}:?$/.test(cells[i])) return false;
+  }
+  return true;
+}
+function isTableStart(lines, i) {
+  if (i + 1 >= lines.length) return false;
+  if (lines[i].indexOf('|') < 0) return false;
+  return isTableSep(lines[i + 1]);
+}
+function isStructuralLine(lines, i) {
+  var line = lines[i];
+  if (!line || !String(line).trim()) return false;
+  if (isFence(line) || isHeading(line) || isHr(line) || isQuote(line) || isListLine(line) || isMathLine(line)) return true;
+  if (isTableStart(lines, i)) return true;
+  return false;
+}
+function splitRow(line) {
+  var s = String(line || '').trim();
+  if (s.charAt(0) === '|') s = s.slice(1);
+  if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1);
+  var parts = s.split('|');
+  var cells = [];
+  for (var i = 0; i < parts.length; i++) cells.push(parts[i].trim());
+  return cells;
+}
+function mathHtml(content) {
+  return '<p class="md-math">' + escapeHtml(String(content || '').trim()) + '</p>';
+}
+function parseMath(lines, i) {
+  var first = lines[i].trim();
+  var buf = [];
+  if (first.indexOf('$$') === 0 && first.length > 4 && first.slice(-2) === '$$') {
+    return { html: mathHtml(first.slice(2, -2)), next: i + 1 };
+  }
+  if (first.indexOf('\\[') === 0 && first.indexOf('\\]') > 0) {
+    return { html: mathHtml(first.replace(/^\\\[/, '').replace(/\\\]$/, '')), next: i + 1 };
+  }
+  if (first === '$$' || first === '\\[') {
+    var end = first === '$$' ? '$$' : '\\]';
+    var j = i + 1;
+    while (j < lines.length && lines[j].trim() !== end) {
+      buf.push(lines[j]);
+      j++;
+    }
+    return { html: mathHtml(buf.join('\n')), next: j < lines.length ? j + 1 : j };
+  }
+  if (first.indexOf('$$') === 0) {
+    buf.push(first.replace(/^\$\$/, ''));
+    var j2 = i + 1;
+    while (j2 < lines.length && lines[j2].indexOf('$$') < 0) {
+      buf.push(lines[j2]);
+      j2++;
+    }
+    if (j2 < lines.length) {
+      buf.push(lines[j2].replace('$$', ''));
+      j2++;
+    }
+    return { html: mathHtml(buf.join('\n')), next: j2 };
+  }
+  return { html: mathHtml(first.replace(/^\\\[/, '').replace(/\\\]$/, '')), next: i + 1 };
+}
+function parseFence(lines, i) {
+  var m = lines[i].match(/^(\s*)(`{3,}|~{3,})(.*)$/);
+  var tick = m[2].charAt(0);
+  var count = m[2].length;
+  var endRe = new RegExp('^\\s*' + tick + '{' + count + ',}\\s*$');
+  var buf = [];
+  var j = i + 1;
+  while (j < lines.length && !endRe.test(lines[j])) {
+    buf.push(lines[j]);
+    j++;
+  }
+  return { html: '<pre class="md-pre"><code>' + escapeHtml(buf.join('\n')) + '</code></pre>', next: j < lines.length ? j + 1 : j };
+}
+function parseQuote(lines, i) {
+  var buf = [];
+  var j = i;
+  while (j < lines.length && /^>\s?/.test(lines[j])) {
+    buf.push(lines[j].replace(/^>\s?/, ''));
+    j++;
+  }
+  return { html: '<blockquote class="md-quote">' + renderMarkdown(buf.join('\n')) + '</blockquote>', next: j };
+}
+function parseTable(lines, i) {
+  var header = splitRow(lines[i]);
+  var sep = splitRow(lines[i + 1]);
+  var align = [];
+  for (var c = 0; c < sep.length; c++) {
+    var cell = sep[c];
+    var left = cell.charAt(0) === ':';
+    var right = cell.charAt(cell.length - 1) === ':';
+    align.push(left && right ? 'center' : right ? 'right' : left ? 'left' : '');
+  }
+  var body = [];
+  var j = i + 2;
+  while (j < lines.length && lines[j].trim() !== '' && lines[j].indexOf('|') >= 0 && !isTableSep(lines[j])) {
+    body.push(splitRow(lines[j]));
+    j++;
+  }
+  var html = '<div class="md-table-wrap"><table class="md-table"><thead><tr>';
+  for (var h = 0; h < header.length; h++) {
+    var al = align[h] ? ' style="text-align:' + align[h] + '"' : '';
+    html += '<th' + al + '>' + inlineMd(header[h]) + '</th>';
+  }
+  html += '</tr></thead><tbody>';
+  for (var r = 0; r < body.length; r++) {
+    html += '<tr>';
+    for (var c2 = 0; c2 < body[r].length; c2++) {
+      var al2 = align[c2] ? ' style="text-align:' + align[c2] + '"' : '';
+      html += '<td' + al2 + '>' + inlineMd(body[r][c2]) + '</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  return { html: html, next: j };
+}
+function parseList(lines, start) {
+  var i = start;
+  var first = lines[start].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+  if (!first) return { html: '', next: start + 1 };
+  var baseIndent = first[1].length;
+  var ordered = /^\d+\.$/.test(first[2]);
+  var items = [];
+  while (i < lines.length) {
+    var line = lines[i];
+    if (!String(line).trim()) break;
+    var m = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+    if (!m) break;
+    var indent = m[1].length;
+    if (indent < baseIndent) break;
+    if (indent > baseIndent) {
+      if (!items.length) { i++; continue; }
+      var nested = parseList(lines, i);
+      if (nested.next <= i) { i++; continue; }
+      items[items.length - 1].nested += nested.html;
+      i = nested.next;
+      continue;
+    }
+    if ((/^\d+\.$/.test(m[2])) !== ordered) break;
+    var content = m[3];
+    var task = '';
+    var tm = content.match(/^\[([ xX])\]\s+(.*)$/);
+    if (tm) {
+      task = tm[1] === ' ' ? 'open' : 'done';
+      content = tm[2];
+    }
+    i++;
+    var extras = [];
+    while (i < lines.length && String(lines[i]).trim() !== '' && !isListLine(lines[i]) && !isStructuralLine(lines, i) && /^\s+/.test(lines[i])) {
+      extras.push(lines[i].trim());
+      i++;
+    }
+    items.push({ text: inlineMd([content].concat(extras).join(' ')), task: task, nested: '' });
+  }
+  var tag = ordered ? 'ol' : 'ul';
+  var html = '<' + tag + ' class="md-list">';
+  for (var k = 0; k < items.length; k++) {
+    var it = items[k];
+    var inner = it.text;
+    if (it.task === 'done') inner = '<span class="md-task"></span> ' + inner;
+    if (it.task === 'open') inner = '<span class="md-task"></span> ' + inner;
+    html += '<li>' + inner + it.nested + '</li>';
+  }
+  html += '</' + tag + '>';
+  return { html: html, next: i };
+}
+function renderMarkdown(src) {
+  var text = String(src || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  var lines = text.split('\n');
+  var out = [];
+  var i = 0;
+  while (i < lines.length) {
+    var line = lines[i];
+    if (!String(line).trim()) { i++; continue; }
+    if (isFence(line)) {
+      var fence = parseFence(lines, i);
+      out.push(fence.html);
+      i = fence.next;
+      continue;
+    }
+    if (isMathLine(line)) {
+      var math = parseMath(lines, i);
+      out.push(math.html);
+      i = math.next;
+      continue;
+    }
+    if (isHr(line)) { out.push('<hr class="md-hr">'); i++; continue; }
+    if (isHeading(line)) {
+      var hm = line.match(/^(#{1,6})\s+(.*)$/);
+      var level = hm[1].length;
+      out.push('<h' + level + ' class="md-h">' + inlineMd(hm[2].trim()) + '</h' + level + '>');
+      i++;
+      continue;
+    }
+    if (isQuote(line)) {
+      var quote = parseQuote(lines, i);
+      out.push(quote.html);
+      i = quote.next;
+      continue;
+    }
+    if (isTableStart(lines, i)) {
+      var table = parseTable(lines, i);
+      out.push(table.html);
+      i = table.next;
+      continue;
+    }
+    if (isListLine(line)) {
+      var list = parseList(lines, i);
+      out.push(list.html);
+      i = list.next;
+      continue;
+    }
+    if (/^(?: {4}|\t)/.test(line)) {
+      var code = [];
+      while (i < lines.length && (/^(?: {4}|\t)/.test(lines[i]) || !String(lines[i]).trim())) {
+        if (!String(lines[i]).trim()) {
+          var j = i + 1;
+          while (j < lines.length && !String(lines[j]).trim()) j++;
+          if (j < lines.length && /^(?: {4}|\t)/.test(lines[j])) {
+            code.push('');
+            i++;
+            continue;
+          }
+          break;
+        }
+        code.push(lines[i].replace(/^(?: {4}|\t)/, ''));
+        i++;
+      }
+      out.push('<pre class="md-pre"><code>' + escapeHtml(code.join('\n')) + '</code></pre>');
+      continue;
+    }
+    if (i + 1 < lines.length && /^=+\s*$/.test(lines[i + 1]) && String(line).trim()) {
+      out.push('<h1 class="md-h">' + inlineMd(line.trim()) + '</h1>');
+      i += 2;
+      continue;
+    }
+    if (i + 1 < lines.length && /^-{3,}\s*$/.test(lines[i + 1]) && String(line).trim() && line.indexOf('|') < 0) {
+      out.push('<h2 class="md-h">' + inlineMd(line.trim()) + '</h2>');
+      i += 2;
+      continue;
+    }
+    var buf = [line];
+    i++;
+    while (i < lines.length && String(lines[i]).trim() !== '' && !isStructuralLine(lines, i)) {
+      if (i + 1 < lines.length && (/^=+\s*$/.test(lines[i + 1]) || /^-{3,}\s*$/.test(lines[i + 1]))) break;
+      buf.push(lines[i]);
+      i++;
+    }
+    out.push('<p>' + inlineMd(buf.join('\n')).replace(/\n/g, '<br>') + '</p>');
+  }
+  return out.join('\n');
+}
+
+function clipText(s, n) {
+  var raw = String(s || '');
+  var arr = Array.from(raw);
+  var cut = arr.length > n;
+  var part = arr.slice(0, n).join('').replace(/\s+/g, ' ').trim();
+  return cut ? part + '…' : part;
+}
+
+function stripBom(text) {
+  return String(text == null ? '' : text).replace(/^\uFEFF/, '');
+}
+
+function cleanText(v) {
+  var s = stripBom(v).trim();
+  if (s.length >= 2) {
+    var a = s.charAt(0);
+    var b = s.charAt(s.length - 1);
+    if ((a === '"' && b === '"') || (a === "'" && b === "'")) s = s.slice(1, -1).trim();
+  }
+  return s;
+}
+
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function getScrollY() {
+  return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
+
+var lockY = 0;
+function lockBody() {
+  var any = state.detailOpen || state.editOpen || state.deleteOpen;
+  if (any) {
+    if (!document.body.classList.contains('lock-scroll')) {
+      lockY = getScrollY();
+      document.body.style.top = (-lockY) + 'px';
+      document.body.classList.add('lock-scroll');
+    }
+  } else if (document.body.classList.contains('lock-scroll')) {
+    document.body.classList.remove('lock-scroll');
+    document.body.style.top = '';
+    window.scrollTo(0, lockY);
+  }
+}
+
+function showBoardStatus(key) {
+  state.boardKey = key;
+  state.boardMode = 'text';
+  var box = document.getElementById('boardBody');
+  box.className = 'board-body';
+  box.textContent = t(key);
+}
+
+function setBoardMarkdown(md) {
+  state.boardMode = 'md';
+  state.boardMarkdown = md;
+  var box = document.getElementById('boardBody');
+  box.className = 'board-body md-body';
+  box.innerHTML = renderMarkdown(md);
+}
+
+function updateAskButton() {
+  var title = document.getElementById('formSolve_题目').value.trim();
+  var image = document.getElementById('formSolve_题目图片').value.trim();
+  document.getElementById('btnAskCoach').disabled = state.polling || (!title && !image);
+}
+
+function updateGotoBookButton() {
+  document.getElementById('btnGotoBook').disabled = !(state.currentRow > 0);
+}
+
+function setChoice(prefix, field, value) {
+  var hidden = document.getElementById(prefix + '_' + field);
+  if (!hidden) return;
+  hidden.value = value == null ? '' : String(value);
+  var wrap = document.getElementById(prefix + '_' + field + '_choices');
+  if (!wrap) return;
+  var trimmed = String(value == null ? '' : value).trim();
+  var buttons = wrap.querySelectorAll('[data-value]');
+  for (var i = 0; i < buttons.length; i++) {
+    var on = buttons[i].getAttribute('data-value') === trimmed;
+    buttons[i].classList.toggle('selected', on);
+    buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  if (field === '学段') {
+    var note = document.getElementById(prefix + '_hsNote');
+    if (note) note.hidden = trimmed !== '高中';
+  }
+  if (field === '求助') {
+    var area = document.getElementById(prefix + '_已有思路');
+    if (area) area.placeholder = placeholderFor(trimmed);
+  }
+}
+
+function applyImage(prefix, name) {
+  var hidden = document.getElementById(prefix + '_题目图片');
+  var img = document.getElementById(prefix + '_preview');
+  var filename = name ? String(name).trim() : '';
+  hidden.value = filename;
+  var url = fileHref(filename);
+  if (url) {
+    img.hidden = false;
+    img.alt = t('fieldImage');
+    img.src = url;
+    img.onerror = function () {
+      if (img.getAttribute('src') !== url) return;
+      img.hidden = true;
+      img.removeAttribute('src');
+    };
+  } else {
+    img.hidden = true;
+    img.removeAttribute('src');
+  }
+  if (prefix === 'formSolve') updateAskButton();
+}
+
+function showSolveStatus(msg) {
+  var el = document.getElementById('solveStatus');
+  if (!msg) { el.hidden = true; el.textContent = ''; return; }
+  el.hidden = false;
+  el.textContent = msg;
+}
+
+function applyLang() {
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  var arias = document.querySelectorAll('[data-i18n-aria]');
+  for (var a = 0; a < arias.length; a++) arias[a].setAttribute('aria-label', t(arias[a].getAttribute('data-i18n-aria')));
+  var phs = document.querySelectorAll('[data-i18n-ph]');
+  for (var p = 0; p < phs.length; p++) phs[p].setAttribute('placeholder', t(phs[p].getAttribute('data-i18n-ph')));
+  document.documentElement.lang = state.lang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('appName');
+  document.getElementById('btnLangZh').classList.toggle('selected', state.lang !== 'en');
+  document.getElementById('btnLangEn').classList.toggle('selected', state.lang === 'en');
+  document.getElementById('btnLangZhM').classList.toggle('selected', state.lang !== 'en');
+  document.getElementById('btnLangEnM').classList.toggle('selected', state.lang === 'en');
+  setChoice('formSolve', '求助', document.getElementById('formSolve_求助').value || '卡住了');
+  setChoice('formSolve', '学段', document.getElementById('formSolve_学段').value || '初中');
+  setChoice('formEdit', '求助', document.getElementById('formEdit_求助').value);
+  setChoice('formEdit', '学段', document.getElementById('formEdit_学段').value);
+  if (state.boardMode !== 'md') showBoardStatus(state.boardKey || 'boardIdle');
+  renderHome();
+  renderBook();
+  if (state.detailOpen && state.detailData) fillDetail(state.detailData);
+  updateNavMode();
+}
+
+function setLang(lang) {
+  state.lang = lang === 'en' ? 'en' : 'zh';
+  try { localStorage.setItem('iThinkAir_UiLanguage', state.lang === 'en' ? 'en' : 'cn'); } catch (err) {}
+  closeMobileMenu();
+  applyLang();
+}
+
+function closeMobileMenu() {
+  var menu = document.getElementById('mobileMenu');
+  menu.classList.remove('open');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
+}
+
+function updateNavMode() {
+  var tabs = document.getElementById('navTabs');
+  var lang = document.getElementById('langToggle');
+  var burger = document.getElementById('hamburgerBtn');
+  var inner = document.getElementById('navInner');
+  var wasCompact = document.documentElement.classList.contains('nav-compact');
+  tabs.classList.remove('is-hidden');
+  lang.classList.remove('is-hidden');
+  burger.classList.add('is-hidden');
+  var overflow = inner.scrollWidth > inner.clientWidth + 1;
+  if (overflow) {
+    tabs.classList.add('is-hidden');
+    lang.classList.add('is-hidden');
+    burger.classList.remove('is-hidden');
+    document.documentElement.classList.add('nav-compact');
+  } else {
+    document.documentElement.classList.remove('nav-compact');
+    if (wasCompact) closeMobileMenu();
+  }
+}
+
+function showPage(pageId, opt) {
+  opt = opt || {};
+  if (!opt.skipHistory && state.page && state.page !== pageId) {
+    state.history.push({ page: state.page, y: getScrollY() });
+  }
+  state.page = pageId;
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].hidden = pages[i].id !== pageId;
+  var tabs = document.querySelectorAll('[data-nav]');
+  for (var n = 0; n < tabs.length; n++) {
+    var on = tabs[n].getAttribute('data-nav') === pageId;
+    tabs[n].classList.toggle('active', on);
+    if (on) tabs[n].setAttribute('aria-current', 'page');
+    else tabs[n].removeAttribute('aria-current');
+  }
+  closeMobileMenu();
+  if (opt.restoreY != null) window.scrollTo(0, opt.restoreY);
+  else if (!opt.keepScroll) window.scrollTo(0, 0);
+}
+
+function closeDetail() {
+  state.detailOpen = false;
+  document.getElementById('detailOverlay').hidden = true;
+  lockBody();
+}
+
+function closeEdit() {
+  state.editOpen = false;
+  document.getElementById('editOverlay').hidden = true;
+  lockBody();
+}
+
+function cancelEdit() {
+  closeEdit();
+}
+
+function closeDelete() {
+  state.deleteOpen = false;
+  state.pendingDeleteRow = 0;
+  document.getElementById('deleteOverlay').hidden = true;
+  document.getElementById('deleteError').hidden = true;
+  lockBody();
+}
+
+function airBack() {
+  if (state.deleteOpen) { closeDelete(); return 'false'; }
+  if (state.editOpen) { cancelEdit(); return 'false'; }
+  if (state.detailOpen) { closeDetail(); return 'false'; }
+  if (document.getElementById('mobileMenu').classList.contains('open')) {
+    closeMobileMenu();
+    return 'false';
+  }
+  if (state.history.length) {
+    var prev = state.history.pop();
+    showPage(prev.page, { skipHistory: true, restoreY: prev.y });
+    return 'false';
+  }
+  return 'true';
+}
+
+function makeThumb(name) {
+  var wrap = document.createElement('div');
+  wrap.className = 'thumb';
+  var url = fileHref(name);
+  if (!url) return wrap;
+  var img = document.createElement('img');
+  img.alt = '';
+  img.src = url;
+  img.addEventListener('error', function () { img.remove(); });
+  wrap.appendChild(img);
+  return wrap;
+}
+
+function makeBadge(value) {
+  var span = document.createElement('span');
+  span.className = badgeClass(value);
+  span.textContent = vLabel(value);
+  return span;
+}
+
+function buildRecentCard(rec) {
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'item-card';
+  btn.appendChild(makeThumb(rec['题目图片']));
+  var main = document.createElement('div');
+  main.className = 'item-main';
+  var title = document.createElement('h3');
+  title.className = 'item-title';
+  title.textContent = String(rec['题目'] || '').trim() ? rec['题目'] : t('picProblem');
+  var badges = document.createElement('div');
+  badges.className = 'badge-row';
+  if (String(rec['学段'] || '').trim()) badges.appendChild(makeBadge(String(rec['学段']).trim()));
+  if (String(rec['求助'] || '').trim()) badges.appendChild(makeBadge(String(rec['求助']).trim()));
+  var idea = document.createElement('p');
+  idea.className = 'item-idea';
+  idea.textContent = clipText(rec['已有思路'], 36);
+  main.appendChild(title);
+  main.appendChild(badges);
+  main.appendChild(idea);
+  btn.appendChild(main);
+  btn.addEventListener('click', function () { openFromHome(rec.row); });
+  return btn;
+}
+
+function buildBookCard(rec) {
+  var card = document.createElement('article');
+  card.className = 'item-card';
+  card.tabIndex = 0;
+  card.setAttribute('data-row', String(rec.row));
+  card.appendChild(makeThumb(rec['题目图片']));
+  var main = document.createElement('div');
+  main.className = 'item-main';
+  var title = document.createElement('h3');
+  title.className = 'item-title';
+  title.textContent = String(rec['题目'] || '').trim() ? rec['题目'] : t('picProblem');
+  var badges = document.createElement('div');
+  badges.className = 'badge-row';
+  if (String(rec['学段'] || '').trim()) badges.appendChild(makeBadge(String(rec['学段']).trim()));
+  if (String(rec['求助'] || '').trim()) badges.appendChild(makeBadge(String(rec['求助']).trim()));
+  var idea = document.createElement('p');
+  idea.className = 'item-idea';
+  idea.textContent = clipText(rec['已有思路'], 48);
+  main.appendChild(title);
+  main.appendChild(badges);
+  main.appendChild(idea);
+  var actions = document.createElement('div');
+  actions.className = 'item-actions';
+  var editBtn = document.createElement('button');
+  editBtn.type = 'button';
+  editBtn.className = 'icon-btn';
+  editBtn.setAttribute('data-action', 'edit');
+  editBtn.setAttribute('data-row', String(rec.row));
+  editBtn.setAttribute('aria-label', t('editThis'));
+  editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+  var delBtn = document.createElement('button');
+  delBtn.type = 'button';
+  delBtn.className = 'icon-btn danger';
+  delBtn.setAttribute('data-action', 'delete');
+  delBtn.setAttribute('data-row', String(rec.row));
+  delBtn.setAttribute('aria-label', t('deleteThis'));
+  delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+  actions.appendChild(editBtn);
+  actions.appendChild(delBtn);
+  card.appendChild(main);
+  card.appendChild(actions);
+  return card;
+}
+
+function recordVisible(rec) {
+  if (state.filterStage && String(rec['学段'] || '').trim() !== state.filterStage) return false;
+  if (state.filterHelp && String(rec['求助'] || '').trim() !== state.filterHelp) return false;
+  var q = state.search.trim().toLowerCase();
+  if (!q) return true;
+  var hay = (String(rec['题目'] || '') + '\n' + String(rec['已有思路'] || '')).toLowerCase();
+  return hay.indexOf(q) !== -1;
+}
+
+function syncChips() {
+  var chips = document.querySelectorAll('#filterChips [data-chip]');
+  for (var i = 0; i < chips.length; i++) {
+    var chip = chips[i];
+    var val = chip.getAttribute('data-chip');
+    var kind = chip.getAttribute('data-kind');
+    var on = false;
+    if (val === '全部') on = !state.filterStage && !state.filterHelp;
+    else if (kind === 'stage') on = state.filterStage === val;
+    else on = state.filterHelp === val;
+    chip.classList.toggle('selected', on);
+    chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+}
+
+function renderHome() {
+  var err = document.getElementById('homeError');
+  var data = document.getElementById('homeData');
+  if (!state.loaded && !state.loadError) {
+    err.hidden = true;
+    data.hidden = true;
+    return;
+  }
+  if (state.loadError) {
+    err.hidden = false;
+    err.textContent = t('loadFail');
+    data.hidden = true;
+    return;
+  }
+  err.hidden = true;
+  data.hidden = false;
+  document.getElementById('statTotal').textContent = state.count == null ? '—' : String(state.count);
+  document.getElementById('statJunior').textContent = state.junior == null ? '—' : String(state.junior);
+  document.getElementById('statSenior').textContent = state.senior == null ? '—' : String(state.senior);
+  var caps = { '卡住了': 'capStuck', '做错了': 'capWrong', '不知道怎么列式': 'capFormula', '出同类题': 'capSimilar', '考前梳理': 'capReview' };
+  var keys = ['卡住了', '做错了', '不知道怎么列式', '出同类题', '考前梳理'];
+  for (var i = 0; i < keys.length; i++) {
+    var n = state.helpCounts[keys[i]];
+    document.getElementById(caps[keys[i]]).textContent = n == null ? '—' : String(n);
+  }
+  var list = document.getElementById('recentList');
+  list.innerHTML = '';
+  var has = state.records.length > 0;
+  document.getElementById('recentHead').hidden = !has;
+  list.hidden = !has;
+  document.getElementById('homeBlank').hidden = has;
+  var limit = Math.min(5, state.records.length);
+  for (var r = 0; r < limit; r++) list.appendChild(buildRecentCard(state.records[r]));
+}
+
+function renderBook() {
+  var list = document.getElementById('bookList');
+  var empty = document.getElementById('bookEmpty');
+  var nomatch = document.getElementById('bookNoMatch');
+  var err = document.getElementById('bookError');
+  if (!state.loaded && !state.loadError) {
+    err.hidden = true;
+    empty.hidden = true;
+    nomatch.hidden = true;
+    return;
+  }
+  list.innerHTML = '';
+  if (state.loadError) {
+    err.hidden = false;
+    err.textContent = t('loadFail');
+    empty.hidden = true;
+    nomatch.hidden = true;
+    return;
+  }
+  err.hidden = true;
+  if (!state.records.length) {
+    empty.hidden = false;
+    nomatch.hidden = true;
+    return;
+  }
+  empty.hidden = true;
+  var shown = 0;
+  for (var i = 0; i < state.records.length; i++) {
+    var card = buildBookCard(state.records[i]);
+    if (!recordVisible(state.records[i])) card.hidden = true;
+    else shown++;
+    list.appendChild(card);
+  }
+  nomatch.hidden = shown !== 0;
+  syncChips();
+}
+
+function countValue(rows, expected) {
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var v = rows[i] && rows[i][0] != null ? String(rows[i][0]).trim() : '';
+    if (v === expected) n++;
+  }
+  return n;
+}
+
+function safeParse(csv) {
+  try {
+    var rows = parseCSV(stripBom(csv));
+    return rows || [];
+  } catch (err) {
+    return null;
+  }
+}
+
+function rowsToRecords(rows) {
+  var recs = [];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i] || [];
+    var rec = {
+      row: i + 1,
+      '题目': r[0] == null ? '' : String(r[0]),
+      '题目图片': r[1] == null ? '' : String(r[1]),
+      '学段': r[2] == null ? '' : String(r[2]),
+      '求助': r[3] == null ? '' : String(r[3]),
+      '已有思路': r[4] == null ? '' : String(r[4]),
+      '解题辅导': r[5] == null ? '' : String(r[5])
+    };
+    var any = rec['题目'] || rec['题目图片'] || rec['学段'] || rec['求助'] || rec['已有思路'] || rec['解题辅导'];
+    if (String(any).trim()) recs.push(rec);
+  }
+  return recs;
+}
+
+async function refreshAll() {
+  var count = null;
+  var stageRows = null;
+  var helpRows = null;
+  var fullRows = null;
+  var countOk = false;
+  var stageOk = false;
+  var helpOk = false;
+  var fullOk = false;
+  try {
+    var countText = await callAppBridge({ type: 'GetRecordCount', data: '解题/默认表格' });
+    var countClean = cleanText(countText);
+    if (/^\d+$/.test(countClean)) { count = parseInt(countClean, 10); countOk = true; }
+  } catch (err) {}
+  try {
+    var stageCsv = await callAppBridge({ type: 'GetTableCSV', data: '解题/默认表格', payload: '学段' });
+    stageRows = safeParse(stageCsv);
+    stageOk = stageRows != null;
+  } catch (err2) {}
+  try {
+    var helpCsv = await callAppBridge({ type: 'GetTableCSV', data: '解题/默认表格', payload: '求助' });
+    helpRows = safeParse(helpCsv);
+    helpOk = helpRows != null;
+  } catch (err3) {}
+  try {
+    var fullCsv = await callAppBridge({ type: 'GetTableCSV', data: '解题/默认表格', payload: '题目,题目图片,学段,求助,已有思路,解题辅导' });
+    fullRows = safeParse(fullCsv);
+    fullOk = fullRows != null;
+  } catch (err4) {}
+  state.loaded = true;
+  state.loadError = !(countOk && stageOk && helpOk && fullOk);
+  state.count = countOk ? count : null;
+  state.junior = stageOk ? countValue(stageRows, '初中') : null;
+  state.senior = stageOk ? countValue(stageRows, '高中') : null;
+  state.helpCounts = {};
+  var helps = ['卡住了', '做错了', '不知道怎么列式', '出同类题', '考前梳理'];
+  for (var i = 0; i < helps.length; i++) {
+    state.helpCounts[helps[i]] = helpOk ? countValue(helpRows, helps[i]) : null;
+  }
+  state.records = fullOk ? rowsToRecords(fullRows) : [];
+  renderHome();
+  renderBook();
+}
+
+function fillDetail(data) {
+  state.detailData = data;
+  document.getElementById('detailError').hidden = true;
+  document.getElementById('detailContent').hidden = false;
+  var url = fileHref(data['题目图片']);
+  var wrap = document.getElementById('detailImageWrap');
+  var img = document.getElementById('detailImage');
+  var link = document.getElementById('detailImageLink');
+  if (url) {
+    wrap.hidden = false;
+    img.src = url;
+    img.alt = t('fieldImage');
+    link.href = url;
+  } else {
+    wrap.hidden = true;
+    img.removeAttribute('src');
+  }
+  var title = String(data['题目'] || '').trim();
+  document.getElementById('detailTitle').textContent = title || t('picProblem');
+  var stage = String(data['学段'] || '').trim();
+  var help = String(data['求助'] || '').trim();
+  var stageEl = document.getElementById('detailStage');
+  var helpEl = document.getElementById('detailHelp');
+  stageEl.textContent = stage ? vLabel(stage) : '';
+  stageEl.className = stage ? badgeClass(stage) : 'badge';
+  stageEl.hidden = !stage;
+  helpEl.textContent = help ? vLabel(help) : '';
+  helpEl.className = help ? badgeClass(help) : 'badge';
+  helpEl.hidden = !help;
+  document.getElementById('detailIdea').textContent = data['已有思路'] || '';
+  var coach = document.getElementById('detailCoach');
+  if (!String(data['解题辅导'] || '').trim()) {
+    coach.className = 'pending-note';
+    coach.textContent = t('coachPending');
+  } else {
+    coach.className = 'md-body';
+    coach.innerHTML = renderMarkdown(data['解题辅导']);
+  }
+}
+
+async function readRow(row) {
+  var fields = ['题目', '题目图片', '学段', '求助', '已有思路', '解题辅导'];
+  var data = {};
+  for (var i = 0; i < fields.length; i++) {
+    var name = fields[i];
+    var value = await callAppBridge({ type: 'GetCellValue', data: '解题/默认表格', payload: name + '/' + row.toString() });
+    data[name] = value == null ? '' : String(value);
+  }
+  return data;
+}
+
+async function openDetail(row) {
+  if (!row) return;
+  state.currentRow = row;
+  updateGotoBookButton();
+  state.detailOpen = true;
+  state.detailData = null;
+  document.getElementById('detailOverlay').hidden = false;
+  document.getElementById('detailContent').hidden = true;
+  document.getElementById('detailError').hidden = true;
+  lockBody();
+  try {
+    var data = await readRow(row);
+    if (!state.detailOpen || state.currentRow !== row) return;
+    fillDetail(data);
+  } catch (err) {
+    if (!state.detailOpen || state.currentRow !== row) return;
+    document.getElementById('detailContent').hidden = true;
+    document.getElementById('detailError').hidden = false;
+    document.getElementById('detailError').textContent = t('loadFail');
+  }
+}
+
+function openFromHome(row) {
+  showPage('pageBook');
+  openDetail(row);
+}
+
+function clearEditForm() {
+  document.getElementById('formEdit_题目').value = '';
+  document.getElementById('formEdit_已有思路').value = '';
+  applyImage('formEdit', '');
+  setChoice('formEdit', '学段', '');
+  setChoice('formEdit', '求助', '');
+}
+
+async function openEdit(row) {
+  if (!row) return;
+  state.currentRow = row;
+  updateGotoBookButton();
+  state.editOpen = true;
+  document.getElementById('editOverlay').hidden = false;
+  document.getElementById('editStatus').hidden = true;
+  document.getElementById('btnEditSave').disabled = true;
+  clearEditForm();
+  lockBody();
+  try {
+    var data = await readRow(row);
+    if (!state.editOpen || state.currentRow !== row) return;
+    document.getElementById('formEdit_题目').value = data['题目'];
+    applyImage('formEdit', data['题目图片']);
+    setChoice('formEdit', '学段', data['学段']);
+    setChoice('formEdit', '求助', data['求助']);
+    document.getElementById('formEdit_已有思路').value = data['已有思路'];
+    document.getElementById('btnEditSave').disabled = false;
+  } catch (err) {
+    if (!state.editOpen || state.currentRow !== row) return;
+    document.getElementById('editStatus').hidden = false;
+    document.getElementById('editStatus').textContent = t('loadFail');
+  }
+}
+
+async function refreshRowFromCells(row) {
+  try {
+    var data = await readRow(row);
+    var rec = null;
+    for (var i = 0; i < state.records.length; i++) {
+      if (state.records[i].row === row) rec = state.records[i];
+    }
+    if (rec) {
+      var fields = ['题目', '题目图片', '学段', '求助', '已有思路', '解题辅导'];
+      for (var f = 0; f < fields.length; f++) rec[fields[f]] = data[fields[f]];
+    }
+    renderBook();
+    if (state.detailOpen && state.currentRow === row) fillDetail(data);
+  } catch (err) {
+    document.getElementById('bookError').hidden = false;
+    document.getElementById('bookError').textContent = t('loadFail');
+    if (state.detailOpen) {
+      document.getElementById('detailError').hidden = false;
+      document.getElementById('detailError').textContent = t('loadFail');
+    }
+  }
+}
+
+async function saveEdit() {
+  if (state.saving || !(state.currentRow > 0)) return;
+  state.saving = true;
+  document.getElementById('btnEditSave').disabled = true;
+  document.getElementById('editStatus').hidden = true;
+  var row = state.currentRow;
+  var fields = ['题目', '题目图片', '学段', '求助', '已有思路'];
+  try {
+    for (var i = 0; i < fields.length; i++) {
+      var name = fields[i];
+      var value = document.getElementById('formEdit_' + name).value;
+      await callAppBridge({ type: 'SetCellValue', data: '解题/默认表格', payload: name + '/' + row.toString() + '/' + value });
+    }
+  } catch (err) {
+    state.saving = false;
+    document.getElementById('btnEditSave').disabled = false;
+    document.getElementById('editStatus').hidden = false;
+    document.getElementById('editStatus').textContent = t('loadFail');
+    return;
+  }
+  state.saving = false;
+  document.getElementById('btnEditSave').disabled = false;
+  closeEdit();
+  await refreshRowFromCells(row);
+}
+
+function openDelete(row) {
+  if (!row) return;
+  state.pendingDeleteRow = row;
+  state.deleteOpen = true;
+  document.getElementById('deleteError').hidden = true;
+  document.getElementById('deleteOverlay').hidden = false;
+  lockBody();
+}
+
+async function confirmDelete() {
+  if (state.deleting || !state.pendingDeleteRow) return;
+  state.deleting = true;
+  var row = state.pendingDeleteRow;
+  try {
+    await callAppBridge({ type: 'DeleteRecord', data: '解题/默认表格', payload: row.toString() });
+  } catch (err) {
+    state.deleting = false;
+    document.getElementById('deleteError').hidden = false;
+    document.getElementById('deleteError').textContent = t('loadFail');
+    return;
+  }
+  state.deleting = false;
+  closeDelete();
+  state.currentRow = 0;
+  updateGotoBookButton();
+  closeDetail();
+  await refreshAll();
+}
+
+function clearPaper() {
+  state.pollToken++;
+  state.polling = false;
+  document.getElementById('formSolve_题目').value = '';
+  document.getElementById('formSolve_已有思路').value = '';
+  applyImage('formSolve', '');
+  state.currentRow = 0;
+  showSolveStatus('');
+  showBoardStatus('boardIdle');
+  updateAskButton();
+  updateGotoBookButton();
+}
+
+function reviseAgain() {
+  var d = state.detailData;
+  if (!d) return;
+  document.getElementById('formSolve_题目').value = d['题目'] || '';
+  applyImage('formSolve', d['题目图片'] || '');
+  setChoice('formSolve', '学段', d['学段'] || '初中');
+  setChoice('formSolve', '求助', d['求助'] || '卡住了');
+  document.getElementById('formSolve_已有思路').value = d['已有思路'] || '';
+  state.pollToken++;
+  state.polling = false;
+  state.currentRow = 0;
+  showSolveStatus('');
+  showBoardStatus('boardIdle');
+  updateAskButton();
+  updateGotoBookButton();
+  closeDetail();
+  showPage('pageSolve');
+}
+
+async function pollTutor(token) {
+  state.polling = true;
+  updateAskButton();
+  showBoardStatus('boardWaiting');
+  for (var i = 0; i < 40; i++) {
+    if (i > 0) await sleep(2000);
+    if (token !== state.pollToken) return;
+    var text = '';
+    try {
+      text = await callAppBridge({ type: 'GetCellValue', data: '解题/默认表格', payload: '解题辅导/1' });
+    } catch (err) {
+      text = '';
+    }
+    if (token !== state.pollToken) return;
+    if (String(text || '').trim()) {
+      state.polling = false;
+      updateAskButton();
+      setBoardMarkdown(String(text));
+      try { await refreshAll(); } catch (err2) {}
+      return;
+    }
+  }
+  if (token !== state.pollToken) return;
+  state.polling = false;
+  updateAskButton();
+  showBoardStatus('boardTimeout');
+  try { await refreshAll(); } catch (err3) {}
+}
+
+async function askCoach() {
+  if (state.polling) return;
+  var title = document.getElementById('formSolve_题目').value;
+  var image = document.getElementById('formSolve_题目图片').value;
+  var stage = document.getElementById('formSolve_学段').value || '初中';
+  var help = document.getElementById('formSolve_求助').value || '卡住了';
+  var idea = document.getElementById('formSolve_已有思路').value;
+  if (!String(title).trim() && !String(image).trim()) return;
+  var token = ++state.pollToken;
+  state.polling = true;
+  updateAskButton();
+  showSolveStatus('');
+  showBoardStatus('boardWaiting');
+  var payload = JSON.stringify({
+    '题目': title,
+    '题目图片': image || '',
+    '学段': stage,
+    '求助': help,
+    '已有思路': idea
+  });
+  try {
+    await callAppBridge({ type: 'SubmitRecord', data: '解题', payload: payload });
+  } catch (err) {
+    if (token !== state.pollToken) return;
+    state.polling = false;
+    updateAskButton();
+    showSolveStatus(t('loadFail'));
+    showBoardStatus('boardIdle');
+    return;
+  }
+  if (token !== state.pollToken) return;
+  state.currentRow = 1;
+  updateGotoBookButton();
+  try { await refreshAll(); } catch (err2) {}
+  if (token !== state.pollToken) return;
+  await pollTutor(token);
+}
+
+async function captureFor(prefix, type) {
+  try {
+    var name = await callAppBridge({ type: type });
+    if (name && String(name).trim()) applyImage(prefix, String(name).trim());
+  } catch (err) {
+    if (prefix === 'formSolve') showSolveStatus(t('loadFail'));
+    else {
+      document.getElementById('editStatus').hidden = false;
+      document.getElementById('editStatus').textContent = t('loadFail');
+    }
+  }
+}
+
+function clearFilters() {
+  state.filterStage = '';
+  state.filterHelp = '';
+  state.search = '';
+  document.getElementById('bookSearch').value = '';
+  syncChips();
+  renderBook();
+}
+
+function bindChoiceWrap(prefix) {
+  var form = document.getElementById(prefix);
+  form.addEventListener('click', function (e) {
+    var btn = e.target.closest('#' + prefix + ' [data-value]');
+    if (!btn || !form.contains(btn)) return;
+    var wrap = btn.parentNode;
+    var field = wrap.id.indexOf('_学段_') >= 0 ? '学段' : '求助';
+    setChoice(prefix, field, btn.getAttribute('data-value'));
+  });
+}
+
+function setupKeyboard() {
+  var vv = window.visualViewport;
+  function applyInset() {
+    var kb = 0;
+    if (vv) kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty('--kb', kb + 'px');
+  }
+  if (vv) {
+    vv.addEventListener('resize', applyInset);
+    vv.addEventListener('scroll', applyInset);
+  }
+  document.addEventListener('focusin', function (e) {
+    var target = e.target;
+    if (!target || !target.tagName) return;
+    if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.tagName !== 'SELECT') return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (err) {}
+    }, 300);
+  });
+  applyInset();
+}
+
+function bindEvents() {
+  document.getElementById('logoBtn').addEventListener('click', function () {
+    try { parent.closeFullHtml(false); } catch (err) {}
+  });
+  document.getElementById('navTabs').addEventListener('click', onNavClick);
+  document.getElementById('mobileMenu').addEventListener('click', onNavClick);
+  document.getElementById('hamburgerBtn').addEventListener('click', function () {
+    var menu = document.getElementById('mobileMenu');
+    var open = !menu.classList.contains('open');
+    menu.classList.toggle('open', open);
+    document.getElementById('hamburgerBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('pointerdown', function (e) {
+    var menu = document.getElementById('mobileMenu');
+    var btn = document.getElementById('hamburgerBtn');
+    if (!menu.classList.contains('open')) return;
+    if (menu.contains(e.target) || btn.contains(e.target)) return;
+    closeMobileMenu();
+  });
+  document.getElementById('btnLangZh').addEventListener('click', function () { setLang('zh'); });
+  document.getElementById('btnLangEn').addEventListener('click', function () { setLang('en'); });
+  document.getElementById('btnLangZhM').addEventListener('click', function () { setLang('zh'); });
+  document.getElementById('btnLangEnM').addEventListener('click', function () { setLang('en'); });
+  document.getElementById('btnStart').addEventListener('click', function () { showPage('pageSolve'); });
+  document.getElementById('btnFirst').addEventListener('click', function () { showPage('pageSolve'); });
+  document.getElementById('btnBookFirst').addEventListener('click', function () { showPage('pageSolve'); });
+  document.getElementById('entryGrid').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-help]');
+    if (!btn) return;
+    setChoice('formSolve', '求助', btn.getAttribute('data-help'));
+    showPage('pageSolve');
+  });
+  document.getElementById('btnClearPaper').addEventListener('click', clearPaper);
+  document.getElementById('btnAskCoach').addEventListener('click', askCoach);
+  document.getElementById('btnGotoBook').addEventListener('click', function () {
+    if (!(state.currentRow > 0)) return;
+    showPage('pageBook');
+    openDetail(state.currentRow);
+  });
+  document.getElementById('formSolve_题目').addEventListener('input', updateAskButton);
+  document.getElementById('formSolve').addEventListener('submit', function (e) { e.preventDefault(); });
+  document.getElementById('formEdit').addEventListener('submit', function (e) { e.preventDefault(); });
+  document.getElementById('btnSolveCapture').addEventListener('click', function () { captureFor('formSolve', 'CapturePhoto'); });
+  document.getElementById('btnSolvePick').addEventListener('click', function () { captureFor('formSolve', 'SelectImage'); });
+  document.getElementById('btnSolveRemove').addEventListener('click', function () { applyImage('formSolve', ''); });
+  document.getElementById('btnEditCapture').addEventListener('click', function () { captureFor('formEdit', 'CapturePhoto'); });
+  document.getElementById('btnEditPick').addEventListener('click', function () { captureFor('formEdit', 'SelectImage'); });
+  document.getElementById('btnEditRemove').addEventListener('click', function () { applyImage('formEdit', ''); });
+  bindChoiceWrap('formSolve');
+  bindChoiceWrap('formEdit');
+  document.getElementById('btnAskAnother').addEventListener('click', function () {
+    closeDetail();
+    closeEdit();
+    clearPaper();
+    showPage('pageSolve');
+  });
+  var search = document.getElementById('bookSearch');
+  function onSearch() { state.search = search.value; renderBook(); }
+  search.addEventListener('input', onSearch);
+  search.addEventListener('search', onSearch);
+  document.getElementById('filterChips').addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-chip]');
+    if (!chip) return;
+    var val = chip.getAttribute('data-chip');
+    var kind = chip.getAttribute('data-kind');
+    if (val === '全部') {
+      state.filterStage = '';
+      state.filterHelp = '';
+    } else if (kind === 'stage') {
+      state.filterStage = state.filterStage === val ? '' : val;
+    } else {
+      state.filterHelp = state.filterHelp === val ? '' : val;
+    }
+    syncChips();
+    renderBook();
+  });
+  document.getElementById('btnClearFilters').addEventListener('click', clearFilters);
+  document.getElementById('bookList').addEventListener('click', function (e) {
+    var actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+      var actionRow = parseInt(actionBtn.getAttribute('data-row'), 10);
+      if (actionBtn.getAttribute('data-action') === 'edit') openEdit(actionRow);
+      else openDelete(actionRow);
+      return;
+    }
+    var card = e.target.closest('.item-card');
+    if (!card) return;
+    openDetail(parseInt(card.getAttribute('data-row'), 10));
+  });
+  document.getElementById('bookList').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = e.target.closest('.item-card');
+    if (!card || e.target !== card) return;
+    e.preventDefault();
+    openDetail(parseInt(card.getAttribute('data-row'), 10));
+  });
+  document.getElementById('detailOverlay').addEventListener('click', function (e) {
+    if (e.target.id === 'detailOverlay') closeDetail();
+  });
+  document.getElementById('btnDetailClose').addEventListener('click', closeDetail);
+  document.getElementById('btnRevise').addEventListener('click', reviseAgain);
+  document.getElementById('btnDetailEdit').addEventListener('click', function () { openEdit(state.currentRow); });
+  document.getElementById('btnDetailDelete').addEventListener('click', function () { openDelete(state.currentRow); });
+  document.getElementById('btnEditSave').addEventListener('click', saveEdit);
+  document.getElementById('btnEditCancel').addEventListener('click', cancelEdit);
+  document.getElementById('btnDeleteConfirm').addEventListener('click', confirmDelete);
+  document.getElementById('btnDeleteCancel').addEventListener('click', closeDelete);
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (state.deleteOpen || state.editOpen || state.detailOpen || document.getElementById('mobileMenu').classList.contains('open')) airBack();
+  });
+}
+
+function onNavClick(e) {
+  var btn = e.target.closest('[data-nav]');
+  if (!btn) return;
+  var page = btn.getAttribute('data-nav');
+  if (page === state.page) { closeMobileMenu(); return; }
+  showPage(page);
+}
+
+async function initialize() {
+  state.lang = detectLang();
+  bindEvents();
+  applyImage('formSolve', '');
+  applyImage('formEdit', '');
+  setChoice('formSolve', '学段', '初中');
+  setChoice('formSolve', '求助', '卡住了');
+  applyLang();
+  try {
+    var mode = await callAppBridge({ type: '模式' });
+    applyTheme(cleanText(mode) === '暗色' ? 'dark' : 'light');
+  } catch (err) {
+    applyTheme('light');
+  }
+  showBoardStatus('boardIdle');
+  updateAskButton();
+  updateGotoBookButton();
+  showPage('pageHome', { skipHistory: true });
+  setupKeyboard();
+  updateNavMode();
+  window.addEventListener('resize', function () {
+    clearTimeout(state.navTimer);
+    state.navTimer = setTimeout(updateNavMode, 80);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { updateNavMode(); });
+  await refreshAll();
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

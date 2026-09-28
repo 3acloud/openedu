@@ -1,0 +1,2999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#241B45">
+<title>数学梯度训练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@420;620;750;850&amp;display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<style>
+  :root {
+    --bg1: #F7F5FF;
+    --bg2: #FFF8F1;
+    --ink: #241B45;
+    --muted: #5E5678;
+    --card: #FFFFFF;
+    --card-line: rgba(36, 27, 69, 0.08);
+    --nav: #241B45;
+    --primary: #5B4BDB;
+    --primary-ink: #FFFFFF;
+    --accent: #E8A838;
+    --soft: rgba(91, 75, 219, 0.08);
+    --danger: #B42318;
+    --shadow: 0 14px 34px rgba(36, 27, 69, 0.08);
+    --keyboard-inset: 0px;
+    --nav-h: 64px;
+  }
+  [data-theme="dark"] {
+    --bg1: #141226;
+    --bg2: #231B3C;
+    --ink: #F6F3FF;
+    --muted: #C9C1E4;
+    --card: #2A2348;
+    --card-line: rgba(255, 255, 255, 0.08);
+    --nav: #241B45;
+    --primary: #8D7CFF;
+    --primary-ink: #160F33;
+    --soft: rgba(141, 124, 255, 0.16);
+    --danger: #FFB4AB;
+    --shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--ink);
+    font-family: Nunito, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+    background-attachment: fixed;
+  }
+  input, select, textarea { box-sizing: border-box; font-family: inherit; font-size: 16px; color: var(--ink); }
+  button, input, select, textarea { font-family: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.48; }
+  img { max-width: 100%; }
+  .nav-shell { position: fixed; top: 0; left: 0; right: 0; z-index: 1001; }
+  #topNav { position: relative; z-index: 1001; background: var(--nav); color: #fff; box-shadow: 0 8px 24px rgba(18, 12, 40, 0.22); }
+  #navBar { position: relative; height: var(--nav-h); display: flex; align-items: center; gap: 12px; padding: 0 16px 0 14px; }
+  #navBar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, rgba(232,168,56,0), #E8A838 18%, #F8E2AE 50%, #E8A838 82%, rgba(232,168,56,0)); }
+  #brandBtn { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 6px 8px; border: 0; background: transparent; color: #fff; border-radius: 12px; }
+  #brandBtn:hover { background: rgba(255,255,255,0.06); }
+  #brandLogo { width: 36px; height: 36px; flex: 0 0 auto; display: block; }
+  #brandName { font-weight: 850; letter-spacing: 0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42vw; }
+  #navLinks { display: flex; align-items: stretch; gap: 4px; flex: 1 1 auto; min-width: 0; overflow: hidden; flex-wrap: nowrap; }
+  .nav-link, .menu-link { position: relative; border: 0; background: transparent; color: rgba(255,255,255,0.78); white-space: nowrap; font-weight: 750; font-size: 15px; padding: 10px 14px; border-radius: 999px; }
+  .nav-link.active { color: #fff; }
+  .nav-link.active::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 3px; border-radius: 99px; background: #E8A838; }
+  .nav-link:hover, .menu-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
+  #langToggle { display: flex; flex: 0 0 auto; padding: 3px; border-radius: 999px; background: rgba(255,255,255,0.08); }
+  .lang-btn { border: 0; background: transparent; color: rgba(255,255,255,0.8); font-weight: 800; border-radius: 999px; padding: 6px 10px; }
+  .lang-btn.active { background: #E8A838; color: #241B45; }
+  #hamburgerBtn { display: none; margin-left: auto; width: 42px; height: 42px; border: 0; border-radius: 12px; background: rgba(255,255,255,0.08); color: #fff; font-size: 18px; }
+  body.nav-collapsed #navLinks, body.nav-collapsed #langToggle { display: none; }
+  body.nav-collapsed #hamburgerBtn { display: inline-flex; align-items: center; justify-content: center; }
+  #mobileMenu { display: none; background: #241B45; border-top: 1px solid rgba(232,168,56,0.45); padding: 8px; }
+  #mobileMenu.open { display: flex; flex-direction: column; gap: 4px; }
+  .menu-link, .menu-lang { width: 100%; text-align: left; border: 0; background: transparent; color: #fff; border-radius: 12px; padding: 12px 14px; font-weight: 750; }
+  .menu-link.active { background: rgba(232,168,56,0.16); box-shadow: inset 3px 0 0 #E8A838; }
+  .menu-langs { display: flex; gap: 8px; padding: 4px; }
+  .menu-langs .lang-btn { flex: 1; background: rgba(255,255,255,0.06); }
+  #appMain { padding-top: calc(var(--nav-h) + 18px); }
+  .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+  .page { padding-bottom: 56px; }
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 18px; }
+  .page-head h1, .hero h1 { margin: 0; font-size: clamp(30px, 4vw, 46px); line-height: 1.12; letter-spacing: -0.03em; }
+  .lede { margin: 8px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 680px; }
+  .hero { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 18px; align-items: center; background: var(--card); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); border: 1px solid var(--card-line); position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; width: 180px; height: 180px; right: -40px; top: -50px; background: radial-gradient(circle, rgba(232,168,56,0.28), transparent 68%); pointer-events: none; }
+  .hero-stair { display: flex; flex-direction: column; gap: 7px; align-items: flex-start; justify-self: end; width: min(240px, 100%); }
+  .hero-stair i { display: block; height: 18px; border-radius: 7px; }
+  h2 { margin: 26px 0 12px; font-size: 22px; }
+  .method-row, .stat-row, .count-row { display: grid; gap: 14px; }
+  .method-row { grid-template-columns: repeat(4, 1fr); }
+  .stat-row, .count-row { grid-template-columns: repeat(4, 1fr); }
+  .card, .record-card, .topic-card, .method-card, .stat-card, .count-card, .ladder-cell, .panel, .modal-panel {
+    background: var(--card); border-radius: 16px; border: 1px solid var(--card-line); box-shadow: var(--shadow);
+  }
+  .method-card, .stat-card, .count-card, .ladder-cell, .record-card, .topic-card { padding: 16px; }
+  .method-card { text-align: left; color: inherit; border: 1px solid var(--card-line); }
+  .method-card i { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: var(--soft); color: var(--primary); margin-bottom: 10px; }
+  .method-card strong, .record-card h3, .topic-card h3 { display: block; font-size: 17px; margin: 0 0 6px; }
+  .method-card span, .muted, .weak, .lede, .hint, .meta { color: var(--muted); }
+  .method-card span, .weak { display: block; line-height: 1.55; font-size: 14px; }
+  .stat-card .num, .count-card .num, .ladder-cell .num, .stair-step .num { font-weight: 850; font-size: 28px; letter-spacing: -0.04em; }
+  .stat-card .lbl, .count-card .lbl { color: var(--muted); font-size: 13px; font-weight: 750; }
+  .ladder { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .ladder-cell { text-align: left; color: #1F1A33; min-height: 108px; display: flex; flex-direction: column; justify-content: space-between; }
+  .ladder-cell small { font-weight: 800; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; padding: 11px 16px; font-weight: 800; border: 1px solid transparent; line-height: 1.2; }
+  .btn.primary { background: var(--primary); color: var(--primary-ink); }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--card-line); }
+  .btn.amber { background: var(--accent); color: #241B45; }
+  .btn.danger { background: transparent; color: var(--danger); border-color: rgba(180,35,24,0.35); }
+  .btn.small { padding: 8px 10px; font-size: 13px; border-radius: 10px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--card-line); background: var(--card); color: var(--ink); font-weight: 850; }
+  @media (hover: hover) {
+    .method-card:hover, .record-card:hover, .topic-card:hover, .stat-card:hover, .ladder-cell:hover, .count-card:hover, .btn:hover, .panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(36, 27, 69, 0.12), 0 0 0 1px rgba(232, 168, 56, 0.55);
+    }
+    .btn:hover, .icon-btn:hover { transform: translateY(-2px); }
+  }
+  .record-card, .topic-card, .method-card, .ladder-cell, .btn, .icon-btn, .panel { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  .filters { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .field label, .filters label { font-size: 13px; font-weight: 800; }
+  .req::after { content: " *"; color: var(--accent); }
+  input[type="text"], input[type="search"], select, textarea {
+    width: 100%; border-radius: 12px; border: 1px solid var(--card-line); background: var(--card); padding: 11px 12px; outline: none; scroll-margin-top: 88px; scroll-margin-bottom: 42vh;
+  }
+  textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+  input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px solid rgba(232,168,56,0.55); outline-offset: 1px; }
+  .hint { min-height: 0; font-size: 12px; color: #9A6B18; }
+  .hint:empty { display: none; }
+  .train-grid { display: grid; grid-template-columns: minmax(280px, 390px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .panel { padding: 16px 16px 8px; }
+  .panel-head, .content-head, .record-actions, .topic-actions, .modal-head, .modal-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .content-head { margin-bottom: 8px; }
+  .row-nav { display: flex; gap: 6px; }
+  .markdown-body { line-height: 1.7; overflow-wrap: anywhere; }
+  .markdown-body > *:first-child { margin-top: 0; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { line-height: 1.3; margin: 1em 0 .4em; }
+  .markdown-body p, .markdown-body ul, .markdown-body ol, .markdown-body blockquote, .markdown-body pre, .markdown-body table { margin: .6em 0; }
+  .markdown-body code { font-family: "Sarasa Mono", Consolas, monospace; background: var(--soft); padding: .1em .35em; border-radius: 6px; }
+  .markdown-body pre { padding: 12px; overflow: auto; background: #1B1633; color: #F7F4FF; border-radius: 12px; }
+  .markdown-body pre code { background: transparent; color: inherit; padding: 0; }
+  .markdown-body blockquote { margin-left: 0; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--soft); border-radius: 0 12px 12px 0; }
+  .markdown-body img { border-radius: 12px; cursor: pointer; }
+  .markdown-body a { color: var(--primary); }
+  .table-scroll { width: 100%; overflow-x: auto; }
+  .markdown-body table { border-collapse: collapse; min-width: 100%; }
+  .markdown-body th, .markdown-body td { border: 1px solid var(--card-line); padding: 8px 10px; vertical-align: top; }
+  .markdown-body th { background: var(--soft); }
+  .card-list, .topic-wall { display: grid; gap: 12px; }
+  .record-top, .topic-top, .meta-line { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .record-card h3, .topic-card h3 { flex: 1; min-width: 0; }
+  .record-actions, .topic-actions { margin-top: 12px; flex-wrap: wrap; justify-content: flex-start; }
+  .pill, .lv { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 800; line-height: 1.4; }
+  .pill { background: var(--soft); color: var(--ink); }
+  .lv[data-lv="未确定"] { background: #CBD5E1; color: #1F1A33; }
+  .lv[data-lv="第1层"] { background: #8B93A7; color: #1F1A33; }
+  .lv[data-lv="第2层"] { background: #3B82F6; color: #fff; }
+  .lv[data-lv="第3层"] { background: #6366F1; color: #fff; }
+  .lv[data-lv="第4层"] { background: #8B5CF6; color: #fff; }
+  .lv[data-lv="第5层"] { background: #E8A838; color: #1F1A33; }
+  .lv[data-lv=""] { background: #CBD5E1; color: #1F1A33; }
+  .archive-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+  .archive-layout.with-edit { grid-template-columns: minmax(0, 1fr) minmax(280px, 400px); }
+  #editPanel { padding: 16px; position: sticky; top: calc(var(--nav-h) + 12px); max-height: calc(100vh - var(--nav-h) - 28px); overflow: auto; }
+  #editBackdrop { display: none; }
+  .note { font-size: 13px; color: var(--muted); line-height: 1.55; background: var(--soft); border-radius: 12px; padding: 10px 12px; }
+  .star-grid { display: grid; grid-template-columns: minmax(230px, 320px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .stair { display: flex; flex-direction: column; gap: 8px; }
+  .stair-step { min-height: 62px; border-radius: 14px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #1F1A33; }
+  .stair-step.all-gray, .stair-step.is-zero { background: #CBD5E1 !important; color: #1F1A33; }
+  .unplaced { margin-top: 12px; padding: 14px; border-radius: 16px; background: #CBD5E1; color: #1F1A33; }
+  .unplaced button { display: block; width: 100%; text-align: left; margin-top: 6px; border: 0; background: rgba(255,255,255,0.55); color: #1F1A33; border-radius: 10px; padding: 8px 10px; font-weight: 750; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .seg button { border-radius: 999px; border: 1px solid var(--card-line); background: var(--card); color: var(--ink); padding: 8px 14px; font-weight: 800; }
+  .seg button[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); border-color: transparent; }
+  .topic-records { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .topic-record { padding: 10px; border-radius: 12px; background: var(--soft); }
+  .empty { padding: 22px; text-align: left; }
+  .empty p { margin: 0 0 12px; line-height: 1.6; }
+  .banner { padding: 12px 14px; border-radius: 12px; background: rgba(232,168,56,0.16); color: var(--ink); margin-bottom: 12px; }
+  .banner[hidden], .page[hidden], .modal[hidden], #editPanel[hidden], #editBackdrop[hidden] { display: none !important; }
+  .modal { position: fixed; inset: 0; z-index: 3200; background: rgba(18, 12, 36, 0.48); display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #confirmModal { z-index: 4300; }
+  .modal-panel { width: min(820px, 100%); max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; color: var(--ink); }
+  .modal-head, .modal-foot { padding: 14px 16px; }
+  .modal-head { border-bottom: 1px solid var(--card-line); }
+  .modal-foot { border-top: 1px solid var(--card-line); justify-content: flex-end; }
+  .modal-body { padding: 16px; overflow: auto; }
+  .detail-fields { display: grid; grid-template-columns: 140px 1fr; gap: 8px 12px; margin-bottom: 14px; }
+  .detail-fields dt { color: var(--muted); font-weight: 800; }
+  .detail-fields dd { margin: 0; }
+  .wait-box { padding: 18px 8px 8px; }
+  .wait-box p { margin: 0 0 12px; line-height: 1.6; }
+  .stairs-anim { display: flex; gap: 5px; height: 28px; align-items: flex-end; }
+  .stairs-anim b { display: block; width: 10px; background: var(--accent); border-radius: 3px; animation: step 1s ease-in-out infinite; }
+  .stairs-anim b:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .stairs-anim b:nth-child(2) { height: 12px; animation-delay: .1s; }
+  .stairs-anim b:nth-child(3) { height: 16px; animation-delay: .2s; }
+  .stairs-anim b:nth-child(4) { height: 20px; animation-delay: .3s; }
+  .stairs-anim b:nth-child(5) { height: 26px; animation-delay: .4s; }
+  @keyframes step { 50% { transform: translateY(-4px); filter: brightness(1.15); } }
+  #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 5200; background: #241B45; color: #fff; padding: 12px 16px; border-radius: 12px; max-width: min(520px, calc(100% - 32px)); box-shadow: var(--shadow); }
+  #toast[hidden] { display: none !important; }
+  .answer-box { margin-top: 12px; }
+  .tools-right { display: flex; justify-content: flex-end; margin-top: 8px; }
+  @media (max-width: 980px) {
+    .hero, .train-grid, .star-grid, .archive-layout.with-edit { grid-template-columns: 1fr; }
+    .hero-stair { justify-self: start; }
+    .method-row, .stat-row, .count-row { grid-template-columns: 1fr 1fr; }
+    .filters { grid-template-columns: 1fr 1fr; }
+    #editPanel { position: fixed; z-index: 2500; left: 16px; right: 16px; top: calc(var(--nav-h) + 12px); bottom: 16px; max-height: none; }
+    #editBackdrop:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 2400; background: rgba(18, 12, 36, 0.48); }
+  }
+  @media (max-width: 768px) {
+    .wrap { width: min(1120px, calc(100% - 20px)); }
+    .page { padding-bottom: calc(180px + var(--keyboard-inset)); }
+    .method-row, .stat-row, .count-row, .ladder, .filters, .detail-fields { grid-template-columns: 1fr; }
+    .page-head { flex-direction: column; align-items: stretch; }
+    .modal.md-modal { padding: 0; }
+    .modal.md-modal .modal-panel { width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+    .modal-body, #editPanel, .panel { padding-bottom: calc(160px + var(--keyboard-inset)); }
+    .hero { padding: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="nav-shell">
+  <nav id="topNav" aria-label="主导航">
+    <div id="navBar">
+      <button id="brandBtn" type="button">
+        <svg id="brandLogo" viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="4" y="34" width="8" height="8" rx="1.5" fill="#8B93A7"></rect>
+          <rect x="13" y="26" width="8" height="16" rx="1.5" fill="#3B82F6"></rect>
+          <rect x="22" y="18" width="8" height="24" rx="1.5" fill="#6366F1"></rect>
+          <rect x="31" y="10" width="8" height="32" rx="1.5" fill="#8B5CF6"></rect>
+          <rect x="40" y="4" width="4" height="38" rx="1.5" fill="#E8A838"></rect>
+        </svg>
+        <span id="brandName" data-i18n="appName">数学梯度训练</span>
+      </button>
+      <div id="navLinks">
+        <button id="navHome" class="nav-link active" type="button" data-page="home"><span data-i18n="navHome">首页</span></button>
+        <button id="navTrain" class="nav-link" type="button" data-page="train"><span data-i18n="navTrain">开始训练</span></button>
+        <button id="navArchive" class="nav-link" type="button" data-page="archive"><span data-i18n="navArchive">训练档案</span></button>
+        <button id="navStar" class="nav-link" type="button" data-page="star"><span data-i18n="navStar">层级星图</span></button>
+      </div>
+      <div id="langToggle" role="group" data-i18n-aria="langSwitch">
+        <button id="langZh" class="lang-btn active" type="button" data-lang="zh">中</button>
+        <button id="langEn" class="lang-btn" type="button" data-lang="en">EN</button>
+      </div>
+      <button id="hamburgerBtn" type="button" aria-expanded="false" data-i18n-aria="menu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button id="mNavHome" class="menu-link active" type="button" data-page="home" data-i18n="navHome">首页</button>
+      <button id="mNavTrain" class="menu-link" type="button" data-page="train" data-i18n="navTrain">开始训练</button>
+      <button id="mNavArchive" class="menu-link" type="button" data-page="archive" data-i18n="navArchive">训练档案</button>
+      <button id="mNavStar" class="menu-link" type="button" data-page="star" data-i18n="navStar">层级星图</button>
+      <div class="menu-langs" role="group" data-i18n-aria="langSwitch">
+        <button id="mLangZh" class="lang-btn" type="button" data-lang="zh">中文</button>
+        <button id="mLangEn" class="lang-btn" type="button" data-lang="en">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<main id="appMain">
+  <section id="pageHome" class="page">
+    <div class="wrap">
+      <div id="homeError" class="banner" hidden></div>
+      <div class="hero">
+        <div>
+          <h1 data-i18n="homeTitle">数学梯度训练</h1>
+          <p class="lede" data-i18n="homeDesc">按知识点找到你现在的练习层级，用小步梯度把数学思维往上抬一层</p>
+          <p style="margin-top:16px"><button id="btnHomeStart" class="btn primary" type="button"><i class="fa-solid fa-stairs" aria-hidden="true"></i><span data-i18n="homeStart">开始一次训练</span></button></p>
+        </div>
+        <div class="hero-stair" aria-hidden="true">
+          <i style="width:46%;background:#E8A838"></i>
+          <i style="width:60%;background:#8B5CF6"></i>
+          <i style="width:74%;background:#6366F1"></i>
+          <i style="width:86%;background:#3B82F6"></i>
+          <i style="width:100%;background:#8B93A7"></i>
+        </div>
+      </div>
+      <h2 data-i18n="waysTitle">训练方式</h2>
+      <div class="method-row">
+        <button id="methodLocate" class="method-card" type="button" data-method="层级定位"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><strong data-i18n="methodLocate">层级定位</strong><span data-i18n="methodLocateDesc">先摸清这一知识点现在站在哪一层</span></button>
+        <button id="methodPractice" class="method-card" type="button" data-method="梯度练习"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i><strong data-i18n="methodPractice">梯度练习</strong><span data-i18n="methodPracticeDesc">只练比当前层再高一点点的题</span></button>
+        <button id="methodJournal" class="method-card" type="button" data-method="成长日记"><i class="fa-solid fa-book-open" aria-hidden="true"></i><strong data-i18n="methodJournal">成长日记</strong><span data-i18n="methodJournalDesc">把错因、卡壳和进步写成可回看的记录</span></button>
+        <button id="methodWeekly" class="method-card" type="button" data-method="每周检测"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i><strong data-i18n="methodWeekly">每周检测</strong><span data-i18n="methodWeeklyDesc">用一组检测题看看这一周站稳了没有</span></button>
+      </div>
+      <h2 data-i18n="statsTitle">训练次数</h2>
+      <div class="stat-row">
+        <article class="stat-card"><div id="statTotal" class="num">…</div><div class="lbl" data-i18n="statTotal">训练总次数</div></article>
+        <article class="stat-card"><div id="statJunior" class="num">…</div><div class="lbl" data-i18n="statJunior">初中训练数</div></article>
+        <article class="stat-card"><div id="statSenior" class="num">…</div><div class="lbl" data-i18n="statSenior">高一训练数</div></article>
+        <article class="stat-card"><div id="statPending" class="num">…</div><div class="lbl" data-i18n="statPending">待定位次数</div></article>
+      </div>
+      <h2 data-i18n="ladderTitle">思维阶梯</h2>
+      <div id="homeLadder" class="ladder"></div>
+      <h2 data-i18n="recentTitle">最近训练</h2>
+      <div id="homeRecent" class="card-list"></div>
+      <div id="homeEmpty" class="card empty" hidden>
+        <p data-i18n="emptyHome">还没有训练记录。先做一次层级定位，看看这一知识点从哪一层起步。</p>
+        <button id="btnHomeLocate" class="btn primary" type="button" data-i18n="emptyHomeBtn">去做层级定位</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pageTrain" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="trainTitle">开始训练</h1>
+          <p class="lede" data-i18n="trainDesc">先出题，等你写下作答，再生成反馈。层级是否前进，只相信作答证据。</p>
+        </div>
+        <button id="btnViewArchive" class="btn ghost" type="button" data-i18n="viewArchive">查看训练档案</button>
+      </div>
+      <div id="trainError" class="banner" hidden></div>
+      <div class="train-grid">
+        <form id="formTrain" class="panel" action="#" autocomplete="off">
+          <div class="panel-head"><h2 data-i18n="formTitle" style="margin:0">数学梯度训练</h2></div>
+          <div class="field">
+            <label class="req" for="formTrain_学段" data-i18n="fieldStage">学段</label>
+            <select id="formTrain_学段" name="学段"></select>
+            <div id="hintTrain_学段" class="hint"></div>
+          </div>
+          <div class="field">
+            <label class="req" for="formTrain_知识点" data-i18n="fieldTopic">知识点</label>
+            <input id="formTrain_知识点" name="知识点" type="text" autocomplete="off">
+            <div id="hintTrain_知识点" class="hint"></div>
+          </div>
+          <div class="field">
+            <label class="req" for="formTrain_训练方式" data-i18n="fieldMethod">训练方式</label>
+            <select id="formTrain_训练方式" name="训练方式"></select>
+            <div id="hintTrain_训练方式" class="hint"></div>
+          </div>
+          <div class="field">
+            <label for="formTrain_当前练习层级" data-i18n="fieldLevel">当前练习层级</label>
+            <select id="formTrain_当前练习层级" name="当前练习层级"></select>
+          </div>
+          <div class="field">
+            <label for="formTrain_薄弱点及训练记录" data-i18n="fieldWeak">薄弱点及训练记录</label>
+            <textarea id="formTrain_薄弱点及训练记录" name="薄弱点及训练记录" data-i18n-placeholder="phWeak" placeholder="可写上次错题、卡壳步骤，或这次的完整作答。第一次定位可以留空。"></textarea>
+          </div>
+          <button id="btnGenerate" class="btn primary" type="button" data-i18n="btnGenerate">生成训练</button>
+        </form>
+        <div>
+          <div class="panel" id="trainPanel">
+            <div class="content-head">
+              <strong data-i18n="contentTitle">训练内容</strong>
+              <div class="row-nav">
+                <button id="btnPrevRow" class="icon-btn" type="button" aria-label="上一条">&lt;</button>
+                <button id="btnNextRow" class="icon-btn" type="button" aria-label="下一条">&gt;</button>
+              </div>
+            </div>
+            <div id="rowNavNote" class="hint"></div>
+            <div id="trainContent" class="markdown-body" aria-live="polite"></div>
+          </div>
+          <div class="panel answer-box">
+            <h2 id="answerTitle" data-i18n="answerTitle" style="margin-top:0">写下这次作答</h2>
+            <textarea id="answerText" name="作答" data-i18n-placeholder="phAnswer" placeholder="请写下解题过程、答案，或你卡在哪一步。只写‘我会了’不算作答证据。"></textarea>
+            <div class="tools-right"><button id="btnSubmitAnswer" class="btn amber" type="button" data-i18n="btnAnswer">提交作答并获取反馈</button></div>
+          </div>
+          <div class="tools-right"><button id="btnResetTrain" class="btn ghost" type="button" data-i18n="btnReset">+ 清空重开</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pageArchive" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="archiveTitle">训练档案</h1>
+          <p class="lede" data-i18n="archiveDesc">回看每一次定位、练习、日记和检测。改基础信息不会重新生成训练结果。</p>
+        </div>
+        <button id="btnNewTrain" class="btn primary" type="button" data-i18n="btnNew">+ 新建训练</button>
+      </div>
+      <div id="archiveError" class="banner" hidden></div>
+      <div class="filters">
+        <div class="field">
+          <label for="archiveSearch" data-i18n="searchLabel">搜索知识点</label>
+          <input id="archiveSearch" name="搜索知识点" type="search" data-i18n-placeholder="searchPh" placeholder="按知识点搜索">
+        </div>
+        <div class="field">
+          <label for="filterStage" data-i18n="fieldStage">学段</label>
+          <select id="filterStage" name="学段"></select>
+        </div>
+        <div class="field">
+          <label for="filterMethod" data-i18n="fieldMethod">训练方式</label>
+          <select id="filterMethod" name="训练方式"></select>
+        </div>
+        <div class="field">
+          <label for="filterLevel" data-i18n="fieldLevel">当前练习层级</label>
+          <select id="filterLevel" name="当前练习层级"></select>
+        </div>
+      </div>
+      <div id="archiveLayout" class="archive-layout">
+        <div>
+          <div id="archiveList" class="card-list"></div>
+          <div id="archiveEmpty" class="card empty" hidden><p data-i18n="emptyArchive">没有符合筛选的训练。换个知识点，或开始一次新的梯度训练。</p></div>
+        </div>
+        <div id="editPanel" class="panel" hidden>
+          <form id="formEdit" autocomplete="off">
+            <div class="panel-head"><h2 id="editTitle" style="margin:0" data-i18n="editTitle">编辑训练记录</h2></div>
+            <p id="editNote" class="note" data-i18n="editNote">若要让AI根据新作答重新出题或写反馈，请使用“以此续练”或“提交作答并获取反馈”，不要在这里保存后期待训练结果变化。</p>
+            <div class="field"><label class="req" id="lblEditStage" for="formEdit_学段" data-i18n="fieldStage">学段</label><select id="formEdit_学段" name="学段"></select><div id="hintEdit_学段" class="hint"></div></div>
+            <div class="field"><label class="req" id="lblEditTopic" for="formEdit_知识点" data-i18n="fieldTopic">知识点</label><input id="formEdit_知识点" name="知识点" type="text" autocomplete="off"><div id="hintEdit_知识点" class="hint"></div></div>
+            <div class="field"><label class="req" id="lblEditMethod" for="formEdit_训练方式" data-i18n="fieldMethod">训练方式</label><select id="formEdit_训练方式" name="训练方式"></select><div id="hintEdit_训练方式" class="hint"></div></div>
+            <div class="field"><label id="lblEditLevel" for="formEdit_当前练习层级" data-i18n="fieldLevel">当前练习层级</label><select id="formEdit_当前练习层级" name="当前练习层级"></select></div>
+            <div class="field"><label id="lblEditWeak" for="formEdit_薄弱点及训练记录" data-i18n="fieldWeak">薄弱点及训练记录</label><textarea id="formEdit_薄弱点及训练记录" name="薄弱点及训练记录" data-i18n-placeholder="phWeak" placeholder="可写上次错题、卡壳步骤，或这次的完整作答。第一次定位可以留空。"></textarea></div>
+            <div class="field"><label id="lblEditResult" data-i18n="resultLabel">训练结果</label><div id="editResult" class="markdown-body"></div></div>
+            <div class="record-actions"><button id="btnEditSave" class="btn primary" type="button" data-i18n="save">保存</button><button id="btnEditCancel" class="btn ghost" type="button" data-i18n="cancel">取消</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pageStar" class="page" hidden>
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="starTitle">层级星图</h1>
+          <p class="lede" data-i18n="starDesc">按知识点看最近一次训练停在哪一层。这是记录分布，不是升级证明。</p>
+        </div>
+      </div>
+      <div id="starError" class="banner" hidden></div>
+      <div id="starSeg" class="seg" role="group">
+        <button id="segAll" type="button" data-stage="全部" aria-pressed="true" data-i18n="filterAll">全部</button>
+        <button id="segJunior" type="button" data-stage="初中" aria-pressed="false" data-i18n="stageJunior">初中</button>
+        <button id="segSenior" type="button" data-stage="高一" aria-pressed="false" data-i18n="stageSenior">高一</button>
+      </div>
+      <div class="star-grid">
+        <div>
+          <h2 data-i18n="stairTitle" style="margin-top:0">星梯</h2>
+          <div id="starLadder" class="stair"></div>
+          <div id="starUnplaced"></div>
+        </div>
+        <div>
+          <h2 data-i18n="topicTitle" style="margin-top:0">知识点</h2>
+          <div id="starEmpty" class="card empty" hidden>
+            <p data-i18n="emptyStar">星图还是空的。完成第一次层级定位后，知识点会落在对应的台阶上。</p>
+            <button id="btnStarStart" class="btn primary" type="button" data-i18n="goTrain">去开始训练</button>
+          </div>
+          <div id="starCards" class="topic-wall"></div>
+        </div>
+      </div>
+      <h2 data-i18n="countTitle">方式次数</h2>
+      <div class="count-row">
+        <article class="count-card"><div id="countLocate" class="num">…</div><div class="lbl" data-i18n="countLocate">层级定位次数</div></article>
+        <article class="count-card"><div id="countPractice" class="num">…</div><div class="lbl" data-i18n="countPractice">梯度练习次数</div></article>
+        <article class="count-card"><div id="countJournal" class="num">…</div><div class="lbl" data-i18n="countJournal">成长日记次数</div></article>
+        <article class="count-card"><div id="countWeekly" class="num">…</div><div class="lbl" data-i18n="countWeekly">每周检测次数</div></article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="editBackdrop" hidden></div>
+
+<div id="detailModal" class="modal md-modal" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="modal-head">
+      <h2 id="detailTitle" style="margin:0" data-i18n="detailTitle">训练详情</h2>
+      <button id="btnDetailX" class="icon-btn" type="button" data-i18n-aria="close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div id="detailBody" class="modal-body scroll-pad">
+      <dl id="detailFields" class="detail-fields"></dl>
+      <div id="detailMarkdown" class="markdown-body"></div>
+    </div>
+    <div class="modal-foot">
+      <button id="btnDetailContinue" class="btn primary" type="button"></button>
+      <button id="btnDetailClose" class="btn ghost" type="button" data-i18n="close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="confirmText" style="width:min(440px,100%)">
+    <div class="modal-body">
+      <p id="confirmText" style="margin:0;line-height:1.6"></p>
+    </div>
+    <div class="modal-foot">
+      <button id="btnConfirmCancel" class="btn ghost" type="button" data-i18n="cancel">取消</button>
+      <button id="btnConfirmOk" class="btn danger" type="button" data-i18n="delete">删除</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" hidden role="status"></div>
+
+<script async src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("7204ff28938f9505_数学梯度训练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+const DATA_SOURCE = '数学训练/默认表格';
+const TABLE_NAME = '数学训练';
+const CSV_PAYLOAD = '学段,知识点,训练方式,当前练习层级,薄弱点及训练记录';
+const EDIT_FIELDS = ['学段', '知识点', '训练方式', '当前练习层级', '薄弱点及训练记录'];
+const RESULT_FIELD = '训练结果';
+const LEVELS = ['未确定', '第1层', '第2层', '第3层', '第4层', '第5层'];
+const STAGES = ['初中', '高一'];
+const METHODS = ['层级定位', '梯度练习', '成长日记', '每周检测'];
+const LEVEL_META = {
+  '未确定': { zh: '待定位', en: 'Not placed' },
+  '第1层': { zh: '识记起步', en: 'Recall start' },
+  '第2层': { zh: '理解应用', en: 'Understand & apply' },
+  '第3层': { zh: '变式迁移', en: 'Variation transfer' },
+  '第4层': { zh: '综合推理', en: 'Integrated reasoning' },
+  '第5层': { zh: '思维挑战', en: 'Thinking challenge' }
+};
+const I18N = {
+  zh: {
+    appName: '数学梯度训练', navHome: '首页', navTrain: '开始训练', navArchive: '训练档案', navStar: '层级星图',
+    homeTitle: '数学梯度训练', homeDesc: '按知识点找到你现在的练习层级，用小步梯度把数学思维往上抬一层', homeStart: '开始一次训练',
+    waysTitle: '训练方式', statsTitle: '训练次数', ladderTitle: '思维阶梯', recentTitle: '最近训练',
+    methodLocate: '层级定位', methodPractice: '梯度练习', methodJournal: '成长日记', methodWeekly: '每周检测',
+    methodLocateDesc: '先摸清这一知识点现在站在哪一层', methodPracticeDesc: '只练比当前层再高一点点的题',
+    methodJournalDesc: '把错因、卡壳和进步写成可回看的记录', methodWeeklyDesc: '用一组检测题看看这一周站稳了没有',
+    statTotal: '训练总次数', statJunior: '初中训练数', statSenior: '高一训练数', statPending: '待定位次数',
+    emptyHome: '还没有训练记录。先做一次层级定位，看看这一知识点从哪一层起步。', emptyHomeBtn: '去做层级定位',
+    trainTitle: '开始训练', trainDesc: '先出题，等你写下作答，再生成反馈。层级是否前进，只相信作答证据。', viewArchive: '查看训练档案',
+    formTitle: '数学梯度训练', fieldStage: '学段', fieldTopic: '知识点', fieldMethod: '训练方式', fieldLevel: '当前练习层级', fieldWeak: '薄弱点及训练记录',
+    phWeak: '可写上次错题、卡壳步骤，或这次的完整作答。第一次定位可以留空。', btnGenerate: '生成训练', contentTitle: '训练内容',
+    contentInitial: '提交后，这里会出现适合当前层级的题目或基于已有记录的反馈。', answerTitle: '写下这次作答',
+    phAnswer: '请写下解题过程、答案，或你卡在哪一步。只写‘我会了’不算作答证据。', btnAnswer: '提交作答并获取反馈', btnReset: '+ 清空重开',
+    hintStage: '请选择学段', hintTopic: '请填写知识点', hintMethod: '请选择训练方式',
+    waitMsg: '正在按当前层级生成训练内容，请稍候。先给练习题，作答完成前不会判定升级。',
+    longWait: '生成时间较长，可继续等待', btnContinuePoll: '继续轮询',
+    timeoutMsg: '等待已超过30分钟。可以继续等待，或稍后在训练档案中查看。',
+    noResult: '这条记录还没有训练结果。', archiveTitle: '训练档案',
+    archiveDesc: '回看每一次定位、练习、日记和检测。改基础信息不会重新生成训练结果。', btnNew: '+ 新建训练',
+    searchLabel: '搜索知识点', searchPh: '按知识点搜索', filterAll: '全部', pleaseChoose: '请选择',
+    emptyArchive: '没有符合筛选的训练。换个知识点，或开始一次新的梯度训练。',
+    detail: '查看详情', edit: '编辑', delete: '删除', continuePractice: '以此续练', goPractice: '去续练', close: '关闭', cancel: '取消',
+    editTitle: '编辑训练记录', save: '保存', savedMsg: '已保存。基础信息的修改不会重新生成训练结果。',
+    editNote: '若要让AI根据新作答重新出题或写反馈，请使用“以此续练”或“提交作答并获取反馈”，不要在这里保存后期待训练结果变化。',
+    deleteConfirm: '删除后这条训练记录无法恢复', resultLabel: '训练结果', detailTitle: '训练详情',
+    starTitle: '层级星图', starDesc: '按知识点看最近一次训练停在哪一层。这是记录分布，不是升级证明。',
+    stairTitle: '星梯', topicTitle: '知识点', unplacedTitle: '待定位知识点', countTitle: '方式次数',
+    emptyStar: '星图还是空的。完成第一次层级定位后，知识点会落在对应的台阶上。', goTrain: '去开始训练',
+    countLocate: '层级定位次数', countPractice: '梯度练习次数', countJournal: '成长日记次数', countWeekly: '每周检测次数',
+    stageJunior: '初中', stageSenior: '高一', topicCount: '训练次数', latestWeak: '最近记录', loading: '正在读取…',
+    loadError: '数据暂时没有读取到。', submitFail: '提交没有成功，请再试一次。', saveFail: '保存没有成功，请再试一次。', deleteFail: '删除没有成功，请再试一次。',
+    menu: '打开菜单', langSwitch: '切换中英文', prev: '上一条', next: '下一条', dash: '—'
+  },
+  en: {
+    appName: 'Math Gradient Training', navHome: 'Home', navTrain: 'Start training', navArchive: 'Training archive', navStar: 'Level star map',
+    homeTitle: 'Math Gradient Training', homeDesc: 'Find the practice level you are on for a topic, then lift your thinking one small step.', homeStart: 'Start a training',
+    waysTitle: 'Training methods', statsTitle: 'Training counts', ladderTitle: 'Thinking staircase', recentTitle: 'Recent training',
+    methodLocate: 'Level check', methodPractice: 'Gradient practice', methodJournal: 'Growth journal', methodWeekly: 'Weekly check',
+    methodLocateDesc: 'See which level this topic stands on now', methodPracticeDesc: 'Practice just one step above the current level',
+    methodJournalDesc: 'Turn mistakes, stuck steps, and progress into a record you can reread', methodWeeklyDesc: 'Use a short check to see whether this week is steady',
+    statTotal: 'Total sessions', statJunior: 'Junior-high sessions', statSenior: 'Grade 10 sessions', statPending: 'Not-yet-placed sessions',
+    emptyHome: 'No training records yet. Start with a level check and see where this topic begins.', emptyHomeBtn: 'Do a level check',
+    trainTitle: 'Start training', trainDesc: 'Questions come first. Feedback comes after you write an answer. A level moves only when the answer is evidence.', viewArchive: 'View archive',
+    formTitle: 'Math Gradient Training', fieldStage: 'Stage', fieldTopic: 'Topic', fieldMethod: 'Method', fieldLevel: 'Current level', fieldWeak: 'Weak points and notes',
+    phWeak: 'You can note a previous mistake, a stuck step, or a full answer. A first level check can be left blank.', btnGenerate: 'Generate training', contentTitle: 'Training content',
+    contentInitial: 'After you submit, practice for the current level, or feedback based on an existing record, will show here.', answerTitle: 'Write this answer',
+    phAnswer: 'Write the steps, the answer, or where you got stuck. “I got it” alone is not evidence.', btnAnswer: 'Submit answer for feedback', btnReset: '+ Start fresh',
+    hintStage: 'Please choose a stage', hintTopic: 'Please enter a topic', hintMethod: 'Please choose a method',
+    waitMsg: 'Generating training for the current level. Please wait. Practice comes first. The level is not judged before you answer.',
+    longWait: 'This is taking a while. You can keep waiting.', btnContinuePoll: 'Keep waiting',
+    timeoutMsg: 'This has been waiting for 30 minutes. You can keep waiting, or check the training archive later.',
+    noResult: 'This record does not have a training result yet.', archiveTitle: 'Training archive',
+    archiveDesc: 'Look back at each level check, practice, journal, and weekly check. Editing the basics does not regenerate the training result.', btnNew: '+ New training',
+    searchLabel: 'Search topics', searchPh: 'Search by topic', filterAll: 'All', pleaseChoose: 'Please choose',
+    emptyArchive: 'No training matches these filters. Try another topic, or start a new gradient session.',
+    detail: 'Details', edit: 'Edit', delete: 'Delete', continuePractice: 'Continue from this', goPractice: 'Continue practice', close: 'Close', cancel: 'Cancel',
+    editTitle: 'Edit training record', save: 'Save', savedMsg: 'Saved. Editing the basics does not regenerate the training result.',
+    editNote: 'To ask for new questions or feedback from a new answer, use “Continue from this” or “Submit answer for feedback”. Saving here will not change the training result.',
+    deleteConfirm: 'This training record cannot be restored after deletion.', resultLabel: 'Training result', detailTitle: 'Training details',
+    starTitle: 'Level star map', starDesc: 'See which level each topic stopped on in its latest training. This is a distribution of records, not proof of promotion.',
+    stairTitle: 'Star stairs', topicTitle: 'Topics', unplacedTitle: 'Topics not yet placed', countTitle: 'Method counts',
+    emptyStar: 'The star map is still empty. After the first level check, a topic will land on a step.', goTrain: 'Go to start training',
+    countLocate: 'Level checks', countPractice: 'Gradient practice', countJournal: 'Growth journals', countWeekly: 'Weekly checks',
+    stageJunior: 'Junior high', stageSenior: 'Grade 10', topicCount: 'Sessions', latestWeak: 'Latest note', loading: 'Loading…',
+    loadError: 'The data could not be loaded.', submitFail: 'The submission did not succeed. Please try again.', saveFail: 'The save did not succeed. Please try again.', deleteFail: 'The delete did not succeed. Please try again.',
+    menu: 'Open menu', langSwitch: 'Switch language', prev: 'Previous', next: 'Next', dash: '—'
+  }
+};
+
+const state = {
+  lang: 'zh', page: 'home', currentRow: 0, recordCount: 0, resultReady: false,
+  polling: false, submitting: false, history: [], overlays: [], starStage: '全部',
+  detail: null
+};
+const cache = { home: null, archive: null, star: null };
+let pollToken = 0;
+let pollTimer = 0;
+let pollRow = 0;
+let pollStartedAt = 0;
+let pollSegmentAt = 0;
+let pollPaused = false;
+let pollView = 'placeholder';
+let rowLoadToken = 0;
+let trainSyncedRow = 0;
+let homeToken = 0;
+let archiveToken = 0;
+let starToken = 0;
+let editToken = 0;
+let editRow = 0;
+let detailToken = 0;
+let toastTimer = 0;
+
+function t(key) {
+  const pack = I18N[state.lang] || I18N.zh;
+  return Object.prototype.hasOwnProperty.call(pack, key) ? pack[key] : key;
+}
+function levelLabel(value) {
+  const meta = LEVEL_META[value];
+  if (!meta) return value ? String(value) : t('dash');
+  return state.lang === 'en' ? meta.en : meta.zh;
+}
+function stageLabel(value) {
+  if (value === '初中') return t('stageJunior');
+  if (value === '高一') return t('stageSenior');
+  return value ? String(value) : t('dash');
+}
+function methodLabel(value) {
+  if (value === '层级定位') return t('methodLocate');
+  if (value === '梯度练习') return t('methodPractice');
+  if (value === '成长日记') return t('methodJournal');
+  if (value === '每周检测') return t('methodWeekly');
+  return value ? String(value) : t('dash');
+}
+function normalizeLevel(value) {
+  const s = value == null ? '' : String(value).trim();
+  if (LEVEL_META[s]) return s;
+  const keys = Object.keys(LEVEL_META);
+  for (let i = 0; i < keys.length; i++) {
+    const meta = LEVEL_META[keys[i]];
+    if (s === meta.zh || s === meta.en) return keys[i];
+  }
+  return s;
+}
+function clipText(text, count) {
+  const chars = Array.from(text == null ? '' : String(text));
+  if (chars.length <= count) return chars.join('');
+  return chars.slice(0, count).join('') + '…';
+}
+function submissionLocked() {
+  return state.polling || pollPaused || state.submitting;
+}
+function canGoPrev(row, locked) {
+  return !locked && row > 1;
+}
+function canGoNext(row, count, locked) {
+  return !locked && row > 0 && row < count;
+}
+function canGenerate(values, locked) {
+  return !locked && !!(values.学段 && values.知识点 && values.训练方式);
+}
+function canSubmitAnswer(row, resultReady, answer, locked) {
+  return !locked && row >= 1 && !!resultReady && String(answer || '').trim() !== '';
+}
+function trainValues() {
+  return {
+    学段: document.getElementById('formTrain_学段').value,
+    知识点: document.getElementById('formTrain_知识点').value.trim(),
+    训练方式: document.getElementById('formTrain_训练方式').value,
+    当前练习层级: document.getElementById('formTrain_当前练习层级').value || '未确定',
+    薄弱点及训练记录: document.getElementById('formTrain_薄弱点及训练记录').value
+  };
+}
+function buildSubmitPayload(values) {
+  return {
+    学段: values.学段,
+    知识点: values.知识点,
+    训练方式: values.训练方式,
+    当前练习层级: values.当前练习层级 || '未确定',
+    薄弱点及训练记录: values.薄弱点及训练记录 == null ? '' : values.薄弱点及训练记录
+  };
+}
+function mergeAnswer(originalWeak, answer) {
+  const piece = '学生本次作答：' + String(answer || '').trim();
+  if (originalWeak) return String(originalWeak) + '\n' + piece;
+  return piece;
+}
+function parseRows(csvText) {
+  if (csvText == null) return [];
+  let text = String(csvText);
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  if (text.trim() === '') return [];
+  const table = parseCSV(text);
+  const rows = [];
+  for (let i = 0; i < table.length; i++) {
+    const cells = table[i] || [];
+    const rec = {
+      row: i + 1,
+      学段: cells[0] == null ? '' : String(cells[0]),
+      知识点: cells[1] == null ? '' : String(cells[1]),
+      训练方式: cells[2] == null ? '' : String(cells[2]),
+      当前练习层级: cells[3] == null ? '' : String(cells[3]),
+      薄弱点及训练记录: cells[4] == null ? '' : String(cells[4])
+    };
+    if (!rec.学段.trim() && !rec.知识点.trim() && !rec.训练方式.trim() && !rec.当前练习层级.trim() && !rec.薄弱点及训练记录.trim()) continue;
+    rows.push(rec);
+  }
+  return rows;
+}
+function filterArchiveRows(rows, query, stage, method, level) {
+  const q = String(query || '').trim().toLowerCase();
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (stage && stage !== '全部' && String(row.学段 || '').trim() !== stage) continue;
+    if (method && method !== '全部' && String(row.训练方式 || '').trim() !== method) continue;
+    if (level && level !== '全部' && String(row.当前练习层级 || '').trim() !== level) continue;
+    if (q && String(row.知识点 || '').toLowerCase().indexOf(q) < 0) continue;
+    out.push(row);
+  }
+  return out;
+}
+function groupStar(rows, stage) {
+  const filtered = [];
+  for (let i = 0; i < rows.length; i++) {
+    if (stage && stage !== '全部' && String(rows[i].学段 || '').trim() !== stage) continue;
+    filtered.push(rows[i]);
+  }
+  const groups = new Map();
+  for (let i = 0; i < filtered.length; i++) {
+    const rec = filtered[i];
+    const key = String(rec.学段 || '').trim() + '\u0000' + String(rec.知识点 || '').trim();
+    let group = groups.get(key);
+    if (!group) {
+      group = { key: key, 学段: rec.学段, 知识点: rec.知识点, records: [], latest: rec, count: 0 };
+      groups.set(key, group);
+    }
+    group.records.push(rec);
+    group.count += 1;
+    if (rec.row < group.latest.row) group.latest = rec;
+  }
+  const topics = [];
+  groups.forEach(function (group) {
+    group.records.sort(function (a, b) { return a.row - b.row; });
+    topics.push(group);
+  });
+  topics.sort(function (a, b) { return a.latest.row - b.latest.row; });
+  const steps = { '第1层': 0, '第2层': 0, '第3层': 0, '第4层': 0, '第5层': 0 };
+  const unplaced = [];
+  for (let i = 0; i < topics.length; i++) {
+    const lv = normalizeLevel(topics[i].latest.当前练习层级);
+    if (lv === '未确定') unplaced.push(topics[i]);
+    else if (Object.prototype.hasOwnProperty.call(steps, lv)) steps[lv] += 1;
+  }
+  const counts = { '层级定位': 0, '梯度练习': 0, '成长日记': 0, '每周检测': 0 };
+  for (let i = 0; i < filtered.length; i++) {
+    const method = String(filtered[i].训练方式 || '').trim();
+    if (Object.prototype.hasOwnProperty.call(counts, method)) counts[method] += 1;
+  }
+  return { filtered: filtered, steps: steps, unplaced: unplaced, topics: topics, counts: counts, empty: filtered.length === 0 };
+}
+function countLevel(rows, level) {
+  let n = 0;
+  for (let i = 0; i < rows.length; i++) {
+    if (String(rows[i].当前练习层级 || '').trim() === level) n += 1;
+  }
+  return n;
+}
+function countStage(rows, stage) {
+  let n = 0;
+  for (let i = 0; i < rows.length; i++) {
+    if (String(rows[i].学段 || '').trim() === stage) n += 1;
+  }
+  return n;
+}
+
+function detectLang() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const q = String(params.get('lang') || '').toLowerCase();
+    if (q === 'cn') return 'zh';
+    if (q === 'en') return 'en';
+  } catch (e) {}
+  try {
+    const stored = localStorage.getItem('iThinkAir_UiLanguage');
+    if (stored !== null && stored !== '') return stored === 'en' ? 'en' : 'zh';
+  } catch (e) {}
+  try {
+    const list = navigator.languages;
+    if (!list || typeof list.length !== 'number' || list.length === 0) return 'zh';
+    let hasZh = false;
+    for (let i = 0; i < list.length; i++) {
+      const code = String(list[i] || '').toLowerCase();
+      if (code === 'zh' || code.indexOf('zh-') === 0) hasZh = true;
+    }
+    return hasZh ? 'zh' : 'en';
+  } catch (e2) {
+    return 'zh';
+  }
+}
+function applyI18n() {
+  const nodes = document.querySelectorAll('[data-i18n]');
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  const holders = document.querySelectorAll('[data-i18n-placeholder]');
+  for (let i = 0; i < holders.length; i++) holders[i].setAttribute('placeholder', t(holders[i].getAttribute('data-i18n-placeholder')));
+  const arias = document.querySelectorAll('[data-i18n-aria]');
+  for (let i = 0; i < arias.length; i++) arias[i].setAttribute('aria-label', t(arias[i].getAttribute('data-i18n-aria')));
+  document.documentElement.lang = state.lang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('appName');
+  document.getElementById('btnPrevRow').setAttribute('aria-label', t('prev'));
+  document.getElementById('btnNextRow').setAttribute('aria-label', t('next'));
+  const zhOn = state.lang !== 'en';
+  document.getElementById('langZh').classList.toggle('active', zhOn);
+  document.getElementById('langEn').classList.toggle('active', !zhOn);
+  document.getElementById('mLangZh').classList.toggle('active', zhOn);
+  document.getElementById('mLangEn').classList.toggle('active', !zhOn);
+  fillSelects();
+  if (pollView === 'wait' || pollView === 'long' || pollView === 'timeout') showWait(pollView);
+  else if (pollView === 'placeholder') showPlaceholder();
+  else if (pollView === 'empty') showNoResult();
+  updateGenerateButton();
+  if (cache.home) renderHome();
+  if (cache.archive) renderArchive();
+  if (cache.star) renderStar();
+  if (state.detail && !document.getElementById('detailModal').hidden) renderDetail(state.detail);
+  const editTitle = document.getElementById('editTitle');
+  if (editTitle) editTitle.textContent = t('editTitle');
+  const editNote = document.getElementById('editNote');
+  if (editNote) editNote.textContent = t('editNote');
+  const saveBtn = document.getElementById('btnEditSave');
+  if (saveBtn) saveBtn.textContent = t('save');
+  const cancelBtn = document.getElementById('btnEditCancel');
+  if (cancelBtn) cancelBtn.textContent = t('cancel');
+  checkNav();
+}
+function setLanguage(next) {
+  state.lang = next === 'en' ? 'en' : 'zh';
+  try { localStorage.setItem('iThinkAir_UiLanguage', state.lang === 'en' ? 'en' : 'cn'); } catch (e) {}
+  applyI18n();
+}
+function fillSelect(select, options, current, withEmpty, emptyLabel) {
+  const value = current != null ? current : select.value;
+  select.innerHTML = '';
+  if (withEmpty) {
+    const op = document.createElement('option');
+    op.value = '';
+    op.textContent = emptyLabel;
+    select.appendChild(op);
+  }
+  for (let i = 0; i < options.length; i++) {
+    const op = document.createElement('option');
+    op.value = options[i].value;
+    op.textContent = options[i].label;
+    select.appendChild(op);
+  }
+  const known = options.some(function (item) { return item.value === value; });
+  if (known || value === '' || value == null) select.value = value || '';
+  else {
+    const extra = document.createElement('option');
+    extra.value = value;
+    extra.textContent = value;
+    extra.setAttribute('data-extra', '1');
+    select.appendChild(extra);
+    select.value = value;
+  }
+}
+function levelOptions() {
+  const list = [];
+  for (let i = 0; i < LEVELS.length; i++) list.push({ value: LEVELS[i], label: levelLabel(LEVELS[i]) });
+  return list;
+}
+function stageOptions() {
+  return [{ value: '初中', label: stageLabel('初中') }, { value: '高一', label: stageLabel('高一') }];
+}
+function methodOptions() {
+  const list = [];
+  for (let i = 0; i < METHODS.length; i++) list.push({ value: METHODS[i], label: methodLabel(METHODS[i]) });
+  return list;
+}
+function fillSelects() {
+  fillSelect(document.getElementById('formTrain_学段'), stageOptions(), null, true, t('pleaseChoose'));
+  fillSelect(document.getElementById('formTrain_训练方式'), methodOptions(), null, true, t('pleaseChoose'));
+  fillSelect(document.getElementById('formTrain_当前练习层级'), levelOptions(), document.getElementById('formTrain_当前练习层级').value || '未确定', false, '');
+  fillSelect(document.getElementById('filterStage'), [{ value: '全部', label: t('filterAll') }].concat(stageOptions()), document.getElementById('filterStage').value || '全部', false, '');
+  fillSelect(document.getElementById('filterMethod'), [{ value: '全部', label: t('filterAll') }].concat(methodOptions()), document.getElementById('filterMethod').value || '全部', false, '');
+  fillSelect(document.getElementById('filterLevel'), [{ value: '全部', label: t('filterAll') }].concat(levelOptions()), document.getElementById('filterLevel').value || '全部', false, '');
+  const editStage = document.getElementById('formEdit_学段');
+  if (editStage) {
+    fillSelect(editStage, stageOptions(), null, true, t('pleaseChoose'));
+    fillSelect(document.getElementById('formEdit_训练方式'), methodOptions(), null, true, t('pleaseChoose'));
+    fillSelect(document.getElementById('formEdit_当前练习层级'), levelOptions(), document.getElementById('formEdit_当前练习层级').value || '未确定', false, '');
+  }
+}
+
+function badge(value) {
+  const raw = value == null ? '' : String(value).trim();
+  const span = document.createElement('span');
+  span.className = 'lv';
+  span.setAttribute('data-lv', LEVEL_META[raw] ? raw : '');
+  span.textContent = levelLabel(LEVEL_META[raw] ? raw : raw);
+  return span;
+}
+function pill(text) {
+  const span = document.createElement('span');
+  span.className = 'pill';
+  span.textContent = text;
+  return span;
+}
+function showBanner(id, message) {
+  const node = document.getElementById(id);
+  if (!message) { node.hidden = true; node.textContent = ''; return; }
+  node.hidden = false;
+  node.textContent = message;
+}
+function toast(message) {
+  const node = document.getElementById('toast');
+  node.hidden = false;
+  node.textContent = message;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { node.hidden = true; }, 4200);
+}
+function ensureInputVisible(el) {
+  if (!el || !el.scrollIntoView) return;
+  try { el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' }); } catch (e) { el.scrollIntoView(true); }
+}
+
+async function safeCall(request) {
+  try {
+    const text = await callAppBridge(request);
+    return { ok: true, text: text == null ? '' : String(text) };
+  } catch (e) {
+    return { ok: false, text: '' };
+  }
+}
+async function refreshCount() {
+  const res = await safeCall({ type: 'GetRecordCount', data: DATA_SOURCE });
+  if (!res.ok) {
+    state.recordCount = 0;
+    document.getElementById('rowNavNote').textContent = t('loadError');
+  } else {
+    const n = parseInt(String(res.text).trim(), 10);
+    state.recordCount = isFinite(n) ? n : 0;
+    document.getElementById('rowNavNote').textContent = '';
+  }
+  updateRowButtons();
+}
+async function readCells(row) {
+  const names = EDIT_FIELDS.concat([RESULT_FIELD]);
+  const values = {};
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    const res = await safeCall({ type: 'GetCellValue', data: DATA_SOURCE, payload: name + '/' + String(row) });
+    if (!res.ok) throw new Error('read');
+    values[name] = res.text;
+  }
+  return values;
+}
+
+function updateGenerateButton() {
+  const values = trainValues();
+  const btn = document.getElementById('btnGenerate');
+  btn.disabled = !canGenerate(values, submissionLocked());
+  document.getElementById('hintTrain_学段').textContent = values.学段 ? '' : t('hintStage');
+  document.getElementById('hintTrain_知识点').textContent = values.知识点 ? '' : t('hintTopic');
+  document.getElementById('hintTrain_训练方式').textContent = values.训练方式 ? '' : t('hintMethod');
+  const editBtn = document.getElementById('btnEditSave');
+  if (editBtn && document.getElementById('formEdit_学段')) {
+    const ok = document.getElementById('formEdit_学段').value && document.getElementById('formEdit_知识点').value.trim() && document.getElementById('formEdit_训练方式').value;
+    editBtn.disabled = !ok || state.submitting;
+    const hs = document.getElementById('hintEdit_学段');
+    const ht = document.getElementById('hintEdit_知识点');
+    const hm = document.getElementById('hintEdit_训练方式');
+    if (hs) hs.textContent = document.getElementById('formEdit_学段').value ? '' : t('hintStage');
+    if (ht) ht.textContent = document.getElementById('formEdit_知识点').value.trim() ? '' : t('hintTopic');
+    if (hm) hm.textContent = document.getElementById('formEdit_训练方式').value ? '' : t('hintMethod');
+  }
+}
+function updateAnswerButton() {
+  const answer = document.getElementById('answerText').value;
+  document.getElementById('btnSubmitAnswer').disabled = !canSubmitAnswer(state.currentRow, state.resultReady, answer, submissionLocked());
+}
+function updateRowButtons() {
+  const locked = state.polling || pollPaused;
+  document.getElementById('btnPrevRow').disabled = !canGoPrev(state.currentRow, locked);
+  document.getElementById('btnNextRow').disabled = !canGoNext(state.currentRow, state.recordCount, locked);
+}
+function setTrainFields(data) {
+  const stage = data && data.学段 != null ? String(data.学段).trim() : '';
+  const topic = data && data.知识点 != null ? String(data.知识点) : '';
+  const method = data && data.训练方式 != null ? String(data.训练方式).trim() : '';
+  const levelRaw = data && data.当前练习层级 != null ? String(data.当前练习层级) : '';
+  const weak = data && data.薄弱点及训练记录 != null ? String(data.薄弱点及训练记录) : '';
+  const stageEl = document.getElementById('formTrain_学段');
+  const methodEl = document.getElementById('formTrain_训练方式');
+  const levelEl = document.getElementById('formTrain_当前练习层级');
+  if (STAGES.indexOf(stage) >= 0 || stage === '') stageEl.value = stage;
+  else setUnknownOption(stageEl, stage);
+  document.getElementById('formTrain_知识点').value = topic;
+  if (METHODS.indexOf(method) >= 0 || method === '') methodEl.value = method;
+  else setUnknownOption(methodEl, method);
+  const level = levelRaw.trim() ? normalizeLevel(levelRaw) : '未确定';
+  if (LEVEL_META[level]) levelEl.value = level;
+  else setUnknownOption(levelEl, levelRaw);
+  document.getElementById('formTrain_薄弱点及训练记录').value = weak;
+  updateGenerateButton();
+}
+function setUnknownOption(select, value) {
+  let extra = select.querySelector('option[data-extra="1"]');
+  if (!extra) {
+    extra = document.createElement('option');
+    extra.setAttribute('data-extra', '1');
+    select.appendChild(extra);
+  }
+  extra.value = value;
+  extra.textContent = value;
+  select.value = value;
+}
+function showPlaceholder() {
+  pollView = 'placeholder';
+  state.resultReady = false;
+  const box = document.getElementById('trainContent');
+  box.innerHTML = '';
+  const p = document.createElement('p');
+  p.className = 'muted';
+  p.textContent = t('contentInitial');
+  box.appendChild(p);
+  updateAnswerButton();
+}
+function showNoResult() {
+  pollView = 'empty';
+  state.resultReady = false;
+  const box = document.getElementById('trainContent');
+  box.innerHTML = '';
+  const p = document.createElement('p');
+  p.className = 'muted';
+  p.textContent = t('noResult');
+  box.appendChild(p);
+  updateAnswerButton();
+}
+function showWait(mode) {
+  pollView = mode;
+  state.resultReady = false;
+  const box = document.getElementById('trainContent');
+  box.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'wait-box';
+  const p = document.createElement('p');
+  p.textContent = mode === 'long' ? t('longWait') : mode === 'timeout' ? t('timeoutMsg') : t('waitMsg');
+  wrap.appendChild(p);
+  if (mode === 'wait') {
+    const anim = document.createElement('div');
+    anim.className = 'stairs-anim';
+    anim.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 5; i++) anim.appendChild(document.createElement('b'));
+    wrap.appendChild(anim);
+  } else {
+    const button = document.createElement('button');
+    button.id = 'btnContinuePoll';
+    button.type = 'button';
+    button.className = 'btn primary';
+    button.textContent = t('btnContinuePoll');
+    button.addEventListener('click', resumePoll);
+    wrap.appendChild(button);
+  }
+  box.appendChild(wrap);
+  updateAnswerButton();
+  updateGenerateButton();
+  updateRowButtons();
+}
+function showTrainError(message) {
+  showBanner('trainError', message);
+}
+
+function haltPoll() {
+  pollToken += 1;
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = 0;
+  state.polling = false;
+  pollPaused = false;
+  updateGenerateButton();
+  updateAnswerButton();
+  updateRowButtons();
+}
+function startPolling(row) {
+  haltPoll();
+  const token = pollToken;
+  pollRow = row;
+  pollStartedAt = Date.now();
+  pollSegmentAt = Date.now();
+  state.polling = true;
+  pollPaused = false;
+  showWait('wait');
+  queuePoll(token, 0);
+}
+function resumePoll() {
+  if (!pollRow) return;
+  if (Date.now() - pollStartedAt >= 1800000) pollStartedAt = Date.now();
+  pollSegmentAt = Date.now();
+  state.polling = true;
+  pollPaused = false;
+  showWait('wait');
+  queuePoll(pollToken, 0);
+}
+function queuePoll(token, delay) {
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = setTimeout(function () { pollTick(token); }, delay);
+}
+async function pollTick(token) {
+  if (token !== pollToken) return;
+  if (Date.now() - pollStartedAt >= 1800000) {
+    state.polling = false;
+    pollPaused = true;
+    showWait('timeout');
+    return;
+  }
+  if (Date.now() - pollSegmentAt >= 90000) {
+    state.polling = false;
+    pollPaused = true;
+    showWait('long');
+    return;
+  }
+  const res = await safeCall({ type: 'GetCellValue', data: DATA_SOURCE, payload: RESULT_FIELD + '/' + String(pollRow) });
+  if (token !== pollToken) return;
+  if (res.ok && String(res.text).trim() !== '') {
+    state.polling = false;
+    pollPaused = false;
+    state.resultReady = true;
+    pollView = 'result';
+    renderMarkdownInto(document.getElementById('trainContent'), res.text);
+    updateGenerateButton();
+    updateAnswerButton();
+    updateRowButtons();
+    return;
+  }
+  if (Date.now() - pollStartedAt >= 1800000) {
+    state.polling = false;
+    pollPaused = true;
+    showWait('timeout');
+    return;
+  }
+  if (Date.now() - pollSegmentAt >= 90000) {
+    state.polling = false;
+    pollPaused = true;
+    showWait('long');
+    return;
+  }
+  queuePoll(token, 2000);
+}
+
+function fallbackMarkdown(src) {
+  const lines = String(src || '').replace(/\r\n/g, '\n').split('\n');
+  const blocks = [];
+  let i = 0;
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (ch) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+    });
+  }
+  function inline(s) {
+    let text = esc(s);
+    text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (_, alt, url) {
+      return '<img alt="' + alt + '" src="' + url + '">';
+    });
+    text = text.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+    text = text.replace(/(^|[^\*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+    return text;
+  }
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim().slice(0, 3) === '```') {
+      const buf = [];
+      i += 1;
+      while (i < lines.length && lines[i].trim().slice(0, 3) !== '```') { buf.push(lines[i]); i += 1; }
+      if (i < lines.length) i += 1;
+      blocks.push('<pre><code>' + esc(buf.join('\n')) + '</code></pre>');
+      continue;
+    }
+    if (/^\s*\|/.test(line) && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) {
+      const rows = [];
+      while (i < lines.length && /^\s*\|/.test(lines[i])) { rows.push(lines[i]); i += 1; }
+      if (rows.length >= 2) {
+        const head = rows[0].replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|');
+        let html = '<div class="table-scroll"><table><thead><tr>';
+        for (let c = 0; c < head.length; c++) html += '<th>' + inline(head[c].trim()) + '</th>';
+        html += '</tr></thead><tbody>';
+        for (let r = 2; r < rows.length; r++) {
+          const cols = rows[r].replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|');
+          html += '<tr>';
+          for (let c = 0; c < cols.length; c++) html += '<td>' + inline(cols[c].trim()) + '</td>';
+          html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+        blocks.push(html);
+      }
+      continue;
+    }
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) { blocks.push('<h' + heading[1].length + '>' + inline(heading[2]) + '</h' + heading[1].length + '>'); i += 1; continue; }
+    if (/^\s*([-*_])\1{2,}\s*$/.test(line)) { blocks.push('<hr>'); i += 1; continue; }
+    if (/^\s*>/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\s*>/.test(lines[i])) { buf.push(lines[i].replace(/^\s*>\s?/, '')); i += 1; }
+      blocks.push('<blockquote><p>' + inline(buf.join('\n')).replace(/\n/g, '<br>') + '</p></blockquote>');
+      continue;
+    }
+    if (/^\s*[-*+]\s+/.test(line) || /^\s*\d+\.\s+/.test(line)) {
+      const ordered = /^\s*\d+\.\s+/.test(line);
+      const tag = ordered ? 'ol' : 'ul';
+      let html = '<' + tag + '>';
+      while (i < lines.length && (ordered ? /^\s*\d+\.\s+/.test(lines[i]) : /^\s*[-*+]\s+/.test(lines[i]))) {
+        const item = lines[i].replace(ordered ? /^\s*\d+\.\s+/ : /^\s*[-*+]\s+/, '');
+        const task = /^\[( |x|X)\]\s+/.exec(item);
+        if (task) {
+          const checked = task[1].toLowerCase() === 'x' ? ' checked' : '';
+          html += '<li><input type="checkbox" disabled' + checked + '> ' + inline(item.replace(/^\[( |x|X)\]\s+/, '')) + '</li>';
+        } else html += '<li>' + inline(item) + '</li>';
+        i += 1;
+      }
+      html += '</' + tag + '>';
+      blocks.push(html);
+      continue;
+    }
+    if (line.trim() === '') { i += 1; continue; }
+    const buf = [line];
+    i += 1;
+    while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,6})\s+/.test(lines[i]) && !/^\s*([-*+]\s+|\d+\.\s+|>)/.test(lines[i]) && lines[i].trim().slice(0, 3) !== '```') {
+      buf.push(lines[i]); i += 1;
+    }
+    blocks.push('<p>' + inline(buf.join('\n')).replace(/\n/g, '<br>') + '</p>');
+  }
+  return blocks.join('\n');
+}
+function fileHref(src) {
+  const value = String(src || '').trim();
+  if (!value) return '';
+  if (/^https?:\/\/www\.ithinkair\.com:3031\/download\//i.test(value)) return value;
+  let name = value;
+  if (/^https?:\/\//i.test(value)) {
+    const parts = value.split('?')[0].split('/');
+    name = parts[parts.length - 1] || value;
+  }
+  try { name = decodeURIComponent(name); } catch (e) {}
+  return 'http://' + window.location.hostname + ':3130/download/' + encodeURIComponent(name);
+}
+function enhanceMarkdown(container) {
+  const images = container.querySelectorAll('img');
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+    const href = fileHref(img.getAttribute('src'));
+    if (!href) continue;
+    if (!/^https?:\/\//i.test(img.getAttribute('src') || '')) img.setAttribute('src', href);
+    const link = document.createElement('a');
+    link.href = href;
+    link.setAttribute('download', '');
+    link.target = '_blank';
+    link.rel = 'noopener';
+    img.replaceWith(link);
+    link.appendChild(img);
+  }
+  const tables = container.querySelectorAll('table');
+  for (let i = 0; i < tables.length; i++) {
+    const table = tables[i];
+    if (table.parentElement && table.parentElement.classList.contains('table-scroll')) continue;
+    const wrap = document.createElement('div');
+    wrap.className = 'table-scroll';
+    table.parentNode.insertBefore(wrap, table);
+    wrap.appendChild(table);
+  }
+}
+function renderMarkdownInto(container, markdown) {
+  const raw = markdown == null ? '' : String(markdown);
+  let html = '';
+  if (window.marked && window.DOMPurify) {
+    const parsed = typeof window.marked.parse === 'function' ? window.marked.parse(raw, { gfm: true, breaks: true }) : window.marked(raw);
+    html = window.DOMPurify.sanitize(parsed, { ADD_ATTR: ['target', 'download', 'rel'] });
+  } else html = fallbackMarkdown(raw);
+  container.innerHTML = html;
+  enhanceMarkdown(container);
+  if (window.renderMathInElement) {
+    try {
+      window.renderMathInElement(container, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '\\[', right: '\\]', display: true },
+          { left: '$', right: '$', display: false },
+          { left: '\\(', right: '\\)', display: false }
+        ],
+        throwOnError: false
+      });
+    } catch (e) {}
+  }
+}
+
+function renderHome() {
+  const data = cache.home;
+  if (!data) return;
+  document.getElementById('statTotal').textContent = data.countOk ? String(data.count) : t('dash');
+  document.getElementById('statJunior').textContent = data.rowsOk ? String(countStage(data.rows, '初中')) : t('dash');
+  document.getElementById('statSenior').textContent = data.rowsOk ? String(countStage(data.rows, '高一')) : t('dash');
+  document.getElementById('statPending').textContent = data.rowsOk ? String(countLevel(data.rows, '未确定')) : t('dash');
+  const ladder = document.getElementById('homeLadder');
+  ladder.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const level = '第' + i + '层';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ladder-cell';
+    button.id = 'ladder' + i;
+    button.style.background = LEVEL_META[level] ? ({ '第1层': '#8B93A7', '第2层': '#3B82F6', '第3层': '#6366F1', '第4层': '#8B5CF6', '第5层': '#E8A838' })[level] : '#CBD5E1';
+    button.style.color = (level === '第2层' || level === '第3层' || level === '第4层') ? '#fff' : '#1F1A33';
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = data.rowsOk ? String(countLevel(data.rows, level)) : t('dash');
+    const name = document.createElement('small');
+    name.textContent = levelLabel(level);
+    button.appendChild(num);
+    button.appendChild(name);
+    button.addEventListener('click', function () { goArchiveLevel(level); });
+    ladder.appendChild(button);
+  }
+  const list = document.getElementById('homeRecent');
+  list.innerHTML = '';
+  const empty = document.getElementById('homeEmpty');
+  if (!data.rowsOk) {
+    empty.hidden = true;
+    showBanner('homeError', t('loadError'));
+    return;
+  }
+  showBanner('homeError', '');
+  if (!data.rows.length) { empty.hidden = false; return; }
+  empty.hidden = true;
+  const max = Math.min(5, data.rows.length);
+  for (let i = 0; i < max; i++) {
+    const rec = data.rows[i];
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'record-card';
+    card.style.textAlign = 'left';
+    card.style.color = 'inherit';
+    card.setAttribute('data-row', String(rec.row));
+    const top = document.createElement('div');
+    top.className = 'record-top';
+    const h = document.createElement('h3');
+    h.textContent = rec.知识点 || t('dash');
+    top.appendChild(h);
+    top.appendChild(pill(stageLabel(String(rec.学段 || '').trim())));
+    const meta = document.createElement('div');
+    meta.className = 'meta-line';
+    meta.appendChild(pill(methodLabel(String(rec.训练方式 || '').trim())));
+    meta.appendChild(badge(String(rec.当前练习层级 || '').trim()));
+    const weak = document.createElement('p');
+    weak.className = 'weak';
+    weak.textContent = clipText(rec.薄弱点及训练记录, 60) || t('dash');
+    card.appendChild(top);
+    card.appendChild(meta);
+    card.appendChild(weak);
+    card.addEventListener('click', function () { openDetail(rec.row, 'home'); });
+    list.appendChild(card);
+  }
+}
+async function loadHome() {
+  const token = ++homeToken;
+  showBanner('homeError', '');
+  const countP = safeCall({ type: 'GetRecordCount', data: DATA_SOURCE });
+  const csvP = safeCall({ type: 'GetTableCSV', data: DATA_SOURCE, payload: CSV_PAYLOAD });
+  const countRes = await countP;
+  const csvRes = await csvP;
+  if (token !== homeToken) return;
+  let count = 0;
+  if (countRes.ok) {
+    const n = parseInt(countRes.text.trim(), 10);
+    count = isFinite(n) ? n : 0;
+  }
+  cache.home = { countOk: countRes.ok, count: count, rowsOk: csvRes.ok, rows: csvRes.ok ? parseRows(csvRes.text) : [] };
+  renderHome();
+}
+
+function renderArchive() {
+  const rows = cache.archive || [];
+  const filtered = filterArchiveRows(rows, document.getElementById('archiveSearch').value, document.getElementById('filterStage').value || '全部', document.getElementById('filterMethod').value || '全部', document.getElementById('filterLevel').value || '全部');
+  const list = document.getElementById('archiveList');
+  list.innerHTML = '';
+  document.getElementById('archiveEmpty').hidden = filtered.length !== 0;
+  for (let i = 0; i < filtered.length; i++) {
+    const rec = filtered[i];
+    const card = document.createElement('article');
+    card.className = 'record-card';
+    card.setAttribute('data-row', String(rec.row));
+    const top = document.createElement('div');
+    top.className = 'record-top';
+    const h = document.createElement('h3');
+    h.textContent = rec.知识点 || t('dash');
+    top.appendChild(h);
+    top.appendChild(pill(stageLabel(String(rec.学段 || '').trim())));
+    const meta = document.createElement('div');
+    meta.className = 'meta-line';
+    meta.appendChild(pill(methodLabel(String(rec.训练方式 || '').trim())));
+    meta.appendChild(badge(String(rec.当前练习层级 || '').trim()));
+    const weak = document.createElement('p');
+    weak.className = 'weak';
+    weak.textContent = clipText(rec.薄弱点及训练记录, 80) || t('dash');
+    const actions = document.createElement('div');
+    actions.className = 'record-actions';
+    actions.appendChild(actionButton('detail', t('detail'), 'ghost'));
+    actions.appendChild(actionButton('edit', t('edit'), 'ghost'));
+    actions.appendChild(actionButton('delete', t('delete'), 'danger'));
+    actions.appendChild(actionButton('continue', t('continuePractice'), 'primary'));
+    card.appendChild(top);
+    card.appendChild(meta);
+    card.appendChild(weak);
+    card.appendChild(actions);
+    list.appendChild(card);
+  }
+}
+function actionButton(act, label, kind) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'btn small ' + kind;
+  button.setAttribute('data-act', act);
+  button.textContent = label;
+  return button;
+}
+async function loadArchive() {
+  const token = ++archiveToken;
+  showBanner('archiveError', '');
+  const res = await safeCall({ type: 'GetTableCSV', data: DATA_SOURCE, payload: CSV_PAYLOAD });
+  if (token !== archiveToken) return;
+  if (!res.ok) {
+    cache.archive = [];
+    document.getElementById('archiveList').innerHTML = '';
+    document.getElementById('archiveEmpty').hidden = true;
+    showBanner('archiveError', t('loadError'));
+    return;
+  }
+  cache.archive = parseRows(res.text);
+  renderArchive();
+}
+
+function renderStar() {
+  const pack = cache.star ? groupStar(cache.star, state.starStage) : null;
+  const buttons = document.querySelectorAll('#starSeg button');
+  for (let i = 0; i < buttons.length; i++) buttons[i].setAttribute('aria-pressed', buttons[i].getAttribute('data-stage') === state.starStage ? 'true' : 'false');
+  const ladder = document.getElementById('starLadder');
+  ladder.innerHTML = '';
+  const order = ['第5层', '第4层', '第3层', '第2层', '第1层'];
+  const widths = { '第5层': '52%', '第4层': '64%', '第3层': '76%', '第2层': '88%', '第1层': '100%' };
+  const colors = { '第5层': '#E8A838', '第4层': '#8B5CF6', '第3层': '#6366F1', '第2层': '#3B82F6', '第1层': '#8B93A7' };
+  for (let i = 0; i < order.length; i++) {
+    const level = order[i];
+    const step = document.createElement('div');
+    const count = pack ? pack.steps[level] : 0;
+    const gray = !pack || pack.empty || count === 0;
+    step.className = 'stair-step' + (gray ? ' is-zero' : '');
+    step.style.width = widths[level];
+    if (!gray) step.style.background = colors[level];
+    if (!gray && (level === '第2层' || level === '第3层' || level === '第4层')) step.style.color = '#fff';
+    const name = document.createElement('div');
+    name.textContent = levelLabel(level);
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = pack ? String(count) : t('dash');
+    step.appendChild(name);
+    step.appendChild(num);
+    ladder.appendChild(step);
+  }
+  const unplaced = document.getElementById('starUnplaced');
+  unplaced.innerHTML = '';
+  if (pack && pack.unplaced.length) {
+    const box = document.createElement('div');
+    box.className = 'unplaced';
+    const title = document.createElement('strong');
+    title.textContent = t('unplacedTitle');
+    box.appendChild(title);
+    for (let i = 0; i < pack.unplaced.length; i++) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = stageLabel(String(pack.unplaced[i].学段 || '').trim()) + ' · ' + (pack.unplaced[i].知识点 || t('dash'));
+      let topicIndex = -1;
+      for (let k = 0; k < pack.topics.length; k++) {
+        if (pack.topics[k].key === pack.unplaced[i].key) topicIndex = k;
+      }
+      button.setAttribute('data-topic-index', String(topicIndex));
+      button.addEventListener('click', function () {
+        const want = this.getAttribute('data-topic-index');
+        const cards = document.querySelectorAll('#starCards [data-topic]');
+        for (let c = 0; c < cards.length; c++) {
+          if (cards[c].getAttribute('data-topic') !== want) continue;
+          const records = cards[c].querySelector('.topic-records');
+          if (records) records.hidden = false;
+          cards[c].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+      box.appendChild(button);
+    }
+    unplaced.appendChild(box);
+  }
+  document.getElementById('countLocate').textContent = pack ? String(pack.counts['层级定位']) : t('dash');
+  document.getElementById('countPractice').textContent = pack ? String(pack.counts['梯度练习']) : t('dash');
+  document.getElementById('countJournal').textContent = pack ? String(pack.counts['成长日记']) : t('dash');
+  document.getElementById('countWeekly').textContent = pack ? String(pack.counts['每周检测']) : t('dash');
+  const wall = document.getElementById('starCards');
+  wall.innerHTML = '';
+  const empty = document.getElementById('starEmpty');
+  if (!pack) { empty.hidden = true; return; }
+  empty.hidden = !pack.empty;
+  if (pack.empty) return;
+  for (let i = 0; i < pack.topics.length; i++) {
+    const topic = pack.topics[i];
+    const card = document.createElement('article');
+    card.className = 'topic-card';
+    card.setAttribute('data-topic', String(i));
+    const head = document.createElement('button');
+    head.type = 'button';
+    head.style.cssText = 'width:100%;text-align:left;background:transparent;border:0;color:inherit;padding:0';
+    const top = document.createElement('div');
+    top.className = 'topic-top';
+    const h = document.createElement('h3');
+    h.textContent = topic.知识点 || t('dash');
+    top.appendChild(h);
+    top.appendChild(pill(stageLabel(String(topic.学段 || '').trim())));
+    const meta = document.createElement('div');
+    meta.className = 'meta-line';
+    meta.appendChild(pill(methodLabel(String(topic.latest.训练方式 || '').trim())));
+    meta.appendChild(badge(String(topic.latest.当前练习层级 || '').trim()));
+    meta.appendChild(pill(t('topicCount') + ' ' + topic.count));
+    const weak = document.createElement('p');
+    weak.className = 'weak';
+    weak.textContent = clipText(topic.latest.薄弱点及训练记录, 50) || t('dash');
+    head.appendChild(top);
+    head.appendChild(meta);
+    head.appendChild(weak);
+    const records = document.createElement('div');
+    records.className = 'topic-records';
+    records.hidden = true;
+    for (let r = 0; r < topic.records.length; r++) {
+      const rec = topic.records[r];
+      const item = document.createElement('div');
+      item.className = 'topic-record';
+      const line = document.createElement('div');
+      line.className = 'meta-line';
+      line.appendChild(pill(methodLabel(String(rec.训练方式 || '').trim())));
+      line.appendChild(badge(String(rec.当前练习层级 || '').trim()));
+      const note = document.createElement('p');
+      note.className = 'weak';
+      note.textContent = clipText(rec.薄弱点及训练记录, 40) || t('dash');
+      const actions = document.createElement('div');
+      actions.className = 'topic-actions';
+      const detailBtn = actionButton('detail', t('detail'), 'ghost');
+      const contBtn = actionButton('continue', t('continuePractice'), 'primary');
+      detailBtn.setAttribute('data-row', String(rec.row));
+      contBtn.setAttribute('data-row', String(rec.row));
+      actions.appendChild(detailBtn);
+      actions.appendChild(contBtn);
+      item.appendChild(line);
+      item.appendChild(note);
+      item.appendChild(actions);
+      records.appendChild(item);
+    }
+    head.addEventListener('click', function () { records.hidden = !records.hidden; });
+    card.appendChild(head);
+    card.appendChild(records);
+    wall.appendChild(card);
+  }
+}
+async function loadStar() {
+  const token = ++starToken;
+  showBanner('starError', '');
+  const res = await safeCall({ type: 'GetTableCSV', data: DATA_SOURCE, payload: CSV_PAYLOAD });
+  if (token !== starToken) return;
+  if (!res.ok) {
+    cache.star = null;
+    showBanner('starError', t('loadError'));
+    renderStar();
+    return;
+  }
+  cache.star = parseRows(res.text);
+  renderStar();
+}
+
+function syncScrollLock() {
+  const detailOpen = !document.getElementById('detailModal').hidden;
+  const confirmOpen = !document.getElementById('confirmModal').hidden;
+  const editOpen = document.getElementById('editPanel') && !document.getElementById('editPanel').hidden && window.innerWidth <= 980;
+  document.body.classList.toggle('scroll-lock', detailOpen || confirmOpen || !!editOpen);
+}
+function pushOverlay(id, closer) {
+  state.overlays = state.overlays.filter(function (item) { return item.id !== id; });
+  state.overlays.push({ id: id, closer: closer });
+}
+function removeOverlay(id) {
+  state.overlays = state.overlays.filter(function (item) { return item.id !== id; });
+}
+function closeDetail(fromBack) {
+  document.getElementById('detailModal').hidden = true;
+  if (!fromBack) removeOverlay('detail');
+  syncScrollLock();
+}
+function renderDetail(detail) {
+  document.getElementById('detailTitle').textContent = detail.topic || t('detailTitle');
+  const fields = document.getElementById('detailFields');
+  fields.innerHTML = '';
+  const pairs = [
+    ['fieldStage', '学段', stageLabel(String(detail.values['学段'] || '').trim())],
+    ['fieldTopic', '知识点', detail.values['知识点'] || t('dash')],
+    ['fieldMethod', '训练方式', methodLabel(String(detail.values['训练方式'] || '').trim())],
+    ['fieldLevel', '当前练习层级', levelLabel(normalizeLevel(detail.values['当前练习层级']) || String(detail.values['当前练习层级'] || '').trim())],
+    ['fieldWeak', '薄弱点及训练记录', detail.values['薄弱点及训练记录'] || t('dash')]
+  ];
+  for (let i = 0; i < pairs.length; i++) {
+    const dt = document.createElement('dt');
+    dt.textContent = t(pairs[i][0]);
+    const dd = document.createElement('dd');
+    dd.textContent = pairs[i][2];
+    fields.appendChild(dt);
+    fields.appendChild(dd);
+  }
+  const md = document.getElementById('detailMarkdown');
+  if (detail.values[RESULT_FIELD] && String(detail.values[RESULT_FIELD]).trim()) renderMarkdownInto(md, detail.values[RESULT_FIELD]);
+  else { md.innerHTML = ''; const p = document.createElement('p'); p.className = 'muted'; p.textContent = t('noResult'); md.appendChild(p); }
+  const cont = document.getElementById('btnDetailContinue');
+  cont.textContent = detail.mode === 'home' ? t('goPractice') : t('continuePractice');
+}
+async function openDetail(row, mode) {
+  const token = ++detailToken;
+  const editing = document.getElementById('editPanel') && !document.getElementById('editPanel').hidden;
+  if (mode !== 'home' && !editing) state.currentRow = row;
+  const modal = document.getElementById('detailModal');
+  modal.hidden = false;
+  document.getElementById('detailFields').innerHTML = '';
+  document.getElementById('detailMarkdown').textContent = t('loading');
+  pushOverlay('detail', function () { closeDetail(true); });
+  syncScrollLock();
+  try {
+    const values = await readCells(row);
+    if (token !== detailToken) return;
+    state.detail = { row: row, mode: mode, values: values, topic: values['知识点'] || t('detailTitle') };
+    renderDetail(state.detail);
+  } catch (e) {
+    if (token !== detailToken) return;
+    document.getElementById('detailMarkdown').textContent = t('loadError');
+  }
+}
+function askConfirm(message) {
+  return new Promise(function (resolve) {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmText').textContent = message;
+    modal.hidden = false;
+    let settled = false;
+    function finish(val) {
+      if (settled) return;
+      settled = true;
+      modal.hidden = true;
+      removeOverlay('confirm');
+      syncScrollLock();
+      document.getElementById('btnConfirmOk').removeEventListener('click', onOk);
+      document.getElementById('btnConfirmCancel').removeEventListener('click', onCancel);
+      resolve(val);
+    }
+    function onOk() { finish(true); }
+    function onCancel() { finish(false); }
+    document.getElementById('btnConfirmOk').addEventListener('click', onOk);
+    document.getElementById('btnConfirmCancel').addEventListener('click', onCancel);
+    pushOverlay('confirm', function () { finish(false); });
+    syncScrollLock();
+  });
+}
+
+function ensureEditPanel() {
+  const panel = document.getElementById('editPanel');
+  if (!panel || panel.dataset.bound === '1') return;
+  panel.dataset.bound = '1';
+  document.getElementById('btnEditSave').addEventListener('click', saveEdit);
+  document.getElementById('btnEditCancel').addEventListener('click', function () { closeEdit(false); });
+  const form = document.getElementById('formEdit');
+  form.addEventListener('input', updateGenerateButton);
+  form.addEventListener('change', updateGenerateButton);
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+}
+function paintEditLabels() {
+  document.getElementById('editTitle').textContent = t('editTitle');
+  document.getElementById('editNote').textContent = t('editNote');
+  document.getElementById('lblEditStage').textContent = t('fieldStage');
+  document.getElementById('lblEditTopic').textContent = t('fieldTopic');
+  document.getElementById('lblEditMethod').textContent = t('fieldMethod');
+  document.getElementById('lblEditLevel').textContent = t('fieldLevel');
+  document.getElementById('lblEditWeak').textContent = t('fieldWeak');
+  document.getElementById('lblEditResult').textContent = t('resultLabel');
+  document.getElementById('btnEditSave').textContent = t('save');
+  document.getElementById('btnEditCancel').textContent = t('cancel');
+  document.getElementById('formEdit_薄弱点及训练记录').setAttribute('placeholder', t('phWeak'));
+}
+function closeEdit(fromBack) {
+  ensureEditPanel();
+  editRow = 0;
+  document.getElementById('editPanel').hidden = true;
+  document.getElementById('editBackdrop').hidden = true;
+  document.getElementById('archiveLayout').classList.remove('with-edit');
+  if (!fromBack) removeOverlay('edit');
+  syncScrollLock();
+}
+async function openEdit(row) {
+  ensureEditPanel();
+  const token = ++editToken;
+  editRow = row;
+  state.currentRow = row;
+  paintEditLabels();
+  fillSelects();
+  document.getElementById('editPanel').hidden = false;
+  document.getElementById('editBackdrop').hidden = false;
+  document.getElementById('archiveLayout').classList.add('with-edit');
+  document.getElementById('editResult').textContent = t('loading');
+  pushOverlay('edit', function () { closeEdit(true); });
+  syncScrollLock();
+  try {
+    const values = await readCells(row);
+    if (token !== editToken || state.currentRow !== row) return;
+    setEditFields(values);
+    const result = values[RESULT_FIELD];
+    if (result && String(result).trim()) renderMarkdownInto(document.getElementById('editResult'), result);
+    else document.getElementById('editResult').textContent = t('noResult');
+  } catch (e) {
+    if (token !== editToken) return;
+    document.getElementById('editResult').textContent = t('loadError');
+  }
+}
+function setEditFields(values) {
+  const stage = String(values['学段'] || '').trim();
+  const method = String(values['训练方式'] || '').trim();
+  const level = normalizeLevel(values['当前练习层级']);
+  const stageEl = document.getElementById('formEdit_学段');
+  const methodEl = document.getElementById('formEdit_训练方式');
+  const levelEl = document.getElementById('formEdit_当前练习层级');
+  if (STAGES.indexOf(stage) >= 0 || stage === '') stageEl.value = stage;
+  else setUnknownOption(stageEl, stage);
+  document.getElementById('formEdit_知识点').value = values['知识点'] == null ? '' : String(values['知识点']);
+  if (METHODS.indexOf(method) >= 0 || method === '') methodEl.value = method;
+  else setUnknownOption(methodEl, method);
+  if (LEVEL_META[level]) levelEl.value = level || '未确定';
+  else if (String(values['当前练习层级'] || '').trim()) setUnknownOption(levelEl, String(values['当前练习层级']));
+  else levelEl.value = '未确定';
+  document.getElementById('formEdit_薄弱点及训练记录').value = values['薄弱点及训练记录'] == null ? '' : String(values['薄弱点及训练记录']);
+  updateGenerateButton();
+}
+async function saveEdit() {
+  if (editRow < 1 || state.submitting) return;
+  const stage = document.getElementById('formEdit_学段').value;
+  const topic = document.getElementById('formEdit_知识点').value.trim();
+  const method = document.getElementById('formEdit_训练方式').value;
+  if (!stage || !topic || !method) { updateGenerateButton(); return; }
+  state.submitting = true;
+  updateGenerateButton();
+  const row = String(editRow);
+  const values = {
+    学段: stage,
+    知识点: topic,
+    训练方式: method,
+    当前练习层级: document.getElementById('formEdit_当前练习层级').value || '未确定',
+    薄弱点及训练记录: document.getElementById('formEdit_薄弱点及训练记录').value
+  };
+  try {
+    for (let i = 0; i < EDIT_FIELDS.length; i++) {
+      const name = EDIT_FIELDS[i];
+      const res = await safeCall({ type: 'SetCellValue', data: DATA_SOURCE, payload: name + '/' + row + '/' + values[name] });
+      if (!res.ok) throw new Error('save');
+    }
+    toast(t('savedMsg'));
+    await loadArchive();
+  } catch (e) {
+    toast(t('saveFail'));
+  } finally {
+    state.submitting = false;
+    updateGenerateButton();
+  }
+}
+async function removeRow(row) {
+  const ok = await askConfirm(t('deleteConfirm'));
+  if (!ok) return;
+  const res = await safeCall({ type: 'DeleteRecord', data: DATA_SOURCE, payload: row.toString() });
+  if (!res.ok) { toast(t('deleteFail')); return; }
+  if (state.currentRow === row) {
+    state.currentRow = 0;
+    trainSyncedRow = 0;
+    closeEdit(false);
+  }
+  await loadArchive();
+  await refreshCount();
+}
+
+async function loadTrainRow(row) {
+  const token = ++rowLoadToken;
+  trainSyncedRow = row;
+  state.currentRow = row;
+  showBanner('trainError', '');
+  try {
+    const values = await readCells(row);
+    if (token !== rowLoadToken) return;
+    setTrainFields(values);
+    if (values[RESULT_FIELD] && String(values[RESULT_FIELD]).trim()) {
+      state.resultReady = true;
+      pollView = 'result';
+      renderMarkdownInto(document.getElementById('trainContent'), values[RESULT_FIELD]);
+    } else showNoResult();
+  } catch (e) {
+    if (token !== rowLoadToken) return;
+    state.resultReady = false;
+    showTrainError(t('loadError'));
+  }
+  updateAnswerButton();
+  updateRowButtons();
+  updateGenerateButton();
+}
+function openTrainFresh(prefill) {
+  haltPoll();
+  rowLoadToken += 1;
+  state.currentRow = 0;
+  trainSyncedRow = 0;
+  state.resultReady = false;
+  showBanner('trainError', '');
+  setTrainFields(prefill || {});
+  document.getElementById('answerText').value = '';
+  showPlaceholder();
+  updateRowButtons();
+  showPage('train', { skipSync: true });
+}
+async function continueFrom(row, focusAnswer) {
+  closeDetail(false);
+  closeEdit(false);
+  haltPoll();
+  state.currentRow = row;
+  document.getElementById('answerText').value = '';
+  showPage('train', { skipSync: true });
+  await refreshCount();
+  await loadTrainRow(row);
+  if (focusAnswer) {
+    const box = document.getElementById('answerText');
+    box.focus();
+    ensureInputVisible(box);
+  }
+}
+async function shiftRow(delta) {
+  if (state.polling || pollPaused) return;
+  await refreshCount();
+  const target = state.currentRow + delta;
+  if (delta < 0 && !canGoPrev(state.currentRow, false)) return;
+  if (delta > 0 && !canGoNext(state.currentRow, state.recordCount, false)) return;
+  document.getElementById('answerText').value = '';
+  await loadTrainRow(target);
+}
+async function submitGenerate() {
+  const values = trainValues();
+  if (!canGenerate(values, submissionLocked())) { updateGenerateButton(); return; }
+  state.submitting = true;
+  updateGenerateButton();
+  showBanner('trainError', '');
+  const payload = buildSubmitPayload(values);
+  const res = await safeCall({ type: 'SubmitRecord', data: TABLE_NAME, payload: JSON.stringify(payload) });
+  state.submitting = false;
+  if (!res.ok) { showTrainError(t('submitFail')); updateGenerateButton(); return; }
+  state.currentRow = 1;
+  trainSyncedRow = 1;
+  rowLoadToken += 1;
+  state.resultReady = false;
+  document.getElementById('answerText').value = '';
+  await refreshCount();
+  startPolling(1);
+}
+async function submitAnswer() {
+  const values = trainValues();
+  const answer = document.getElementById('answerText').value;
+  if (!canSubmitAnswer(state.currentRow, state.resultReady, answer, submissionLocked())) return;
+  state.submitting = true;
+  updateAnswerButton();
+  showBanner('trainError', '');
+  const payload = buildSubmitPayload({
+    学段: values.学段,
+    知识点: values.知识点,
+    训练方式: values.训练方式,
+    当前练习层级: values.当前练习层级,
+    薄弱点及训练记录: mergeAnswer(values.薄弱点及训练记录, answer)
+  });
+  const res = await safeCall({ type: 'SubmitRecord', data: TABLE_NAME, payload: JSON.stringify(payload) });
+  state.submitting = false;
+  if (!res.ok) { showTrainError(t('submitFail')); updateAnswerButton(); return; }
+  state.currentRow = 1;
+  trainSyncedRow = 1;
+  rowLoadToken += 1;
+  document.getElementById('answerText').value = '';
+  document.getElementById('formTrain_薄弱点及训练记录').value = payload.薄弱点及训练记录;
+  state.resultReady = false;
+  await refreshCount();
+  startPolling(1);
+}
+function goArchiveLevel(level) {
+  document.getElementById('filterStage').value = '全部';
+  document.getElementById('filterMethod').value = '全部';
+  document.getElementById('filterLevel').value = level;
+  document.getElementById('archiveSearch').value = '';
+  showPage('archive');
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
+}
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const open = !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function checkNav() {
+  const was = document.body.classList.contains('nav-collapsed');
+  document.body.classList.remove('nav-collapsed');
+  const links = document.getElementById('navLinks');
+  const overflow = links.scrollWidth > links.clientWidth + 2;
+  if (overflow) document.body.classList.add('nav-collapsed');
+  if (was !== overflow) closeMobileMenu();
+}
+function closeAllOverlays() {
+  const items = state.overlays.splice(0, state.overlays.length);
+  for (let i = items.length - 1; i >= 0; i--) {
+    try { items[i].closer(); } catch (e) {}
+  }
+  syncScrollLock();
+}
+function showPage(page, opts) {
+  const options = opts || {};
+  if (!options.fromBack && !options.initial && page !== state.page) {
+    state.history.push({ page: state.page, scroll: window.scrollY || document.documentElement.scrollTop || 0 });
+  }
+  if (!options.fromBack) closeAllOverlays();
+  state.page = page;
+  document.getElementById('pageHome').hidden = page !== 'home';
+  document.getElementById('pageTrain').hidden = page !== 'train';
+  document.getElementById('pageArchive').hidden = page !== 'archive';
+  document.getElementById('pageStar').hidden = page !== 'star';
+  const ids = { home: ['navHome', 'mNavHome'], train: ['navTrain', 'mNavTrain'], archive: ['navArchive', 'mNavArchive'], star: ['navStar', 'mNavStar'] };
+  const keys = Object.keys(ids);
+  for (let i = 0; i < keys.length; i++) {
+    const on = keys[i] === page;
+    document.getElementById(ids[keys[i]][0]).classList.toggle('active', on);
+    document.getElementById(ids[keys[i]][1]).classList.toggle('active', on);
+    if (on) {
+      document.getElementById(ids[keys[i]][0]).setAttribute('aria-current', 'page');
+      document.getElementById(ids[keys[i]][1]).setAttribute('aria-current', 'page');
+    } else {
+      document.getElementById(ids[keys[i]][0]).removeAttribute('aria-current');
+      document.getElementById(ids[keys[i]][1]).removeAttribute('aria-current');
+    }
+  }
+  closeMobileMenu();
+  if (page === 'home') loadHome();
+  if (page === 'archive') loadArchive();
+  if (page === 'star') loadStar();
+  if (page === 'train') {
+    refreshCount();
+    if (!options.skipSync) syncTrainFromCurrent();
+  }
+  const restore = options.scroll;
+  if (restore != null) requestAnimationFrame(function () { window.scrollTo(0, restore); });
+  else if (!options.keepScroll) window.scrollTo(0, 0);
+}
+async function syncTrainFromCurrent() {
+  if (state.polling || pollPaused) return;
+  if (state.currentRow >= 1 && trainSyncedRow !== state.currentRow) {
+    document.getElementById('answerText').value = '';
+    await loadTrainRow(state.currentRow);
+  }
+}
+function airBack() {
+  if (state.overlays.length) {
+    const top = state.overlays.pop();
+    try { top.closer(); } catch (e) {}
+    return 'false';
+  }
+  if (state.history.length) {
+    const prev = state.history.pop();
+    showPage(prev.page, { fromBack: true, scroll: prev.scroll });
+    return 'false';
+  }
+  return 'true';
+}
+window.airBack = airBack;
+
+async function applyTheme() {
+  const res = await safeCall({ type: '模式' });
+  const dark = res.ok && String(res.text).trim() === '暗色';
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+}
+function bindEvents() {
+  document.getElementById('topNav').addEventListener('click', function (e) {
+    const langBtn = e.target.closest('[data-lang]');
+    if (langBtn) { e.stopPropagation(); setLanguage(langBtn.getAttribute('data-lang')); return; }
+    const pageBtn = e.target.closest('[data-page]');
+    if (pageBtn) { e.stopPropagation(); showPage(pageBtn.getAttribute('data-page')); return; }
+    if (e.target.closest('#hamburgerBtn')) { e.stopPropagation(); toggleMobileMenu(); return; }
+    if (e.target.closest('#brandBtn')) {
+      e.stopPropagation();
+      try { parent.closeFullHtml(false); } catch (err) {}
+    }
+  });
+  document.addEventListener('click', function (e) {
+    const menu = document.getElementById('mobileMenu');
+    if (!menu.classList.contains('open')) return;
+    if (menu.contains(e.target) || document.getElementById('hamburgerBtn').contains(e.target)) return;
+    closeMobileMenu();
+  });
+  document.getElementById('btnHomeStart').addEventListener('click', function () {
+    openTrainFresh({ 训练方式: '层级定位', 当前练习层级: '未确定' });
+  });
+  document.getElementById('btnHomeLocate').addEventListener('click', function () {
+    openTrainFresh({ 训练方式: '层级定位', 当前练习层级: '未确定' });
+  });
+  const methods = document.querySelectorAll('[data-method]');
+  for (let i = 0; i < methods.length; i++) {
+    methods[i].addEventListener('click', function () {
+      openTrainFresh({ 训练方式: methods[i].getAttribute('data-method') });
+    });
+  }
+  document.getElementById('btnViewArchive').addEventListener('click', function () { showPage('archive'); });
+  document.getElementById('btnNewTrain').addEventListener('click', function () { openTrainFresh({}); });
+  document.getElementById('btnStarStart').addEventListener('click', function () { openTrainFresh({}); });
+  document.getElementById('formTrain').addEventListener('submit', function (e) { e.preventDefault(); });
+  document.getElementById('formTrain').addEventListener('input', updateGenerateButton);
+  document.getElementById('formTrain').addEventListener('change', updateGenerateButton);
+  document.getElementById('btnGenerate').addEventListener('click', submitGenerate);
+  document.getElementById('answerText').addEventListener('input', updateAnswerButton);
+  document.getElementById('btnSubmitAnswer').addEventListener('click', submitAnswer);
+  document.getElementById('btnResetTrain').addEventListener('click', function () { openTrainFresh({}); });
+  document.getElementById('btnPrevRow').addEventListener('click', function () { shiftRow(-1); });
+  document.getElementById('btnNextRow').addEventListener('click', function () { shiftRow(1); });
+  document.getElementById('archiveSearch').addEventListener('input', renderArchive);
+  document.getElementById('filterStage').addEventListener('change', renderArchive);
+  document.getElementById('filterMethod').addEventListener('change', renderArchive);
+  document.getElementById('filterLevel').addEventListener('change', renderArchive);
+  document.getElementById('archiveList').addEventListener('click', function (e) {
+    const button = e.target.closest('[data-act]');
+    const card = e.target.closest('[data-row]');
+    if (!card) return;
+    const row = parseInt(card.getAttribute('data-row'), 10);
+    if (button) {
+      const act = button.getAttribute('data-act');
+      if (act === 'detail') openDetail(row, 'archive');
+      else if (act === 'edit') openEdit(row);
+      else if (act === 'delete') removeRow(row);
+      else if (act === 'continue') continueFrom(row, true);
+      return;
+    }
+    openDetail(row, 'archive');
+  });
+  document.getElementById('starCards').addEventListener('click', function (e) {
+    const button = e.target.closest('[data-act]');
+    if (!button) return;
+    const row = parseInt(button.getAttribute('data-row'), 10);
+    if (button.getAttribute('data-act') === 'detail') openDetail(row, 'star');
+    if (button.getAttribute('data-act') === 'continue') continueFrom(row, true);
+  });
+  const segs = document.querySelectorAll('#starSeg button');
+  for (let i = 0; i < segs.length; i++) {
+    segs[i].addEventListener('click', function () {
+      state.starStage = segs[i].getAttribute('data-stage');
+      renderStar();
+    });
+  }
+  document.getElementById('detailModal').addEventListener('click', function (e) {
+    if (e.target.id === 'detailModal') closeDetail(false);
+  });
+  document.getElementById('btnDetailClose').addEventListener('click', function () { closeDetail(false); });
+  document.getElementById('btnDetailX').addEventListener('click', function () { closeDetail(false); });
+  document.getElementById('btnDetailContinue').addEventListener('click', function () {
+    if (!state.detail) return;
+    continueFrom(state.detail.row, state.detail.mode !== 'home');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && state.overlays.length) {
+      const top = state.overlays.pop();
+      try { top.closer(); } catch (err) {}
+    }
+  });
+  document.addEventListener('focusin', function (e) {
+    const el = e.target;
+    if (!el || !el.matches || !el.matches('input, textarea, select')) return;
+    setTimeout(function () { ensureInputVisible(el); }, 280);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      const inset = Math.max(0, window.innerHeight - window.visualViewport.height);
+      document.documentElement.style.setProperty('--keyboard-inset', inset + 'px');
+      const active = document.activeElement;
+      if (active && active.matches && active.matches('input, textarea, select')) setTimeout(function () { ensureInputVisible(active); }, 60);
+    });
+  }
+  window.addEventListener('resize', checkNav);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(checkNav);
+}
+
+async function initialize() {
+  state.lang = detectLang();
+  ensureEditPanel();
+  applyI18n();
+  bindEvents();
+  showPlaceholder();
+  setTrainFields({ 当前练习层级: '未确定' });
+  updateRowButtons();
+  checkNav();
+  const themePromise = applyTheme();
+  showPage('home', { initial: true });
+  await themePromise;
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,3128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>物理解题</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --nav: #10243F;
+    --wick: #F0A202;
+    --amber: #C9842A;
+    --paper: #F3EDE2;
+    --card: #FFFCF7;
+    --line: #E4D8C4;
+    --ink: #1C2430;
+    --body: #3A342C;
+    --cream: #F6F1E7;
+    --g8: #3E6B8A;
+    --g9: #3D6B58;
+    --gh: #8A4B2F;
+    --kb: 0px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body {
+    color-scheme: light;
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    color: var(--body);
+    background: var(--paper);
+  }
+  body.dark { color-scheme: dark; }
+  input, select, textarea { box-sizing: border-box; font-family: inherit; font-size: 16px; color: var(--ink); }
+  button { font-family: inherit; }
+  button .fa-solid, button .fa-regular { margin-right: 6px; }
+  #app { height: 100%; height: 100dvh; display: flex; flex-direction: column; background: var(--paper); min-height: 0; }
+  #topNav { background: var(--nav); color: var(--cream); flex: none; }
+  #navRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 58px;
+    padding: 0 12px 0 8px;
+    flex-wrap: nowrap;
+    box-shadow: inset 0 -2px 0 rgba(240, 162, 2, .85);
+  }
+  #brandBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 0;
+    color: var(--cream);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 8px;
+    flex: none;
+  }
+  #navLinks { display: flex; flex-wrap: nowrap; gap: 2px; flex: none; }
+  .top-link, .mob-link, .side-link {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .top-link {
+    color: #C9C0B2;
+    padding: 8px 12px;
+    font-size: 15px;
+    border-bottom: 2px solid transparent;
+  }
+  .top-link.is-on { color: var(--cream); border-bottom-color: var(--wick); }
+  #langToggle {
+    margin-left: auto;
+    flex: none;
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(246, 241, 231, .35);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  #hamburgerBtn {
+    display: none;
+    margin-left: auto;
+    flex: none;
+    align-items: center;
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(246, 241, 231, .35);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  #mobileMenu {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--nav);
+    border-top: 1px solid rgba(246, 241, 231, .12);
+    padding: 6px 0 10px;
+  }
+  #mobileMenu.is-open { display: block; }
+  .mob-link, #mobLangToggle {
+    display: block;
+    width: 100%;
+    text-align: left;
+    color: var(--cream);
+    padding: 12px 18px;
+    font-size: 16px;
+    background: transparent;
+    border: 0;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+  .mob-link.is-on { border-left-color: var(--wick); color: var(--cream); }
+  #mobLangToggle { color: #F0A202; border-top: 1px solid rgba(246, 241, 231, .12); margin-top: 4px; }
+  body.nav-ready:not(.compact-nav) #hamburgerBtn { display: none; }
+  body.nav-ready.compact-nav #navLinks,
+  body.nav-ready.compact-nav #langToggle { display: none; }
+  body.nav-ready.compact-nav #hamburgerBtn { display: inline-flex; }
+  body:not(.compact-nav) #mobileMenu { display: none !important; }
+  @media (max-width: 720px) {
+    body:not(.nav-ready) #navLinks,
+    body:not(.nav-ready) #langToggle { display: none; }
+    body:not(.nav-ready) #hamburgerBtn { display: inline-flex; }
+  }
+  #bodyRow { flex: 1; display: flex; min-height: 0; }
+  #sideNav {
+    width: 220px;
+    flex: none;
+    background: var(--nav);
+    color: var(--cream);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: auto;
+  }
+  .side-brand { display: flex; gap: 10px; align-items: center; padding: 18px 16px 8px; }
+  .side-name { font-weight: 700; font-size: 16px; color: var(--cream); }
+  .side-sub { font-size: 12px; color: #C9C0B2; margin-top: 2px; }
+  .side-link {
+    display: flex;
+    width: 100%;
+    text-align: left;
+    color: #C9C0B2;
+    padding: 12px 16px 12px 18px;
+    font-size: 15px;
+    border-left: 3px solid transparent;
+  }
+  .side-link.is-on { color: var(--cream); border-left-color: var(--wick); background: rgba(240, 162, 2, .08); }
+  .side-steps { margin-top: auto; padding: 16px 16px 22px; }
+  .side-steps p { margin: 0 0 8px; font-size: 12px; color: #C9C0B2; }
+  #mainScroll { flex: 1; min-width: 0; overflow-x: hidden; overflow-y: auto; background: var(--paper); }
+  .page { display: none; padding: 22px 22px 8px; }
+  .page.active { display: block; }
+  .mobile-tail { height: 24px; }
+  h1 { margin: 0; font-size: 34px; line-height: 1.2; color: var(--ink); font-weight: 750; }
+  h2 { margin: 0; font-size: 22px; color: var(--ink); }
+  .kicker { margin: 0; letter-spacing: .14em; font-size: 12px; color: var(--amber); }
+  .lead { margin: 8px 0 0; line-height: 1.65; max-width: 46rem; }
+  .hero, .card, .panel, .reply, .edit-form {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  .hero {
+    padding: 18px 18px 16px;
+    background:
+      radial-gradient(420px 160px at 100% 0%, rgba(240, 162, 2, .18), transparent 70%),
+      var(--card);
+  }
+  .hero-top, .page-head, .reply-head, .drawer-top, .tool-row, .btn-row, .drawer-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hero-top, .page-head { justify-content: space-between; align-items: flex-start; }
+  .page-head { margin-bottom: 14px; }
+  .block { margin-top: 16px; }
+  .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    min-width: 0;
+  }
+  .step b { display: block; color: var(--ink); margin-bottom: 6px; }
+  .step span { display: block; font-size: 13px; line-height: 1.55; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .stat {
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 14px 12px;
+    cursor: pointer;
+    color: inherit;
+    width: 100%;
+  }
+  .stat-num { display: block; font-size: 32px; font-weight: 750; color: var(--ink); line-height: 1.1; }
+  .stat-label { display: block; margin-top: 6px; font-size: 13px; }
+  .recent-grid, .archive-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .card { padding: 12px; min-width: 0; color: inherit; text-align: left; }
+  button.card { width: 100%; cursor: pointer; }
+  article.card { cursor: pointer; }
+  .card-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .thumb, .stage img, .md-theme img { max-width: 100%; }
+  .thumb { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #EFE6D6; display: block; }
+  .card-title { margin: 8px 0 4px; color: var(--ink); font-size: 16px; font-weight: 700; line-height: 1.45; }
+  .muted { color: #6d6458; font-size: 13px; line-height: 1.5; }
+  .one-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; font-size: 12px; color: var(--cream); }
+  .tag-g8 { background: var(--g8); }
+  .tag-g9 { background: var(--g9); }
+  .tag-gh { background: var(--gh); }
+  .tag-x { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .row-no { font-size: 12px; color: var(--amber); }
+  @media (hover: hover) {
+    .card:hover, .stat:hover, .step:hover {
+      transform: translateY(-4px);
+      border-color: var(--amber);
+      box-shadow: 0 8px 18px rgba(28, 36, 48, .06);
+    }
+  }
+  .btn, .btn-primary, .chip {
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+    line-height: 1.3;
+  }
+  .btn { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn-primary { background: var(--amber); border: 1px solid var(--amber); color: var(--ink); font-weight: 700; }
+  .btn:disabled, .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+  .desk-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 16px; align-items: start; }
+  .panel { padding: 14px; min-width: 0; }
+  .stage {
+    min-height: 240px;
+    border: 1.5px dashed #C9B89A;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    background: rgba(255, 252, 247, .55);
+  }
+  .stage.has-img { border-style: solid; border-color: var(--line); }
+  .stage img { max-height: 420px; object-fit: contain; border-radius: 10px; }
+  .btn-row { margin-top: 12px; }
+  label.field { display: block; margin: 12px 0 6px; color: var(--ink); font-size: 14px; font-weight: 650; }
+  textarea {
+    width: 100%;
+    min-height: 120px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #fff;
+    resize: vertical;
+    line-height: 1.55;
+  }
+  input[type="search"], input[type="text"], select {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: #fff;
+    min-width: 0;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); }
+  .chip[data-value="八年级"] { color: var(--g8); border-color: var(--g8); }
+  .chip[data-value="九年级"] { color: var(--g9); border-color: var(--g9); }
+  .chip[data-value="高一"] { color: var(--gh); border-color: var(--gh); }
+  .chip.is-selected[data-value="八年级"] { background: var(--g8); color: var(--cream); }
+  .chip.is-selected[data-value="九年级"] { background: var(--g9); color: var(--cream); }
+  .chip.is-selected[data-value="高一"] { background: var(--gh); color: var(--cream); }
+  .hint { margin: 8px 0 0; font-size: 13px; line-height: 1.55; color: var(--gh); }
+  .origin { margin: 0 0 8px; color: var(--amber); font-size: 13px; }
+  .reply { margin-top: 14px; padding: 14px; border-top: 3px solid var(--amber); }
+  .reply-head { justify-content: space-between; }
+  .lamps { display: flex; gap: 10px; margin: 8px 0; }
+  .lamps i {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #E4D8C4;
+    display: block;
+    animation: lamp 1.6s infinite;
+  }
+  .lamps i:nth-child(2) { animation-delay: .4s; }
+  .lamps i:nth-child(3) { animation-delay: .8s; }
+  .lamps i:nth-child(4) { animation-delay: 1.2s; }
+  @keyframes lamp {
+    0%, 100% { background: #E4D8C4; box-shadow: none; }
+    35% { background: #F0A202; box-shadow: 0 0 10px #F0A202; }
+  }
+  .tool-row { margin-bottom: 12px; }
+  .tool-row input[type="search"] { flex: 1 1 180px; }
+  .tool-label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #6d6458; }
+  .empty {
+    text-align: center;
+    padding: 28px 12px 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  .notebook {
+    width: 92px; height: 68px; display: flex; margin: 8px auto;
+    filter: drop-shadow(0 8px 10px rgba(28, 36, 48, .12));
+  }
+  .notebook span {
+    flex: 1;
+    background: repeating-linear-gradient(to bottom, #FFFCF7 0 11px, #E4D8C4 11px 12px);
+    border: 1px solid #C9B89A;
+  }
+  .notebook span:first-child { border-radius: 6px 0 0 6px; border-right: 0; transform: perspective(80px) rotateY(8deg); }
+  .notebook span:last-child { border-radius: 0 6px 6px 0; border-left: 3px solid var(--amber); transform: perspective(80px) rotateY(-8deg); }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2100;
+    background: rgba(16, 36, 63, .38);
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+  .overlay[hidden] { display: none !important; }
+  #confirmOverlay, #viewerOverlay { z-index: 3300; justify-content: center; align-items: center; padding: 24px; }
+  #drawer {
+    width: min(520px, 100%);
+    height: 100%;
+    background: var(--card);
+    color: var(--body);
+    border-radius: 18px;
+    overflow: auto;
+    box-shadow: -8px 0 30px rgba(16, 36, 63, .18);
+    padding: 16px 16px 8px;
+  }
+  #confirmBox, #viewerBox {
+    width: min(460px, 100%);
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+    overflow: auto;
+    background: var(--card);
+    color: var(--body);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  #viewerBox img { max-width: 100%; max-height: calc(100vh - 180px); object-fit: contain; display: block; margin: 0 auto; }
+  .drawer-top { justify-content: space-between; position: sticky; top: 0; background: var(--card); padding-bottom: 8px; z-index: 1; }
+  .drawer-actions { margin-top: 16px; padding-bottom: 12px; }
+  .detail-label { margin: 14px 0 4px; font-size: 13px; color: var(--amber); font-weight: 700; }
+  .detail-text { margin: 0; white-space: pre-wrap; line-height: 1.65; color: var(--ink); }
+  .md-theme { line-height: 1.7; color: var(--ink); overflow-x: auto; max-width: 100%; }
+  .md-theme h1, .md-theme h2, .md-theme h3, .md-theme h4, .md-theme h5, .md-theme h6 { color: var(--ink); line-height: 1.35; margin: 1em 0 .4em; }
+  .md-theme h1 { font-size: 1.55rem; }
+  .md-theme h2 { font-size: 1.3rem; border-bottom: 1px solid var(--line); padding-bottom: .2em; }
+  .md-theme p { margin: .5em 0; }
+  .md-theme a { color: var(--gh); }
+  .md-theme code { background: var(--paper); padding: .1em .35em; border-radius: 6px; font-family: Consolas, "Courier New", monospace; font-size: .92em; }
+  .md-theme pre { background: var(--nav); color: var(--cream); padding: 12px; border-radius: 12px; overflow-x: auto; }
+  .md-theme pre code { background: transparent; color: inherit; padding: 0; }
+  .md-theme blockquote { margin: .6em 0; padding: .2em 0 .2em 12px; border-left: 3px solid var(--amber); color: #5c5348; }
+  .md-theme ul, .md-theme ol { padding-left: 1.3em; }
+  .md-theme hr { border: 0; border-top: 1px solid var(--line); }
+  .md-theme img { border-radius: 8px; }
+  .md-table-wrap { overflow-x: auto; max-width: 100%; }
+  .md-theme table { border-collapse: collapse; min-width: 100%; }
+  .md-theme th, .md-theme td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  .md-theme th { background: rgba(201, 132, 42, .12); }
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 4000;
+    background: var(--amber);
+    color: var(--ink);
+    padding: 10px 16px;
+    border-radius: 999px;
+    max-width: calc(100vw - 32px);
+    box-shadow: 0 8px 20px rgba(28, 36, 48, .12);
+  }
+  #toast[hidden] { display: none !important; }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  @media (max-width: 900px) {
+    #sideNav { display: none; }
+  }
+  @media (max-width: 860px) {
+    .desk-grid, .steps { grid-template-columns: 1fr 1fr; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .page { padding: 16px 14px 8px; }
+    h1 { font-size: 28px; }
+  }
+  @media (max-width: 720px) {
+    .steps, .desk-grid, .recent-grid, .archive-list { grid-template-columns: 1fr; }
+    .mobile-tail { height: calc(320px + var(--kb, 0px)); }
+    #drawerOverlay { padding: 0; background: rgba(16, 36, 63, .2); }
+    #drawer { width: 100%; border-radius: 0; }
+    .drawer-actions, #drawerBody { padding-bottom: calc(120px + var(--kb, 0px)); }
+    #confirmOverlay, #viewerOverlay { padding: 0; }
+    #viewerBox { width: 100%; height: 100%; max-height: none; border-radius: 0; }
+  }
+  body.dark { background: #14110E; color: #D9D0C3; }
+  body.dark #app, body.dark #mainScroll { background: #14110E; }
+  body.dark .hero, body.dark .card, body.dark .panel, body.dark .reply, body.dark .edit-form,
+  body.dark .step, body.dark .stat, body.dark .empty, body.dark #drawer, body.dark #confirmBox, body.dark #viewerBox {
+    background: #221C16;
+    border-color: #3A3228;
+    color: #D9D0C3;
+  }
+  body.dark .hero {
+    background:
+      radial-gradient(420px 160px at 100% 0%, rgba(201, 132, 42, .22), transparent 70%),
+      #221C16;
+  }
+  body.dark h1, body.dark h2, body.dark .card-title, body.dark .stat-num, body.dark .detail-text,
+  body.dark .md-theme, body.dark .md-theme h1, body.dark .md-theme h2, body.dark .md-theme h3 { color: #F6F1E7; }
+  body.dark .muted, body.dark .lead, body.dark .step span { color: #D9D0C3; }
+  body.dark .btn { color: #F6F1E7; border-color: #3A3228; }
+  body.dark textarea, body.dark input[type="search"], body.dark input[type="text"], body.dark select {
+    background: #1A1612;
+    color: #F6F1E7;
+    border-color: #3A3228;
+  }
+  body.dark .stage { background: #1A1612; border-color: #3A3228; }
+  body.dark .drawer-top { background: #221C16; }
+  body.dark .md-theme code { background: #1A1612; }
+  body.dark .md-theme th, body.dark .md-theme td { border-color: #3A3228; }
+  body.dark .notebook span {
+    background: repeating-linear-gradient(to bottom, #2A241C 0 11px, #3A3228 11px 12px);
+    border-color: #3A3228;
+  }
+  body.dark .chip { background: transparent; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div id="navRow">
+      <button type="button" id="brandBtn">
+        <svg width="36" height="36" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M6 42h36" stroke="#F0A202" stroke-width="1.2" fill="none"/>
+          <path d="M16 40h10" stroke="#F6F1E7" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M21 40V24" stroke="#F6F1E7" stroke-width="1.7" fill="none"/>
+          <path d="M21 24h12" stroke="#F6F1E7" stroke-width="1.7" fill="none"/>
+          <path d="M28 12h16l-2.2 9H30.2L28 12z" fill="#C9842A"/>
+          <ellipse cx="36" cy="24.5" rx="8" ry="2.4" fill="#F0A202" opacity=".7"/>
+        </svg>
+        <span id="brandName" data-i18n="appName">物理解题</span>
+      </button>
+      <div id="navLinks">
+        <button type="button" class="top-link is-on" id="topLinkHome" data-nav="home"><span data-i18n="navHome">首页</span></button>
+        <button type="button" class="top-link" id="topLinkDesk" data-nav="desk"><span data-i18n="navDesk">解题台</span></button>
+        <button type="button" class="top-link" id="topLinkArchive" data-nav="archive"><span data-i18n="navArchive">题解档案</span></button>
+      </div>
+      <button type="button" id="langToggle">EN</button>
+      <button type="button" id="hamburgerBtn" aria-expanded="false" aria-controls="mobileMenu">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i><span data-i18n="menu">菜单</span>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="mob-link is-on" id="mobLinkHome" data-nav="home"><span data-i18n="navHome">首页</span></button>
+      <button type="button" class="mob-link" id="mobLinkDesk" data-nav="desk"><span data-i18n="navDesk">解题台</span></button>
+      <button type="button" class="mob-link" id="mobLinkArchive" data-nav="archive"><span data-i18n="navArchive">题解档案</span></button>
+      <button type="button" id="mobLangToggle">English</button>
+    </div>
+  </nav>
+  <div id="bodyRow">
+    <aside id="sideNav">
+      <div class="side-brand">
+        <svg width="42" height="42" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M6 42h36" stroke="#F0A202" stroke-width="1.2" fill="none"/>
+          <path d="M16 40h10" stroke="#F6F1E7" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M21 40V24" stroke="#F6F1E7" stroke-width="1.7" fill="none"/>
+          <path d="M21 24h12" stroke="#F6F1E7" stroke-width="1.7" fill="none"/>
+          <path d="M28 12h16l-2.2 9H30.2L28 12z" fill="#C9842A"/>
+          <ellipse cx="36" cy="24.5" rx="8" ry="2.4" fill="#F0A202" opacity=".7"/>
+        </svg>
+        <div>
+          <div class="side-name" data-i18n="appName">物理解题</div>
+          <div class="side-sub" data-i18n="appSub">灯下四步法</div>
+        </div>
+      </div>
+      <button type="button" class="side-link is-on" id="sideLinkHome" data-nav="home"><span data-i18n="navHome">首页</span></button>
+      <button type="button" class="side-link" id="sideLinkDesk" data-nav="desk"><span data-i18n="navDesk">解题台</span></button>
+      <button type="button" class="side-link" id="sideLinkArchive" data-nav="archive"><span data-i18n="navArchive">题解档案</span></button>
+      <div class="side-steps">
+        <p data-i18n="step1">读题画图</p>
+        <p data-i18n="step2">物理建模</p>
+        <p data-i18n="step3">列式计算</p>
+        <p data-i18n="step4">检验反思</p>
+      </div>
+    </aside>
+    <main id="mainScroll">
+      <section id="pageHome" class="page active">
+        <article class="hero">
+          <div class="hero-top">
+            <p class="kicker" data-i18n="kicker">今晚只攻一道题</p>
+            <button type="button" class="btn-primary" id="btnGoDesk"><span data-i18n="goDesk">去解题台</span></button>
+          </div>
+          <h1 data-i18n="appName">物理解题</h1>
+          <p class="lead" data-i18n="heroLead">先画物理图景，再谈公式。高一只覆盖必修第一册。</p>
+        </article>
+        <div class="steps block" id="stepStrip">
+          <div class="step"><b data-i18n="step1">读题画图</b><span data-i18n="step1d">圈已知、求问和单位，先把对象与过程画出来</span></div>
+          <div class="step"><b data-i18n="step2">物理建模</b><span data-i18n="step2d">这是哪一类现象，该用哪条原理</span></div>
+          <div class="step"><b data-i18n="step3">列式计算</b><span data-i18n="step3d">符号先行，再代数字</span></div>
+          <div class="step"><b data-i18n="step4">检验反思</b><span data-i18n="step4d">单位、方向、数量级，以及能不能迁到下一题</span></div>
+        </div>
+        <div class="stat-grid block">
+          <button type="button" class="stat" id="statAll"><span class="stat-num" id="statAllNum">…</span><span class="stat-label" data-i18n="statAll">题袋里的题</span></button>
+          <button type="button" class="stat" id="statGuided"><span class="stat-num" id="statGuidedNum">…</span><span class="stat-label" data-i18n="statGuided">已有教练回信</span></button>
+          <button type="button" class="stat" id="statNoProgress"><span class="stat-num" id="statNoProgressNum">…</span><span class="stat-label" data-i18n="statNoProgress">还没写进展</span></button>
+        </div>
+        <h2 class="block" id="recentHeading" data-i18n="recentTitle">最近放上桌的题</h2>
+        <div class="recent-grid block" id="recentGrid"></div>
+        <div class="empty block" id="homeEmpty" hidden>
+          <div class="notebook" aria-hidden="true"><span></span><span></span></div>
+          <p data-i18n="homeEmpty">灯还亮着，桌上还没有题</p>
+          <button type="button" class="btn-primary" id="btnFirstProblem"><span data-i18n="firstProblem">拍下第一道题</span></button>
+        </div>
+      </section>
+      <section id="pageDesk" class="page">
+        <div class="page-head">
+          <div>
+            <h1 data-i18n="navDesk">解题台</h1>
+            <p class="lead" data-i18n="deskLead">一道题一次。把题目和你已经想到的写清楚，再请教练按四步法追问。</p>
+            <p class="origin" id="fromRowHint" hidden data-tpl="fromRow" data-n=""></p>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn" id="btnClearDesk"><i class="fa-solid fa-eraser" aria-hidden="true"></i><span data-i18n="clearDesk">清空这张桌子</span></button>
+            <button type="button" class="btn" id="btnToArchive"><i class="fa-solid fa-folder-open" aria-hidden="true"></i><span data-i18n="navArchive">题解档案</span></button>
+          </div>
+        </div>
+        <div class="desk-grid">
+          <div class="panel">
+            <div class="stage" id="deskImageEmpty">
+              <div class="notebook" aria-hidden="true"><span></span><span></span></div>
+              <p data-i18n="lampHint">把题目放在灯下</p>
+            </div>
+            <div class="stage has-img" id="deskImageFull" hidden>
+              <img id="deskPreview" alt="">
+              <div class="notebook" id="deskPreviewFallback" hidden><span></span><span></span></div>
+            </div>
+            <div class="btn-row" id="deskPickRow">
+              <button type="button" class="btn" id="btnCapture"><i class="fa-solid fa-camera" aria-hidden="true"></i><span data-i18n="capture">拍照</span></button>
+              <button type="button" class="btn" id="btnUpload"><i class="fa-solid fa-image" aria-hidden="true"></i><span data-i18n="upload">上传图片</span></button>
+            </div>
+            <div class="btn-row" id="deskHasRow" hidden>
+              <button type="button" class="btn" id="btnReplace"><i class="fa-solid fa-image" aria-hidden="true"></i><span data-i18n="replace">换一张</span></button>
+              <button type="button" class="btn" id="btnRetake"><i class="fa-solid fa-camera" aria-hidden="true"></i><span data-i18n="retake">重拍</span></button>
+              <button type="button" class="btn" id="btnRemove"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span data-i18n="removeImg">移除图片</span></button>
+              <button type="button" class="btn" id="btnViewFull"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i><span data-i18n="viewFull">看原图</span></button>
+            </div>
+          </div>
+          <div class="panel" id="deskFormPanel">
+            <h2 data-i18n="thisOne">这一道题</h2>
+            <form id="formSolve" action="javascript:void(0)">
+              <label class="field" for="formSolve_grade"><span data-i18n="fGrade">年级</span> · <span data-i18n="required">必选</span></label>
+              <div class="chips" role="radiogroup" id="formSolve_gradeChips">
+                <button type="button" class="chip" id="formSolve_chip8" data-chip-for="formSolve" data-value="八年级" role="radio" aria-checked="false"><span data-i18n="g8">八年级</span></button>
+                <button type="button" class="chip" id="formSolve_chip9" data-chip-for="formSolve" data-value="九年级" role="radio" aria-checked="false"><span data-i18n="g9">九年级</span></button>
+                <button type="button" class="chip" id="formSolve_chipH" data-chip-for="formSolve" data-value="高一" role="radio" aria-checked="false"><span data-i18n="gH">高一</span></button>
+              </div>
+              <input type="hidden" id="formSolve_grade" name="年级" value="">
+              <p class="hint" id="formSolve_highNote" hidden data-i18n="highNote">高一只覆盖必修第一册。概念讲不通、模型选不对、实验设计或误差分析、只剩纯代数时，教练只会请你转相应教练，不会越界代答。</p>
+              <label class="field" for="formSolve_title" data-i18n="fTitle">题目</label>
+              <textarea id="formSolve_title" name="题目" data-i18n-ph="phTitle" placeholder="原题文字。图画不清的条件也写在这里。"></textarea>
+              <input type="hidden" id="formSolve_image" name="题目图片" value="">
+              <div id="againRow" hidden>
+                <button type="button" class="btn" id="btnAskAgain"><span data-i18n="askAgain">把我的尝试再交一次</span></button>
+              </div>
+              <label class="field" for="formSolve_progress" data-i18n="fProgress">解题进展</label>
+              <textarea id="formSolve_progress" name="解题进展" data-i18n-ph="phProgress" placeholder="写下现象、你选的原理、列出的式子，或卡在哪一步。正在考试或测验就在这里注明。"></textarea>
+              <div class="btn-row" style="margin-top:14px">
+                <button type="button" class="btn-primary" id="btnAskCoach" disabled><span id="btnAskCoachLabel" data-i18n="askCoach">请教练读这道题</span></button>
+              </div>
+            </form>
+            <div class="reply" id="replyPaper" hidden>
+              <div id="replyWaitBlock">
+                <div class="lamps" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                <h2 id="replyWaitTitle" data-i18n="waitTitle">教练正在把题放回图景里…</h2>
+                <p id="replyWaitBody" data-i18n="waitBody">教练正在按四步法整理，还不会直接给你原题答案</p>
+              </div>
+              <div id="replyDoneBlock" hidden>
+                <div class="reply-head">
+                  <h2 data-i18n="coachLetter">教练回信</h2>
+                  <div class="btn-row">
+                    <button type="button" class="btn" id="btnCopyReply"><i class="fa-solid fa-copy" aria-hidden="true"></i><span data-i18n="copyLetter">复制回信</span></button>
+                    <button type="button" class="btn" id="btnGotoRow"><span data-i18n="gotoArchiveRow">去档案看这条</span></button>
+                  </div>
+                </div>
+                <div id="replyBody" class="md-theme"></div>
+              </div>
+              <div id="replyTimeoutBlock" hidden>
+                <p id="replyTimeoutText" data-i18n="timeoutText">这封回信还没写完。记录已在第 1 行，可稍后打开题解档案。</p>
+                <button type="button" class="btn-primary" id="btnOpenRow1"><span data-i18n="openRow1">打开第 1 行</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="pageArchive" class="page">
+        <div class="page-head">
+          <div>
+            <h1 data-i18n="navArchive">题解档案</h1>
+            <p class="lead" data-i18n="archiveLead">每张卡片是一次提交。改字不会让教练重写；想要新回信，就作为新的一题提交。</p>
+          </div>
+          <button type="button" class="btn-primary" id="btnNewProblem"><span data-i18n="newProblem">新的一题</span></button>
+        </div>
+        <div class="tool-row">
+          <label class="tool-label" style="flex:1 1 180px"><span data-i18n="searchLabel">搜索</span>
+            <input type="search" id="archiveSearch" name="keyword" data-i18n-ph="phSearch" placeholder="搜索题目或解题进展">
+          </label>
+          <label class="tool-label"><span data-i18n="fGrade">年级</span>
+            <select id="filterGrade" name="gradeFilter">
+              <option value="all" data-i18n="all">全部</option>
+              <option value="八年级" data-i18n="g8">八年级</option>
+              <option value="九年级" data-i18n="g9">九年级</option>
+              <option value="高一" data-i18n="gH">高一</option>
+            </select>
+          </label>
+          <label class="tool-label"><span data-i18n="replyFilterLabel">回信</span>
+            <select id="filterReply" name="replyFilter">
+              <option value="all" data-i18n="all">全部</option>
+              <option value="guided" data-i18n="hasGuide">已有引导</option>
+              <option value="noprogress" data-i18n="filterNoProgress">未写进展</option>
+              <option value="noguide" data-i18n="guideEmptyFilter">引导还是空的</option>
+            </select>
+          </label>
+          <button type="button" class="btn" id="btnRefresh"><i class="fa-solid fa-rotate" aria-hidden="true"></i><span data-i18n="refresh">刷新</span></button>
+        </div>
+        <div id="archiveList" class="archive-list"></div>
+        <div class="empty block" id="archiveEmptyAll" hidden>
+          <div class="notebook" aria-hidden="true"><span></span><span></span></div>
+          <p data-i18n="homeEmpty">灯还亮着，桌上还没有题</p>
+          <button type="button" class="btn-primary" id="btnEmptyNew"><span data-i18n="firstProblem">拍下第一道题</span></button>
+        </div>
+        <div class="empty block" id="archiveNoHit" hidden>
+          <p data-i18n="noHit">灯下没有这一题</p>
+          <button type="button" class="btn" id="btnClearFilters"><span data-i18n="clearFilters">清除筛选</span></button>
+        </div>
+      </section>
+      <div class="mobile-tail" aria-hidden="true"></div>
+    </main>
+  </div>
+</div>
+<div id="drawerOverlay" class="overlay" hidden>
+  <aside id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer-top">
+      <div class="btn-row">
+        <button type="button" class="btn" id="btnPrev"><span data-i18n="prev">上一题</span></button>
+        <button type="button" class="btn" id="btnNext"><span data-i18n="next">下一题</span></button>
+      </div>
+      <h2 id="drawerTitle"></h2>
+    </div>
+    <div id="drawerBody"></div>
+    <div class="drawer-actions">
+      <button type="button" class="btn" id="btnDrawerEdit"><span data-i18n="edit">编辑</span></button>
+      <button type="button" class="btn" id="btnDrawerDelete"><span data-i18n="delete">删除</span></button>
+      <button type="button" class="btn" id="btnDrawerContinue"><span data-i18n="continueDo">接着做</span></button>
+      <button type="button" class="btn" id="btnDrawerClose"><span data-i18n="close">关闭</span></button>
+    </div>
+    <div class="drawer-tail" aria-hidden="true"></div>
+  </aside>
+</div>
+<div id="confirmOverlay" class="overlay" hidden>
+  <div id="confirmBox" role="dialog" aria-modal="true">
+    <p id="confirmText"></p>
+    <div class="btn-row">
+      <button type="button" class="btn-primary" id="confirmOk"></button>
+      <button type="button" class="btn" id="confirmCancel"></button>
+    </div>
+  </div>
+</div>
+<div id="viewerOverlay" class="overlay" hidden>
+  <div id="viewerBox" role="dialog" aria-modal="true">
+    <img id="viewerImg" alt="">
+    <div class="btn-row" style="margin-top:12px">
+      <a id="viewerLink" class="btn" target="_blank" rel="noopener" href=""><span data-i18n="openPrivate">在浏览器中打开原图</span></a>
+      <button type="button" class="btn" id="btnViewerClose"><span data-i18n="close">关闭</span></button>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("03926b65a1203191_物理解题")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+
+var currentPage = '';
+var currentRow = 0;
+var originRow = 0;
+var showOrigin = false;
+var pageHistory = [];
+var popupStack = [];
+var lang = 'zh';
+var homeCache = null;
+var homeCount = null;
+var homeFailed = false;
+var archiveCache = null;
+var archiveCount = null;
+var archiveFailed = false;
+var submitting = false;
+var confirmBusy = false;
+var saveBusy = false;
+var pollGen = 0;
+var replyState = 'hidden';
+var deskReplyRaw = '';
+var editingRow = 0;
+var editToken = 0;
+var editSnapshot = null;
+var detailToken = 0;
+var drawerCache = null;
+var drawerCount = null;
+var drawerGuideMode = 'show';
+var toastTimer = 0;
+
+var I18N = {
+  zh: {
+    docTitle: '物理解题', appName: '物理解题', appSub: '灯下四步法',
+    navHome: '首页', navDesk: '解题台', navArchive: '题解档案', menu: '菜单',
+    switchToEn: '切换为英文', switchToZh: '切换为中文',
+    kicker: '今晚只攻一道题', heroLead: '先画物理图景，再谈公式。高一只覆盖必修第一册。', goDesk: '去解题台',
+    step1: '读题画图', step1d: '圈已知、求问和单位，先把对象与过程画出来',
+    step2: '物理建模', step2d: '这是哪一类现象，该用哪条原理',
+    step3: '列式计算', step3d: '符号先行，再代数字',
+    step4: '检验反思', step4d: '单位、方向、数量级，以及能不能迁到下一题',
+    statAll: '题袋里的题', statGuided: '已有教练回信', statNoProgress: '还没写进展', filterNoProgress: '未写进展',
+    recentTitle: '最近放上桌的题', homeEmpty: '灯还亮着，桌上还没有题', firstProblem: '拍下第一道题',
+    titlePhotoOnly: '（这道题只拍了图片）', noAttempt: '还没写下尝试', guidePending: '教练还没写完', guideNone: '尚未生成',
+    deskLead: '一道题一次。把题目和你已经想到的写清楚，再请教练按四步法追问。',
+    clearDesk: '清空这张桌子', lampHint: '把题目放在灯下',
+    capture: '拍照', upload: '上传图片', replace: '换一张', retake: '重拍', removeImg: '移除图片', viewFull: '看原图',
+    thisOne: '这一道题', fGrade: '年级', required: '必选', fTitle: '题目', fProgress: '解题进展', fImage: '题目图片', fGuide: '解题引导',
+    g8: '八年级', g9: '九年级', gH: '高一',
+    highNote: '高一只覆盖必修第一册。概念讲不通、模型选不对、实验设计或误差分析、只剩纯代数时，教练只会请你转相应教练，不会越界代答。',
+    phTitle: '原题文字。图画不清的条件也写在这里。',
+    phProgress: '写下现象、你选的原理、列出的式子，或卡在哪一步。正在考试或测验就在这里注明。',
+    askCoach: '请教练读这道题', askAgain: '把我的尝试再交一次', submitAsNew: '作为新的一题提交',
+    emptyMsg: '还没写下你的尝试。教练会先陪你读题画图，但不会直接给出原题答案。仍要提交吗？',
+    examMsg: '你注明了正在考试或测验。提交后教练不讲这道题，也不给提示。仍要提交吗？',
+    stillSubmit: '仍然提交', goWrite: '先去写尝试', backEdit: '返回修改',
+    waitTitle: '教练正在把题放回图景里…', waitBody: '教练正在按四步法整理，还不会直接给你原题答案',
+    coachLetter: '教练回信', copyLetter: '复制回信', gotoArchiveRow: '去档案看这条',
+    timeoutText: '这封回信还没写完。记录已在第 1 行，可稍后打开题解档案。', openRow1: '打开第 1 行',
+    fromRow: '来自第 {n} 行', copied: '已复制回信', copyFail: '复制失败，请长按回信文本手动复制。',
+    archiveLead: '每张卡片是一次提交。改字不会让教练重写；想要新回信，就作为新的一题提交。',
+    newProblem: '新的一题', searchLabel: '搜索', phSearch: '搜索题目或解题进展',
+    replyFilterLabel: '回信', all: '全部', hasGuide: '已有引导', guideEmptyFilter: '引导还是空的', refresh: '刷新',
+    view: '查看', edit: '编辑', delete: '删除', continueDo: '接着做',
+    editTitle: '改这道题的原文', thenLetter: '当时的教练回信', save: '保存修改', cancel: '取消',
+    saved: '已保存。教练回信不会因此重写。',
+    deleteAsk: '删除第 {n} 行？这封教练回信也会一起消失。', deleteDo: '删除', deleted: '已删除这一行。',
+    noHit: '灯下没有这一题', clearFilters: '清除筛选',
+    prev: '上一题', next: '下一题', close: '关闭', openPrivate: '在浏览器中打开原图',
+    reask: '再问一次这行', drawerEmptyGuide: '还在写，或这道题被注明为考试所以没有提示。',
+    rowN: '第 {n} 行', needGradeTitle: '请选择年级，并写下题目或放上图片。',
+    bridgeFail: '刚刚没连上，请再试一次。', stillWriting: '教练还在写上一封回信。',
+    loading: '正在把灯点亮…'
+  },
+  en: {
+    docTitle: 'Physics Desk', appName: 'Physics Desk', appSub: 'Four steps by lamplight',
+    navHome: 'Home', navDesk: 'Desk', navArchive: 'Archive', menu: 'Menu',
+    switchToEn: 'Switch to English', switchToZh: 'Switch to Chinese',
+    kicker: 'One problem tonight', heroLead: 'Draw the physical picture before the formulas. Senior 1 covers compulsory volume 1 only.', goDesk: 'Go to the desk',
+    step1: 'Read and sketch', step1d: 'Circle the knowns, the question, and the units. Draw the objects and the process first.',
+    step2: 'Build the model', step2d: 'What kind of phenomenon is this, and which principle applies?',
+    step3: 'Write the relations', step3d: 'Symbols first, then the numbers.',
+    step4: 'Check and reflect', step4d: 'Units, direction, magnitude, and whether it travels to the next problem.',
+    statAll: 'Problems in the bag', statGuided: 'Coach has replied', statNoProgress: 'No attempt yet', filterNoProgress: 'No attempt written',
+    recentTitle: 'Latest on the desk', homeEmpty: 'The lamp is on, and the desk is still clear.', firstProblem: 'Photograph the first problem',
+    titlePhotoOnly: '(This one is only a photo)', noAttempt: 'No attempt written yet', guidePending: 'The coach has not finished', guideNone: 'Not generated yet',
+    deskLead: 'One problem at a time. Write the question and what you already think, then ask the coach to follow the four steps.',
+    clearDesk: 'Clear this desk', lampHint: 'Put the problem under the lamp',
+    capture: 'Take photo', upload: 'Upload image', replace: 'Choose another', retake: 'Retake', removeImg: 'Remove image', viewFull: 'View original',
+    thisOne: 'This problem', fGrade: 'Grade', required: 'Required', fTitle: 'Question', fProgress: 'Your attempt', fImage: 'Problem image', fGuide: 'Coach guide',
+    g8: 'Grade 8', g9: 'Grade 9', gH: 'Senior 1',
+    highNote: 'Senior 1 covers compulsory volume 1 only. If the concept will not land, the model is wrong, the work is experimental design or error analysis, or only pure algebra remains, the coach will send you to the matching coach and will not answer past that line.',
+    phTitle: 'The original wording. Write any condition the picture does not show.',
+    phProgress: 'Write the phenomenon, the principle you chose, the relations you listed, or where you are stuck. If this is an exam or a quiz, say so here.',
+    askCoach: 'Ask the coach to read this', askAgain: 'Send my attempt again', submitAsNew: 'Submit as a new problem',
+    emptyMsg: 'You have not written an attempt. The coach will start by reading and sketching with you, and will not hand over the original answer. Submit anyway?',
+    examMsg: 'You noted an exam or a quiz. After you submit, the coach will not teach this problem and will not give hints. Submit anyway?',
+    stillSubmit: 'Submit anyway', goWrite: 'Write an attempt first', backEdit: 'Go back and edit',
+    waitTitle: 'The coach is putting the problem back into the picture…', waitBody: 'The coach is arranging the four steps, and will not give you the original answer directly.',
+    coachLetter: 'Coach’s letter', copyLetter: 'Copy the letter', gotoArchiveRow: 'See this one in the archive',
+    timeoutText: 'This letter is not finished. The record is on row 1. Open the archive later.', openRow1: 'Open row 1',
+    fromRow: 'From row {n}', copied: 'Letter copied', copyFail: 'Could not copy. Select the letter and copy it yourself.',
+    archiveLead: 'Each card is one submission. Editing the words does not make the coach rewrite. For a new letter, submit it as a new problem.',
+    newProblem: 'A new problem', searchLabel: 'Search', phSearch: 'Search the question or your attempt',
+    replyFilterLabel: 'Letter', all: 'All', hasGuide: 'Has a guide', guideEmptyFilter: 'Guide still empty', refresh: 'Refresh',
+    view: 'View', edit: 'Edit', delete: 'Delete', continueDo: 'Continue',
+    editTitle: 'Edit the original wording', thenLetter: 'The coach’s letter from then', save: 'Save changes', cancel: 'Cancel',
+    saved: 'Saved. The coach’s letter will not be rewritten because of this.',
+    deleteAsk: 'Delete row {n}? The coach’s letter goes with it.', deleteDo: 'Delete', deleted: 'That row was deleted.',
+    noHit: 'Nothing under the lamp matches.', clearFilters: 'Clear filters',
+    prev: 'Previous', next: 'Next', close: 'Close', openPrivate: 'Open the original in the browser',
+    reask: 'Ask this row again', drawerEmptyGuide: 'Still being written, or this problem was marked as an exam so there is no hint.',
+    rowN: 'Row {n}', needGradeTitle: 'Choose a grade, and write the question or add a picture.',
+    bridgeFail: 'That did not connect. Please try again.', stillWriting: 'The coach is still writing the previous letter.',
+    loading: 'Lighting the lamp…'
+  }
+};
+
+function $id(id) { return document.getElementById(id); }
+function t(key) {
+  var pack = I18N[lang] || I18N.zh;
+  if (pack[key] != null) return pack[key];
+  return I18N.zh[key] != null ? I18N.zh[key] : key;
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function sleep(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+function withTimeout(promise, ms) {
+  return new Promise(function (resolve, reject) {
+    var timer = setTimeout(function () { reject(new Error('timeout')); }, ms);
+    Promise.resolve(promise).then(function (v) { clearTimeout(timer); resolve(v); }, function (e) { clearTimeout(timer); reject(e); });
+  });
+}
+function clip(s, n) {
+  var arr = Array.from(String(s || ''));
+  if (arr.length <= n) return arr.join('');
+  return arr.slice(0, n).join('') + '…';
+}
+function fileUrl(name, kind) {
+  var base = kind === 'private' ? 'http://' + window.location.hostname + ':3130/private/' : 'http://' + window.location.hostname + ':3130/download/';
+  return base + encodeURIComponent(String(name || '').trim());
+}
+function notebookHtml() { return '<div class="notebook" aria-hidden="true"><span></span><span></span></div>'; }
+function lampsHtml() { return '<div class="lamps" aria-hidden="true"><i></i><i></i><i></i><i></i></div>'; }
+function showToast(message) {
+  var el = $id('toast');
+  el.textContent = message;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 3200);
+}
+function parseCount(text) {
+  var m = String(text == null ? '' : text).match(/\d+/);
+  if (!m) return null;
+  var n = parseInt(m[0], 10);
+  if (isNaN(n)) return null;
+  return n;
+}
+function mapCsv(csvText) {
+  var rows = parseCSV(String(csvText || ''));
+  var list = [];
+  for (var i = 0; i < rows.length; i++) {
+    var cols = rows[i] || [];
+    list.push({
+      row: i + 1,
+      grade: cols[0] == null ? '' : String(cols[0]),
+      title: cols[1] == null ? '' : String(cols[1]),
+      image: cols[2] == null ? '' : String(cols[2]),
+      progress: cols[3] == null ? '' : String(cols[3]),
+      guide: cols[4] == null ? '' : String(cols[4])
+    });
+  }
+  return list;
+}
+function gradeClass(grade) {
+  if (grade === '八年级') return 'tag tag-g8';
+  if (grade === '九年级') return 'tag tag-g9';
+  if (grade === '高一') return 'tag tag-gh';
+  return 'tag tag-x';
+}
+function gradeLabel(grade) {
+  if (grade === '八年级') return t('g8');
+  if (grade === '九年级') return t('g9');
+  if (grade === '高一') return t('gH');
+  return grade || '';
+}
+function hasExamMark(s) {
+  var text = String(s || '');
+  return text.indexOf('考试') !== -1 || text.indexOf('测验') !== -1;
+}
+function attemptIsEmpty(s) {
+  var raw = String(s || '');
+  if (!raw.trim()) return true;
+  if (!hasExamMark(raw)) return false;
+  var rest = raw.replace(/考试/g, '').replace(/测验/g, '');
+  rest = rest.replace(/[^\u4e00-\u9fffA-Za-z0-9]/g, '');
+  rest = rest.replace(/正在|现在|今天|注明|这是|一场|一次/g, '');
+  return rest.length === 0;
+}
+function formInvalid(grade, title, image) {
+  return !String(grade || '').trim() || (!String(title || '').trim() && !String(image || '').trim());
+}
+function textBlock(s) { return esc(s).replace(/\n/g, '<br>'); }
+
+function resolveMdImage(url) {
+  var u = String(url || '').trim();
+  if (!u) return '';
+  if (/^javascript:/i.test(u)) return '';
+  if (/^https?:\/\//i.test(u)) return u;
+  if (/^data:image\//i.test(u)) return u;
+  return 'http://' + window.location.hostname + ':3130/download/' + encodeURIComponent(u);
+}
+function renderInline(src) {
+  var text = String(src || '');
+  var out = '';
+  var i = 0;
+  while (i < text.length) {
+    if (text.charAt(i) === '\\' && i + 1 < text.length) {
+      out += esc(text.charAt(i + 1));
+      i += 2;
+      continue;
+    }
+    if (text.charAt(i) === '`') {
+      var j = text.indexOf('`', i + 1);
+      if (j > i + 1) {
+        out += '<code>' + esc(text.slice(i + 1, j)) + '</code>';
+        i = j + 1;
+        continue;
+      }
+    }
+    if (text.charAt(i) === '!' && text.charAt(i + 1) === '[') {
+      var endAlt = text.indexOf(']', i + 2);
+      if (endAlt > 0 && text.charAt(endAlt + 1) === '(') {
+        var endUrl = text.indexOf(')', endAlt + 2);
+        if (endUrl > 0) {
+          var alt = text.slice(i + 2, endAlt);
+          var url = text.slice(endAlt + 2, endUrl).trim();
+          if (url.charAt(0) === '<' && url.charAt(url.length - 1) === '>') url = url.slice(1, -1);
+          var sp = url.indexOf(' ');
+          if (url.charAt(0) !== '<' && sp > 0) url = url.slice(0, sp);
+          var href = resolveMdImage(url);
+          if (href) {
+            out += '<a class="md-dl" href="' + esc(href) + '" download rel="noopener"><img src="' + esc(href) + '" alt="' + esc(alt) + '"></a>';
+            i = endUrl + 1;
+            continue;
+          }
+        }
+      }
+    }
+    if (text.charAt(i) === '[') {
+      var endText = text.indexOf(']', i + 1);
+      if (endText > 0 && text.charAt(endText + 1) === '(') {
+        var endLink = text.indexOf(')', endText + 2);
+        if (endLink > 0) {
+          var label = text.slice(i + 1, endText);
+          var link = text.slice(endText + 2, endLink).trim();
+          if (link.charAt(0) === '<' && link.charAt(link.length - 1) === '>') link = link.slice(1, -1);
+          var sp2 = link.indexOf(' ');
+          if (sp2 > 0) link = link.slice(0, sp2);
+          if (/^(https?:|mailto:)/i.test(link)) {
+            out += '<a href="' + esc(link) + '" target="_blank" rel="noopener">' + renderInline(label) + '</a>';
+            i = endLink + 1;
+            continue;
+          }
+        }
+      }
+    }
+    if (text.slice(i, i + 3) === '***') {
+      var b1 = text.indexOf('***', i + 3);
+      if (b1 > 0) { out += '<strong><em>' + renderInline(text.slice(i + 3, b1)) + '</em></strong>'; i = b1 + 3; continue; }
+    }
+    if (text.slice(i, i + 2) === '**') {
+      var b2 = text.indexOf('**', i + 2);
+      if (b2 > 0) { out += '<strong>' + renderInline(text.slice(i + 2, b2)) + '</strong>'; i = b2 + 2; continue; }
+    }
+    if (text.slice(i, i + 2) === '__') {
+      var b3 = text.indexOf('__', i + 2);
+      if (b3 > 0) { out += '<strong>' + renderInline(text.slice(i + 2, b3)) + '</strong>'; i = b3 + 2; continue; }
+    }
+    if (text.slice(i, i + 2) === '~~') {
+      var b4 = text.indexOf('~~', i + 2);
+      if (b4 > 0) { out += '<del>' + renderInline(text.slice(i + 2, b4)) + '</del>'; i = b4 + 2; continue; }
+    }
+    if (text.charAt(i) === '*') {
+      var b5 = text.indexOf('*', i + 1);
+      if (b5 > i + 1) { out += '<em>' + renderInline(text.slice(i + 1, b5)) + '</em>'; i = b5 + 1; continue; }
+    }
+    if (text.charAt(i) === '_' && text.charAt(i + 1) !== '_') {
+      var b6 = text.indexOf('_', i + 1);
+      if (b6 > i + 1 && text.charAt(b6 + 1) !== '_') { out += '<em>' + renderInline(text.slice(i + 1, b6)) + '</em>'; i = b6 + 1; continue; }
+    }
+    if (text.slice(i, i + 7) === 'http://' || text.slice(i, i + 8) === 'https://') {
+      var m = text.slice(i).match(/^https?:\/\/[^\s<]+/);
+      if (m) {
+        var auto = m[0].replace(/[),.;!?]+$/, '');
+        out += '<a href="' + esc(auto) + '" target="_blank" rel="noopener">' + esc(auto) + '</a>';
+        i += auto.length;
+        continue;
+      }
+    }
+    out += esc(text.charAt(i));
+    i += 1;
+  }
+  return out;
+}
+function splitRow(line) {
+  var s = String(line || '').trim();
+  if (s.charAt(0) === '|') s = s.slice(1);
+  if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1);
+  var cells = [];
+  var cur = '';
+  for (var i = 0; i < s.length; i++) {
+    if (s.charAt(i) === '\\' && s.charAt(i + 1) === '|') { cur += '|'; i++; }
+    else if (s.charAt(i) === '|') { cells.push(cur.trim()); cur = ''; }
+    else cur += s.charAt(i);
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+function isBlockStart(lines, i) {
+  var line = lines[i] || '';
+  if (/^(```|~~~)/.test(line)) return true;
+  if (/^(#{1,6})\s+/.test(line)) return true;
+  if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) return true;
+  if (/^\s*>\s?/.test(line)) return true;
+  if (/^\s*([-*+]|\d+\.)\s+/.test(line)) return true;
+  if (line.indexOf('|') !== -1 && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) return true;
+  if (i + 1 < lines.length && /^=+\s*$/.test(lines[i + 1]) && line.trim()) return true;
+  if (i + 1 < lines.length && /^-{3,}\s*$/.test(lines[i + 1]) && line.trim() && !/^-{3,}\s*$/.test(line.trim())) return true;
+  return false;
+}
+function joinPara(buf) {
+  var parts = [];
+  for (var k = 0; k < buf.length; k++) {
+    var line = buf[k];
+    var br = false;
+    if (/\\$/.test(line) || /  $/.test(line)) {
+      br = true;
+      line = line.replace(/\\$/, '').replace(/  $/, '');
+    }
+    parts.push(renderInline(line));
+    if (k < buf.length - 1) parts.push(br ? '<br>' : ' ');
+  }
+  return parts.join('');
+}
+function readList(lines, index, minIndent) {
+  var ordered = /^\s*\d+\.\s+/.test(lines[index] || '');
+  var items = [];
+  var i = index;
+  var guard = 0;
+  while (i < lines.length && guard < lines.length + 2) {
+    guard++;
+    var line = lines[i];
+    if (!line || line.trim() === '') break;
+    var m = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+    if (!m || m[1].length !== minIndent) break;
+    var content = m[3];
+    var taskHtml = '';
+    var task = content.match(/^\[( |x|X)\]\s+(.*)$/);
+    if (task) {
+      taskHtml = '<input type="checkbox" disabled' + (task[1].toLowerCase() === 'x' ? ' checked' : '') + '> ';
+      content = task[2];
+    }
+    i++;
+    var nested = '';
+    while (i < lines.length) {
+      var nxt = lines[i];
+      if (!nxt || nxt.trim() === '') break;
+      var m2 = nxt.match(/^(\s*)([-*+]|\d+\.)\s+/);
+      if (m2 && m2[1].length > minIndent) {
+        var sub = readList(lines, i, m2[1].length);
+        if (sub.index === i) break;
+        nested += sub.html;
+        i = sub.index;
+        continue;
+      }
+      if (m2) break;
+      if (/^\s+\S/.test(nxt)) { content += ' ' + nxt.trim(); i++; continue; }
+      break;
+    }
+    items.push('<li>' + taskHtml + renderInline(content) + nested + '</li>');
+  }
+  var tag = ordered ? 'ol' : 'ul';
+  return { html: '<' + tag + '>' + items.join('') + '</' + tag + '>', index: i };
+}
+function renderMarkdown(md) {
+  var src = String(md || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  var lines = src.split('\n');
+  var i = 0;
+  var blocks = [];
+  var guard = 0;
+  while (i < lines.length && guard < lines.length + 5) {
+    guard++;
+    var line = lines[i];
+    if (line.trim() === '') { i++; continue; }
+    var fence = line.match(/^(```|~~~)(.*)$/);
+    if (fence) {
+      var mark = fence[1];
+      var buf = [];
+      i++;
+      while (i < lines.length && lines[i].trim() !== mark) { buf.push(lines[i]); i++; }
+      if (i < lines.length) i++;
+      blocks.push('<pre class="md-pre"><code>' + esc(buf.join('\n')) + '</code></pre>');
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) { blocks.push('<hr>'); i++; continue; }
+    var h = line.match(/^(#{1,6})\s+(.*)$/);
+    if (h) { blocks.push('<h' + h[1].length + '>' + renderInline(h[2]) + '</h' + h[1].length + '>'); i++; continue; }
+    if (i + 1 < lines.length && /^=+\s*$/.test(lines[i + 1]) && line.trim()) {
+      blocks.push('<h1>' + renderInline(line.trim()) + '</h1>'); i += 2; continue;
+    }
+    if (i + 1 < lines.length && /^-{3,}\s*$/.test(lines[i + 1]) && line.trim() && line.indexOf('|') === -1) {
+      blocks.push('<h2>' + renderInline(line.trim()) + '</h2>'); i += 2; continue;
+    }
+    if (line.indexOf('|') !== -1 && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i + 1])) {
+      var header = splitRow(line);
+      i += 2;
+      var body = [];
+      while (i < lines.length && lines[i].indexOf('|') !== -1 && lines[i].trim() !== '') { body.push(splitRow(lines[i])); i++; }
+      var html = '<div class="md-table-wrap"><table><thead><tr>';
+      for (var c = 0; c < header.length; c++) html += '<th>' + renderInline(header[c]) + '</th>';
+      html += '</tr></thead><tbody>';
+      for (var r = 0; r < body.length; r++) {
+        html += '<tr>';
+        for (var c2 = 0; c2 < header.length; c2++) html += '<td>' + renderInline(body[r][c2] || '') + '</td>';
+        html += '</tr>';
+      }
+      html += '</tbody></table></div>';
+      blocks.push(html);
+      continue;
+    }
+    if (/^\s*>\s?/.test(line)) {
+      var q = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) { q.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+      blocks.push('<blockquote>' + renderMarkdown(q.join('\n')) + '</blockquote>');
+      continue;
+    }
+    if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+      var indent = (line.match(/^(\s*)/) || ['', ''])[1].length;
+      var parsed = readList(lines, i, indent);
+      if (parsed.index === i) { blocks.push('<p>' + renderInline(line) + '</p>'); i++; continue; }
+      blocks.push(parsed.html);
+      i = parsed.index;
+      continue;
+    }
+    var para = [line];
+    i++;
+    while (i < lines.length && lines[i].trim() !== '' && !isBlockStart(lines, i)) { para.push(lines[i]); i++; }
+    blocks.push('<p>' + joinPara(para) + '</p>');
+  }
+  return blocks.join('\n');
+}
+function setMarkdown(el, raw) {
+  if (!el) return;
+  el.classList.add('md-theme');
+  el.innerHTML = renderMarkdown(raw);
+}
+
+function detectLanguage() {
+  try {
+    var lp = (new URLSearchParams(window.location.search).get('lang') || '').toLowerCase();
+    if (lp === 'cn') return 'zh';
+    if (lp === 'en') return 'en';
+  } catch (e) {}
+  try {
+    var stored = localStorage.getItem('iThinkAir_UiLanguage');
+    if (stored !== null && stored !== '') return stored === 'en' ? 'en' : 'zh';
+  } catch (e2) {}
+  try {
+    var list = navigator.languages;
+    if (!list || !list.length) return 'zh';
+    for (var i = 0; i < list.length; i++) {
+      var item = String(list[i] || '').toLowerCase();
+      if (item === 'zh' || item.indexOf('zh-') === 0) return 'zh';
+    }
+    return 'en';
+  } catch (e3) {
+    return 'zh';
+  }
+}
+function applyStaticI18n() {
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  var ph = document.querySelectorAll('[data-i18n-ph]');
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute('placeholder', t(ph[j].getAttribute('data-i18n-ph')));
+}
+function fillTemplates() {
+  var nodes = document.querySelectorAll('[data-tpl]');
+  for (var i = 0; i < nodes.length; i++) {
+    var el = nodes[i];
+    el.textContent = t(el.getAttribute('data-tpl')).replace('{n}', el.getAttribute('data-n') || '');
+  }
+}
+function updateLangButtons() {
+  $id('langToggle').textContent = lang === 'en' ? '中文' : 'EN';
+  $id('mobLangToggle').textContent = lang === 'en' ? t('switchToZh') : t('switchToEn');
+}
+function updateAskLabel() {
+  var label = $id('btnAskCoachLabel');
+  var key = showOrigin ? 'submitAsNew' : 'askCoach';
+  label.setAttribute('data-i18n', key);
+  label.textContent = t(key);
+}
+function updateOriginHint() {
+  var el = $id('fromRowHint');
+  if (showOrigin && originRow > 0) {
+    el.hidden = false;
+    el.setAttribute('data-n', String(originRow));
+    el.setAttribute('data-tpl', 'fromRow');
+    el.textContent = t('fromRow').replace('{n}', String(originRow));
+  } else el.hidden = true;
+}
+function applyLanguage(next) {
+  lang = next === 'en' ? 'en' : 'zh';
+  document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('docTitle');
+  applyStaticI18n();
+  fillTemplates();
+  updateAskLabel();
+  updateOriginHint();
+  updateLangButtons();
+  renderReplyState();
+  renderHome();
+  renderArchiveFromCache();
+  if (!$id('drawerOverlay').hidden) renderDrawer();
+  updateNavMode();
+}
+function toggleLanguage() {
+  var next = lang === 'en' ? 'zh' : 'en';
+  try { localStorage.setItem('iThinkAir_UiLanguage', next === 'en' ? 'en' : 'cn'); } catch (e) {}
+  applyLanguage(next);
+  closeMenu();
+}
+function applyMode(mode) {
+  document.body.classList.toggle('dark', String(mode || '').trim() === '暗色');
+}
+
+function closeMenu() {
+  $id('mobileMenu').classList.remove('is-open');
+  $id('hamburgerBtn').setAttribute('aria-expanded', 'false');
+}
+function updateNavMode() {
+  var row = $id('navRow');
+  var items = [$id('brandBtn'), $id('navLinks'), $id('langToggle')];
+  var saved = [];
+  for (var i = 0; i < items.length; i++) {
+    saved.push(items[i].style.cssText);
+    items[i].style.display = 'flex';
+    items[i].style.position = 'absolute';
+    items[i].style.visibility = 'hidden';
+    items[i].style.whiteSpace = 'nowrap';
+  }
+  var total = 40;
+  for (var j = 0; j < items.length; j++) total += items[j].offsetWidth;
+  for (var k = 0; k < items.length; k++) items[k].style.cssText = saved[k];
+  var need = total > row.clientWidth;
+  var has = document.body.classList.contains('compact-nav');
+  if (has !== need) document.body.classList.toggle('compact-nav', need);
+  document.body.classList.add('nav-ready');
+  if (!need) closeMenu();
+}
+function setActiveNav(page) {
+  var nodes = document.querySelectorAll('[data-nav]');
+  for (var i = 0; i < nodes.length; i++) {
+    var on = nodes[i].getAttribute('data-nav') === page;
+    nodes[i].classList.toggle('is-on', on);
+    if (on) nodes[i].setAttribute('aria-current', 'page');
+    else nodes[i].removeAttribute('aria-current');
+  }
+}
+function showPage(page, opt) {
+  opt = opt || {};
+  var main = $id('mainScroll');
+  if (page === currentPage) {
+    closeMenu();
+    if (page === 'home' && homeCache) renderHome();
+    if (page === 'archive' && archiveCache) renderArchiveFromCache();
+    if (page === 'home') loadHome();
+    if (page === 'archive') loadArchive();
+    return Promise.resolve();
+  }
+  if (opt.record !== false && currentPage) pageHistory.push({ page: currentPage, scroll: main.scrollTop });
+  currentPage = page;
+  $id('pageHome').classList.toggle('active', page === 'home');
+  $id('pageDesk').classList.toggle('active', page === 'desk');
+  $id('pageArchive').classList.toggle('active', page === 'archive');
+  setActiveNav(page);
+  closeMenu();
+  if (page === 'home' && homeCache) renderHome();
+  if (page === 'archive' && archiveCache) renderArchiveFromCache();
+  var pending = Promise.resolve();
+  if (page === 'home') pending = loadHome();
+  if (page === 'archive') pending = loadArchive();
+  return pending.then(function () {
+    if (opt.scroll != null) main.scrollTop = opt.scroll;
+    else main.scrollTop = 0;
+  });
+}
+function pushPopup(id, closeFn) { popupStack.push({ id: id, close: closeFn }); }
+function removePopup(id) {
+  for (var i = popupStack.length - 1; i >= 0; i--) {
+    if (popupStack[i].id === id) { popupStack.splice(i, 1); return; }
+  }
+}
+function airBack() {
+  if ($id('mobileMenu').classList.contains('is-open')) {
+    closeMenu();
+    return 'false';
+  }
+  if (popupStack.length) {
+    var top = popupStack.pop();
+    try { top.close(); } catch (e) {}
+    return 'false';
+  }
+  if (pageHistory.length) {
+    var prev = pageHistory.pop();
+    showPage(prev.page, { record: false, scroll: prev.scroll });
+    return 'false';
+  }
+  return 'true';
+}
+window.airBack = airBack;
+
+function askConfirm(message, okText, cancelText) {
+  return new Promise(function (resolve) {
+    var settled = false;
+    var overlay = $id('confirmOverlay');
+    $id('confirmText').textContent = message;
+    $id('confirmOk').textContent = okText;
+    $id('confirmCancel').textContent = cancelText;
+    function settle(val) {
+      if (settled) return;
+      settled = true;
+      overlay.hidden = true;
+      removePopup('confirm');
+      resolve(val);
+    }
+    $id('confirmOk').onclick = function () { settle(true); };
+    $id('confirmCancel').onclick = function () { settle(false); };
+    overlay.hidden = false;
+    pushPopup('confirm', function () { settle(false); });
+  });
+}
+function closeViewer() {
+  $id('viewerOverlay').hidden = true;
+  $id('viewerImg').removeAttribute('src');
+  removePopup('viewer');
+}
+function openOriginal(name) {
+  var filename = String(name || '').trim();
+  if (!filename) return;
+  var url = fileUrl(filename, 'private');
+  $id('viewerImg').src = url;
+  $id('viewerLink').href = url;
+  $id('viewerOverlay').hidden = false;
+  pushPopup('viewer', closeViewer);
+}
+function closeDrawer() {
+  $id('drawerOverlay').hidden = true;
+  removePopup('drawer');
+}
+function showDrawerFrame() {
+  var overlay = $id('drawerOverlay');
+  if (overlay.hidden) {
+    overlay.hidden = false;
+    pushPopup('drawer', closeDrawer);
+  }
+}
+
+function countGuided(list) {
+  var n = 0;
+  for (var i = 0; i < list.length; i++) if (String(list[i].guide || '').trim()) n++;
+  return n;
+}
+function countNoProgress(list) {
+  var n = 0;
+  for (var i = 0; i < list.length; i++) if (!String(list[i].progress || '').trim()) n++;
+  return n;
+}
+function thumbHtml(name) {
+  if (!String(name || '').trim()) return notebookHtml();
+  return '<img class="thumb" data-fallback="1" alt="" src="' + esc(fileUrl(String(name).trim(), 'download')) + '">';
+}
+function renderHome() {
+  if (!homeCache) {
+    $id('statAllNum').textContent = homeCount == null ? (homeFailed ? '—' : '…') : String(homeCount);
+    $id('statGuidedNum').textContent = homeFailed ? '—' : '…';
+    $id('statNoProgressNum').textContent = homeFailed ? '—' : '…';
+    $id('homeEmpty').hidden = true;
+    $id('recentHeading').hidden = false;
+    $id('recentGrid').hidden = false;
+    $id('recentGrid').innerHTML = homeFailed
+      ? '<p class="muted">' + esc(t('bridgeFail')) + '</p>'
+      : lampsHtml() + '<p class="muted">' + esc(t('loading')) + '</p>';
+    return;
+  }
+  var list = homeCache;
+  $id('statAllNum').textContent = homeCount == null ? '—' : String(homeCount);
+  $id('statGuidedNum').textContent = String(countGuided(list));
+  $id('statNoProgressNum').textContent = String(countNoProgress(list));
+  var recent = list.slice(0, 4);
+  var empty = homeCache && list.length === 0;
+  $id('homeEmpty').hidden = !empty;
+  $id('recentHeading').hidden = !!empty;
+  $id('recentGrid').hidden = !!empty;
+  if (empty) { $id('recentGrid').innerHTML = ''; return; }
+  var html = '';
+  for (var i = 0; i < recent.length; i++) {
+    var rec = recent[i];
+    var title = String(rec.title || '').trim();
+    var titleShow = title ? clip(title, 42) : t('titlePhotoOnly');
+    var progress = String(rec.progress || '').trim();
+    var guide = String(rec.guide || '').trim();
+    html += '<button type="button" class="card" data-row="' + rec.row + '">';
+    html += '<div class="card-top"><span class="' + gradeClass(rec.grade) + '">' + esc(gradeLabel(rec.grade)) + '</span></div>';
+    html += thumbHtml(rec.image);
+    html += '<div class="card-title">' + esc(titleShow) + '</div>';
+    html += '<div class="muted one-line">' + esc(progress || t('noAttempt')) + '</div>';
+    html += '<div class="muted">' + esc(guide ? clip(guide, 36) : t('guidePending')) + '</div>';
+    html += '</button>';
+  }
+  $id('recentGrid').innerHTML = html;
+}
+async function loadHome() {
+  var failed = false;
+  var csvText = null;
+  var countText = null;
+  try {
+    csvText = await withTimeout(callAppBridge({type:"GetTableCSV", data:"物理解题/默认表格", payload:"年级,题目,题目图片,解题进展,解题引导"}), 20000);
+  } catch (e) { failed = true; }
+  try {
+    countText = await withTimeout(callAppBridge({type:"GetRecordCount", data:"物理解题/默认表格"}), 20000);
+  } catch (e2) { failed = true; }
+  if (csvText != null) { homeCache = mapCsv(csvText); homeFailed = false; }
+  else if (!homeCache) homeFailed = true;
+  if (countText != null) homeCount = parseCount(countText);
+  if (failed) showToast(t('bridgeFail'));
+  renderHome();
+}
+function filteredArchive() {
+  var list = archiveCache || [];
+  var q = ($id('archiveSearch').value || '').trim().toLowerCase();
+  var grade = $id('filterGrade').value;
+  var reply = $id('filterReply').value;
+  var out = [];
+  for (var i = 0; i < list.length; i++) {
+    var rec = list[i];
+    if (grade !== 'all' && rec.grade !== grade) continue;
+    var guide = String(rec.guide || '').trim();
+    var progress = String(rec.progress || '').trim();
+    if (reply === 'guided' && !guide) continue;
+    if (reply === 'noprogress' && progress) continue;
+    if (reply === 'noguide' && guide) continue;
+    if (q) {
+      var hay = (String(rec.title || '') + '\n' + String(rec.progress || '')).toLowerCase();
+      if (hay.indexOf(q) === -1) continue;
+    }
+    out.push(rec);
+  }
+  if (editingRow) {
+    var seen = false;
+    for (var j = 0; j < out.length; j++) if (out[j].row === editingRow) seen = true;
+    if (!seen) {
+      for (var k = 0; k < list.length; k++) if (list[k].row === editingRow) out.unshift(list[k]);
+    }
+  }
+  return out;
+}
+function captureEditSnap() {
+  if (!editingRow) return null;
+  var prefix = 'formEditRow' + editingRow;
+  var gradeEl = $id(prefix + '_grade');
+  if (!gradeEl) return editSnapshot;
+  return {
+    grade: gradeEl.value,
+    title: $id(prefix + '_title') ? $id(prefix + '_title').value : '',
+    image: $id(prefix + '_image') ? $id(prefix + '_image').value : '',
+    progress: $id(prefix + '_progress') ? $id(prefix + '_progress').value : '',
+    guide: editSnapshot && editSnapshot.guide ? editSnapshot.guide : ''
+  };
+}
+function editFormHtml(row) {
+  var prefix = 'formEditRow' + row;
+  return ''
+    + '<form class="edit-form" id="' + prefix + '" action="javascript:void(0)" style="padding:12px">'
+    + '<h2>' + esc(t('editTitle')) + '</h2>'
+    + '<label class="field" for="' + prefix + '_grade">' + esc(t('fGrade')) + '</label>'
+    + '<div class="chips" role="radiogroup">'
+    + '<button type="button" class="chip" data-chip-for="' + prefix + '" data-value="八年级" role="radio" aria-checked="false">' + esc(t('g8')) + '</button>'
+    + '<button type="button" class="chip" data-chip-for="' + prefix + '" data-value="九年级" role="radio" aria-checked="false">' + esc(t('g9')) + '</button>'
+    + '<button type="button" class="chip" data-chip-for="' + prefix + '" data-value="高一" role="radio" aria-checked="false">' + esc(t('gH')) + '</button>'
+    + '</div>'
+    + '<input type="hidden" id="' + prefix + '_grade" name="年级" value="">'
+    + '<p class="hint" id="' + prefix + '_highNote" hidden>' + esc(t('highNote')) + '</p>'
+    + '<label class="field" for="' + prefix + '_title">' + esc(t('fTitle')) + '</label>'
+    + '<textarea id="' + prefix + '_title" name="题目" placeholder="' + esc(t('phTitle')) + '"></textarea>'
+    + '<input type="hidden" id="' + prefix + '_image" name="题目图片" value="">'
+    + '<div class="stage" id="' + prefix + '_empty" style="margin-top:12px">' + notebookHtml() + '<p>' + esc(t('lampHint')) + '</p></div>'
+    + '<div class="stage has-img" id="' + prefix + '_full" hidden><img id="' + prefix + '_preview" alt="" data-fallback="1"></div>'
+    + '<div class="btn-row" id="' + prefix + '_pick">'
+    + '<button type="button" class="btn" data-act="cap"><i class="fa-solid fa-camera" aria-hidden="true"></i>' + esc(t('capture')) + '</button>'
+    + '<button type="button" class="btn" data-act="sel"><i class="fa-solid fa-image" aria-hidden="true"></i>' + esc(t('upload')) + '</button>'
+    + '</div>'
+    + '<div class="btn-row" id="' + prefix + '_has" hidden>'
+    + '<button type="button" class="btn" data-act="sel"><i class="fa-solid fa-image" aria-hidden="true"></i>' + esc(t('replace')) + '</button>'
+    + '<button type="button" class="btn" data-act="cap"><i class="fa-solid fa-camera" aria-hidden="true"></i>' + esc(t('retake')) + '</button>'
+    + '<button type="button" class="btn" data-act="remove"><i class="fa-solid fa-xmark" aria-hidden="true"></i>' + esc(t('removeImg')) + '</button>'
+    + '<button type="button" class="btn" data-act="full"><i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i>' + esc(t('viewFull')) + '</button>'
+    + '</div>'
+    + '<label class="field" for="' + prefix + '_progress">' + esc(t('fProgress')) + '</label>'
+    + '<textarea id="' + prefix + '_progress" name="解题进展" placeholder="' + esc(t('phProgress')) + '"></textarea>'
+    + '<div class="detail-label">' + esc(t('thenLetter')) + '</div>'
+    + '<div id="' + prefix + '_guideView" class="md-theme"></div>'
+    + '<div class="btn-row" style="margin-top:12px">'
+    + '<button type="button" class="btn-primary" data-act="save">' + esc(t('save')) + '</button>'
+    + '<button type="button" class="btn" data-act="asnew">' + esc(t('submitAsNew')) + '</button>'
+    + '<button type="button" class="btn" data-act="cancel">' + esc(t('cancel')) + '</button>'
+    + '</div></form>';
+}
+function renderEditImage(prefix) {
+  var name = ($id(prefix + '_image').value || '').trim();
+  var has = !!name;
+  $id(prefix + '_empty').hidden = has;
+  $id(prefix + '_full').hidden = !has;
+  $id(prefix + '_pick').hidden = has;
+  $id(prefix + '_has').hidden = !has;
+  var img = $id(prefix + '_preview');
+  if (has && img) img.src = fileUrl(name, 'download');
+}
+function fillEditForm(row, data) {
+  var prefix = 'formEditRow' + row;
+  if (!$id(prefix + '_grade')) return;
+  setGradeChips(prefix, data.grade || '');
+  $id(prefix + '_title').value = data.title || '';
+  $id(prefix + '_image').value = String(data.image || '').trim();
+  $id(prefix + '_progress').value = data.progress || '';
+  renderEditImage(prefix);
+  var guide = String(data.guide || '').trim();
+  var box = $id(prefix + '_guideView');
+  if (guide) setMarkdown(box, data.guide);
+  else box.innerHTML = '<p class="muted">' + esc(t('guideNone')) + '</p>';
+}
+function renderArchiveFromCache() {
+  var snap = captureEditSnap();
+  var box = $id('archiveList');
+  var allEmpty = archiveCache && archiveCache.length === 0;
+  var rows = filteredArchive();
+  $id('archiveEmptyAll').hidden = !allEmpty;
+  var noHit = !!(archiveCache && archiveCache.length && rows.length === 0);
+  $id('archiveNoHit').hidden = !noHit;
+  if (!archiveCache) {
+    box.innerHTML = '<div class="empty">' + (archiveFailed ? '<p class="muted">' + esc(t('bridgeFail')) + '</p>' : lampsHtml() + '<p>' + esc(t('loading')) + '</p>') + '</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < rows.length; i++) {
+    var rec = rows[i];
+    html += '<article class="card" data-row="' + rec.row + '" tabindex="0" id="cardRow' + rec.row + '"><div class="card-body">';
+    if (editingRow === rec.row) html += editFormHtml(rec.row);
+    else {
+      var title = String(rec.title || '').trim();
+      var progress = String(rec.progress || '').trim();
+      var guide = String(rec.guide || '').trim();
+      html += '<div class="card-top"><span class="row-no" data-tpl="rowN" data-n="' + rec.row + '">' + esc(t('rowN').replace('{n}', String(rec.row))) + '</span><span class="' + gradeClass(rec.grade) + '">' + esc(gradeLabel(rec.grade)) + '</span></div>';
+      html += thumbHtml(rec.image);
+      html += '<div class="card-title">' + esc(title ? clip(title, 64) : t('titlePhotoOnly')) + '</div>';
+      html += '<div class="muted">' + esc(progress ? clip(progress, 48) : t('noAttempt')) + '</div>';
+      html += '<div class="muted">' + esc(guide ? clip(guide, 48) : t('guideNone')) + '</div>';
+      html += '<div class="btn-row">';
+      html += '<button type="button" class="btn" data-act="view">' + esc(t('view')) + '</button>';
+      html += '<button type="button" class="btn" data-act="edit">' + esc(t('edit')) + '</button>';
+      html += '<button type="button" class="btn" data-act="delete">' + esc(t('delete')) + '</button>';
+      html += '<button type="button" class="btn" data-act="continue">' + esc(t('continueDo')) + '</button>';
+      html += '</div>';
+    }
+    html += '</div></article>';
+  }
+  box.innerHTML = html;
+  fillTemplates();
+  if (editingRow && $id('formEditRow' + editingRow + '_grade')) {
+    var data = snap || editSnapshot;
+    if (data) fillEditForm(editingRow, data);
+  }
+}
+async function loadArchive() {
+  var failed = false;
+  var csvText = null;
+  var countText = null;
+  try {
+    csvText = await withTimeout(callAppBridge({type:"GetTableCSV", data:"物理解题/默认表格", payload:"年级,题目,题目图片,解题进展,解题引导"}), 20000);
+  } catch (e) { failed = true; }
+  try {
+    countText = await withTimeout(callAppBridge({type:"GetRecordCount", data:"物理解题/默认表格"}), 20000);
+  } catch (e2) { failed = true; }
+  if (csvText != null) { archiveCache = mapCsv(csvText); archiveFailed = false; }
+  else if (!archiveCache) archiveFailed = true;
+  if (countText != null) archiveCount = parseCount(countText);
+  if (failed) showToast(t('bridgeFail'));
+  renderArchiveFromCache();
+}
+function clearFilters() {
+  $id('archiveSearch').value = '';
+  $id('filterGrade').value = 'all';
+  $id('filterReply').value = 'all';
+  renderArchiveFromCache();
+}
+function gotoArchiveFilter(key) {
+  $id('archiveSearch').value = '';
+  $id('filterGrade').value = 'all';
+  $id('filterReply').value = key;
+  showPage('archive');
+}
+
+function setGradeChips(prefix, value) {
+  var hidden = $id(prefix + '_grade');
+  if (hidden) hidden.value = value || '';
+  var chips = document.querySelectorAll('[data-chip-for="' + prefix + '"]');
+  for (var i = 0; i < chips.length; i++) {
+    var on = chips[i].getAttribute('data-value') === value;
+    chips[i].classList.toggle('is-selected', on);
+    chips[i].setAttribute('aria-checked', on ? 'true' : 'false');
+  }
+  var note = $id(prefix + '_highNote');
+  if (note) note.hidden = value !== '高一';
+  if (prefix === 'formSolve') syncDeskButtons();
+}
+function renderDeskImage() {
+  var name = ($id('formSolve_image').value || '').trim();
+  var has = !!name;
+  $id('deskImageEmpty').hidden = has;
+  $id('deskImageFull').hidden = !has;
+  $id('deskPickRow').hidden = has;
+  $id('deskHasRow').hidden = !has;
+  if (has) {
+    $id('deskPreview').hidden = false;
+    $id('deskPreviewFallback').hidden = true;
+    $id('deskPreview').src = fileUrl(name, 'download');
+  }
+}
+function syncDeskButtons() {
+  var invalid = formInvalid($id('formSolve_grade').value, $id('formSolve_title').value, $id('formSolve_image').value);
+  $id('btnAskCoach').disabled = invalid || submitting || confirmBusy;
+  $id('btnAskAgain').disabled = invalid || submitting || confirmBusy;
+}
+function renderReplyState() {
+  var paper = $id('replyPaper');
+  paper.hidden = replyState === 'hidden';
+  $id('replyWaitBlock').hidden = replyState !== 'wait';
+  $id('replyDoneBlock').hidden = replyState !== 'done';
+  $id('replyTimeoutBlock').hidden = replyState !== 'timeout';
+  $id('againRow').hidden = replyState !== 'done';
+  $id('replyWaitTitle').textContent = t('waitTitle');
+  $id('replyWaitBody').textContent = t('waitBody');
+  $id('replyTimeoutText').textContent = t('timeoutText');
+  if (replyState === 'done') setMarkdown($id('replyBody'), deskReplyRaw);
+  updateAskLabel();
+  syncDeskButtons();
+}
+function clearDesk() {
+  pollGen++;
+  submitting = false;
+  currentRow = 0;
+  originRow = 0;
+  showOrigin = false;
+  replyState = 'hidden';
+  deskReplyRaw = '';
+  $id('formSolve_grade').value = '';
+  $id('formSolve_title').value = '';
+  $id('formSolve_image').value = '';
+  $id('formSolve_progress').value = '';
+  setGradeChips('formSolve', '');
+  renderDeskImage();
+  renderReplyState();
+  updateOriginHint();
+  syncDeskButtons();
+}
+function goNewProblem() {
+  clearDesk();
+  showPage('desk');
+}
+function setDeskFields(data) {
+  setGradeChips('formSolve', data.grade || '');
+  $id('formSolve_title').value = data.title || '';
+  $id('formSolve_image').value = String(data.image || '').trim();
+  $id('formSolve_progress').value = data.progress || '';
+  renderDeskImage();
+  syncDeskButtons();
+}
+async function pickImage(kind, applyName) {
+  try {
+    var name = '';
+    if (kind === 'CapturePhoto') name = await withTimeout(callAppBridge({type:"CapturePhoto"}), 20000);
+    else name = await withTimeout(callAppBridge({type:"SelectImage"}), 20000);
+    name = String(name || '').trim();
+    if (!name) return;
+    applyName(name);
+  } catch (e) {
+    showToast(t('bridgeFail'));
+  }
+}
+async function readUserFields(row) {
+  var grade = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"年级/" + row}), 20000);
+  var title = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"题目/" + row}), 20000);
+  var image = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"题目图片/" + row}), 20000);
+  var progress = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"解题进展/" + row}), 20000);
+  return { grade: String(grade || ''), title: String(title || ''), image: String(image || ''), progress: String(progress || ''), guide: '' };
+}
+async function readFive(row) {
+  var data = await readUserFields(row);
+  var guide = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"解题引导/" + row}), 20000);
+  data.guide = String(guide || '');
+  return data;
+}
+function focusField(id) {
+  var el = $id(id);
+  if (!el) return;
+  el.focus();
+  try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+}
+async function confirmSubmit(values) {
+  if (submitting) { showToast(t('stillWriting')); return false; }
+  if (confirmBusy) return false;
+  if (formInvalid(values.grade, values.title, values.image)) { showToast(t('needGradeTitle')); return false; }
+  confirmBusy = true;
+  var proceed = false;
+  try {
+    if (hasExamMark(values.progress)) {
+      var okExam = await askConfirm(t('examMsg'), t('stillSubmit'), t('backEdit'));
+      if (!okExam) return false;
+    }
+    if (attemptIsEmpty(values.progress)) {
+      var okEmpty = await askConfirm(t('emptyMsg'), t('stillSubmit'), t('goWrite'));
+      if (!okEmpty) {
+        if (values.focusId) focusField(values.focusId);
+        return false;
+      }
+    }
+    proceed = true;
+  } finally {
+    confirmBusy = false;
+    syncDeskButtons();
+  }
+  return proceed;
+}
+async function pollGuide(onTick) {
+  var gen = ++pollGen;
+  submitting = true;
+  syncDeskButtons();
+  var told = false;
+  for (var i = 0; i < 30; i++) {
+    if (gen !== pollGen) return;
+    try {
+      var text = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"解题引导/1"}), 20000);
+      if (gen !== pollGen) return;
+      if (String(text || '').trim()) {
+        submitting = false;
+        syncDeskButtons();
+        onTick('done', String(text));
+        return;
+      }
+    } catch (err) {
+      if (gen !== pollGen) return;
+      if (!told) { showToast(t('bridgeFail')); told = true; }
+    }
+    await sleep(2000);
+  }
+  if (gen !== pollGen) return;
+  submitting = false;
+  syncDeskButtons();
+  onTick('timeout', '');
+}
+function onDeskPoll(status, text) {
+  if (status === 'done') { deskReplyRaw = text; replyState = 'done'; }
+  else replyState = 'timeout';
+  renderReplyState();
+}
+function onDrawerPoll(status, text) {
+  var watching = !$id('drawerOverlay').hidden && currentRow === 1 && drawerGuideMode === 'wait';
+  if (watching) {
+    drawerGuideMode = status === 'done' ? 'show' : 'timeout';
+    if (!drawerCache) drawerCache = { grade: '', title: '', image: '', progress: '', guide: '' };
+    if (status === 'done') drawerCache.guide = text;
+    renderDrawer();
+  }
+  loadArchive();
+}
+async function actuallySubmit(values, where) {
+  submitting = true;
+  syncDeskButtons();
+  var payload = JSON.stringify({
+    "年级": values.grade,
+    "题目": values.title,
+    "题目图片": values.image || "",
+    "解题进展": values.progress
+  });
+  try {
+    await withTimeout(callAppBridge({type:"SubmitRecord", data:"物理解题", payload: payload}), 20000);
+  } catch (e) {
+    submitting = false;
+    syncDeskButtons();
+    showToast(t('bridgeFail'));
+    return;
+  }
+  currentRow = 1;
+  showOrigin = false;
+  originRow = 0;
+  updateOriginHint();
+  updateAskLabel();
+  if (where === 'desk') {
+    replyState = 'wait';
+    deskReplyRaw = '';
+    renderReplyState();
+    pollGuide(onDeskPoll);
+    return;
+  }
+  editingRow = 0;
+  editToken++;
+  drawerCache = { grade: values.grade, title: values.title, image: values.image, progress: values.progress, guide: '' };
+  drawerGuideMode = 'wait';
+  drawerCount = null;
+  showDrawerFrame();
+  renderDrawer();
+  loadArchive();
+  pollGuide(onDrawerPoll);
+}
+async function submitFromDesk() {
+  var values = {
+    grade: $id('formSolve_grade').value.trim(),
+    title: $id('formSolve_title').value.trim(),
+    image: $id('formSolve_image').value.trim(),
+    progress: $id('formSolve_progress').value.trim(),
+    focusId: 'formSolve_progress'
+  };
+  var ok = await confirmSubmit(values);
+  if (!ok) return;
+  await actuallySubmit(values, 'desk');
+}
+function deskValuesFromEdit(row) {
+  var prefix = 'formEditRow' + row;
+  return {
+    grade: ($id(prefix + '_grade').value || '').trim(),
+    title: ($id(prefix + '_title').value || '').trim(),
+    image: ($id(prefix + '_image').value || '').trim(),
+    progress: ($id(prefix + '_progress').value || '').trim(),
+    focusId: prefix + '_progress'
+  };
+}
+async function startEdit(row) {
+  var token = ++editToken;
+  editingRow = row;
+  currentRow = row;
+  editSnapshot = null;
+  renderArchiveFromCache();
+  try {
+    var data = await readFive(row);
+    if (token !== editToken || editingRow !== row) return;
+    editSnapshot = data;
+    fillEditForm(row, data);
+  } catch (e) {
+    if (token !== editToken) return;
+    showToast(t('bridgeFail'));
+  }
+}
+function cancelEdit() {
+  editingRow = 0;
+  editToken++;
+  editSnapshot = null;
+  renderArchiveFromCache();
+}
+async function onSave(row) {
+  if (saveBusy) return;
+  var values = deskValuesFromEdit(row);
+  if (formInvalid(values.grade, values.title, values.image)) { showToast(t('needGradeTitle')); return; }
+  saveBusy = true;
+  try {
+    await withTimeout(callAppBridge({type:"SetCellValue", data:"物理解题/默认表格", payload:"年级/" + row + "/" + values.grade}), 20000);
+    await withTimeout(callAppBridge({type:"SetCellValue", data:"物理解题/默认表格", payload:"题目/" + row + "/" + values.title}), 20000);
+    await withTimeout(callAppBridge({type:"SetCellValue", data:"物理解题/默认表格", payload:"题目图片/" + row + "/" + (values.image || "")}), 20000);
+    await withTimeout(callAppBridge({type:"SetCellValue", data:"物理解题/默认表格", payload:"解题进展/" + row + "/" + values.progress}), 20000);
+    showToast(t('saved'));
+    editingRow = 0;
+    editToken++;
+    editSnapshot = null;
+    currentRow = row;
+    await loadArchive();
+  } catch (e) {
+    showToast(t('bridgeFail'));
+  } finally {
+    saveBusy = false;
+  }
+}
+async function onDelete(row) {
+  if (submitting || saveBusy || confirmBusy) return;
+  var ok = await askConfirm(t('deleteAsk').replace('{n}', String(row)), t('deleteDo'), t('cancel'));
+  if (!ok) return;
+  try {
+    await withTimeout(callAppBridge({type:"DeleteRecord", data:"物理解题/默认表格", payload: row.toString()}), 20000);
+    if (currentRow === row) {
+      currentRow = 0;
+      closeDrawer();
+    }
+    if (editingRow === row) { editingRow = 0; editToken++; editSnapshot = null; }
+    if (originRow === row) { showOrigin = false; originRow = 0; updateOriginHint(); updateAskLabel(); }
+    showToast(t('deleted'));
+    await loadArchive();
+    if (currentPage === 'home') await loadHome();
+  } catch (e) {
+    showToast(t('bridgeFail'));
+  }
+}
+async function onContinue(row) {
+  try {
+    var data = await readUserFields(row);
+    currentRow = row;
+    originRow = row;
+    showOrigin = true;
+    replyState = 'hidden';
+    deskReplyRaw = '';
+    setDeskFields(data);
+    renderReplyState();
+    updateOriginHint();
+    updateAskLabel();
+    showPage('desk');
+  } catch (e) {
+    showToast(t('bridgeFail'));
+  }
+}
+async function onAsNew(row) {
+  var values = deskValuesFromEdit(row);
+  var ok = await confirmSubmit(values);
+  if (!ok) return;
+  await actuallySubmit(values, 'archive');
+}
+function renderDrawer() {
+  var data = drawerCache || { grade: '', title: '', image: '', progress: '', guide: '' };
+  $id('drawerTitle').textContent = t('rowN').replace('{n}', String(currentRow || ''));
+  $id('btnPrev').disabled = currentRow <= 1;
+  $id('btnNext').disabled = drawerCount != null && currentRow >= drawerCount;
+  var html = '';
+  html += '<div class="card-top"><span class="' + gradeClass(data.grade) + '">' + esc(gradeLabel(data.grade)) + '</span></div>';
+  html += '<div class="detail-label">' + esc(t('fTitle')) + '</div>';
+  html += '<p class="detail-text">' + (String(data.title || '').trim() ? textBlock(data.title) : esc(t('titlePhotoOnly'))) + '</p>';
+  html += '<div class="detail-label">' + esc(t('fImage')) + '</div>';
+  if (String(data.image || '').trim()) {
+    html += '<img class="thumb" data-fallback="1" alt="" src="' + esc(fileUrl(String(data.image).trim(), 'download')) + '">';
+    html += '<div class="btn-row"><button type="button" class="btn" data-act="full">' + esc(t('viewFull')) + '</button></div>';
+  } else html += notebookHtml();
+  html += '<div class="detail-label">' + esc(t('fProgress')) + '</div>';
+  html += '<p class="detail-text">' + (String(data.progress || '').trim() ? textBlock(data.progress) : esc(t('noAttempt'))) + '</p>';
+  html += '<div class="detail-label">' + esc(t('coachLetter')) + '</div>';
+  if (drawerGuideMode === 'wait') {
+    html += lampsHtml() + '<p>' + esc(t('waitTitle')) + '</p><p class="muted">' + esc(t('waitBody')) + '</p>';
+  } else if (drawerGuideMode === 'timeout') {
+    html += '<p>' + esc(t('timeoutText')) + '</p><button type="button" class="btn" data-act="open1">' + esc(t('openRow1')) + '</button>';
+  } else if (String(data.guide || '').trim()) {
+    html += '<div id="drawerGuide" class="md-theme"></div>';
+  } else {
+    html += '<p>' + esc(t('drawerEmptyGuide')) + '</p><button type="button" class="btn" data-act="reask">' + esc(t('reask')) + '</button>';
+  }
+  $id('drawerBody').innerHTML = html;
+  if (drawerGuideMode === 'show' && String(data.guide || '').trim()) setMarkdown($id('drawerGuide'), data.guide);
+}
+async function openDetail(row) {
+  currentRow = row;
+  var token = ++detailToken;
+  drawerGuideMode = 'show';
+  showDrawerFrame();
+  $id('drawerBody').innerHTML = lampsHtml() + '<p>' + esc(t('loading')) + '</p>';
+  try {
+    var countText = await withTimeout(callAppBridge({type:"GetRecordCount", data:"物理解题/默认表格"}), 20000);
+    var data = await readFive(row);
+    if (token !== detailToken) return;
+    drawerCount = parseCount(countText);
+    drawerCache = data;
+    renderDrawer();
+  } catch (e) {
+    if (token !== detailToken) return;
+    showToast(t('bridgeFail'));
+  }
+}
+async function moveDrawer(delta) {
+  try {
+    var countText = await withTimeout(callAppBridge({type:"GetRecordCount", data:"物理解题/默认表格"}), 20000);
+    var count = parseCount(countText);
+    if (count == null) { showToast(t('bridgeFail')); return; }
+    drawerCount = count;
+    var next = currentRow + delta;
+    if (next < 1 || next > count) { renderDrawer(); return; }
+    currentRow = next;
+    drawerGuideMode = 'show';
+    var token = ++detailToken;
+    var data = await readFive(currentRow);
+    if (token !== detailToken) return;
+    drawerCache = data;
+    renderDrawer();
+  } catch (e) {
+    showToast(t('bridgeFail'));
+  }
+}
+async function reaskGuide() {
+  var token = ++detailToken;
+  try {
+    var text = await withTimeout(callAppBridge({type:"GetCellValue", data:"物理解题/默认表格", payload:"解题引导/" + currentRow}), 20000);
+    if (token !== detailToken) return;
+    if (!drawerCache) drawerCache = { grade: '', title: '', image: '', progress: '', guide: '' };
+    drawerCache.guide = String(text || '');
+    drawerGuideMode = 'show';
+    renderDrawer();
+  } catch (e) {
+    showToast(t('bridgeFail'));
+  }
+}
+function gotoRow1() {
+  showPage('archive');
+  openDetail(1);
+}
+async function copyLetter() {
+  var text = deskReplyRaw || '';
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      showToast(t('copied'));
+      return;
+    }
+  } catch (e) {}
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (!ok) throw new Error('copy');
+    showToast(t('copied'));
+  } catch (e2) {
+    showToast(t('copyFail'));
+  }
+}
+async function editFromDrawer() {
+  var row = currentRow;
+  closeDrawer();
+  editingRow = 0;
+  if (currentPage !== 'archive') await showPage('archive');
+  else await loadArchive();
+  startEdit(row);
+}
+async function continueFromDrawer() {
+  var row = currentRow;
+  closeDrawer();
+  await onContinue(row);
+}
+
+function bindUI() {
+  $id('brandBtn').addEventListener('click', function () {
+    try { parent.closeFullHtml(false); } catch (e) {}
+  });
+  $id('langToggle').addEventListener('click', toggleLanguage);
+  $id('mobLangToggle').addEventListener('click', toggleLanguage);
+  $id('hamburgerBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var menu = $id('mobileMenu');
+    var open = !menu.classList.contains('is-open');
+    menu.classList.toggle('is-open', open);
+    $id('hamburgerBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function (e) {
+    var nav = e.target.closest('[data-nav]');
+    if (nav) {
+      showPage(nav.getAttribute('data-nav'));
+      closeMenu();
+      return;
+    }
+    var menu = $id('mobileMenu');
+    if (!menu.classList.contains('is-open')) return;
+    if (menu.contains(e.target) || $id('hamburgerBtn').contains(e.target)) return;
+    closeMenu();
+  });
+  $id('btnGoDesk').addEventListener('click', goNewProblem);
+  $id('btnFirstProblem').addEventListener('click', goNewProblem);
+  $id('btnEmptyNew').addEventListener('click', goNewProblem);
+  $id('btnNewProblem').addEventListener('click', goNewProblem);
+  $id('btnClearDesk').addEventListener('click', clearDesk);
+  $id('btnToArchive').addEventListener('click', function () { showPage('archive'); });
+  $id('statAll').addEventListener('click', function () { gotoArchiveFilter('all'); });
+  $id('statGuided').addEventListener('click', function () { gotoArchiveFilter('guided'); });
+  $id('statNoProgress').addEventListener('click', function () { gotoArchiveFilter('noprogress'); });
+  $id('recentGrid').addEventListener('click', function (e) {
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    openDetail(parseInt(card.getAttribute('data-row'), 10));
+  });
+  var deskChips = document.querySelectorAll('[data-chip-for="formSolve"]');
+  for (var i = 0; i < deskChips.length; i++) {
+    deskChips[i].addEventListener('click', function (ev) {
+      var btn = ev.currentTarget;
+      setGradeChips('formSolve', btn.getAttribute('data-value'));
+    });
+  }
+  $id('formSolve_title').addEventListener('input', syncDeskButtons);
+  $id('formSolve_progress').addEventListener('input', syncDeskButtons);
+  $id('formSolve').addEventListener('submit', function (e) { e.preventDefault(); });
+  $id('btnCapture').addEventListener('click', function () {
+    pickImage('CapturePhoto', function (name) { $id('formSolve_image').value = name; renderDeskImage(); syncDeskButtons(); });
+  });
+  $id('btnUpload').addEventListener('click', function () {
+    pickImage('SelectImage', function (name) { $id('formSolve_image').value = name; renderDeskImage(); syncDeskButtons(); });
+  });
+  $id('btnReplace').addEventListener('click', function () {
+    pickImage('SelectImage', function (name) { $id('formSolve_image').value = name; renderDeskImage(); syncDeskButtons(); });
+  });
+  $id('btnRetake').addEventListener('click', function () {
+    pickImage('CapturePhoto', function (name) { $id('formSolve_image').value = name; renderDeskImage(); syncDeskButtons(); });
+  });
+  $id('btnRemove').addEventListener('click', function () {
+    $id('formSolve_image').value = '';
+    renderDeskImage();
+    syncDeskButtons();
+  });
+  $id('btnViewFull').addEventListener('click', function () { openOriginal($id('formSolve_image').value); });
+  $id('deskPreview').addEventListener('error', function () {
+    $id('deskPreview').hidden = true;
+    $id('deskPreviewFallback').hidden = false;
+  });
+  $id('btnAskCoach').addEventListener('click', submitFromDesk);
+  $id('btnAskAgain').addEventListener('click', submitFromDesk);
+  $id('btnCopyReply').addEventListener('click', copyLetter);
+  $id('btnGotoRow').addEventListener('click', gotoRow1);
+  $id('btnOpenRow1').addEventListener('click', gotoRow1);
+  $id('archiveSearch').addEventListener('input', renderArchiveFromCache);
+  $id('filterGrade').addEventListener('change', renderArchiveFromCache);
+  $id('filterReply').addEventListener('change', renderArchiveFromCache);
+  $id('btnRefresh').addEventListener('click', function () { loadHome(); loadArchive(); });
+  $id('btnClearFilters').addEventListener('click', clearFilters);
+  $id('archiveList').addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-chip-for]');
+    if (chip && chip.getAttribute('data-chip-for') !== 'formSolve') {
+      setGradeChips(chip.getAttribute('data-chip-for'), chip.getAttribute('data-value'));
+      return;
+    }
+    var actEl = e.target.closest('[data-act]');
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    var row = parseInt(card.getAttribute('data-row'), 10);
+    if (actEl) {
+      var name = actEl.getAttribute('data-act');
+      if (name === 'view') openDetail(row);
+      else if (name === 'edit') startEdit(row);
+      else if (name === 'delete') onDelete(row);
+      else if (name === 'continue') onContinue(row);
+      else if (name === 'save') onSave(row);
+      else if (name === 'asnew') onAsNew(row);
+      else if (name === 'cancel') cancelEdit();
+      else if (name === 'cap') {
+        pickImage('CapturePhoto', function (filename) {
+          var input = $id('formEditRow' + row + '_image');
+          if (!input) return;
+          input.value = filename;
+          renderEditImage('formEditRow' + row);
+        });
+      } else if (name === 'sel') {
+        pickImage('SelectImage', function (filename) {
+          var input = $id('formEditRow' + row + '_image');
+          if (!input) return;
+          input.value = filename;
+          renderEditImage('formEditRow' + row);
+        });
+      } else if (name === 'remove') {
+        var imageInput = $id('formEditRow' + row + '_image');
+        if (imageInput) imageInput.value = '';
+        renderEditImage('formEditRow' + row);
+      } else if (name === 'full') {
+        var current = $id('formEditRow' + row + '_image');
+        openOriginal(current ? current.value : '');
+      }
+      return;
+    }
+    if (e.target.closest('input, textarea, select, a, button, label, form')) return;
+    if (editingRow === row) return;
+    startEdit(row);
+  });
+  $id('archiveList').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.target.closest('input, textarea, select, button, a')) return;
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    startEdit(parseInt(card.getAttribute('data-row'), 10));
+  });
+  $id('btnPrev').addEventListener('click', function () { moveDrawer(-1); });
+  $id('btnNext').addEventListener('click', function () { moveDrawer(1); });
+  $id('btnDrawerEdit').addEventListener('click', editFromDrawer);
+  $id('btnDrawerDelete').addEventListener('click', function () { onDelete(currentRow); });
+  $id('btnDrawerContinue').addEventListener('click', continueFromDrawer);
+  $id('btnDrawerClose').addEventListener('click', closeDrawer);
+  $id('drawer').addEventListener('click', function (e) {
+    var actEl = e.target.closest('[data-act]');
+    if (!actEl) return;
+    var name = actEl.getAttribute('data-act');
+    if (name === 'reask') reaskGuide();
+    else if (name === 'full') openOriginal(drawerCache && drawerCache.image);
+    else if (name === 'open1') gotoRow1();
+  });
+  $id('drawerOverlay').addEventListener('click', function (e) {
+    if (e.target === $id('drawerOverlay')) closeDrawer();
+  });
+  $id('viewerOverlay').addEventListener('click', function (e) {
+    if (e.target === $id('viewerOverlay')) closeViewer();
+  });
+  $id('btnViewerClose').addEventListener('click', closeViewer);
+  document.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG' || img.getAttribute('data-fallback') !== '1') return;
+    var holder = document.createElement('div');
+    holder.className = 'notebook';
+    holder.innerHTML = '<span></span><span></span>';
+    if (img.parentNode) img.parentNode.replaceChild(holder, img);
+  }, true);
+  document.addEventListener('focusin', function (e) {
+    var el = e.target;
+    if (!el || !el.matches || !el.matches('input, textarea, select')) return;
+    setTimeout(function () {
+      try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (err) {}
+    }, 320);
+  });
+  if (window.visualViewport) {
+    var onVv = function () {
+      var kb = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+      document.documentElement.style.setProperty('--kb', kb + 'px');
+      var el = document.activeElement;
+      if (kb > 80 && el && el.matches && el.matches('input, textarea, select')) {
+        try { el.scrollIntoView({ block: 'center' }); } catch (err) {}
+      }
+    };
+    window.visualViewport.addEventListener('resize', onVv);
+    window.visualViewport.addEventListener('scroll', onVv);
+  }
+  window.addEventListener('resize', updateNavMode);
+}
+
+async function initialize() {
+  applyLanguage(detectLanguage());
+  bindUI();
+  updateNavMode();
+  try {
+    var mode = await withTimeout(callAppBridge({type:"模式"}), 8000);
+    applyMode(mode);
+  } catch (err) {
+    applyMode('亮色');
+  }
+  await showPage('home', { record: false });
+  document.body.classList.add('ready');
+}
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

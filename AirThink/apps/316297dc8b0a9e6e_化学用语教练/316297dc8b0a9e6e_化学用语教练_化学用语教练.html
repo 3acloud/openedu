@@ -1,0 +1,2928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>化学用语教练</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #F4F0E6;
+    --nav: #0E3A4D;
+    --primary: #D4782A;
+    --accent: #2A9D8F;
+    --card: #ffffff;
+    --text: #1a2a32;
+    --muted: #5e6e76;
+    --paper: #FBF7EE;
+    --shadow: 0 10px 28px rgba(62, 44, 20, .07);
+    --line: rgba(14, 58, 77, .12);
+    --warn: #9A5416;
+  }
+  html[data-theme="dark"] {
+    --bg: #12181b;
+    --card: #1c262b;
+    --text: #f4f0e6;
+    --muted: #b7c4c8;
+    --paper: #2a241c;
+    --shadow: 0 10px 28px rgba(0, 0, 0, .35);
+    --line: rgba(255, 255, 255, .12);
+    --warn: #e2b56a;
+    color-scheme: dark;
+  }
+  html { color-scheme: light; }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; }
+  html, body { max-width: 100%; }
+  body {
+    margin: 0;
+    padding-top: 64px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: "Noto Sans SC", "PingFang SC", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='48' viewBox='0 0 84 48'%3E%3Cpath d='M21 1.2 41.2 12.6v22.8L21 46.8.8 35.4V12.6Z' fill='none' stroke='%230E3A4D' stroke-width='1'/%3E%3Cpath d='M63 1.2 83.2 12.6v22.8L63 46.8 42.8 35.4V12.6Z' fill='none' stroke='%230E3A4D' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 84px 48px;
+  }
+  html[data-theme="dark"] body::before {
+    opacity: .07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='48' viewBox='0 0 84 48'%3E%3Cpath d='M21 1.2 41.2 12.6v22.8L21 46.8.8 35.4V12.6Z' fill='none' stroke='%23F4F0E6' stroke-width='1'/%3E%3Cpath d='M63 1.2 83.2 12.6v22.8L63 46.8 42.8 35.4V12.6Z' fill='none' stroke='%23F4F0E6' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  button, input, select, textarea { font-family: inherit; }
+  button { cursor: pointer; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  input, select, textarea { font-size: 16px; color: var(--text); scroll-margin-top: 88px; scroll-margin-bottom: 28vh; }
+  [hidden] { display: none !important; }
+  #navShell { position: fixed; top: 0; left: 0; right: 0; z-index: 1001; }
+  #topNav { background: var(--nav); border-bottom: 3px solid var(--primary); }
+  .nav-bar { height: 64px; display: flex; align-items: center; gap: 8px; padding: 0 10px 0 8px; }
+  .logo-btn { display: flex; align-items: center; gap: 8px; min-width: 0; background: transparent; border: 0; color: #fff; font-weight: 700; font-size: 18px; padding: 8px; }
+  .logo-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 54vw; }
+  .logo-btn i { color: #F0B27A; font-size: 20px; }
+  .nav-links { margin-left: auto; display: flex; flex-wrap: nowrap; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { height: 0; }
+  .nav-tab { flex: 0 0 auto; white-space: nowrap; background: transparent; border: 0; color: rgba(255,255,255,.78); font-weight: 600; padding: 18px 12px 16px; }
+  .nav-tab.is-active { color: #fff; box-shadow: inset 0 -3px 0 #D4782A; }
+  .lang-btn { flex: 0 0 auto; min-width: 44px; height: 36px; border-radius: 999px; border: 1px solid rgba(255,255,255,.35); background: transparent; color: #fff; font-weight: 700; }
+  #btnHamburger { display: none; width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: #fff; font-size: 20px; }
+  #topNav.is-compact #btnHamburger { display: inline-flex; align-items: center; justify-content: center; margin-left: auto; }
+  #topNav.is-compact #navLinks, #topNav.is-compact #btnLang { display: none; }
+  #mobileMenu { display: none; background: #0E3A4D; padding: 4px 10px 12px; }
+  #topNav.menu-open #mobileMenu { display: block; }
+  .menu-tab { display: block; width: 100%; text-align: left; color: rgba(255,255,255,.9); background: transparent; border: 0; border-radius: 10px; padding: 12px; font-size: 16px; font-weight: 600; }
+  .menu-tab.is-active { background: rgba(212,120,42,.22); box-shadow: inset 3px 0 0 #D4782A; }
+  .menu-lang { display: flex; gap: 8px; padding: 8px; }
+  .menu-lang button { flex: 1; min-height: 42px; border-radius: 999px; border: 1px solid rgba(255,255,255,.32); background: transparent; color: #fff; font-weight: 700; }
+  .menu-lang button.is-on { background: #D4782A; border-color: #D4782A; }
+  main { position: relative; z-index: 1; }
+  .page { display: none; }
+  .page.is-active { display: block; }
+  .wrap { width: min(1080px, calc(100% - 32px)); margin: 0 auto; padding: 22px 0 48px; }
+  .hero h1, .page-head h1 { margin: 0; font-size: clamp(32px, 5vw, 46px); line-height: 1.15; color: #0E3A4D; }
+  html[data-theme="dark"] .hero h1, html[data-theme="dark"] .page-head h1 { color: var(--text); }
+  .lede, .page-head p { margin: 8px 0 0; color: var(--muted); max-width: 42em; }
+  .page-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
+  .section-title { margin: 26px 0 12px; font-size: 20px; }
+  .btn-primary, .btn-ghost, .btn-accent, .btn-danger { min-height: 44px; padding: 10px 16px; border-radius: 999px; font-weight: 700; }
+  .btn-primary { background: #D4782A; color: #fff; border: 0; }
+  .btn-primary:hover:not(:disabled) { background: #be641f; }
+  .btn-accent { background: #2A9D8F; color: #fff; border: 0; }
+  .btn-ghost { background: transparent; color: #0E3A4D; border: 1.5px solid rgba(14,58,77,.22); }
+  html[data-theme="dark"] .btn-ghost { color: var(--text); border-color: rgba(255,255,255,.22); }
+  .btn-danger { background: transparent; color: #A33B32; border: 1.5px solid #E4B4AE; }
+  html[data-theme="dark"] .btn-danger { color: #ffb4ac; border-color: #8a4a44; }
+  .btn-mini { min-height: 38px; padding: 8px 12px; font-size: 14px; }
+  .card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); border: 2px solid transparent; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+  .stat-card { padding: 16px 16px 18px; min-height: 112px; }
+  .stat-btn { position: relative; text-align: left; width: 100%; color: inherit; }
+  .stat-label { display: block; color: var(--muted); font-size: 14px; }
+  .stat-num { display: block; margin-top: 8px; font-size: 36px; font-weight: 700; line-height: 1; color: #0E3A4D; }
+  html[data-theme="dark"] .stat-num { color: #f4f0e6; }
+  .stat-go { position: absolute; right: 14px; bottom: 16px; color: var(--muted); }
+  .dir-grid, .card-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .card-list { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .dir-tile, .record-card { padding: 14px; text-align: left; width: 100%; color: inherit; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  button.dir-tile, button.record-card { font: inherit; }
+  .dir-tile { border-top: 6px solid var(--dir, var(--accent)); }
+  .dir-tile:hover, .record-card:hover, .stat-btn:hover { transform: translateY(-4px); border-color: var(--dir, #D4782A); }
+  .dir-tile-head { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+  .dir-tile-head i { color: var(--dir); }
+  .dir-hint, .hint { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+  .dir-count { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--dir, var(--accent)); }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: 12px; background: rgba(14,58,77,.06); }
+  html[data-theme="dark"] .pill { background: rgba(255,255,255,.06); }
+  .pill-on { color: #1E8C62; background: rgba(30,140,98,.12); }
+  .pill-off { color: var(--muted); }
+  .formula-text { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  .card-question { margin: 10px 0 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .card-brief { margin: 0; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+  .mini-label { margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .empty-card { grid-column: 1 / -1; background: var(--card); border-radius: 16px; box-shadow: var(--shadow); text-align: center; padding: 28px 16px; }
+  .empty-card p { margin: 0 0 12px; color: var(--muted); }
+  .practice-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 16px; align-items: start; }
+  .writing-card, .paper-card { padding: 16px; }
+  .field-block { margin-bottom: 14px; }
+  .field-label { display: block; font-weight: 700; margin-bottom: 8px; }
+  .choice-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .stage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .choice-card { position: relative; display: block; border-radius: 16px; padding: 12px; background: var(--card); border: 2px solid transparent; box-shadow: var(--shadow); cursor: pointer; }
+  .choice-card input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .choice-card.is-on { border-color: var(--dir, var(--accent)); background: var(--dir-soft, rgba(42,157,143,.12)); }
+  .choice-name { display: block; font-weight: 700; }
+  .choice-hint { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+  #formChemPractice.is-locked .choice-card { cursor: default; }
+  .switch-row { display: flex; gap: 12px; align-items: flex-start; }
+  .switch { position: relative; width: 52px; height: 32px; flex: 0 0 auto; }
+  .switch input { position: absolute; inset: 0; opacity: 0; margin: 0; }
+  .switch-ui { position: absolute; inset: 0; border-radius: 999px; background: #d9d3c6; }
+  .switch-ui::after { content: ""; position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; transition: transform .18s ease; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+  .switch input:checked + .switch-ui { background: #2A9D8F; }
+  .switch input:checked + .switch-ui::after { transform: translateX(20px); }
+  .switch input:focus-visible + .switch-ui { outline: 2px solid #D4782A; outline-offset: 2px; }
+  textarea { width: 100%; min-height: 200px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); padding: 12px 14px; line-height: 1.6; resize: vertical; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  textarea:disabled, .choice-card input:disabled { opacity: 1; -webkit-text-fill-color: var(--text); color: var(--text); }
+  .hint-warn { color: var(--warn); }
+  .exam-note { display: flex; gap: 8px; align-items: flex-start; }
+  .example-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .chip { border: 1px dashed rgba(14,58,77,.28); background: rgba(255,255,255,.55); color: var(--text); border-radius: 999px; padding: 8px 12px; text-align: left; max-width: 100%; }
+  html[data-theme="dark"] .chip { background: rgba(255,255,255,.04); }
+  .action-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .edit-banner { background: rgba(212,120,42,.12); border: 1px solid rgba(212,120,42,.35); color: #8A4B12; border-radius: 12px; padding: 10px 12px; margin: 0 0 12px; }
+  html[data-theme="dark"] .edit-banner { color: #f3c59a; }
+  .paper-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .paper-head h2 { margin: 0; font-size: 18px; }
+  .browse-controls { display: flex; align-items: center; gap: 6px; }
+  .browse-controls button { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-weight: 700; }
+  #browseLabel { min-width: 78px; text-align: center; font-size: 12px; color: var(--muted); }
+  .md-paper { position: relative; background: var(--paper); border-radius: 12px; min-height: 220px; padding: 14px 14px 16px 28px; }
+  .md-paper::before { content: ""; position: absolute; left: 12px; top: 12px; bottom: 12px; width: 2px; background: #C44536; border-radius: 2px; }
+  .paper-status { margin: 8px 0; color: var(--muted); }
+  .md-body { overflow-wrap: anywhere; word-break: break-word; }
+  .md-body h1, .md-body h2, .md-body h3, .md-body h4, .md-body h5, .md-body h6 { line-height: 1.3; margin: .8em 0 .4em; }
+  .md-body p { margin: .5em 0; }
+  .md-body ul, .md-body ol { margin: .4em 0; padding-left: 1.3em; }
+  .md-body code { font-family: ui-monospace, Consolas, monospace; background: rgba(14,58,77,.08); padding: .1em .35em; border-radius: 4px; }
+  html[data-theme="dark"] .md-body code { background: rgba(255,255,255,.08); }
+  .md-body pre { overflow-x: auto; padding: 10px; border-radius: 10px; background: rgba(14,58,77,.06); }
+  .md-body pre code { background: transparent; padding: 0; }
+  .md-body blockquote { margin: .6em 0; padding-left: 10px; border-left: 3px solid #D4782A; color: var(--muted); }
+  .md-body img { max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  .md-body table { border-collapse: collapse; min-width: 420px; }
+  .md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+  .filter-bar { display: grid; grid-template-columns: 1.4fr repeat(3, minmax(0, .8fr)); gap: 10px; padding: 12px; margin-bottom: 14px; }
+  .filter-bar input, .filter-bar select { width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); padding: 0 12px; }
+  .overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(14, 32, 42, .48); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #confirmOverlay { z-index: 2100; }
+  .dialog { width: min(760px, 100%); max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow: auto; background: var(--card); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.24); }
+  .dialog-confirm { width: min(420px, 100%); }
+  .dialog-head, .dialog-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px; }
+  .dialog-actions { justify-content: flex-end; flex-wrap: wrap; }
+  .dialog-head h2 { margin: 0; font-size: 20px; }
+  .dialog-body { padding: 0 16px 8px; }
+  .icon-btn { width: 40px; height: 40px; border: 0; border-radius: 12px; background: transparent; color: var(--text); font-size: 18px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .field-value, .detail-question { overflow-wrap: anywhere; }
+  .detail-question { white-space: pre-wrap; background: var(--bg); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+  .confirm-text { padding: 8px 16px 0; font-size: 18px; font-weight: 700; }
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 2300; background: #0E3A4D; color: #fff; border-radius: 999px; padding: 12px 18px; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
+  #page_practice.mode-create #btnSave,
+  #page_practice.mode-create #btnResubmit,
+  #page_practice.mode-create #btnCancelEdit,
+  #page_practice.mode-browse #btnGetCoach,
+  #page_practice.mode-browse #btnSave,
+  #page_practice.mode-browse #btnResubmit,
+  #page_practice.mode-browse #btnCancelEdit,
+  #page_practice.mode-edit #btnGetCoach,
+  #page_practice.mode-edit #btnAgain { display: none; }
+  @media (min-width: 900px) {
+    .paper-card { position: sticky; top: 80px; }
+  }
+  @media (max-width: 860px) {
+    .practice-grid, .stat-grid, .choice-grid { grid-template-columns: 1fr 1fr; }
+    .stage-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 800px) {
+    .filter-bar { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .wrap { width: min(1080px, calc(100% - 20px)); padding-bottom: 160px; }
+    #formChemPractice { padding-bottom: 46vh; }
+    .dialog-body, .md-paper { padding-bottom: 160px; }
+    .toast { bottom: 72px; }
+  }
+  @media (max-width: 640px) {
+    .stat-grid, .choice-grid, .filter-bar, .detail-grid { grid-template-columns: 1fr; }
+    .practice-grid { grid-template-columns: 1fr; }
+    #detailOverlay { padding: 0; align-items: stretch; }
+    #detailDialog { width: 100%; height: 100%; max-width: none; max-height: none; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="navShell">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div class="nav-bar">
+      <button type="button" id="btnLogo" class="logo-btn">
+        <i class="fa-solid fa-flask" aria-hidden="true"></i>
+        <span data-i18n="app_name">化学用语教练</span>
+      </button>
+      <div id="navLinks" class="nav-links">
+        <button type="button" class="nav-tab is-active" id="tabHome" data-page="home"><span data-i18n="nav_home">首页</span></button>
+        <button type="button" class="nav-tab" id="tabPractice" data-page="practice"><span data-i18n="nav_practice">练习台</span></button>
+        <button type="button" class="nav-tab" id="tabBook" data-page="book"><span data-i18n="nav_book">练习册</span></button>
+      </div>
+      <button type="button" id="btnLang" class="lang-btn">EN</button>
+      <button type="button" id="btnHamburger" aria-expanded="false" aria-label="菜单"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="menu-tab is-active" id="menuTabHome" data-page="home"><span data-i18n="nav_home">首页</span></button>
+      <button type="button" class="menu-tab" id="menuTabPractice" data-page="practice"><span data-i18n="nav_practice">练习台</span></button>
+      <button type="button" class="menu-tab" id="menuTabBook" data-page="book"><span data-i18n="nav_book">练习册</span></button>
+      <div class="menu-lang">
+        <button type="button" id="menuLangCn" data-set-lang="cn">中文</button>
+        <button type="button" id="menuLangEn" data-set-lang="en">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main id="main">
+  <section id="page_home" class="page is-active">
+    <div class="wrap">
+      <header class="hero">
+        <h1 data-i18n="app_name">化学用语教练</h1>
+        <p class="lede" data-i18n="home_desc">一次练一个方向，把元素符号、化合价、化学式和方程式写规范</p>
+        <p><button type="button" id="btnStartPractice" class="btn-primary"><span data-i18n="start_practice">开始练习</span></button></p>
+      </header>
+      <div class="stat-grid">
+        <article class="card stat-card" id="statTotal">
+          <span class="stat-label" data-i18n="stat_total">练习总次数</span>
+          <span class="stat-num" id="statTotalNum">…</span>
+        </article>
+        <button type="button" class="card stat-card stat-btn" id="statJunior">
+          <span class="stat-label" data-i18n="stat_junior">初中练习数</span>
+          <span class="stat-num" id="statJuniorNum">…</span>
+          <i class="fa-solid fa-chevron-right stat-go" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="card stat-card stat-btn" id="statSenior">
+          <span class="stat-label" data-i18n="stat_senior">高中练习数</span>
+          <span class="stat-num" id="statSeniorNum">…</span>
+          <i class="fa-solid fa-chevron-right stat-go" aria-hidden="true"></i>
+        </button>
+      </div>
+      <h2 class="section-title" data-i18n="dir_section">练习方向</h2>
+      <div id="dirGrid" class="dir-grid"></div>
+      <h2 class="section-title" data-i18n="recent_section">最近练习</h2>
+      <div id="homeError" class="empty-card" hidden>
+        <p data-i18n="load_error">暂时没有连上练习数据</p>
+        <button type="button" id="btnHomeRetry" class="btn-primary"><span data-i18n="retry">重试</span></button>
+      </div>
+      <div id="recentList" class="card-list"></div>
+    </div>
+  </section>
+  <section id="page_practice" class="page mode-create">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="nav_practice">练习台</h1>
+          <p data-i18n="practice_desc">一次只练一个层级。先写你的问题，或写下你自己的化学式、方程式，教练会指出错在哪一步</p>
+        </div>
+        <button type="button" id="btnOpenBook" class="btn-ghost"><span data-i18n="open_book">查看练习册</span></button>
+      </div>
+      <p id="practiceBanner" class="edit-banner" hidden></p>
+      <div class="practice-grid">
+        <form id="formChemPractice" class="card writing-card" autocomplete="off">
+          <div class="field-block">
+            <div class="field-label" data-i18n="field_stage">学段</div>
+            <div class="choice-grid stage-grid">
+              <label class="choice-card is-on" style="--dir:#D4782A;--dir-soft:rgba(212,120,42,.12)">
+                <input type="radio" name="学段" id="formChemPractice_学段_初中" value="初中" checked>
+                <span class="choice-name" data-i18n="stage_junior">初中</span>
+              </label>
+              <label class="choice-card" style="--dir:#0E3A4D;--dir-soft:rgba(14,58,77,.08)">
+                <input type="radio" name="学段" id="formChemPractice_学段_高中" value="高中">
+                <span class="choice-name" data-i18n="stage_senior">高中</span>
+              </label>
+            </div>
+          </div>
+          <div class="field-block">
+            <label class="switch-row" for="formChemPractice_已开设化学课">
+              <span class="switch">
+                <input type="checkbox" id="formChemPractice_已开设化学课" name="已开设化学课" checked>
+                <span class="switch-ui"></span>
+              </span>
+              <span>
+                <span class="field-label" data-i18n="field_opened">已开设化学课</span>
+                <span class="hint" data-i18n="opened_hint">还没开课选「否」，教练会从更基础的写法讲起</span>
+              </span>
+            </label>
+          </div>
+          <div class="field-block">
+            <div class="field-label" data-i18n="field_dir">练习方向</div>
+            <div class="choice-grid" id="directionGrid">
+              <label class="choice-card is-on" style="--dir:#2450B5;--dir-soft:rgba(36,80,181,.12)">
+                <input type="radio" name="练习方向" id="formChemPractice_练习方向_元素符号" value="元素符号" checked>
+                <span class="choice-name" data-dir-label="元素符号">元素符号</span>
+                <span class="choice-hint" data-hint-dir="元素符号">元素符号看大小写</span>
+              </label>
+              <label class="choice-card" style="--dir:#D4782A;--dir-soft:rgba(212,120,42,.12)">
+                <input type="radio" name="练习方向" id="formChemPractice_练习方向_化合价" value="化合价">
+                <span class="choice-name" data-dir-label="化合价">化合价</span>
+                <span class="choice-hint" data-hint-dir="化合价">化合价先标再查</span>
+              </label>
+              <label class="choice-card" style="--dir:#1E8C62;--dir-soft:rgba(30,140,98,.12)">
+                <input type="radio" name="练习方向" id="formChemPractice_练习方向_化学式" value="化学式">
+                <span class="choice-name" data-dir-label="化学式">化学式</span>
+                <span class="choice-hint" data-hint-dir="化学式">化学式核对原子个数</span>
+              </label>
+              <label class="choice-card" style="--dir:#3D3A8A;--dir-soft:rgba(61,58,138,.12)">
+                <input type="radio" name="练习方向" id="formChemPractice_练习方向_化学方程式" value="化学方程式">
+                <span class="choice-name" data-dir-label="化学方程式">化学方程式</span>
+                <span class="choice-hint" data-hint-dir="化学方程式">化学方程式先写再配平</span>
+              </label>
+              <label class="choice-card" style="--dir:#C4266A;--dir-soft:rgba(196,38,106,.12)">
+                <input type="radio" name="练习方向" id="formChemPractice_练习方向_离子方程式" value="离子方程式">
+                <span class="choice-name" data-dir-label="离子方程式">离子方程式</span>
+                <span class="choice-hint" data-hint-dir="离子方程式">离子方程式拆强电解质</span>
+              </label>
+              <label class="choice-card" style="--dir:#C4921A;--dir-soft:rgba(196,146,26,.16)">
+                <input type="radio" name="练习方向" id="formChemPractice_练习方向_电子转移" value="电子转移">
+                <span class="choice-name" data-dir-label="电子转移">电子转移</span>
+                <span class="choice-hint" data-hint-dir="电子转移">电子转移标明得失</span>
+              </label>
+            </div>
+            <p id="juniorHint" class="hint hint-warn" hidden data-i18n="junior_hint">这两个方向通常在高中练习，仍可提交，教练会按学段把握深浅</p>
+            <div id="exampleChips" class="example-chips"></div>
+          </div>
+          <div class="field-block">
+            <label class="field-label" for="formChemPractice_问题或作答" data-i18n="field_question">问题或作答</label>
+            <textarea id="formChemPractice_问题或作答" name="问题或作答" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="氧的元素符号怎么写？我把钠写成了 na"></textarea>
+            <p id="questionHint" class="hint hint-warn" data-i18n="need_question">先写下问题或你的作答</p>
+            <p id="longHint" class="hint hint-warn" hidden data-i18n="long_hint">一次只练一个小题，写短一点，教练才好逐步提示</p>
+            <p class="hint exam-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span data-i18n="exam_note">若这是正在进行的考试，教练会约你考后再复盘，而不会当场给出完整答案</span></p>
+          </div>
+          <div class="action-row">
+            <button type="button" id="btnGetCoach" class="btn-primary" disabled><span id="btnGetCoachText" data-i18n="get_coach">获取辅导</span></button>
+            <button type="button" id="btnAgain" class="btn-ghost"><span data-i18n="again">再练一题</span></button>
+            <button type="button" id="btnSave" class="btn-accent"><span data-i18n="save">保存修改</span></button>
+            <button type="button" id="btnResubmit" class="btn-primary"><span data-i18n="resubmit">作为新练习重新辅导</span></button>
+            <button type="button" id="btnCancelEdit" class="btn-ghost"><span data-i18n="cancel_edit">取消编辑</span></button>
+          </div>
+        </form>
+        <section class="card paper-card">
+          <div class="paper-head">
+            <h2 data-i18n="feedback_title">辅导反馈</h2>
+            <div class="browse-controls">
+              <button type="button" id="btnOlder" aria-label="更早">&lt;</button>
+              <span id="browseLabel">新练习</span>
+              <button type="button" id="btnNewer" aria-label="更新">&gt;</button>
+            </div>
+          </div>
+          <div class="md-paper" id="paperSheet">
+            <p id="paperStatus" class="paper-status">提交后，教练的逐步提示会写在这里</p>
+            <button type="button" id="btnRefreshFeedback" class="btn-ghost" hidden><span data-i18n="refresh_feedback">刷新反馈</span></button>
+            <div id="feedbackPaper" class="md-body" hidden></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+  <section id="page_book" class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1 data-i18n="nav_book">练习册</h1>
+          <p data-i18n="book_desc">回看每一次书写和教练的逐步提示</p>
+        </div>
+        <button type="button" id="btnNewPractice" class="btn-primary"><span data-i18n="new_practice">+ 新的练习</span></button>
+      </div>
+      <div class="card filter-bar">
+        <input id="bookSearch" name="关键词" type="search" placeholder="搜索问题或作答" data-i18n-placeholder="search_ph">
+        <select id="bookFilterStage" name="学段"></select>
+        <select id="bookFilterDirection" name="练习方向"></select>
+        <select id="bookFilterOpened" name="已开设化学课"></select>
+      </div>
+      <div id="bookError" class="empty-card" hidden>
+        <p data-i18n="load_error">暂时没有连上练习数据</p>
+        <button type="button" id="btnBookRetry" class="btn-primary"><span data-i18n="retry">重试</span></button>
+      </div>
+      <div id="bookList" class="card-list"></div>
+      <div id="bookEmpty" class="empty-card" hidden>
+        <p data-i18n="book_empty">没有找到这样的练习</p>
+        <button type="button" id="btnClearFilter" class="btn-ghost"><span data-i18n="clear_filter">清除筛选</span></button>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="detailOverlay" class="overlay" hidden>
+  <div id="detailDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-head">
+      <h2 id="detailTitle" data-i18n="detail_title">练习详情</h2>
+      <button type="button" id="btnDetailCloseX" class="icon-btn" aria-label="关闭"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="dialog-body" id="detailBody">
+      <div class="detail-grid">
+        <div>
+          <div class="field-label" data-i18n="field_stage">学段</div>
+          <div id="detailStage" class="field-value"></div>
+        </div>
+        <div>
+          <div class="field-label" data-i18n="field_opened">已开设化学课</div>
+          <div id="detailOpened" class="field-value"></div>
+        </div>
+        <div>
+          <div class="field-label" data-i18n="field_dir">练习方向</div>
+          <div id="detailDirection" class="field-value"></div>
+        </div>
+      </div>
+      <div class="field-label" data-i18n="field_question">问题或作答</div>
+      <div id="detailQuestion" class="formula-text detail-question"></div>
+      <div class="field-label" data-i18n="feedback_title">辅导反馈</div>
+      <div class="md-paper">
+        <div id="detailFeedback" class="md-body"></div>
+        <div id="detailFeedbackEmpty" hidden>
+          <p data-i18n="coach_writing_detail">教练还在写反馈</p>
+          <button type="button" id="btnDetailRefresh" class="btn-ghost"><span data-i18n="refresh_feedback">刷新反馈</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" id="btnDetailEdit" class="btn-accent"><span data-i18n="edit">编辑</span></button>
+      <button type="button" id="btnDetailDelete" class="btn-danger"><span data-i18n="delete">删除</span></button>
+      <button type="button" id="btnDetailClose" class="btn-ghost"><span data-i18n="close">关闭</span></button>
+    </div>
+  </div>
+</div>
+<div id="confirmOverlay" class="overlay" hidden>
+  <div id="confirmDialog" class="dialog dialog-confirm" role="dialog" aria-modal="true">
+    <p id="confirmText" class="confirm-text" data-i18n="confirm_delete">确定删除这条练习吗？</p>
+    <div class="dialog-actions">
+      <button type="button" id="btnConfirmCancel" class="btn-ghost"><span data-i18n="cancel">取消</span></button>
+      <button type="button" id="btnConfirmOk" class="btn-danger"><span data-i18n="confirm_ok">确定</span></button>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast" hidden></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("316297dc8b0a9e6e_化学用语教练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+        const DIRECTIONS = ["元素符号", "化合价", "化学式", "化学方程式", "离子方程式", "电子转移"];
+        const FIELDS = ["学段", "已开设化学课", "练习方向", "问题或作答", "辅导反馈"];
+        const DIR_COLOR = {"元素符号": "#2450B5", "化合价": "#D4782A", "化学式": "#1E8C62", "化学方程式": "#3D3A8A", "离子方程式": "#C4266A", "电子转移": "#C4921A"};
+        const DIR_ICON = {"元素符号": "fa-atom", "化合价": "fa-superscript", "化学式": "fa-vial", "化学方程式": "fa-arrow-right-arrow-left", "离子方程式": "fa-bolt", "电子转移": "fa-right-left"};
+        const DIR_TEXT = {
+          "元素符号": {cn: "元素符号", en: "Element symbols", hint_cn: "元素符号看大小写", hint_en: "Watch uppercase and lowercase"},
+          "化合价": {cn: "化合价", en: "Valence", hint_cn: "化合价先标再查", hint_en: "Mark the valence, then check it"},
+          "化学式": {cn: "化学式", en: "Chemical formulas", hint_cn: "化学式核对原子个数", hint_en: "Check the atom counts"},
+          "化学方程式": {cn: "化学方程式", en: "Chemical equations", hint_cn: "化学方程式先写再配平", hint_en: "Write it, then balance it"},
+          "离子方程式": {cn: "离子方程式", en: "Ionic equations", hint_cn: "离子方程式拆强电解质", hint_en: "Split the strong electrolytes"},
+          "电子转移": {cn: "电子转移", en: "Electron transfer", hint_cn: "电子转移标明得失", hint_en: "Mark electrons gained and lost"}
+        };
+        const EXAMPLES = {
+          "元素符号": {placeholder: {cn: "氧的元素符号怎么写？我把钠写成了 na", en: "How is the symbol for oxygen written? I wrote sodium as na"}, chips: {cn: ["氧的元素符号怎么写？", "我把钠写成了 na"], en: ["How is the symbol for oxygen written?", "I wrote sodium as na"]}},
+          "化合价": {placeholder: {cn: "硫酸里硫显多少价？请看我标的对不对", en: "What is the valence of sulfur in sulfuric acid? Please check what I marked"}, chips: {cn: ["硫酸里硫显多少价？", "请看我标的对不对"], en: ["What is the valence of sulfur in sulfuric acid?", "Please check what I marked"]}},
+          "化学式": {placeholder: {cn: "二氧化碳的化学式是什么？我写的是 CO3", en: "What is the formula of carbon dioxide? I wrote CO3"}, chips: {cn: ["二氧化碳的化学式是什么？", "我写的是 CO3"], en: ["What is the formula of carbon dioxide?", "I wrote CO3"]}},
+          "化学方程式": {placeholder: {cn: "氢气在氧气中燃烧，我配平的方程式对吗", en: "Hydrogen burns in oxygen. Is the equation I balanced correct?"}, chips: {cn: ["氢气在氧气中燃烧", "我配平的方程式对吗"], en: ["Hydrogen burns in oxygen", "Is the equation I balanced correct?"]}},
+          "离子方程式": {placeholder: {cn: "盐酸与氢氧化钠反应的离子方程式", en: "The ionic equation for hydrochloric acid and sodium hydroxide"}, chips: {cn: ["盐酸与氢氧化钠反应的离子方程式", "写出盐酸与氢氧化钠反应的离子方程式"], en: ["The ionic equation for hydrochloric acid and sodium hydroxide", "Write the ionic equation for hydrochloric acid and sodium hydroxide"]}},
+          "电子转移": {placeholder: {cn: "锌与稀硫酸反应，标出电子转移", en: "Zinc reacts with dilute sulfuric acid. Mark the electron transfer."}, chips: {cn: ["锌与稀硫酸反应", "标出电子转移"], en: ["Zinc reacts with dilute sulfuric acid", "Mark the electron transfer"]}}
+        };
+        const I18N = {
+          cn: {
+            app_name: "化学用语教练", nav_home: "首页", nav_practice: "练习台", nav_book: "练习册",
+            home_desc: "一次练一个方向，把元素符号、化合价、化学式和方程式写规范", start_practice: "开始练习",
+            stat_total: "练习总次数", stat_junior: "初中练习数", stat_senior: "高中练习数", dir_section: "练习方向", recent_section: "最近练习",
+            recent_empty: "还没有练习，去写第一道小题", load_error: "暂时没有连上练习数据", retry: "重试", loading: "正在读取练习…",
+            practice_desc: "一次只练一个层级。先写你的问题，或写下你自己的化学式、方程式，教练会指出错在哪一步", open_book: "查看练习册",
+            field_stage: "学段", field_opened: "已开设化学课", field_dir: "练习方向", field_question: "问题或作答",
+            stage_junior: "初中", stage_senior: "高中", opened_hint: "还没开课选「否」，教练会从更基础的写法讲起",
+            junior_hint: "这两个方向通常在高中练习，仍可提交，教练会按学段把握深浅", need_question: "先写下问题或你的作答",
+            long_hint: "一次只练一个小题，写短一点，教练才好逐步提示", exam_note: "若这是正在进行的考试，教练会约你考后再复盘，而不会当场给出完整答案",
+            get_coach: "获取辅导", submitting: "提交中…", again: "再练一题", save: "保存修改", saved: "已保存",
+            resubmit: "作为新练习重新辅导", cancel_edit: "取消编辑",
+            edit_banner: "正在修改第 {n} 行。保存只更新作答信息，不会重新生成辅导反馈", feedback_title: "辅导反馈",
+            wait_msg: "教练正在看你的作答，先不直接报答案……", timeout_msg: "生成时间较长，可稍后刷新", refresh_feedback: "刷新反馈",
+            paper_placeholder: "提交后，教练的逐步提示会写在这里", coach_writing: "教练还在写", coach_writing_detail: "教练还在写反馈",
+            generating: "生成中", opened_yes_short: "已开课", opened_no_short: "未开课", yes: "是", no: "否",
+            book_desc: "回看每一次书写和教练的逐步提示", new_practice: "+ 新的练习", search_ph: "搜索问题或作答", filter_all: "全部",
+            view_detail: "查看详情", edit: "编辑", delete: "删除", book_empty: "没有找到这样的练习", clear_filter: "清除筛选",
+            detail_title: "练习详情", close: "关闭", confirm_delete: "确定删除这条练习吗？", confirm_ok: "确定", cancel: "取消",
+            action_failed: "操作没有完成，请稍后再试", row_label: "第 {n} 行 / 共 {m}", row_new: "新练习", menu: "菜单", older: "更早", newer: "更新"
+          },
+          en: {
+            app_name: "Chemistry Notation Coach", nav_home: "Home", nav_practice: "Practice", nav_book: "Notebook",
+            home_desc: "Practice one strand at a time, and write element symbols, valences, formulas, and equations correctly.", start_practice: "Start practice",
+            stat_total: "Total practices", stat_junior: "Junior-high practices", stat_senior: "Senior-high practices", dir_section: "Practice strands", recent_section: "Recent practice",
+            recent_empty: "No practice yet. Write the first short question.", load_error: "Practice data is not available right now.", retry: "Retry", loading: "Loading practice…",
+            practice_desc: "Practice one level at a time. Write your question, or your own formula or equation. The coach will point to the step that went wrong.", open_book: "Open notebook",
+            field_stage: "Level", field_opened: "Chemistry course started", field_dir: "Practice strand", field_question: "Question or answer",
+            stage_junior: "Junior high", stage_senior: "Senior high", opened_hint: "Choose No if the course has not started. The coach will begin with more basic notation.",
+            junior_hint: "These two strands are usually practiced in senior high. You can still submit. The coach will match the depth to your level.", need_question: "Write a question or your answer first",
+            long_hint: "Practice one short question at a time so the coach can hint step by step.", exam_note: "If this is a live exam, the coach will review it with you afterward and will not give a full answer now.",
+            get_coach: "Get coaching", submitting: "Submitting…", again: "Another question", save: "Save changes", saved: "Saved",
+            resubmit: "Coach this as a new practice", cancel_edit: "Cancel editing",
+            edit_banner: "Editing row {n}. Saving only updates your answer and will not regenerate the coaching notes.", feedback_title: "Coaching notes",
+            wait_msg: "The coach is reading your answer and will not give the result away yet…", timeout_msg: "This is taking a while. You can refresh later.", refresh_feedback: "Refresh notes",
+            paper_placeholder: "After you submit, the coach’s step-by-step notes will appear here.", coach_writing: "The coach is still writing", coach_writing_detail: "The coach is still writing notes",
+            generating: "Generating", opened_yes_short: "Course started", opened_no_short: "Not started", yes: "Yes", no: "No",
+            book_desc: "Look back at each attempt and the coach’s step-by-step notes.", new_practice: "+ New practice", search_ph: "Search the question or answer", filter_all: "All",
+            view_detail: "View details", edit: "Edit", delete: "Delete", book_empty: "No practice matches", clear_filter: "Clear filters",
+            detail_title: "Practice details", close: "Close", confirm_delete: "Delete this practice?", confirm_ok: "Confirm", cancel: "Cancel",
+            action_failed: "That action did not finish. Please try again.", row_label: "Row {n} / {m}", row_new: "New", menu: "Menu", older: "Older", newer: "Newer"
+          }
+        };
+
+        let uiLang = "cn";
+        let currentPage = "";
+        let currentRow = 0;
+        let practiceMode = "create";
+        let submitting = false;
+        let polling = false;
+        let pollTimer = null;
+        let pollToken = 0;
+        let recordCount = 0;
+        let historyStack = [];
+        let popupStack = [];
+        let bookRows = [];
+        let bookLoaded = false;
+        let bookFailed = false;
+        let bookFilter = {q: "", stage: "all", direction: "all", opened: "all"};
+        let homeRecords = null;
+        let homeStats = null;
+        let homeFailed = false;
+        let detailRow = 0;
+        let detailData = null;
+        let pendingDeleteRow = 0;
+        let unmatchedStage = "";
+        let unmatchedDirection = "";
+        let paperState = "placeholder";
+        let paperRaw = "";
+        let toastTimer = null;
+
+        function t(key) {
+          const pack = I18N[uiLang] || I18N.cn;
+          if (pack[key] != null) return pack[key];
+          return I18N.cn[key] != null ? I18N.cn[key] : key;
+        }
+        function detectLang() {
+          try {
+            const q = new URLSearchParams(window.location.search).get("lang");
+            if (q === "cn") return "cn";
+            if (q === "en") return "en";
+          } catch (e) {}
+          try {
+            const stored = localStorage.getItem("iThinkAir_UiLanguage");
+            if (stored !== null && stored !== "") return stored === "en" ? "en" : "cn";
+          } catch (e2) {}
+          let list = null;
+          try { list = navigator.languages; } catch (e3) { list = null; }
+          if (!list || !list.length) {
+            try { list = navigator.language ? [navigator.language] : null; } catch (e4) { list = null; }
+          }
+          if (!list || !list.length) return "cn";
+          for (let i = 0; i < list.length; i++) {
+            if (/^zh(\b|-|_)/i.test(String(list[i]))) return "cn";
+          }
+          return "en";
+        }
+        function escapeHtml(s) {
+          return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+        function parseCount(text) {
+          const m = String(text == null ? "" : text).match(/\d+/);
+          return m ? parseInt(m[0], 10) : 0;
+        }
+        function clipChars(s, n) {
+          const arr = Array.from(String(s || ""));
+          if (arr.length <= n) return arr.join("");
+          return arr.slice(0, n).join("") + "…";
+        }
+        function plainSummary(md) {
+          let s = String(md || "");
+          s = s.replace(/```[\s\S]*?```/g, " ");
+          s = s.replace(/!\[[^\]]*\]\([^)]*\)/g, " ");
+          s = s.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+          s = s.replace(/`([^`]+)`/g, "$1");
+          s = s.replace(/^#{1,6}\s+/gm, "");
+          s = s.replace(/^\s*[-*+]\s+/gm, "");
+          s = s.replace(/^\s*\d+\.\s+/gm, "");
+          s = s.replace(/[*_~>#]/g, "");
+          s = s.replace(/\s+/g, " ").trim();
+          return s;
+        }
+        function feedbackBrief(md, n, emptyText) {
+          if (!String(md || "").trim()) return emptyText;
+          const plain = plainSummary(md);
+          if (!plain) return emptyText;
+          return clipChars(plain, n);
+        }
+        function clipPlain(s, n) {
+          return clipChars(String(s || "").replace(/\s+/g, " ").trim(), n);
+        }
+        function hexAlpha(hex, a) {
+          const h = String(hex || "#2A9D8F").replace("#", "");
+          return "rgba(" + parseInt(h.slice(0, 2), 16) + "," + parseInt(h.slice(2, 4), 16) + "," + parseInt(h.slice(4, 6), 16) + "," + a + ")";
+        }
+        function dirLabel(dir) {
+          const row = DIR_TEXT[dir];
+          if (!row) return String(dir || "");
+          return uiLang === "en" ? row.en : row.cn;
+        }
+        function dirHint(dir) {
+          const row = DIR_TEXT[dir];
+          if (!row) return "";
+          return uiLang === "en" ? row.hint_en : row.hint_cn;
+        }
+        function displayStage(v) {
+          const s = String(v || "").trim();
+          if (s === "初中") return t("stage_junior");
+          if (s === "高中") return t("stage_senior");
+          return s;
+        }
+        function displayBool(v) {
+          const s = String(v || "").trim();
+          if (s === "是") return t("yes");
+          if (s === "否") return t("no");
+          return s;
+        }
+        function defaultValues() {
+          return {"学段": "初中", "已开设化学课": "是", "练习方向": "元素符号", "问题或作答": ""};
+        }
+        function showToast(msg) {
+          const node = document.getElementById("toast");
+          node.textContent = msg;
+          node.hidden = false;
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(function() { node.hidden = true; }, 2400);
+        }
+        function mediaHref(src) {
+          const s = String(src || "").trim();
+          if (/^https?:\/\//i.test(s) || /^data:image\//i.test(s)) return s;
+          return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+        }
+        function safeHref(src) {
+          const s = String(src || "").trim();
+          if (/^(https?:|mailto:)/i.test(s) || /^data:image\//i.test(s)) return s;
+          return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(s);
+        }
+        function formatInline(raw) {
+          const s = String(raw || "");
+          let out = "";
+          let i = 0;
+          while (i < s.length) {
+            if (s[i] === "`") {
+              const j = s.indexOf("`", i + 1);
+              if (j > i) {
+                out += "<code>" + escapeHtml(s.slice(i + 1, j)) + "</code>";
+                i = j + 1;
+                continue;
+              }
+            }
+            if (s.startsWith("![", i)) {
+              const m = s.slice(i).match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
+              if (m) {
+                const href = mediaHref(m[2]);
+                out += '<a class="md-img" href="' + escapeHtml(href) + '" download target="_blank" rel="noopener noreferrer"><img alt="' + escapeHtml(m[1]) + '" src="' + escapeHtml(href) + '"></a>';
+                i += m[0].length;
+                continue;
+              }
+            }
+            if (s[i] === "[") {
+              const m2 = s.slice(i).match(/^\[([^\]]+)\]\(([^)\s]+)\)/);
+              if (m2) {
+                out += '<a href="' + escapeHtml(safeHref(m2[2])) + '" target="_blank" rel="noopener noreferrer">' + formatInline(m2[1]) + "</a>";
+                i += m2[0].length;
+                continue;
+              }
+            }
+            if (s[i] === "<") {
+              const m3 = s.slice(i).match(/^<(https?:\/\/[^>\s]+)>/);
+              if (m3) {
+                out += '<a href="' + escapeHtml(m3[1]) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(m3[1]) + "</a>";
+                i += m3[0].length;
+                continue;
+              }
+            }
+            if (s.startsWith("**", i) || s.startsWith("__", i)) {
+              const token = s.substr(i, 2);
+              const j2 = s.indexOf(token, i + 2);
+              if (j2 !== -1) {
+                out += "<strong>" + formatInline(s.slice(i + 2, j2)) + "</strong>";
+                i = j2 + 2;
+                continue;
+              }
+            }
+            if (s.startsWith("~~", i)) {
+              const j3 = s.indexOf("~~", i + 2);
+              if (j3 !== -1) {
+                out += "<del>" + formatInline(s.slice(i + 2, j3)) + "</del>";
+                i = j3 + 2;
+                continue;
+              }
+            }
+            if ((s[i] === "*" || s[i] === "_") && s[i + 1] && s[i + 1] !== s[i] && s[i + 1] !== " ") {
+              const j4 = s.indexOf(s[i], i + 1);
+              if (j4 > i + 1) {
+                out += "<em>" + formatInline(s.slice(i + 1, j4)) + "</em>";
+                i = j4 + 1;
+                continue;
+              }
+            }
+            if ((s[i] === "h" || s[i] === "H") && /^https?:\/\//i.test(s.slice(i))) {
+              const m4 = s.slice(i).match(/^https?:\/\/[^\s<]+/);
+              if (m4) {
+                let url = m4[0].replace(/[),.;!?]+$/, "");
+                out += '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(url) + "</a>";
+                i += url.length;
+                continue;
+              }
+            }
+            out += escapeHtml(s[i]);
+            i++;
+          }
+          return out;
+        }
+        function isSeparatorLine(line) {
+          return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(line);
+        }
+        function isTableStart(lines, index) {
+          return lines[index].indexOf("|") !== -1 && index + 1 < lines.length && isSeparatorLine(lines[index + 1]);
+        }
+        function isBlockStart(lines, index) {
+          const line = lines[index];
+          if (!line || line.trim() === "") return true;
+          if (/^```/.test(line) || /^(#{1,6})\s+/.test(line) || /^>\s?/.test(line)) return true;
+          if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) return true;
+          if (/^\s*([-*+]|\d+\.)\s+/.test(line)) return true;
+          if (isTableStart(lines, index)) return true;
+          if (/^( {4}|\t)/.test(line)) return true;
+          return false;
+        }
+        function splitRow(line) {
+          let s = String(line || "").trim();
+          if (s.charAt(0) === "|") s = s.slice(1);
+          if (s.charAt(s.length - 1) === "|") s = s.slice(0, -1);
+          const cells = s.split("|");
+          for (let i = 0; i < cells.length; i++) cells[i] = cells[i].trim();
+          return cells;
+        }
+        function renderList(lines, start) {
+          const first = lines[start].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+          const baseIndent = first ? first[1].length : 0;
+          const ordered = first && /\d+\./.test(first[2]);
+          const tag = ordered ? "ol" : "ul";
+          let i = start;
+          let html = "<" + tag + ">";
+          while (i < lines.length) {
+            const m = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+            if (!m || m[1].length < baseIndent) break;
+            if (m[1].length > baseIndent) break;
+            let itemText = m[3];
+            let taskHtml = "";
+            const task = itemText.match(/^\[( |x|X)\]\s+(.*)$/);
+            if (task) {
+              taskHtml = '<input type="checkbox" disabled' + (task[1].toLowerCase() === "x" ? " checked" : "") + "> ";
+              itemText = task[2];
+            }
+            i++;
+            const extras = [];
+            while (i < lines.length && lines[i].trim() !== "" && /^\s+/.test(lines[i]) && !/^(\s*)([-*+]|\d+\.)\s+/.test(lines[i])) {
+              extras.push(lines[i].trim());
+              i++;
+            }
+            let nested = "";
+            if (i < lines.length) {
+              const m2 = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+/);
+              if (m2 && m2[1].length > baseIndent) {
+                const sub = renderList(lines, i);
+                nested = sub.html;
+                i = sub.next;
+              }
+            }
+            html += "<li>" + taskHtml + formatInline(itemText);
+            for (let n = 0; n < extras.length; n++) html += "<br>" + formatInline(extras[n]);
+            html += nested + "</li>";
+          }
+          html += "</" + tag + ">";
+          return {html: html, next: i};
+        }
+        function renderMarkdown(src) {
+          const text = String(src || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+          const lines = text.split("\n");
+          let html = "";
+          let i = 0;
+          while (i < lines.length) {
+            const line = lines[i];
+            if (line.trim() === "") { i++; continue; }
+            if (/^```/.test(line)) {
+              const buf = [];
+              i++;
+              while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i++; }
+              if (i < lines.length) i++;
+              html += "<pre><code>" + escapeHtml(buf.join("\n")) + "</code></pre>";
+              continue;
+            }
+            if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) { html += "<hr>"; i++; continue; }
+            const heading = line.match(/^(#{1,6})\s+(.*?)\s*#*$/);
+            if (heading) {
+              const level = heading[1].length;
+              html += "<h" + level + ">" + formatInline(heading[2]) + "</h" + level + ">";
+              i++;
+              continue;
+            }
+            if (/^>\s?/.test(line)) {
+              const quote = [];
+              while (i < lines.length && /^>\s?/.test(lines[i])) {
+                quote.push(lines[i].replace(/^>\s?/, ""));
+                i++;
+              }
+              html += "<blockquote>" + renderMarkdown(quote.join("\n")) + "</blockquote>";
+              continue;
+            }
+            if (isTableStart(lines, i)) {
+              const header = splitRow(lines[i]);
+              i += 2;
+              const body = [];
+              while (i < lines.length && lines[i].indexOf("|") !== -1 && lines[i].trim() !== "") {
+                body.push(splitRow(lines[i]));
+                i++;
+              }
+              html += '<div class="table-scroll"><table><thead><tr>';
+              for (let c = 0; c < header.length; c++) html += "<th>" + formatInline(header[c]) + "</th>";
+              html += "</tr></thead><tbody>";
+              for (let r = 0; r < body.length; r++) {
+                html += "<tr>";
+                for (let c2 = 0; c2 < body[r].length; c2++) html += "<td>" + formatInline(body[r][c2]) + "</td>";
+                html += "</tr>";
+              }
+              html += "</tbody></table></div>";
+              continue;
+            }
+            if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+              const listed = renderList(lines, i);
+              html += listed.html;
+              i = listed.next;
+              continue;
+            }
+            if (/^( {4}|\t)/.test(line)) {
+              const code = [];
+              while (i < lines.length && (/^( {4}|\t)/.test(lines[i]) || lines[i].trim() === "")) {
+                if (lines[i].trim() === "") {
+                  let k = i + 1;
+                  while (k < lines.length && lines[k].trim() === "") k++;
+                  if (k >= lines.length || !/^( {4}|\t)/.test(lines[k])) break;
+                }
+                code.push(lines[i].replace(/^( {4}|\t)/, ""));
+                i++;
+              }
+              html += "<pre><code>" + escapeHtml(code.join("\n")) + "</code></pre>";
+              continue;
+            }
+            const para = [];
+            while (i < lines.length && !isBlockStart(lines, i)) { para.push(lines[i]); i++; }
+            let inner = "";
+            for (let p = 0; p < para.length; p++) {
+              if (p) inner += "<br>";
+              inner += formatInline(para[p]);
+            }
+            html += "<p>" + inner + "</p>";
+          }
+          return html;
+        }
+
+        function csvToRecords(csvText) {
+          if (csvText == null) return [];
+          let text = String(csvText);
+          if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+          if (text.trim() === "") return [];
+          const parsed = parseCSV(text);
+          const out = [];
+          for (let i = 0; i < parsed.length; i++) {
+            const r = parsed[i] || [];
+            const item = {
+              row: i + 1,
+              "学段": r[0] != null ? String(r[0]) : "",
+              "已开设化学课": r[1] != null ? String(r[1]) : "",
+              "练习方向": r[2] != null ? String(r[2]) : "",
+              "问题或作答": r[3] != null ? String(r[3]) : "",
+              "辅导反馈": r[4] != null ? String(r[4]) : ""
+            };
+            let any = false;
+            for (let k = 0; k < FIELDS.length; k++) if (String(item[FIELDS[k]]).trim() !== "") any = true;
+            if (any) out.push(item);
+          }
+          return out;
+        }
+        async function fetchCount() {
+          const text = await callAppBridge({type:"GetRecordCount", data:"化学用语练习/默认表格"});
+          return parseCount(text);
+        }
+        function userPayload(values) {
+          return JSON.stringify({
+            "学段": values["学段"],
+            "已开设化学课": values["已开设化学课"],
+            "练习方向": values["练习方向"],
+            "问题或作答": values["问题或作答"]
+          });
+        }
+        function getStage() {
+          const el = document.querySelector('input[name="学段"]:checked');
+          if (el) return el.value;
+          return unmatchedStage || "初中";
+        }
+        function getDirection() {
+          const el = document.querySelector('input[name="练习方向"]:checked');
+          if (el) return el.value;
+          return unmatchedDirection || "元素符号";
+        }
+        function getOpened() {
+          return document.getElementById("formChemPractice_已开设化学课").checked ? "是" : "否";
+        }
+        function getFormValues() {
+          return {"学段": getStage(), "已开设化学课": getOpened(), "练习方向": getDirection(), "问题或作答": document.getElementById("formChemPractice_问题或作答").value};
+        }
+        function setDirection(dir) {
+          unmatchedDirection = "";
+          const radios = document.querySelectorAll('input[name="练习方向"]');
+          let matched = false;
+          for (let i = 0; i < radios.length; i++) {
+            const on = radios[i].value === dir;
+            radios[i].checked = on;
+            if (on) matched = true;
+          }
+          if (!matched) unmatchedDirection = dir || "";
+        }
+        function updateChoiceStyles() {
+          const cards = document.querySelectorAll(".choice-card");
+          for (let i = 0; i < cards.length; i++) {
+            const input = cards[i].querySelector("input");
+            cards[i].classList.toggle("is-on", !!(input && input.checked));
+          }
+        }
+        function updateJuniorHint() {
+          const show = getStage() === "初中" && (getDirection() === "离子方程式" || getDirection() === "电子转移");
+          document.getElementById("juniorHint").hidden = !show;
+        }
+        function updatePlaceholder() {
+          const pack = EXAMPLES[getDirection()];
+          const ta = document.getElementById("formChemPractice_问题或作答");
+          ta.placeholder = pack ? pack.placeholder[uiLang] : "";
+        }
+        function renderExampleChips() {
+          const box = document.getElementById("exampleChips");
+          box.textContent = "";
+          const pack = EXAMPLES[getDirection()];
+          const list = pack ? pack.chips[uiLang] : [];
+          const locked = document.getElementById("formChemPractice").classList.contains("is-locked");
+          for (let i = 0; i < list.length; i++) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "chip";
+            b.textContent = list[i];
+            b.disabled = locked;
+            b.addEventListener("click", function() {
+              const ta = document.getElementById("formChemPractice_问题或作答");
+              if (ta.disabled) return;
+              ta.value = b.textContent;
+              updateQuestionHints();
+              updateActionButtons();
+              ta.focus();
+            });
+            box.appendChild(b);
+          }
+        }
+        function updateQuestionHints() {
+          const val = document.getElementById("formChemPractice_问题或作答").value.trim();
+          document.getElementById("questionHint").hidden = val.length > 0;
+          document.getElementById("longHint").hidden = val.length <= 800;
+        }
+        function setFormLocked(locked) {
+          const form = document.getElementById("formChemPractice");
+          form.classList.toggle("is-locked", !!locked);
+          const fields = form.querySelectorAll("input, textarea, button");
+          for (let i = 0; i < fields.length; i++) {
+            const node = fields[i];
+            if (node.id === "btnGetCoach" || node.id === "btnAgain" || node.id === "btnSave" || node.id === "btnResubmit" || node.id === "btnCancelEdit") continue;
+            node.disabled = !!locked;
+          }
+        }
+        function setFormValues(data, opt) {
+          opt = opt || {};
+          const stage = data && data["学段"] != null && String(data["学段"]) !== "" ? String(data["学段"]) : "初中";
+          const opened = data && data["已开设化学课"] != null && String(data["已开设化学课"]) !== "" ? String(data["已开设化学课"]) : "是";
+          const dir = data && data["练习方向"] != null && String(data["练习方向"]) !== "" ? String(data["练习方向"]) : "元素符号";
+          const q = data && data["问题或作答"] != null ? String(data["问题或作答"]) : "";
+          unmatchedStage = "";
+          const stageRadios = document.querySelectorAll('input[name="学段"]');
+          let stageMatched = false;
+          for (let i = 0; i < stageRadios.length; i++) {
+            const on = stageRadios[i].value === stage;
+            stageRadios[i].checked = on;
+            if (on) stageMatched = true;
+          }
+          if (!stageMatched) unmatchedStage = stage;
+          document.getElementById("formChemPractice_已开设化学课").checked = opened === "是";
+          setDirection(dir);
+          document.getElementById("formChemPractice_问题或作答").value = q;
+          setFormLocked(!!opt.lock);
+          updateChoiceStyles();
+          updateJuniorHint();
+          updatePlaceholder();
+          renderExampleChips();
+          updateQuestionHints();
+        }
+        function showPaperState(state, raw) {
+          paperState = state || "placeholder";
+          paperRaw = paperState === "markdown" ? (raw == null ? "" : String(raw)) : "";
+          const status = document.getElementById("paperStatus");
+          const body = document.getElementById("feedbackPaper");
+          const refresh = document.getElementById("btnRefreshFeedback");
+          if (paperState === "markdown") {
+            status.hidden = true;
+            refresh.hidden = true;
+            body.hidden = false;
+            body.setAttribute("data-raw", paperRaw);
+            body.innerHTML = renderMarkdown(paperRaw);
+            return;
+          }
+          body.hidden = true;
+          body.innerHTML = "";
+          body.setAttribute("data-raw", "");
+          status.hidden = false;
+          refresh.hidden = !(paperState === "timeout" || paperState === "empty-edit");
+          if (paperState === "wait") status.textContent = t("wait_msg");
+          else if (paperState === "timeout") status.textContent = t("timeout_msg");
+          else if (paperState === "empty-edit") status.textContent = t("coach_writing_detail");
+          else status.textContent = t("paper_placeholder");
+        }
+        function updateEditBanner() {
+          const el = document.getElementById("practiceBanner");
+          if (practiceMode === "edit") {
+            el.hidden = false;
+            el.textContent = t("edit_banner").replace("{n}", String(currentRow));
+          } else {
+            el.hidden = true;
+            el.textContent = "";
+          }
+        }
+        function updateBrowseDisabled() {
+          document.getElementById("btnOlder").disabled = currentRow < 1 || currentRow >= recordCount;
+          document.getElementById("btnNewer").disabled = currentRow <= 1;
+          const label = document.getElementById("browseLabel");
+          if (currentRow >= 1) label.textContent = t("row_label").replace("{n}", String(currentRow)).replace("{m}", String(recordCount));
+          else label.textContent = t("row_new");
+        }
+        async function refreshBrowseButtons() {
+          try { recordCount = await fetchCount(); } catch (e) {}
+          updateBrowseDisabled();
+        }
+        function updateActionButtons() {
+          const page = document.getElementById("page_practice");
+          page.classList.remove("mode-create", "mode-browse", "mode-edit");
+          page.classList.add("mode-" + practiceMode);
+          const form = document.getElementById("formChemPractice");
+          const wantLock = practiceMode === "browse";
+          if (form.classList.contains("is-locked") !== wantLock) setFormLocked(wantLock);
+          const q = document.getElementById("formChemPractice_问题或作答").value.trim();
+          document.getElementById("btnGetCoach").disabled = practiceMode !== "create" || q.length === 0 || submitting || polling;
+          document.getElementById("btnResubmit").disabled = submitting || polling || q.length === 0;
+          document.getElementById("btnSave").disabled = submitting || polling || practiceMode !== "edit" || currentRow < 1;
+          document.getElementById("btnCancelEdit").disabled = submitting;
+          document.getElementById("btnGetCoachText").textContent = submitting && practiceMode === "create" ? t("submitting") : t("get_coach");
+          updateEditBanner();
+          updateBrowseDisabled();
+          updateQuestionHints();
+        }
+        function stopPoll() {
+          polling = false;
+          pollToken++;
+          if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+        }
+        function startPoll(row) {
+          stopPoll();
+          const token = pollToken;
+          polling = true;
+          const started = Date.now();
+          showPaperState("wait");
+          updateActionButtons();
+          let busy = false;
+          const tick = async function() {
+            if (!polling || token !== pollToken) return;
+            if (Date.now() - started >= 60000) {
+              polling = false;
+              if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+              showPaperState("timeout");
+              updateActionButtons();
+              return;
+            }
+            if (busy) return;
+            busy = true;
+            try {
+              const val = await callAppBridge({type:"GetCellValue", data:"化学用语练习/默认表格", payload:"辅导反馈/" + row});
+              if (!polling || token !== pollToken) return;
+              const text = val == null ? "" : String(val);
+              if (text.trim()) {
+                polling = false;
+                if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+                showPaperState("markdown", text);
+                updateActionButtons();
+              }
+            } catch (e) {
+            } finally {
+              busy = false;
+            }
+          };
+          tick();
+          pollTimer = setInterval(tick, 1500);
+        }
+        function applyDirHints() {
+          const names = document.querySelectorAll("[data-dir-label]");
+          for (let i = 0; i < names.length; i++) names[i].textContent = dirLabel(names[i].getAttribute("data-dir-label"));
+          const hints = document.querySelectorAll("[data-hint-dir]");
+          for (let j = 0; j < hints.length; j++) hints[j].textContent = dirHint(hints[j].getAttribute("data-hint-dir"));
+        }
+        function rebuildSelect(select, pairs, value) {
+          select.textContent = "";
+          for (let i = 0; i < pairs.length; i++) {
+            const op = document.createElement("option");
+            op.value = pairs[i][0];
+            op.textContent = pairs[i][1];
+            select.appendChild(op);
+          }
+          select.value = value;
+          if (select.value !== value && pairs.length) select.selectedIndex = 0;
+        }
+        function fillFilterLabels() {
+          rebuildSelect(document.getElementById("bookFilterStage"), [["all", t("filter_all")], ["初中", t("stage_junior")], ["高中", t("stage_senior")]], bookFilter.stage);
+          const dirOpts = [["all", t("filter_all")]];
+          for (let i = 0; i < DIRECTIONS.length; i++) dirOpts.push([DIRECTIONS[i], dirLabel(DIRECTIONS[i])]);
+          rebuildSelect(document.getElementById("bookFilterDirection"), dirOpts, bookFilter.direction);
+          rebuildSelect(document.getElementById("bookFilterOpened"), [["all", t("filter_all")], ["是", t("yes")], ["否", t("no")]], bookFilter.opened);
+        }
+        function syncFilterControls() {
+          document.getElementById("bookSearch").value = bookFilter.q;
+          document.getElementById("bookFilterStage").value = bookFilter.stage;
+          document.getElementById("bookFilterDirection").value = bookFilter.direction;
+          document.getElementById("bookFilterOpened").value = bookFilter.opened;
+        }
+        function markLangButtons() {
+          document.getElementById("menuLangCn").classList.toggle("is-on", uiLang !== "en");
+          document.getElementById("menuLangEn").classList.toggle("is-on", uiLang === "en");
+          document.getElementById("btnLang").textContent = uiLang === "en" ? "中" : "EN";
+          document.documentElement.lang = uiLang === "en" ? "en" : "zh-CN";
+          document.title = t("app_name");
+        }
+        function applyStaticTexts() {
+          const nodes = document.querySelectorAll("[data-i18n]");
+          for (let i = 0; i < nodes.length; i++) {
+            const key = nodes[i].getAttribute("data-i18n");
+            if (I18N.cn[key] != null || (I18N[uiLang] && I18N[uiLang][key] != null)) nodes[i].textContent = t(key);
+          }
+          const ph = document.querySelectorAll("[data-i18n-placeholder]");
+          for (let j = 0; j < ph.length; j++) ph[j].setAttribute("placeholder", t(ph[j].getAttribute("data-i18n-placeholder")));
+          markLangButtons();
+          fillFilterLabels();
+          applyDirHints();
+          updatePlaceholder();
+          renderExampleChips();
+          const keepState = paperState;
+          const keepRaw = paperRaw;
+          showPaperState(keepState, keepRaw);
+          document.getElementById("btnHamburger").setAttribute("aria-label", t("menu"));
+          document.getElementById("btnOlder").setAttribute("aria-label", t("older"));
+          document.getElementById("btnNewer").setAttribute("aria-label", t("newer"));
+          document.getElementById("btnDetailCloseX").setAttribute("aria-label", t("close"));
+          document.getElementById("bookSearch").setAttribute("aria-label", t("search_ph"));
+          document.getElementById("bookFilterStage").setAttribute("aria-label", t("field_stage"));
+          document.getElementById("bookFilterDirection").setAttribute("aria-label", t("field_dir"));
+          document.getElementById("bookFilterOpened").setAttribute("aria-label", t("field_opened"));
+          if (homeFailed) {
+            renderStats(0, 0, 0, true);
+            renderDirCards([], "error");
+            document.getElementById("homeError").hidden = false;
+          } else if (homeRecords) {
+            document.getElementById("homeError").hidden = true;
+            renderStats(homeStats.total, homeStats.junior, homeStats.senior, false);
+            renderDirCards(homeRecords, "ready");
+            renderRecent(homeRecords);
+          }
+          if (bookLoaded || bookFailed) renderBookList();
+          if (detailData && !document.getElementById("detailOverlay").hidden) fillDetail(detailData);
+          updateActionButtons();
+          layoutNav();
+        }
+        function setLanguage(lang) {
+          uiLang = lang === "en" ? "en" : "cn";
+          try { localStorage.setItem("iThinkAir_UiLanguage", uiLang); } catch (e) {}
+          applyStaticTexts();
+          closeMenu();
+        }
+        function closeMenu() {
+          document.getElementById("topNav").classList.remove("menu-open");
+          document.getElementById("btnHamburger").setAttribute("aria-expanded", "false");
+        }
+        function toggleMenu() {
+          const nav = document.getElementById("topNav");
+          const open = !nav.classList.contains("menu-open");
+          nav.classList.toggle("menu-open", open);
+          document.getElementById("btnHamburger").setAttribute("aria-expanded", open ? "true" : "false");
+        }
+        function layoutNav() {
+          const compact = window.innerWidth < 640;
+          document.getElementById("topNav").classList.toggle("is-compact", compact);
+          if (!compact) closeMenu();
+        }
+        function updateNavActive() {
+          const ids = {home: ["tabHome", "menuTabHome"], practice: ["tabPractice", "menuTabPractice"], book: ["tabBook", "menuTabBook"]};
+          const keys = ["home", "practice", "book"];
+          for (let i = 0; i < keys.length; i++) {
+            const on = keys[i] === currentPage;
+            document.getElementById(ids[keys[i]][0]).classList.toggle("is-active", on);
+            document.getElementById(ids[keys[i]][1]).classList.toggle("is-active", on);
+          }
+        }
+        function snapshot() {
+          return {
+            page: currentPage,
+            scroll: window.scrollY || document.documentElement.scrollTop || 0,
+            practiceMode: practiceMode,
+            currentRow: currentRow,
+            bookFilter: {q: bookFilter.q, stage: bookFilter.stage, direction: bookFilter.direction, opened: bookFilter.opened},
+            form: getFormValues(),
+            feedback: document.getElementById("feedbackPaper").getAttribute("data-raw") || "",
+            paperState: paperState,
+            wasPolling: polling
+          };
+        }
+        function openPopup(id) {
+          const el = document.getElementById(id);
+          el.hidden = false;
+          if (popupStack.indexOf(id) === -1) popupStack.push(id);
+        }
+        function closePopup(id) {
+          const el = document.getElementById(id);
+          if (el) el.hidden = true;
+          const idx = popupStack.lastIndexOf(id);
+          if (idx !== -1) popupStack.splice(idx, 1);
+        }
+        function closeConfirm() {
+          pendingDeleteRow = 0;
+          closePopup("confirmOverlay");
+        }
+        async function showPage(name, opt) {
+          opt = opt || {};
+          try {
+            if (!name) return;
+            if (name === currentPage && !opt.force) {
+              closeMenu();
+              if (name === "book") {
+                fillFilterLabels();
+                syncFilterControls();
+                renderBookList();
+              }
+              return;
+            }
+            if (!opt.skipHistory && currentPage) {
+              historyStack.push(snapshot());
+              if (historyStack.length > 40) historyStack.shift();
+            }
+            if (currentPage === "practice" && name !== "practice") stopPoll();
+            const pages = document.querySelectorAll(".page");
+            for (let i = 0; i < pages.length; i++) pages[i].classList.toggle("is-active", pages[i].id === "page_" + name);
+            currentPage = name;
+            updateNavActive();
+            closeMenu();
+            if (name === "home") await refreshHome();
+            if (name === "book") await refreshBook();
+            if (opt.restoreScroll) {
+              const y = opt.scrollY || 0;
+              requestAnimationFrame(function() { window.scrollTo(0, y); });
+            } else window.scrollTo(0, 0);
+          } catch (e) {
+            showToast(t("action_failed"));
+          }
+        }
+        function airBack() {
+          if (popupStack.length) {
+            const top = popupStack[popupStack.length - 1];
+            if (top === "confirmOverlay") closeConfirm();
+            else closePopup(top);
+            return "false";
+          }
+          if (document.getElementById("topNav").classList.contains("menu-open")) {
+            closeMenu();
+            return "false";
+          }
+          if (!historyStack.length) return "true";
+          const prev = historyStack.pop();
+          stopPoll();
+          bookFilter = {q: prev.bookFilter.q, stage: prev.bookFilter.stage, direction: prev.bookFilter.direction, opened: prev.bookFilter.opened};
+          practiceMode = prev.practiceMode || "create";
+          currentRow = typeof prev.currentRow === "number" ? prev.currentRow : 0;
+          showPage(prev.page, {skipHistory: true, restoreScroll: true, scrollY: prev.scroll || 0}).then(function() {
+            if (prev.page === "practice") {
+              setFormValues(prev.form || defaultValues(), {lock: practiceMode === "browse"});
+              if (prev.feedback && String(prev.feedback).trim()) showPaperState("markdown", prev.feedback);
+              else if (prev.wasPolling && currentRow >= 1 && practiceMode !== "edit") startPoll(currentRow);
+              else if (practiceMode === "edit") showPaperState("empty-edit");
+              else showPaperState(prev.paperState === "timeout" ? "timeout" : "placeholder");
+              updateActionButtons();
+              refreshBrowseButtons();
+            }
+          });
+          return "false";
+        }
+        window.airBack = airBack;
+
+        function renderStats(total, junior, senior, failed) {
+          document.getElementById("statTotalNum").textContent = failed ? "—" : String(total);
+          document.getElementById("statJuniorNum").textContent = failed ? "—" : String(junior);
+          document.getElementById("statSeniorNum").textContent = failed ? "—" : String(senior);
+        }
+        function renderDirCards(records, state) {
+          const grid = document.getElementById("dirGrid");
+          grid.textContent = "";
+          for (let i = 0; i < DIRECTIONS.length; i++) {
+            const dir = DIRECTIONS[i];
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "card dir-tile";
+            btn.setAttribute("data-dir", dir);
+            btn.style.setProperty("--dir", DIR_COLOR[dir]);
+            const head = document.createElement("div");
+            head.className = "dir-tile-head";
+            const icon = document.createElement("i");
+            icon.className = "fa-solid " + DIR_ICON[dir];
+            icon.setAttribute("aria-hidden", "true");
+            head.appendChild(icon);
+            const name = document.createElement("strong");
+            name.textContent = dirLabel(dir);
+            head.appendChild(name);
+            btn.appendChild(head);
+            const hint = document.createElement("p");
+            hint.className = "dir-hint";
+            hint.textContent = dirHint(dir);
+            btn.appendChild(hint);
+            let countText = "…";
+            if (state === "error") countText = "—";
+            else if (state === "ready") {
+              let n = 0;
+              for (let r = 0; r < records.length; r++) if (records[r]["练习方向"] === dir) n++;
+              countText = uiLang === "en" ? (n + " times") : (n + " 次");
+            }
+            const count = document.createElement("span");
+            count.className = "dir-count";
+            count.textContent = countText;
+            btn.appendChild(count);
+            grid.appendChild(btn);
+          }
+        }
+        function buildRecentCard(rec) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "card record-card";
+          btn.setAttribute("data-row", String(rec.row));
+          const color = DIR_COLOR[rec["练习方向"]] || "#2A9D8F";
+          btn.style.setProperty("--dir", color);
+          const meta = document.createElement("div");
+          meta.className = "meta-row";
+          const stage = document.createElement("span");
+          stage.className = "pill";
+          stage.textContent = displayStage(rec["学段"]);
+          meta.appendChild(stage);
+          const opened = String(rec["已开设化学课"]).trim() === "是";
+          const openPill = document.createElement("span");
+          openPill.className = opened ? "pill pill-on" : "pill pill-off";
+          openPill.textContent = opened ? t("opened_yes_short") : t("opened_no_short");
+          meta.appendChild(openPill);
+          const dirPill = document.createElement("span");
+          dirPill.className = "pill dir-pill";
+          dirPill.textContent = dirLabel(rec["练习方向"]);
+          dirPill.style.color = color;
+          dirPill.style.background = hexAlpha(color, 0.12);
+          meta.appendChild(dirPill);
+          btn.appendChild(meta);
+          const q = document.createElement("p");
+          q.className = "formula-text card-question";
+          q.textContent = clipPlain(rec["问题或作答"], 42);
+          btn.appendChild(q);
+          const brief = document.createElement("p");
+          brief.className = "card-brief";
+          brief.textContent = feedbackBrief(rec["辅导反馈"], 36, t("coach_writing"));
+          btn.appendChild(brief);
+          return btn;
+        }
+        function renderRecent(records) {
+          const list = document.getElementById("recentList");
+          list.textContent = "";
+          const rows = records.slice(0, 5);
+          if (!rows.length) {
+            const box = document.createElement("div");
+            box.className = "empty-card";
+            const p = document.createElement("p");
+            p.textContent = t("recent_empty");
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "btn-primary";
+            b.id = "btnRecentEmpty";
+            b.textContent = t("start_practice");
+            b.addEventListener("click", function() { showPage("practice"); });
+            box.appendChild(p);
+            box.appendChild(b);
+            list.appendChild(box);
+            return;
+          }
+          for (let i = 0; i < rows.length; i++) list.appendChild(buildRecentCard(rows[i]));
+        }
+        async function refreshHome() {
+          homeFailed = false;
+          document.getElementById("homeError").hidden = true;
+          document.getElementById("statTotalNum").textContent = "…";
+          document.getElementById("statJuniorNum").textContent = "…";
+          document.getElementById("statSeniorNum").textContent = "…";
+          renderDirCards([], "loading");
+          try {
+            const count = await fetchCount();
+            recordCount = count;
+            const csv = await callAppBridge({type:"GetTableCSV", data:"化学用语练习/默认表格", payload:"学段,已开设化学课,练习方向,问题或作答,辅导反馈"});
+            const records = csvToRecords(csv);
+            let junior = 0;
+            let senior = 0;
+            for (let i = 0; i < records.length; i++) {
+              if (records[i]["学段"] === "初中") junior++;
+              else if (records[i]["学段"] === "高中") senior++;
+            }
+            homeRecords = records;
+            homeStats = {total: count, junior: junior, senior: senior};
+            homeFailed = false;
+            renderStats(count, junior, senior, false);
+            renderDirCards(records, "ready");
+            renderRecent(records);
+            document.getElementById("homeError").hidden = true;
+          } catch (e) {
+            homeFailed = true;
+            homeRecords = null;
+            homeStats = null;
+            renderStats(0, 0, 0, true);
+            renderDirCards([], "error");
+            document.getElementById("recentList").textContent = "";
+            document.getElementById("homeError").hidden = false;
+          }
+        }
+        function matchesChoice(cell, expected) {
+          const raw = String(cell || "").trim();
+          if (raw === expected) return true;
+          if (/[,，;；|]/.test(raw)) {
+            const parts = raw.split(/[,，;；|]/);
+            for (let i = 0; i < parts.length; i++) if (parts[i].trim() === expected) return true;
+          }
+          return false;
+        }
+        function filterRows(records) {
+          const q = bookFilter.q.trim().toLowerCase();
+          const out = [];
+          for (let i = 0; i < records.length; i++) {
+            const rec = records[i];
+            if (bookFilter.stage !== "all" && !matchesChoice(rec["学段"], bookFilter.stage)) continue;
+            if (bookFilter.direction !== "all" && !matchesChoice(rec["练习方向"], bookFilter.direction)) continue;
+            if (bookFilter.opened !== "all" && !matchesChoice(rec["已开设化学课"], bookFilter.opened)) continue;
+            if (q && String(rec["问题或作答"]).toLowerCase().indexOf(q) === -1) continue;
+            out.push(rec);
+          }
+          return out;
+        }
+        function makeAct(act, label, cls) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = cls + " btn-mini";
+          b.setAttribute("data-act", act);
+          b.textContent = label;
+          return b;
+        }
+        function buildBookCard(rec) {
+          const card = document.createElement("article");
+          card.className = "card record-card";
+          card.setAttribute("data-row", String(rec.row));
+          const color = DIR_COLOR[rec["练习方向"]] || "#2A9D8F";
+          card.style.setProperty("--dir", color);
+          const meta = document.createElement("div");
+          meta.className = "meta-row";
+          const stage = document.createElement("span");
+          stage.className = "pill";
+          stage.textContent = displayStage(rec["学段"]);
+          meta.appendChild(stage);
+          const opened = document.createElement("span");
+          opened.className = "pill";
+          opened.textContent = displayBool(rec["已开设化学课"]);
+          meta.appendChild(opened);
+          const dirPill = document.createElement("span");
+          dirPill.className = "pill dir-pill";
+          dirPill.textContent = dirLabel(rec["练习方向"]);
+          dirPill.style.color = color;
+          dirPill.style.background = hexAlpha(color, 0.12);
+          meta.appendChild(dirPill);
+          card.appendChild(meta);
+          const qLabel = document.createElement("div");
+          qLabel.className = "mini-label";
+          qLabel.textContent = t("field_question");
+          card.appendChild(qLabel);
+          const q = document.createElement("p");
+          q.className = "formula-text card-question";
+          q.textContent = clipPlain(rec["问题或作答"], 80);
+          card.appendChild(q);
+          const fLabel = document.createElement("div");
+          fLabel.className = "mini-label";
+          fLabel.textContent = t("feedback_title");
+          card.appendChild(fLabel);
+          const brief = document.createElement("p");
+          brief.className = "card-brief";
+          brief.textContent = feedbackBrief(rec["辅导反馈"], 60, t("generating"));
+          card.appendChild(brief);
+          const actions = document.createElement("div");
+          actions.className = "card-actions";
+          actions.appendChild(makeAct("view", t("view_detail"), "btn-ghost"));
+          actions.appendChild(makeAct("edit", t("edit"), "btn-accent"));
+          actions.appendChild(makeAct("del", t("delete"), "btn-danger"));
+          card.appendChild(actions);
+          return card;
+        }
+        function renderBookList() {
+          const list = document.getElementById("bookList");
+          const empty = document.getElementById("bookEmpty");
+          const err = document.getElementById("bookError");
+          list.textContent = "";
+          if (bookFailed) {
+            empty.hidden = true;
+            err.hidden = false;
+            return;
+          }
+          err.hidden = true;
+          const rows = filterRows(bookRows);
+          if (!rows.length) {
+            empty.hidden = false;
+            return;
+          }
+          empty.hidden = true;
+          for (let i = 0; i < rows.length; i++) list.appendChild(buildBookCard(rows[i]));
+        }
+        async function refreshBook() {
+          bookFailed = false;
+          document.getElementById("bookError").hidden = true;
+          document.getElementById("bookEmpty").hidden = true;
+          const list = document.getElementById("bookList");
+          list.textContent = "";
+          const loading = document.createElement("p");
+          loading.className = "hint";
+          loading.textContent = t("loading");
+          list.appendChild(loading);
+          fillFilterLabels();
+          syncFilterControls();
+          try {
+            const csv = await callAppBridge({type:"GetTableCSV", data:"化学用语练习/默认表格", payload:"学段,已开设化学课,练习方向,问题或作答,辅导反馈"});
+            bookRows = csvToRecords(csv);
+            recordCount = await fetchCount();
+            updateBrowseDisabled();
+            bookLoaded = true;
+            bookFailed = false;
+            renderBookList();
+          } catch (e) {
+            bookFailed = true;
+            bookLoaded = false;
+            bookRows = [];
+            renderBookList();
+          }
+        }
+        async function reloadListsQuiet() {
+          const csv = await callAppBridge({type:"GetTableCSV", data:"化学用语练习/默认表格", payload:"学段,已开设化学课,练习方向,问题或作答,辅导反馈"});
+          bookRows = csvToRecords(csv);
+          bookLoaded = true;
+          recordCount = await fetchCount();
+          updateBrowseDisabled();
+          renderBookList();
+        }
+        function fillDetail(data) {
+          document.getElementById("detailStage").textContent = displayStage(data["学段"]);
+          document.getElementById("detailOpened").textContent = displayBool(data["已开设化学课"]);
+          document.getElementById("detailDirection").textContent = dirLabel(data["练习方向"]) || data["练习方向"];
+          document.getElementById("detailQuestion").textContent = data["问题或作答"] || "";
+          const fb = data["辅导反馈"] || "";
+          const empty = document.getElementById("detailFeedbackEmpty");
+          const box = document.getElementById("detailFeedback");
+          if (!String(fb).trim()) {
+            box.innerHTML = "";
+            empty.hidden = false;
+          } else {
+            empty.hidden = true;
+            box.innerHTML = renderMarkdown(fb);
+          }
+        }
+        async function openDetail(row) {
+          openPopup("detailOverlay");
+          detailRow = row;
+          detailData = null;
+          document.getElementById("detailStage").textContent = t("loading");
+          document.getElementById("detailOpened").textContent = "";
+          document.getElementById("detailDirection").textContent = "";
+          document.getElementById("detailQuestion").textContent = "";
+          document.getElementById("detailFeedback").innerHTML = "";
+          document.getElementById("detailFeedbackEmpty").hidden = true;
+          try {
+            const data = {};
+            for (let i = 0; i < FIELDS.length; i++) {
+              const f = FIELDS[i];
+              const val = await callAppBridge({type:"GetCellValue", data:"化学用语练习/默认表格", payload: f + "/" + row});
+              data[f] = val == null ? "" : String(val);
+            }
+            if (detailRow !== row) return;
+            detailData = data;
+            fillDetail(data);
+          } catch (e) {
+            if (detailRow !== row) return;
+            document.getElementById("detailStage").textContent = t("load_error");
+            showToast(t("action_failed"));
+          }
+        }
+        async function refreshDetailFeedback() {
+          if (!detailRow) return;
+          const btn = document.getElementById("btnDetailRefresh");
+          btn.disabled = true;
+          try {
+            const val = await callAppBridge({type:"GetCellValue", data:"化学用语练习/默认表格", payload:"辅导反馈/" + detailRow});
+            const text = val == null ? "" : String(val);
+            if (!detailData) detailData = {};
+            detailData["辅导反馈"] = text;
+            fillDetail(detailData);
+          } catch (e) {
+            showToast(t("action_failed"));
+          } finally {
+            btn.disabled = false;
+          }
+        }
+        async function refreshPaperFeedback() {
+          if (currentRow < 1) return;
+          const btn = document.getElementById("btnRefreshFeedback");
+          btn.disabled = true;
+          try {
+            const val = await callAppBridge({type:"GetCellValue", data:"化学用语练习/默认表格", payload:"辅导反馈/" + currentRow});
+            const text = val == null ? "" : String(val);
+            if (text.trim()) showPaperState("markdown", text);
+            else showPaperState(paperState === "wait" ? "timeout" : paperState);
+          } catch (e) {
+            showToast(t("action_failed"));
+          } finally {
+            btn.disabled = false;
+          }
+        }
+        async function loadRowIntoForm(row, mode) {
+          stopPoll();
+          const data = {};
+          for (let i = 0; i < FIELDS.length; i++) {
+            const f = FIELDS[i];
+            const val = await callAppBridge({type:"GetCellValue", data:"化学用语练习/默认表格", payload: f + "/" + row});
+            data[f] = val == null ? "" : String(val);
+          }
+          currentRow = row;
+          practiceMode = mode;
+          setFormValues(data, {lock: mode === "browse"});
+          const fb = data["辅导反馈"] || "";
+          if (String(fb).trim()) showPaperState("markdown", fb);
+          else if (mode === "edit") showPaperState("empty-edit");
+          else startPoll(row);
+          updateActionButtons();
+          await refreshBrowseButtons();
+        }
+        async function editRow(row) {
+          if (!document.getElementById("detailOverlay").hidden) closePopup("detailOverlay");
+          if (currentPage !== "practice") await showPage("practice");
+          try {
+            await loadRowIntoForm(row, "edit");
+          } catch (e) {
+            showToast(t("action_failed"));
+          }
+        }
+        function askDelete(row) {
+          pendingDeleteRow = row;
+          document.getElementById("confirmText").textContent = t("confirm_delete");
+          openPopup("confirmOverlay");
+        }
+        async function confirmDelete() {
+          const row = pendingDeleteRow;
+          pendingDeleteRow = 0;
+          closePopup("confirmOverlay");
+          if (!row) return;
+          try {
+            await callAppBridge({type:"DeleteRecord", data:"化学用语练习/默认表格", payload: row.toString()});
+            if (detailRow === row) {
+              closePopup("detailOverlay");
+              detailData = null;
+              detailRow = 0;
+            } else if (detailRow > row) detailRow -= 1;
+            if (currentRow === row) {
+              stopPoll();
+              practiceMode = "create";
+              currentRow = 0;
+              setFormValues(defaultValues(), {lock: false});
+              showPaperState("placeholder");
+            } else if (currentRow > row) currentRow -= 1;
+            updateActionButtons();
+            if (currentPage === "home") await refreshHome();
+            else if (currentPage === "book") await refreshBook();
+            else { try { await reloadListsQuiet(); } catch (e2) {} }
+          } catch (e) {
+            showToast(t("action_failed"));
+          }
+        }
+        async function getCoach() {
+          if (practiceMode !== "create" || submitting || polling) return;
+          const values = getFormValues();
+          if (!String(values["问题或作答"]).trim()) {
+            updateQuestionHints();
+            return;
+          }
+          submitting = true;
+          updateActionButtons();
+          try {
+            await callAppBridge({type:"SubmitRecord", data:"化学用语练习", payload: userPayload(values)});
+            currentRow = 1;
+            practiceMode = "browse";
+            setFormValues(values, {lock: true});
+            updateActionButtons();
+            startPoll(1);
+            refreshBrowseButtons();
+          } catch (e) {
+            showToast(t("action_failed"));
+          } finally {
+            submitting = false;
+            updateActionButtons();
+          }
+        }
+        async function saveEdit() {
+          if (practiceMode !== "edit" || submitting || currentRow < 1) return;
+          submitting = true;
+          updateActionButtons();
+          const values = getFormValues();
+          const fields = ["学段", "已开设化学课", "练习方向", "问题或作答"];
+          try {
+            for (let i = 0; i < fields.length; i++) {
+              const f = fields[i];
+              // SetCellValue 用「字段/行/值」，值里的斜杠原样保留，服务端只按前两处斜杠切分。
+              await callAppBridge({type:"SetCellValue", data:"化学用语练习/默认表格", payload: f + "/" + currentRow + "/" + values[f]});
+            }
+            showToast(t("saved"));
+            try { await reloadListsQuiet(); } catch (e2) {}
+          } catch (e) {
+            showToast(t("action_failed"));
+          } finally {
+            submitting = false;
+            updateActionButtons();
+          }
+        }
+        async function resubmitAsNew() {
+          if (submitting || polling) return;
+          const values = getFormValues();
+          if (!String(values["问题或作答"]).trim()) {
+            document.getElementById("questionHint").hidden = false;
+            return;
+          }
+          submitting = true;
+          updateActionButtons();
+          try {
+            await callAppBridge({type:"SubmitRecord", data:"化学用语练习", payload: userPayload(values)});
+            currentRow = 1;
+            practiceMode = "browse";
+            setFormValues(values, {lock: true});
+            updateActionButtons();
+            startPoll(1);
+            refreshBrowseButtons();
+          } catch (e) {
+            showToast(t("action_failed"));
+          } finally {
+            submitting = false;
+            updateActionButtons();
+          }
+        }
+        function practiceAgain() {
+          const keep = getFormValues();
+          stopPoll();
+          practiceMode = "create";
+          currentRow = 0;
+          setFormValues({"学段": keep["学段"], "已开设化学课": keep["已开设化学课"], "练习方向": keep["练习方向"], "问题或作答": ""}, {lock: false});
+          showPaperState("placeholder");
+          updateActionButtons();
+        }
+        function cancelEdit() {
+          stopPoll();
+          practiceMode = "create";
+          currentRow = 0;
+          setFormValues(defaultValues(), {lock: false});
+          showPaperState("placeholder");
+          updateActionButtons();
+        }
+        async function goNewPractice() {
+          stopPoll();
+          practiceMode = "create";
+          currentRow = 0;
+          setFormValues(defaultValues(), {lock: false});
+          showPaperState("placeholder");
+          updateActionButtons();
+          if (currentPage !== "practice") await showPage("practice");
+          else closeMenu();
+        }
+        async function goPracticeWithDirection(dir) {
+          if (practiceMode === "create") {
+            setDirection(dir);
+            updateChoiceStyles();
+            updateJuniorHint();
+            updatePlaceholder();
+            renderExampleChips();
+          } else {
+            const stage = getStage();
+            const opened = getOpened();
+            stopPoll();
+            practiceMode = "create";
+            currentRow = 0;
+            setFormValues({"学段": stage, "已开设化学课": opened, "练习方向": dir, "问题或作答": ""}, {lock: false});
+            showPaperState("placeholder");
+          }
+          updateActionButtons();
+          if (currentPage !== "practice") await showPage("practice");
+          else closeMenu();
+        }
+        async function goBookStage(stage) {
+          bookFilter = {q: "", stage: stage, direction: "all", opened: "all"};
+          if (currentPage === "book") {
+            fillFilterLabels();
+            syncFilterControls();
+            renderBookList();
+            return;
+          }
+          await showPage("book");
+        }
+        async function onOlder() {
+          if (currentRow < 1) return;
+          try {
+            const count = await fetchCount();
+            recordCount = count;
+            updateBrowseDisabled();
+            if (currentRow >= count) return;
+            await loadRowIntoForm(currentRow + 1, "browse");
+          } catch (e) {
+            showToast(t("action_failed"));
+          }
+        }
+        async function onNewer() {
+          if (currentRow <= 1) return;
+          try {
+            await loadRowIntoForm(currentRow - 1, "browse");
+          } catch (e) {
+            showToast(t("action_failed"));
+          }
+        }
+        function setupKeyboard() {
+          function adjust(el) {
+            if (!el || !el.tagName || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+            const vv = window.visualViewport;
+            const kb = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+            document.documentElement.style.setProperty("--keyboard-height", kb + "px");
+            if (window.innerWidth < 800) {
+              const form = el.closest("form");
+              if (form) form.style.paddingBottom = Math.max(Math.round(window.innerHeight * 0.46), kb + 48) + "px";
+              const body = el.closest(".dialog-body");
+              if (body) body.style.paddingBottom = Math.max(160, kb + 80) + "px";
+            }
+            setTimeout(function() {
+              try { el.scrollIntoView({block: "center", inline: "nearest"}); }
+              catch (err) { el.scrollIntoView(true); }
+            }, 300);
+          }
+          document.addEventListener("focusin", function(e) { adjust(e.target); });
+          if (window.visualViewport) window.visualViewport.addEventListener("resize", function() { adjust(document.activeElement); });
+        }
+        async function applyTheme() {
+          let mode = "";
+          try { mode = await callAppBridge({type:"模式"}); } catch (e) { mode = ""; }
+          const text = String(mode == null ? "" : mode).replace(/^\uFEFF/, "").trim().replace(/^["']|["']$/g, "");
+          document.documentElement.setAttribute("data-theme", text === "暗色" ? "dark" : "light");
+        }
+        function bindEvents() {
+          document.getElementById("btnLogo").addEventListener("click", function() {
+            try { if (window.parent && typeof window.parent.closeFullHtml === "function") window.parent.closeFullHtml(false); } catch (err) {}
+          });
+          document.getElementById("navLinks").addEventListener("click", function(e) {
+            const btn = e.target.closest("[data-page]");
+            if (btn) showPage(btn.getAttribute("data-page"));
+          });
+          document.getElementById("mobileMenu").addEventListener("click", function(e) {
+            const pageBtn = e.target.closest("[data-page]");
+            if (pageBtn) { closeMenu(); showPage(pageBtn.getAttribute("data-page")); return; }
+            const langBtn = e.target.closest("[data-set-lang]");
+            if (langBtn) setLanguage(langBtn.getAttribute("data-set-lang"));
+          });
+          document.getElementById("btnLang").addEventListener("click", function() { setLanguage(uiLang === "en" ? "cn" : "en"); });
+          document.getElementById("btnHamburger").addEventListener("click", function(e) { e.stopPropagation(); toggleMenu(); });
+          document.addEventListener("click", function(e) {
+            const nav = document.getElementById("topNav");
+            if (!nav.classList.contains("menu-open")) return;
+            if (!nav.contains(e.target)) closeMenu();
+          });
+          document.addEventListener("keydown", function(e) {
+            if (e.key !== "Escape") return;
+            if (!popupStack.length) {
+              if (document.getElementById("topNav").classList.contains("menu-open")) closeMenu();
+              return;
+            }
+            const top = popupStack[popupStack.length - 1];
+            if (top === "confirmOverlay") closeConfirm();
+            else closePopup(top);
+          });
+          document.getElementById("btnStartPractice").addEventListener("click", function() { showPage("practice"); });
+          document.getElementById("statJunior").addEventListener("click", function() { goBookStage("初中"); });
+          document.getElementById("statSenior").addEventListener("click", function() { goBookStage("高中"); });
+          document.getElementById("btnHomeRetry").addEventListener("click", function() { refreshHome(); });
+          document.getElementById("dirGrid").addEventListener("click", function(e) {
+            const btn = e.target.closest("[data-dir]");
+            if (btn) goPracticeWithDirection(btn.getAttribute("data-dir"));
+          });
+          document.getElementById("recentList").addEventListener("click", function(e) {
+            const card = e.target.closest("[data-row]");
+            if (!card || e.target.closest("#btnRecentEmpty")) return;
+            const row = parseInt(card.getAttribute("data-row"), 10);
+            if (row) openDetail(row);
+          });
+          document.getElementById("formChemPractice").addEventListener("submit", function(e) { e.preventDefault(); });
+          document.getElementById("formChemPractice").addEventListener("change", function(ev) {
+            if (ev.target && ev.target.name === "学段") unmatchedStage = "";
+            if (ev.target && ev.target.name === "练习方向") unmatchedDirection = "";
+            updateChoiceStyles();
+            updateJuniorHint();
+            updatePlaceholder();
+            renderExampleChips();
+          });
+          document.getElementById("formChemPractice_问题或作答").addEventListener("input", function() {
+            updateQuestionHints();
+            updateActionButtons();
+          });
+          document.getElementById("btnGetCoach").addEventListener("click", function() { getCoach(); });
+          document.getElementById("btnAgain").addEventListener("click", function() { practiceAgain(); });
+          document.getElementById("btnSave").addEventListener("click", function() { saveEdit(); });
+          document.getElementById("btnResubmit").addEventListener("click", function() { resubmitAsNew(); });
+          document.getElementById("btnCancelEdit").addEventListener("click", function() { cancelEdit(); });
+          document.getElementById("btnOpenBook").addEventListener("click", function() { showPage("book"); });
+          document.getElementById("btnOlder").addEventListener("click", function() { onOlder(); });
+          document.getElementById("btnNewer").addEventListener("click", function() { onNewer(); });
+          document.getElementById("btnRefreshFeedback").addEventListener("click", function() { refreshPaperFeedback(); });
+          document.getElementById("btnNewPractice").addEventListener("click", function() { goNewPractice(); });
+          document.getElementById("bookSearch").addEventListener("input", function() {
+            bookFilter.q = document.getElementById("bookSearch").value;
+            renderBookList();
+          });
+          document.getElementById("bookFilterStage").addEventListener("change", function() {
+            bookFilter.stage = document.getElementById("bookFilterStage").value;
+            renderBookList();
+          });
+          document.getElementById("bookFilterDirection").addEventListener("change", function() {
+            bookFilter.direction = document.getElementById("bookFilterDirection").value;
+            renderBookList();
+          });
+          document.getElementById("bookFilterOpened").addEventListener("change", function() {
+            bookFilter.opened = document.getElementById("bookFilterOpened").value;
+            renderBookList();
+          });
+          document.getElementById("btnClearFilter").addEventListener("click", function() {
+            bookFilter = {q: "", stage: "all", direction: "all", opened: "all"};
+            syncFilterControls();
+            renderBookList();
+          });
+          document.getElementById("btnBookRetry").addEventListener("click", function() { refreshBook(); });
+          document.getElementById("bookList").addEventListener("click", function(e) {
+            const actBtn = e.target.closest("[data-act]");
+            const card = e.target.closest("[data-row]");
+            if (!card) return;
+            const row = parseInt(card.getAttribute("data-row"), 10);
+            if (!row) return;
+            if (actBtn) {
+              const act = actBtn.getAttribute("data-act");
+              if (act === "view") openDetail(row);
+              else if (act === "edit") editRow(row);
+              else if (act === "del") askDelete(row);
+              return;
+            }
+            openDetail(row);
+          });
+          document.getElementById("detailOverlay").addEventListener("click", function(e) {
+            if (e.target === e.currentTarget) closePopup("detailOverlay");
+          });
+          document.getElementById("btnDetailClose").addEventListener("click", function() { closePopup("detailOverlay"); });
+          document.getElementById("btnDetailCloseX").addEventListener("click", function() { closePopup("detailOverlay"); });
+          document.getElementById("btnDetailEdit").addEventListener("click", function() { editRow(detailRow); });
+          document.getElementById("btnDetailDelete").addEventListener("click", function() { if (detailRow) askDelete(detailRow); });
+          document.getElementById("btnDetailRefresh").addEventListener("click", function() { refreshDetailFeedback(); });
+          document.getElementById("confirmOverlay").addEventListener("click", function(e) {
+            if (e.target === e.currentTarget) closeConfirm();
+          });
+          document.getElementById("btnConfirmCancel").addEventListener("click", function() { closeConfirm(); });
+          document.getElementById("btnConfirmOk").addEventListener("click", function() { confirmDelete(); });
+          window.addEventListener("resize", layoutNav);
+        }
+        async function initialize() {
+          uiLang = detectLang();
+          bindEvents();
+          applyStaticTexts();
+          setFormValues(defaultValues(), {lock: false});
+          showPaperState("placeholder");
+          updateActionButtons();
+          renderDirCards([], "loading");
+          layoutNav();
+          setupKeyboard();
+          await applyTheme();
+          await showPage("home", {skipHistory: true});
+        }
+        (async () => {    await initialize();  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,2928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>应用题建模训练</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+<style>
+:root {
+  --bg: #F4EFE4;
+  --ink: #243056;
+  --red: #C4513A;
+  --teal: #3E7C7C;
+  --card: #FFFCF7;
+  --nav: #243056;
+  --nav-text: #F7F1E6;
+  --muted: #5C6478;
+  --line: rgba(36, 48, 86, 0.14);
+  --shadow: 0 1px 0 rgba(255, 252, 247, 0.8) inset, 0 10px 28px rgba(36, 48, 86, 0.08);
+  --shadow-hover: 0 16px 34px rgba(196, 81, 58, 0.16);
+  --soft: #E7DFD1;
+  --input-bg: #FFFCF7;
+  --mask: rgba(36, 48, 86, 0.48);
+  --toast-bg: #243056;
+  --toast-text: #F7F1E6;
+  --code-bg: #F3EBE0;
+  --quote: #6A5A4E;
+  --keyboard-gap: 0px;
+}
+:root[data-theme="dark"] {
+  --bg: #1A1714;
+  --ink: #F3EDE3;
+  --red: #E07A64;
+  --teal: #7EB8B6;
+  --card: #2A2522;
+  --nav: #12151C;
+  --nav-text: #F3EDE3;
+  --muted: #C4B6A6;
+  --line: rgba(243, 237, 227, 0.14);
+  --shadow: 0 1px 0 rgba(255, 252, 247, 0.04) inset, 0 12px 28px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0 16px 34px rgba(224, 122, 100, 0.22);
+  --soft: #3A332E;
+  --input-bg: #221E1B;
+  --mask: rgba(0, 0, 0, 0.66);
+  --toast-bg: #F3EDE3;
+  --toast-text: #1A1714;
+  --code-bg: #1C1815;
+  --quote: #E4D3C4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background:
+    radial-gradient(1100px 420px at 0% -10%, rgba(196, 81, 58, 0.08), transparent 55%),
+    radial-gradient(900px 380px at 100% 0%, rgba(62, 124, 124, 0.08), transparent 50%),
+    var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body.popup-open { overflow: hidden; }
+input, select, textarea { box-sizing: border-box; font-family: inherit; font-size: 16px; color: var(--ink); }
+button, input, textarea { font-family: inherit; }
+[hidden] { display: none !important; }
+h1, h2, h3, .brand-name, .stat-num { font-family: "Noto Serif SC", "Songti SC", serif; }
+#navDock { position: fixed; top: 0; left: 0; right: 0; z-index: 1001; }
+#mainNav { background: var(--nav); color: var(--nav-text); overflow: visible; }
+.nav-row {
+  width: 100%;
+  max-width: 1180px;
+  height: 64px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+  background: transparent;
+  border: 0;
+  color: var(--nav-text);
+  padding: 0;
+  cursor: pointer;
+}
+.logo-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #FFFCF7;
+  color: #C4513A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex: none;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+}
+.logo-badge .fa-pen-nib { font-size: 16px; }
+.logo-badge .fa-play {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  font-size: 8px;
+  color: #3E7C7C;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-tabs { display: flex; flex-wrap: nowrap; gap: 2px; align-items: center; flex: none; }
+.nav-tab, .mobile-tab, .lang-btn { flex: none; }
+.nav-tab, .mobile-tab, .lang-btn, .icon-btn {
+  background: transparent;
+  color: var(--nav-text);
+  border: 0;
+  cursor: pointer;
+}
+.nav-tab, .mobile-tab {
+  white-space: nowrap;
+  padding: 18px 12px 14px;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+}
+.nav-tab.is-active, .mobile-tab.is-active { border-bottom-color: #C4513A; }
+.nav-tools { margin-left: auto; display: flex; align-items: center; gap: 8px; flex: none; }
+.lang-btn {
+  border: 1px solid rgba(247, 241, 230, 0.45);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(247, 241, 230, 0.28);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#mainNav.is-compact #navTabs { display: none; }
+#mainNav.is-compact #btnLang { display: none; }
+#mainNav.is-compact #btnHamburger { display: inline-flex; }
+.mobile-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: var(--nav);
+  padding: 8px 12px 12px;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.22);
+}
+.mobile-tabs { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; align-items: center; }
+#appMain { padding-top: 64px; }
+.page-wrap {
+  width: min(1120px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+.hero h1, .page-head h1 { font-size: 40px; line-height: 1.25; margin: 0 0 10px; }
+.lead { margin: 0 0 16px; font-size: 16px; line-height: 1.75; max-width: 760px; }
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  pointer-events: none;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+}
+.steps span { font-weight: 700; }
+.pen-note { color: var(--red); margin: 8px 0 18px; font-weight: 700; }
+.pen-note i { margin-right: 6px; }
+.btn {
+  border: 1.5px solid transparent;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--red);
+  box-shadow: var(--shadow-hover);
+}
+.btn:disabled { opacity: 0.48; cursor: not-allowed; box-shadow: none; }
+.btn-primary { background: var(--red); color: #FFFCF7; border-color: var(--red); }
+.btn-primary:hover:not(:disabled) { background: #a84330; color: #FFFCF7; }
+:root[data-theme="dark"] .btn-primary:hover:not(:disabled) { background: #c4513a; }
+.btn-small { padding: 8px 12px; font-size: 14px; }
+.btn-ghost { background: transparent; box-shadow: none; }
+.btn-danger { color: var(--red); }
+.paper-card {
+  background: var(--card);
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.lift { transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.lift:hover {
+  transform: translateY(-4px);
+  border-color: var(--red);
+  box-shadow: var(--shadow-hover);
+}
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 26px 0; }
+.stat-card { padding: 18px 18px 16px; cursor: default; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.stat-card:hover { transform: translateY(-4px); border-color: var(--red); box-shadow: var(--shadow-hover); }
+.stat-label { margin: 0; color: var(--muted); font-size: 14px; }
+.stat-num { margin: 8px 0 0; font-size: 40px; line-height: 1; }
+.stats .stat-card:nth-child(2) .stat-num { color: var(--teal); }
+.stats .stat-card:nth-child(3) .stat-num { color: var(--red); }
+.section-head, .page-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.section-head h2, .page-head h1 { margin: 0; }
+.section-head h2 { font-size: 28px; }
+.head-actions, .card-actions, .browse-bar, .drawer-actions, .filter-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.recent-grid, .archive-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.recent-card, .record-card {
+  text-align: left;
+  width: 100%;
+  padding: 16px;
+  color: inherit;
+}
+.recent-card { cursor: pointer; }
+.record-card { cursor: pointer; }
+.card-title, .recent-title { display: block; margin: 0 0 8px; font-size: 18px; }
+.card-thought, .recent-thought { display: block; margin: 0 0 12px; color: var(--muted); line-height: 1.6; }
+.clamp-2, .clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.clamp-2 { -webkit-line-clamp: 2; }
+.clamp-3 { -webkit-line-clamp: 3; }
+.empty-state {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 28px 18px;
+  text-align: center;
+}
+.empty-state i { color: var(--red); font-size: 28px; }
+.workshop-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.form-card, .guide-column { min-width: 0; }
+.form-card { padding: 18px; }
+.field { display: block; font-weight: 700; margin: 12px 0 6px; }
+textarea, input[type="search"], input[type="text"] {
+  width: 100%;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--input-bg);
+  padding: 12px 14px;
+  resize: vertical;
+}
+textarea { min-height: 140px; line-height: 1.6; }
+textarea:focus, input:focus { outline: 2px solid var(--teal); border-color: var(--teal); }
+.form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.lock-note { color: var(--red); font-size: 13px; margin: 8px 0 0; }
+.browse-bar { margin-bottom: 12px; }
+.excerpt {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.excerpt h3 { margin: 0 0 4px; font-size: 14px; color: var(--teal); }
+.excerpt p { margin: 0 0 10px; white-space: pre-wrap; word-break: break-word; }
+.coach-sheet {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--red);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px 18px 18px 20px;
+  min-height: 260px;
+}
+.kicker { margin: 0 0 8px; color: var(--red); font-weight: 700; letter-spacing: 0.04em; }
+.motif { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--teal); font-weight: 700; }
+.motif-arrow { color: var(--red); }
+.coach-foot { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+.past-section { margin-top: 16px; }
+.past-item, .chip {
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  font-weight: 700;
+}
+.past-item, .past-block { width: 100%; }
+.past-block { margin-bottom: 8px; }
+.past-item {
+  width: 100%;
+  border-radius: 12px;
+  text-align: left;
+  display: block;
+}
+.past-item.is-open, .chip.is-on { border-color: var(--red); color: var(--red); }
+.past-fold {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--red);
+  background: var(--card);
+  border-radius: 12px;
+}
+.search-input { margin-bottom: 12px; }
+.toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--mask);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#popup-edit { z-index: 2100; }
+#popup-confirm { z-index: 2200; }
+.modal-panel {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+}
+.drawer-scroll { padding: 22px 22px calc(28px + var(--keyboard-gap, 0px)); }
+.confirm-panel { width: min(420px, 100%); padding: 22px; }
+.confirm-panel p { font-size: 18px; font-weight: 700; }
+.plain-block { white-space: pre-wrap; word-break: break-word; background: var(--soft); border-radius: 12px; padding: 12px; }
+.drawer-scroll h2 { font-size: 16px; margin: 16px 0 8px; }
+.drawer-scroll h3 { margin-top: 0; }
+.md { line-height: 1.75; word-break: break-word; }
+.md h1, .md h2, .md h3, .md h4 { font-family: "Noto Serif SC", serif; line-height: 1.35; }
+.md img { max-width: 100%; height: auto; border-radius: 8px; cursor: pointer; }
+.md a { color: var(--teal); }
+.md pre, .md code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.md pre { overflow-x: auto; background: var(--code-bg); padding: 12px; border-radius: 10px; }
+.md blockquote { border-left: 3px solid var(--red); margin: 0.6em 0; padding-left: 12px; color: var(--quote); }
+.md table { border-collapse: collapse; }
+.md th, .md td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.md ul, .md ol { padding-left: 1.3em; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 3000;
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  padding: 14px 18px;
+  border-radius: 14px;
+  max-width: min(640px, calc(100% - 28px));
+  box-shadow: var(--shadow);
+  line-height: 1.6;
+}
+.loading-line { color: var(--muted); }
+@media (max-width: 860px) {
+  .workshop-grid, .stats, .recent-grid, .archive-grid { grid-template-columns: 1fr; }
+  .hero h1, .page-head h1 { font-size: 32px; }
+}
+@media (max-width: 720px) {
+  .page-wrap { width: min(1120px, calc(100% - 20px)); padding-bottom: calc(140px + env(safe-area-inset-bottom) + var(--keyboard-gap, 0px)); }
+  .drawer-scroll { padding-bottom: calc(140px + env(safe-area-inset-bottom) + var(--keyboard-gap, 0px)); }
+  #popup-detail { padding: 0; }
+  #popup-detail .modal-panel {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+}
+</style>
+</head>
+<body>
+<div id="navDock">
+  <nav id="mainNav" style="position: relative; z-index: 1001;">
+    <div id="navRow" class="nav-row">
+      <button id="navLogoBtn" type="button" class="brand">
+        <span class="logo-badge" aria-hidden="true"><i class="fa-solid fa-pen-nib"></i><i class="fa-solid fa-play"></i></span>
+        <span id="navBrand" class="brand-name" data-i18n="brand">应用题建模训练</span>
+      </button>
+      <div id="navTabs" class="nav-tabs">
+        <button id="tabHome" type="button" class="nav-tab is-active" data-i18n="tabHome">首页</button>
+        <button id="tabWorkshop" type="button" class="nav-tab" data-i18n="tabWorkshop">建模工坊</button>
+        <button id="tabArchive" type="button" class="nav-tab" data-i18n="tabArchive">训练档案</button>
+      </div>
+      <div class="nav-tools">
+        <button id="btnLang" type="button" class="lang-btn">EN</button>
+        <button id="btnHamburger" type="button" class="icon-btn" aria-expanded="false" aria-label="打开菜单"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <div class="mobile-tabs">
+        <button id="mobileTabHome" type="button" class="mobile-tab is-active" data-i18n="tabHome">首页</button>
+        <button id="mobileTabWorkshop" type="button" class="mobile-tab" data-i18n="tabWorkshop">建模工坊</button>
+        <button id="mobileTabArchive" type="button" class="mobile-tab" data-i18n="tabArchive">训练档案</button>
+        <button id="mobileBtnLang" type="button" class="lang-btn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main id="appMain">
+  <section id="pageHome" class="page">
+    <div class="page-wrap">
+      <header class="hero">
+        <h1 id="homeTitle" data-i18n="homeTitle">应用题建模训练</h1>
+        <p id="homeDesc" class="lead" data-i18n="homeDesc">根据数学应用题和学生当前思路，循序引导识别数量、说出关系并尝试列方程，通过追问和迁移练习训练独立建模能力。</p>
+        <div id="homeSteps" class="steps">
+          <span id="step1" data-i18n="step1">① 识别数量</span>
+          <span id="step2" data-i18n="step2">② 用文字说明关系</span>
+          <span id="step3" data-i18n="step3">③ 尝试列成等式</span>
+        </div>
+        <p id="homeNote" class="pen-note"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span data-i18n="homeNote">教练不会替你设未知数、列方程或给出答案。</span></p>
+        <button id="btnStartTraining" type="button" class="btn btn-primary" data-i18n="start">开始一次训练</button>
+      </header>
+      <div class="stats">
+        <article class="paper-card stat-card"><p id="statCountLabel" class="stat-label" data-i18n="statCount">训练次数</p><p id="statCountValue" class="stat-num">—</p></article>
+        <article class="paper-card stat-card"><p id="statHasLabel" class="stat-label" data-i18n="statHas">已写出思路</p><p id="statHasValue" class="stat-num">—</p></article>
+        <article class="paper-card stat-card"><p id="statNoneLabel" class="stat-label" data-i18n="statNone">尚未写思路</p><p id="statNoneValue" class="stat-num">—</p></article>
+      </div>
+      <div class="section-head">
+        <h2 id="recentHeading" data-i18n="recent">最近四次</h2>
+        <button id="btnRefreshHome" type="button" class="btn" data-i18n="refresh">刷新</button>
+      </div>
+      <p id="homeLoading" class="loading-line" data-i18n="loading">正在读取训练记录……</p>
+      <div id="recentList" class="recent-grid"></div>
+      <div id="recentEmpty" class="empty-state" hidden>
+        <i class="fa-solid fa-pen-nib" aria-hidden="true"></i>
+        <p id="recentEmptyText" data-i18n="emptyHome">还没有训练，先拿一道题来试试</p>
+        <button id="btnFirstProblem" type="button" class="btn btn-primary" data-i18n="firstProblem">去做第一题</button>
+      </div>
+    </div>
+  </section>
+  <section id="pageWorkshop" class="page" hidden>
+    <div class="page-wrap">
+      <header class="page-head">
+        <div>
+          <h1 id="workshopTitle" data-i18n="wsTitle">建模工坊</h1>
+          <p id="workshopDesc" class="lead" data-i18n="wsDesc">先写题目，再写下你已经想到的数量和关系。教练只推进一步。</p>
+        </div>
+      </header>
+      <div class="workshop-grid">
+        <section class="paper-card form-card">
+          <form id="formWorkshop" action="#" method="post" autocomplete="off">
+            <label id="labelWorkshopTitle" class="field" for="formWorkshop_题目" data-i18n="fieldTitle">题目</label>
+            <textarea id="formWorkshop_题目" name="题目" data-i18n-ph="phTitle" placeholder="把应用题原文贴在这里"></textarea>
+            <label id="labelWorkshopThought" class="field" for="formWorkshop_学生思路" data-i18n="fieldThought">学生思路</label>
+            <textarea id="formWorkshop_学生思路" name="学生思路" data-i18n-ph="phThought" placeholder="写下已经识别的数量、你认为的关系，以及还不确定的地方。可以不完整"></textarea>
+            <div class="form-actions">
+              <button id="btnAskCoach" type="button" class="btn btn-primary" data-i18n="ask" disabled>请教练追问</button>
+              <button id="btnClearDraft" type="button" class="btn" data-i18n="clear">清空草稿</button>
+            </div>
+            <p id="pollLockNote" class="lock-note" hidden></p>
+          </form>
+        </section>
+        <div class="guide-column">
+          <div class="browse-bar">
+            <button id="btnPrevRound" type="button" class="btn" data-i18n="prev" disabled>&lt; 上一轮</button>
+            <button id="btnNextRound" type="button" class="btn" data-i18n="next" disabled>下一轮 &gt;</button>
+          </div>
+          <aside id="readingExcerpt" class="excerpt" hidden>
+            <h3 id="excerptTitleLabel" data-i18n="fieldTitle">题目</h3>
+            <p id="excerptTitle"></p>
+            <h3 id="excerptThoughtLabel" data-i18n="fieldThought">学生思路</h3>
+            <p id="excerptThought"></p>
+          </aside>
+          <section id="coachSheet" class="coach-sheet" aria-live="polite">
+            <p id="coachKicker" class="kicker" hidden>教练的下一步</p>
+            <div id="coachWait" hidden>
+              <p id="coachWaitMsg"></p>
+              <div id="coachMotif" class="motif"></div>
+            </div>
+            <div id="coachReady" class="md" hidden></div>
+            <p id="coachEmptyMsg"></p>
+            <div id="coachActions" hidden>
+              <button id="btnPeek" type="button" class="btn">再看一眼</button>
+              <button id="btnKeep" type="button" class="btn">继续等待</button>
+            </div>
+            <p id="coachFoot" class="coach-foot" hidden></p>
+            <button id="btnContinueCoach" type="button" class="btn btn-primary" hidden>按此题继续</button>
+          </section>
+          <section id="pastSection" class="past-section" hidden>
+            <h2 id="pastHeading">这道题的往轮</h2>
+            <div id="pastList"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="pageArchive" class="page" hidden>
+    <div class="page-wrap">
+      <header class="page-head">
+        <div>
+          <h1 id="archiveTitle" data-i18n="arTitle">训练档案</h1>
+          <p id="archiveDesc" class="lead" data-i18n="arDesc">回看每一轮题目和思路；修改不会重算当时的教练引导。</p>
+        </div>
+        <div class="head-actions">
+          <button id="btnRefreshArchive" type="button" class="btn" data-i18n="refresh">刷新</button>
+          <button id="btnNewTraining" type="button" class="btn btn-primary" data-i18n="newTraining">+ 新的训练</button>
+        </div>
+      </header>
+      <div class="toolbar">
+        <input id="archiveSearch" class="search-input" type="search" data-i18n-ph="searchPh" placeholder="搜索题目或思路" autocomplete="off">
+        <div class="filter-row">
+          <button id="filterAll" type="button" class="chip is-on" aria-pressed="true">全部</button>
+          <button id="filterHas" type="button" class="chip" aria-pressed="false">已写思路</button>
+          <button id="filterNone" type="button" class="chip" aria-pressed="false">未写思路</button>
+        </div>
+        <div class="filter-row">
+          <button id="sortNew" type="button" class="chip is-on" aria-pressed="true" data-i18n="sortNew">最近提交在前</button>
+          <button id="sortOld" type="button" class="chip" aria-pressed="false" data-i18n="sortOld">较早提交在前</button>
+        </div>
+      </div>
+      <p id="archiveLoading" class="loading-line" data-i18n="loading">正在读取训练记录……</p>
+      <div id="archiveList" class="archive-grid"></div>
+      <div id="archiveEmpty" class="empty-state" hidden>
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <p id="archiveEmptyText" data-i18n="noMatch">没有符合的训练</p>
+        <button id="btnClearFilter" type="button" class="btn" data-i18n="clearFilter">清空筛选</button>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="popup-detail" class="modal-mask" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="detailHeading">
+    <div class="drawer-scroll keyboard-pad">
+      <h3 id="detailHeading" data-i18n="detailTitle">这一轮训练</h3>
+      <h2 id="detailProblemLabel" data-i18n="fieldTitle">题目</h2>
+      <p id="detailTitleText" class="plain-block"></p>
+      <h2 id="detailThoughtLabel" data-i18n="fieldThought">学生思路</h2>
+      <p id="detailThoughtText" class="plain-block"></p>
+      <h2 id="detailGuideLabel" data-i18n="detailGuide">教练引导</h2>
+      <div id="detailCoachBody" class="md"></div>
+      <div id="detailCoachWait" hidden>
+        <p id="detailWaitMsg"></p>
+        <div id="detailMotif" class="motif"></div>
+      </div>
+      <p id="detailEmptyMsg" hidden></p>
+      <div id="detailCoachActions" class="drawer-actions" hidden>
+        <button id="btnDetailPeek" type="button" class="btn" data-i18n="peek">再看一眼</button>
+        <button id="btnDetailKeep" type="button" class="btn" data-i18n="keepWait">继续等待</button>
+      </div>
+      <div class="drawer-actions">
+        <button id="btnDetailContinue" type="button" class="btn btn-primary" data-i18n="continue">按此题继续</button>
+        <button id="btnDetailEdit" type="button" class="btn" data-i18n="editInArchive">在档案中编辑</button>
+        <button id="btnDetailDelete" type="button" class="btn btn-danger" data-i18n="deleteThis">删除此条</button>
+        <button id="btnDetailClose" type="button" class="btn" data-i18n="close">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="popup-edit" class="modal-mask" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="editHeading">
+    <div class="drawer-scroll keyboard-pad">
+      <h3 id="editHeading" data-i18n="editTitle">修改这一轮文字</h3>
+      <form id="formEdit" action="#" method="post" autocomplete="off">
+        <label id="labelEditTitle" class="field" for="formEdit_题目" data-i18n="fieldTitle">题目</label>
+        <textarea id="formEdit_题目" name="题目" data-i18n-ph="phTitle" placeholder="把应用题原文贴在这里"></textarea>
+        <label id="labelEditThought" class="field" for="formEdit_学生思路" data-i18n="fieldThought">学生思路</label>
+        <textarea id="formEdit_学生思路" name="学生思路" data-i18n-ph="phThought" placeholder="写下已经识别的数量、你认为的关系，以及还不确定的地方。可以不完整"></textarea>
+      </form>
+      <div class="drawer-actions">
+        <button id="btnSaveEdit" type="button" class="btn btn-primary" data-i18n="save" disabled>保存修改</button>
+        <button id="btnCancelEdit" type="button" class="btn" data-i18n="cancel">取消</button>
+        <button id="btnEditViewGuide" type="button" class="btn" data-i18n="viewThis" disabled>查看该条引导</button>
+        <button id="btnEditContinue" type="button" class="btn" data-i18n="continue" disabled>按此题继续</button>
+      </div>
+      <div id="editGuideWrap" hidden>
+        <h2 id="editGuideLabel" data-i18n="detailGuide">教练引导</h2>
+        <div id="editGuideBody" class="md coach-sheet"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="popup-confirm" class="modal-mask" hidden>
+  <div class="modal-panel confirm-panel" role="dialog" aria-modal="true">
+    <p id="confirmText" data-i18n="confirmMsg">删除后无法恢复</p>
+    <div class="drawer-actions">
+      <button id="btnConfirmOk" type="button" class="btn btn-primary" data-i18n="confirmOk">删除</button>
+      <button id="btnConfirmCancel" type="button" class="btn" data-i18n="cancel">取消</button>
+    </div>
+  </div>
+</div>
+<div id="toast" hidden></div>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("b2d6fed96bdd00b6_应用题建模训练")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+const I18N = {
+  cn: {
+    docTitle: "应用题建模训练",
+    brand: "应用题建模训练",
+    tabHome: "首页",
+    tabWorkshop: "建模工坊",
+    tabArchive: "训练档案",
+    langBtn: "EN",
+    langMenu: "English",
+    menuLabel: "打开菜单",
+    homeTitle: "应用题建模训练",
+    homeDesc: "根据数学应用题和学生当前思路，循序引导识别数量、说出关系并尝试列方程，通过追问和迁移练习训练独立建模能力。",
+    step1: "① 识别数量",
+    step2: "② 用文字说明关系",
+    step3: "③ 尝试列成等式",
+    homeNote: "教练不会替你设未知数、列方程或给出答案。",
+    start: "开始一次训练",
+    statCount: "训练次数",
+    statHas: "已写出思路",
+    statNone: "尚未写思路",
+    recent: "最近四次",
+    refresh: "刷新",
+    noThought: "还没写下思路",
+    emptyHome: "还没有训练，先拿一道题来试试",
+    firstProblem: "去做第一题",
+    wsTitle: "建模工坊",
+    wsDesc: "先写题目，再写下你已经想到的数量和关系。教练只推进一步。",
+    fieldTitle: "题目",
+    fieldThought: "学生思路",
+    phTitle: "把应用题原文贴在这里",
+    phThought: "写下已经识别的数量、你认为的关系，以及还不确定的地方。可以不完整",
+    ask: "请教练追问",
+    clear: "清空草稿",
+    prev: "< 上一轮",
+    next: "下一轮 >",
+    coachNext: "教练的下一步",
+    waiting: "教练正在顺着你的思路，准备下一步追问……",
+    motif1: "识别数量",
+    motif2: "说明关系",
+    motif3: "化为等式",
+    coachFoot: "若引导里有迁移练习，先自己试，再把新想法写回左侧，发起下一轮。",
+    continue: "按此题继续",
+    missing: "这一轮的引导还没生成",
+    peek: "再看一眼",
+    keepWait: "继续等待",
+    timeout: "这一步还在生成，可以稍后到训练档案查看",
+    pastTitle: "这道题的往轮",
+    pastNone: "这是这道题的第一次训练",
+    pastEmptyThought: "当时未写思路",
+    idleCoach: "提交后，教练的下一步会写在这张草稿纸上。",
+    pollingLock: "上一条引导还在生成，完成前不能再次提交。",
+    arTitle: "训练档案",
+    arDesc: "回看每一轮题目和思路；修改不会重算当时的教练引导。",
+    newTraining: "+ 新的训练",
+    searchPh: "搜索题目或思路",
+    filterAll: "全部",
+    filterHas: "已写思路",
+    filterNone: "未写思路",
+    sortNew: "最近提交在前",
+    sortOld: "较早提交在前",
+    view: "查看引导",
+    edit: "编辑",
+    del: "删除",
+    noMatch: "没有符合的训练",
+    clearFilter: "清空筛选",
+    editTitle: "修改这一轮文字",
+    save: "保存修改",
+    cancel: "取消",
+    viewThis: "查看该条引导",
+    saved: "已保存。原来的教练引导仍对应当时的文字；想按新思路再练，请按此题继续",
+    detailTitle: "这一轮训练",
+    editInArchive: "在档案中编辑",
+    deleteThis: "删除此条",
+    close: "关闭",
+    confirmMsg: "删除后无法恢复",
+    confirmOk: "删除",
+    loadFail: "暂时读不到训练记录，请点刷新再试。",
+    submitFail: "这次没能提交，请再试一次。",
+    saveFail: "这次没能保存，请再试一次。",
+    deleteFail: "这次没能删除，请再试一次。",
+    peekFail: "这次没能读到引导，请再试一次。",
+    loading: "正在读取训练记录……",
+    untitled: "（未写题目）",
+    detailGuide: "教练引导",
+    dash: "—"
+  },
+  en: {
+    docTitle: "Word-Problem Modeling Practice",
+    brand: "Word-Problem Modeling Practice",
+    tabHome: "Home",
+    tabWorkshop: "Workshop",
+    tabArchive: "Archive",
+    langBtn: "中文",
+    langMenu: "中文",
+    menuLabel: "Open menu",
+    homeTitle: "Word-Problem Modeling Practice",
+    homeDesc: "From a math word problem and the student's current thinking, guide them step by step to identify quantities, state relationships, and try to write an equation. Follow-up questions and a transfer exercise train independent modeling.",
+    step1: "① Identify quantities",
+    step2: "② State the relationship in words",
+    step3: "③ Try to write an equation",
+    homeNote: "The coach will not choose the unknown, write the equation, or give the answer for you.",
+    start: "Start a practice",
+    statCount: "Sessions",
+    statHas: "Ideas written",
+    statNone: "Ideas not yet written",
+    recent: "Last four sessions",
+    refresh: "Refresh",
+    noThought: "No idea written yet",
+    emptyHome: "No practice yet. Bring a problem and try.",
+    firstProblem: "Try the first problem",
+    wsTitle: "Modeling Workshop",
+    wsDesc: "Write the problem first, then the quantities and relationships you already see. The coach only moves you one step.",
+    fieldTitle: "Problem",
+    fieldThought: "Your thinking",
+    phTitle: "Paste the word problem here",
+    phThought: "Write the quantities you have noticed, the relationship you see, and what is still unclear. It can be incomplete.",
+    ask: "Ask the coach",
+    clear: "Clear draft",
+    prev: "< Previous",
+    next: "Next >",
+    coachNext: "Coach's next step",
+    waiting: "The coach is following your thinking and preparing the next question…",
+    motif1: "Identify quantities",
+    motif2: "State the relationship",
+    motif3: "Turn it into an equation",
+    coachFoot: "If the guidance includes a transfer exercise, try it yourself, then write the new idea on the left and start the next round.",
+    continue: "Continue with this problem",
+    missing: "This round's guidance is not ready yet",
+    peek: "Check again",
+    keepWait: "Keep waiting",
+    timeout: "This step is still being generated. You can check the practice archive later.",
+    pastTitle: "Earlier rounds of this problem",
+    pastNone: "This is the first practice for this problem",
+    pastEmptyThought: "No idea was written then",
+    idleCoach: "After you submit, the coach's next step will appear on this sheet.",
+    pollingLock: "The previous guidance is still being generated. You can submit again when it finishes.",
+    arTitle: "Practice Archive",
+    arDesc: "Review each round's problem and thinking. Edits do not recompute the coach guidance from that time.",
+    newTraining: "+ New practice",
+    searchPh: "Search problems or thinking",
+    filterAll: "All",
+    filterHas: "Idea written",
+    filterNone: "Idea not written",
+    sortNew: "Newest first",
+    sortOld: "Oldest first",
+    view: "View guidance",
+    edit: "Edit",
+    del: "Delete",
+    noMatch: "No matching practice",
+    clearFilter: "Clear filters",
+    editTitle: "Edit this round's text",
+    save: "Save changes",
+    cancel: "Cancel",
+    viewThis: "View this guidance",
+    saved: "Saved. The original coach guidance still matches the text from that time. To practice again with the new thinking, use Continue with this problem.",
+    detailTitle: "This round",
+    editInArchive: "Edit in archive",
+    deleteThis: "Delete this one",
+    close: "Close",
+    confirmMsg: "This cannot be undone.",
+    confirmOk: "Delete",
+    loadFail: "Couldn't load practice records. Tap Refresh to try again.",
+    submitFail: "Couldn't submit this time. Please try again.",
+    saveFail: "Couldn't save this time. Please try again.",
+    deleteFail: "Couldn't delete this time. Please try again.",
+    peekFail: "Couldn't read the guidance this time. Please try again.",
+    loading: "Reading practice records…",
+    untitled: "(No problem text)",
+    detailGuide: "Coach guidance",
+    dash: "—"
+  }
+};
+
+const state = {
+  lang: "cn",
+  page: "home",
+  records: [],
+  recordCount: 0,
+  countKnown: false,
+  loaded: false,
+  readingRow: 0,
+  readingTitle: "",
+  readingThought: "",
+  readingCoach: "",
+  coachPhase: "idle",
+  polling: false,
+  pollRow: 0,
+  pollToken: 0,
+  timeoutRow: 0,
+  submitting: false,
+  saving: false,
+  history: [],
+  popups: [],
+  detailRow: 0,
+  detailTitle: "",
+  detailThought: "",
+  detailCoach: "",
+  detailToken: 0,
+  detailReady: false,
+  editingRow: 0,
+  editToken: 0,
+  editGuideToken: 0,
+  editReady: false,
+  confirmResolve: null,
+  search: "",
+  filter: "all",
+  sort: "new",
+  loadToken: 0,
+  readToken: 0,
+  pastOpenRow: 0,
+  pastToken: 0
+};
+
+function $(id) { return document.getElementById(id); }
+
+function t(key) {
+  const pack = I18N[state.lang] || I18N.cn;
+  if (pack[key] != null) return pack[key];
+  if (I18N.cn[key] != null) return I18N.cn[key];
+  return "";
+}
+
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function take40(value) {
+  const chars = Array.from(String(value || "").trim());
+  return chars.slice(0, 40).join("");
+}
+
+function detectLanguage() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const langParam = String(params.get("lang") || "").toLowerCase();
+    if (langParam === "en") return "en";
+    if (langParam === "cn") return "cn";
+  } catch (e) {}
+  let stored = null;
+  try { stored = localStorage.getItem("iThinkAir_UiLanguage"); } catch (e) { stored = null; }
+  if (stored !== null && stored !== "") return stored === "en" ? "en" : "cn";
+  try {
+    const langs = navigator.languages;
+    if (!langs || !langs.length) return "cn";
+    for (let i = 0; i < langs.length; i++) {
+      const item = String(langs[i] || "").toLowerCase();
+      if (item === "zh" || item.indexOf("zh-") === 0 || item.indexOf("zh_") === 0) return "cn";
+    }
+    return "en";
+  } catch (e2) {
+    return "cn";
+  }
+}
+
+function applyTheme(mode) {
+  const text = String(mode == null ? "" : mode);
+  document.documentElement.setAttribute("data-theme", text.indexOf("暗") !== -1 ? "dark" : "light");
+}
+
+function fillMotif(id) {
+  const el = $(id);
+  if (!el) return;
+  el.textContent = "";
+  const parts = [t("motif1"), t("motif2"), t("motif3")];
+  for (let i = 0; i < parts.length; i++) {
+    if (i) {
+      const arrow = document.createElement("span");
+      arrow.className = "motif-arrow";
+      arrow.textContent = "→";
+      el.appendChild(arrow);
+    }
+    const span = document.createElement("span");
+    span.textContent = parts[i];
+    el.appendChild(span);
+  }
+}
+
+function applyLanguage() {
+  const pack = I18N[state.lang] || I18N.cn;
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+  document.title = pack.docTitle;
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) {
+    const key = nodes[i].getAttribute("data-i18n");
+    if (pack[key] != null) nodes[i].textContent = pack[key];
+  }
+  const fields = document.querySelectorAll("[data-i18n-ph]");
+  for (let j = 0; j < fields.length; j++) {
+    const key = fields[j].getAttribute("data-i18n-ph");
+    if (pack[key] != null) fields[j].setAttribute("placeholder", pack[key]);
+  }
+  $("btnLang").textContent = pack.langBtn;
+  $("mobileBtnLang").textContent = pack.langMenu;
+  $("btnHamburger").setAttribute("aria-label", pack.menuLabel);
+  fillMotif("coachMotif");
+  fillMotif("detailMotif");
+  renderHome();
+  renderArchive();
+  renderCoach();
+  renderExcerpt();
+  renderPastRounds();
+  renderDetailTexts();
+  updateAskButton();
+  updateNavFit();
+}
+
+function toggleLanguage() {
+  state.lang = state.lang === "en" ? "cn" : "en";
+  try { localStorage.setItem("iThinkAir_UiLanguage", state.lang === "en" ? "en" : "cn"); } catch (e) {}
+  applyLanguage();
+}
+
+function parseRecords(csvText) {
+  if (csvText == null) return [];
+  let text = String(csvText);
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  if (text.trim() === "") return [];
+  const rows = parseCSV(text);
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i] || [];
+    const title = row.length > 0 && row[0] != null ? String(row[0]) : "";
+    const thought = row.length > 1 && row[1] != null ? String(row[1]) : "";
+    if (rows.length === 1 && title.trim() === "" && thought.trim() === "") return [];
+    out.push({ row: i + 1, title: title, thought: thought });
+  }
+  return out;
+}
+
+function showToast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.hidden = false;
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(function () { el.hidden = true; }, 7000);
+}
+
+function roundTotal() {
+  return state.recordCount > 0 ? state.recordCount : 0;
+}
+
+function updateBrowseButtons() {
+  $("btnPrevRound").disabled = state.readingRow <= 1;
+  const total = roundTotal();
+  $("btnNextRound").disabled = total === 0 || state.readingRow >= total;
+}
+
+function updateAskButton() {
+  const title = $("formWorkshop_题目") ? $("formWorkshop_题目").value : "";
+  $("btnAskCoach").disabled = state.polling || state.submitting || !String(title).trim();
+  const lock = $("pollLockNote");
+  lock.hidden = !state.polling;
+  lock.textContent = t("pollingLock");
+}
+
+function renderExcerpt() {
+  const box = $("readingExcerpt");
+  if (state.readingRow <= 0) {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  $("excerptTitle").textContent = state.readingTitle || "";
+  $("excerptThought").textContent = String(state.readingThought || "").trim() ? state.readingThought : t("noThought");
+}
+
+function renderCoach() {
+  const phase = state.coachPhase;
+  $("coachKicker").hidden = phase !== "ready";
+  $("coachKicker").textContent = t("coachNext");
+  $("coachWait").hidden = phase !== "wait";
+  $("coachWaitMsg").textContent = t("waiting");
+  fillMotif("coachMotif");
+  $("coachReady").hidden = phase !== "ready";
+  if (phase === "ready") $("coachReady").innerHTML = renderMarkdown(state.readingCoach || "");
+  else $("coachReady").innerHTML = "";
+  $("coachEmptyMsg").hidden = !(phase === "missing" || phase === "timeout" || phase === "idle");
+  if (phase === "missing") $("coachEmptyMsg").textContent = t("missing");
+  if (phase === "timeout") $("coachEmptyMsg").textContent = t("timeout");
+  if (phase === "idle") $("coachEmptyMsg").textContent = t("idleCoach");
+  $("btnPeek").hidden = !(phase === "missing" || phase === "timeout");
+  $("btnPeek").textContent = t("peek");
+  $("btnKeep").hidden = phase !== "timeout";
+  $("btnKeep").textContent = t("keepWait");
+  $("coachActions").hidden = $("btnPeek").hidden && $("btnKeep").hidden;
+  $("coachFoot").hidden = phase !== "ready";
+  $("coachFoot").textContent = t("coachFoot");
+  $("btnContinueCoach").hidden = phase !== "ready";
+  $("btnContinueCoach").textContent = t("continue");
+}
+
+function renderPastRounds() {
+  const section = $("pastSection");
+  if (state.readingRow <= 0 || !String(state.readingTitle || "").trim()) {
+    section.hidden = true;
+    state.pastOpenRow = 0;
+    return;
+  }
+  section.hidden = false;
+  $("pastHeading").textContent = t("pastTitle");
+  const key = String(state.readingTitle).trim();
+  const others = [];
+  for (let i = 0; i < state.records.length; i++) {
+    const rec = state.records[i];
+    if (rec.row !== state.readingRow && String(rec.title || "").trim() === key) others.push(rec);
+  }
+  const list = $("pastList");
+  state.pastOpenRow = 0;
+  if (!others.length) {
+    list.innerHTML = '<p class="loading-line"></p>';
+    list.firstChild.textContent = t("pastNone");
+    return;
+  }
+  let html = "";
+  for (let i = 0; i < others.length; i++) {
+    html += '<div class="past-block"><button type="button" class="past-item" data-past-row="' + others[i].row + '"><span class="past-preview"></span></button><div class="past-fold md" hidden></div></div>';
+  }
+  list.innerHTML = html;
+  const buttons = list.querySelectorAll(".past-item");
+  for (let i = 0; i < buttons.length; i++) {
+    const thought = String(others[i].thought || "").trim();
+    buttons[i].querySelector(".past-preview").textContent = thought ? take40(others[i].thought) : t("pastEmptyThought");
+  }
+}
+
+function renderHome() {
+  const loading = $("homeLoading");
+  const empty = $("recentEmpty");
+  const list = $("recentList");
+  if (!state.loaded) {
+    loading.hidden = false;
+    empty.hidden = true;
+    list.innerHTML = "";
+    $("statCountValue").textContent = t("dash");
+    $("statHasValue").textContent = t("dash");
+    $("statNoneValue").textContent = t("dash");
+    return;
+  }
+  loading.hidden = true;
+  let has = 0;
+  let none = 0;
+  for (let i = 0; i < state.records.length; i++) {
+    if (String(state.records[i].thought || "").trim()) has += 1;
+    else none += 1;
+  }
+  if (state.countKnown) $("statCountValue").textContent = String(state.recordCount);
+  else $("statCountValue").textContent = String(state.records.length);
+  if (state.recordCount === 0 && state.records.length === 0) {
+    $("statCountValue").textContent = "0";
+    $("statHasValue").textContent = "0";
+    $("statNoneValue").textContent = "0";
+  } else {
+    $("statHasValue").textContent = String(has);
+    $("statNoneValue").textContent = String(none);
+  }
+  if (!state.records.length) {
+    list.innerHTML = "";
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+  const recent = state.records.slice().sort(function (a, b) { return a.row - b.row; }).slice(0, 4);
+  let html = "";
+  for (let i = 0; i < recent.length; i++) {
+    html += '<button type="button" class="recent-card paper-card lift" data-row="' + recent[i].row + '"><span class="recent-title clamp-2"></span><span class="recent-thought clamp-2"></span></button>';
+  }
+  list.innerHTML = html;
+  const cards = list.querySelectorAll(".recent-card");
+  for (let i = 0; i < cards.length; i++) {
+    const rec = recent[i];
+    cards[i].querySelector(".recent-title").textContent = String(rec.title || "").trim() ? rec.title : t("untitled");
+    cards[i].querySelector(".recent-thought").textContent = String(rec.thought || "").trim() ? rec.thought : t("noThought");
+  }
+}
+
+function filteredRecords() {
+  const query = String(state.search || "").trim().toLowerCase();
+  const matched = [];
+  for (let i = 0; i < state.records.length; i++) {
+    const rec = state.records[i];
+    if (query) {
+      const blob = (String(rec.title || "") + "\n" + String(rec.thought || "")).toLowerCase();
+      if (blob.indexOf(query) === -1) continue;
+    }
+    matched.push(rec);
+  }
+  let has = 0;
+  let none = 0;
+  for (let i = 0; i < matched.length; i++) {
+    if (String(matched[i].thought || "").trim()) has += 1;
+    else none += 1;
+  }
+  const shown = [];
+  for (let i = 0; i < matched.length; i++) {
+    const filled = String(matched[i].thought || "").trim() !== "";
+    if (state.filter === "has" && !filled) continue;
+    if (state.filter === "none" && filled) continue;
+    shown.push(matched[i]);
+  }
+  shown.sort(function (a, b) {
+    if (state.sort === "old") return b.row - a.row;
+    return a.row - b.row;
+  });
+  return { shown: shown, all: matched.length, has: has, none: none };
+}
+
+function renderArchive() {
+  const loading = $("archiveLoading");
+  const empty = $("archiveEmpty");
+  const list = $("archiveList");
+  const result = state.loaded ? filteredRecords() : { shown: [], all: 0, has: 0, none: 0 };
+  $("filterAll").textContent = t("filterAll") + " (" + result.all + ")";
+  $("filterHas").textContent = t("filterHas") + " (" + result.has + ")";
+  $("filterNone").textContent = t("filterNone") + " (" + result.none + ")";
+  $("filterAll").classList.toggle("is-on", state.filter === "all");
+  $("filterHas").classList.toggle("is-on", state.filter === "has");
+  $("filterNone").classList.toggle("is-on", state.filter === "none");
+  $("filterAll").setAttribute("aria-pressed", state.filter === "all" ? "true" : "false");
+  $("filterHas").setAttribute("aria-pressed", state.filter === "has" ? "true" : "false");
+  $("filterNone").setAttribute("aria-pressed", state.filter === "none" ? "true" : "false");
+  $("sortNew").classList.toggle("is-on", state.sort === "new");
+  $("sortOld").classList.toggle("is-on", state.sort === "old");
+  $("sortNew").setAttribute("aria-pressed", state.sort === "new" ? "true" : "false");
+  $("sortOld").setAttribute("aria-pressed", state.sort === "old" ? "true" : "false");
+  if (!state.loaded) {
+    loading.hidden = false;
+    empty.hidden = true;
+    list.innerHTML = "";
+    return;
+  }
+  loading.hidden = true;
+  if (!result.shown.length) {
+    list.innerHTML = "";
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+  let html = "";
+  for (let i = 0; i < result.shown.length; i++) {
+    html += '<article class="record-card paper-card lift" data-row="' + result.shown[i].row + '"><h3 class="card-title clamp-2"></h3><p class="card-thought clamp-3"></p><div class="card-actions"><button type="button" class="btn btn-small" data-act="view"></button><button type="button" class="btn btn-small" data-act="edit"></button><button type="button" class="btn btn-small btn-danger" data-act="delete"></button></div></article>';
+  }
+  list.innerHTML = html;
+  const cards = list.querySelectorAll(".record-card");
+  for (let i = 0; i < cards.length; i++) {
+    const rec = result.shown[i];
+    cards[i].querySelector(".card-title").textContent = String(rec.title || "").trim() ? rec.title : t("untitled");
+    cards[i].querySelector(".card-thought").textContent = String(rec.thought || "").trim() ? rec.thought : t("noThought");
+    const buttons = cards[i].querySelectorAll("button");
+    buttons[0].textContent = t("view");
+    buttons[1].textContent = t("edit");
+    buttons[2].textContent = t("del");
+  }
+}
+
+function applyData(countText, csvText) {
+  const records = parseRecords(csvText);
+  state.records = records;
+  const parsed = parseInt(String(countText == null ? "" : countText).trim(), 10);
+  if (!isNaN(parsed) && parsed >= 0) {
+    state.recordCount = parsed;
+    state.countKnown = true;
+  } else {
+    state.recordCount = records.length;
+    state.countKnown = false;
+  }
+  state.loaded = true;
+  renderHome();
+  renderArchive();
+  renderPastRounds();
+  updateBrowseButtons();
+}
+
+async function refreshAll() {
+  const token = ++state.loadToken;
+  const countText = await callAppBridge({ type: "GetRecordCount", data: "建模训练/默认表格" });
+  if (token !== state.loadToken) return;
+  const csvText = await callAppBridge({ type: "GetTableCSV", data: "建模训练/默认表格", payload: "题目,学生思路" });
+  if (token !== state.loadToken) return;
+  applyData(countText, csvText);
+}
+
+function clearDraft() {
+  $("formWorkshop_题目").value = "";
+  $("formWorkshop_学生思路").value = "";
+  updateAskButton();
+}
+
+function startFresh() {
+  clearDraft();
+  state.readingRow = 0;
+  state.readingTitle = "";
+  state.readingThought = "";
+  state.readingCoach = "";
+  state.coachPhase = "idle";
+  renderCoach();
+  renderExcerpt();
+  renderPastRounds();
+  updateBrowseButtons();
+  switchPage("workshop");
+}
+
+async function askCoach() {
+  if (state.polling || state.submitting) return;
+  const title = $("formWorkshop_题目").value;
+  const thought = $("formWorkshop_学生思路").value;
+  if (!String(title).trim()) return;
+  state.submitting = true;
+  updateAskButton();
+  try {
+    await callAppBridge({
+      type: "SubmitRecord",
+      data: "建模训练",
+      payload: JSON.stringify({ "题目": title, "学生思路": thought })
+    });
+    state.readingRow = 1;
+    state.readingTitle = title;
+    state.readingThought = thought;
+    state.readingCoach = "";
+    state.recordCount = state.recordCount + 1;
+    state.countKnown = true;
+    state.submitting = false;
+    renderExcerpt();
+    updateBrowseButtons();
+    startPolling(1);
+    try { await refreshAll(); } catch (refreshError) {}
+  } catch (error) {
+    state.submitting = false;
+    updateAskButton();
+    showToast(t("submitFail"));
+  }
+}
+
+function startPolling(row) {
+  const token = ++state.pollToken;
+  state.polling = true;
+  state.pollRow = row;
+  state.timeoutRow = 0;
+  updateAskButton();
+  if (state.readingRow === row) {
+    state.coachPhase = "wait";
+    state.readingCoach = "";
+    renderCoach();
+  }
+  if (popupOpen("detail") && state.detailRow === row) renderDetailCoach();
+  runPoll(token, row);
+}
+
+async function runPoll(token, row) {
+  for (let i = 0; i < 30; i++) {
+    if (token !== state.pollToken) return;
+    let value = "";
+    try {
+      value = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "教练引导/" + String(row) });
+    } catch (error) {
+      value = "";
+    }
+    if (token !== state.pollToken) return;
+    if (value && String(value).trim() !== "") {
+      finishPollWithText(row, String(value));
+      return;
+    }
+    if (i < 29) await sleep(2000);
+  }
+  if (token !== state.pollToken) return;
+  state.polling = false;
+  state.pollRow = 0;
+  state.timeoutRow = row;
+  updateAskButton();
+  if (state.readingRow === row) {
+    state.coachPhase = "timeout";
+    renderCoach();
+  }
+  if (popupOpen("detail") && state.detailRow === row) renderDetailCoach();
+}
+
+function finishPollWithText(row, text) {
+  state.polling = false;
+  state.pollRow = 0;
+  if (state.timeoutRow === row) state.timeoutRow = 0;
+  updateAskButton();
+  if (state.readingRow === row) {
+    state.readingCoach = text;
+    state.coachPhase = "ready";
+    renderCoach();
+  }
+  if (state.detailRow === row) {
+    state.detailCoach = text;
+    if (popupOpen("detail")) renderDetailCoach();
+  }
+}
+
+async function peekOnce(row) {
+  let value = "";
+  try {
+    value = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "教练引导/" + String(row) });
+  } catch (error) {
+    showToast(t("peekFail"));
+    return;
+  }
+  if (value && String(value).trim() !== "") {
+    state.pollToken += 1;
+    finishPollWithText(row, String(value));
+  }
+}
+
+async function loadReadingRow(row) {
+  if (row < 1) return;
+  const token = ++state.readToken;
+  state.readingRow = row;
+  updateBrowseButtons();
+  try {
+    const title = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "题目/" + String(row) });
+    if (token !== state.readToken) return;
+    const thought = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "学生思路/" + String(row) });
+    if (token !== state.readToken) return;
+    const coach = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "教练引导/" + String(row) });
+    if (token !== state.readToken) return;
+    state.readingTitle = title || "";
+    state.readingThought = thought || "";
+    state.readingCoach = coach || "";
+    if (String(state.readingCoach).trim()) state.coachPhase = "ready";
+    else if (state.polling && state.pollRow === row) state.coachPhase = "wait";
+    else if (state.timeoutRow === row) state.coachPhase = "timeout";
+    else state.coachPhase = "missing";
+    renderExcerpt();
+    renderCoach();
+    renderPastRounds();
+    updateBrowseButtons();
+  } catch (error) {
+    if (token !== state.readToken) return;
+    showToast(t("loadFail"));
+  }
+}
+
+function goNext() {
+  const total = roundTotal();
+  if (total === 0 || state.readingRow >= total) return;
+  const target = state.readingRow <= 0 ? 1 : state.readingRow + 1;
+  loadReadingRow(target);
+}
+
+function goPrev() {
+  if (state.readingRow <= 1) return;
+  loadReadingRow(state.readingRow - 1);
+}
+
+function continueFromCoach() {
+  if (state.coachPhase !== "ready") return;
+  $("formWorkshop_题目").value = state.readingTitle || "";
+  const thought = $("formWorkshop_学生思路");
+  thought.value = "";
+  updateAskButton();
+  setTimeout(function () { thought.focus(); }, 40);
+}
+
+async function togglePast(row, button) {
+  const block = button.parentNode;
+  const fold = block.querySelector(".past-fold");
+  if (!fold) return;
+  if (state.pastOpenRow === row && !fold.hidden) {
+    state.pastOpenRow = 0;
+    fold.hidden = true;
+    button.classList.remove("is-open");
+    return;
+  }
+  const folds = $("pastList").querySelectorAll(".past-fold");
+  for (let i = 0; i < folds.length; i++) folds[i].hidden = true;
+  const buttons = $("pastList").querySelectorAll(".past-item");
+  for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("is-open");
+  state.pastOpenRow = row;
+  fold.hidden = false;
+  button.classList.add("is-open");
+  fold.textContent = t("dash");
+  const token = ++state.pastToken;
+  try {
+    const coach = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "教练引导/" + String(row) });
+    if (token !== state.pastToken || state.pastOpenRow !== row) return;
+    if (coach && String(coach).trim()) fold.innerHTML = renderMarkdown(String(coach));
+    else fold.textContent = t("missing");
+  } catch (error) {
+    if (token !== state.pastToken || state.pastOpenRow !== row) return;
+    fold.textContent = t("peekFail");
+  }
+}
+
+function setDetailReady(ready) {
+  state.detailReady = ready;
+  $("btnDetailContinue").disabled = !ready;
+  $("btnDetailEdit").disabled = !ready;
+}
+
+function renderDetailCoach() {
+  const coach = String(state.detailCoach || "");
+  const row = state.detailRow;
+  $("detailCoachBody").hidden = true;
+  $("detailCoachWait").hidden = true;
+  $("detailEmptyMsg").hidden = true;
+  $("detailCoachActions").hidden = true;
+  if (coach.trim()) {
+    $("detailCoachBody").hidden = false;
+    $("detailCoachBody").innerHTML = renderMarkdown(coach);
+    return;
+  }
+  $("detailCoachActions").hidden = false;
+  if (state.polling && state.pollRow === row) {
+    $("detailCoachWait").hidden = false;
+    $("detailWaitMsg").textContent = t("waiting");
+    fillMotif("detailMotif");
+    return;
+  }
+  $("detailEmptyMsg").hidden = false;
+  $("detailEmptyMsg").textContent = state.timeoutRow === row ? t("timeout") : t("missing");
+}
+
+function renderDetailTexts() {
+  if (!popupOpen("detail")) return;
+  $("detailTitleText").textContent = state.detailTitle || "";
+  $("detailThoughtText").textContent = String(state.detailThought || "").trim() ? state.detailThought : t("noThought");
+  renderDetailCoach();
+}
+
+async function openDetail(row) {
+  state.detailRow = row;
+  state.detailTitle = "";
+  state.detailThought = "";
+  state.detailCoach = "";
+  const token = ++state.detailToken;
+  setDetailReady(false);
+  $("detailTitleText").textContent = t("dash");
+  $("detailThoughtText").textContent = t("dash");
+  $("detailCoachBody").hidden = true;
+  $("detailCoachWait").hidden = true;
+  $("detailEmptyMsg").hidden = false;
+  $("detailEmptyMsg").textContent = t("loading");
+  $("detailCoachActions").hidden = true;
+  openPopup("detail");
+  try {
+    const title = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "题目/" + String(row) });
+    if (token !== state.detailToken) return;
+    const thought = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "学生思路/" + String(row) });
+    if (token !== state.detailToken) return;
+    const coach = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "教练引导/" + String(row) });
+    if (token !== state.detailToken) return;
+    state.detailTitle = title || "";
+    state.detailThought = thought || "";
+    state.detailCoach = coach || "";
+    setDetailReady(true);
+    renderDetailTexts();
+  } catch (error) {
+    if (token !== state.detailToken) return;
+    showToast(t("loadFail"));
+  }
+}
+
+function continueFromDetail() {
+  if (!state.detailReady) return;
+  const title = state.detailTitle || "";
+  const thought = state.detailThought || "";
+  const coach = state.detailCoach || "";
+  const row = state.detailRow;
+  closePopup("detail");
+  switchPage("workshop");
+  $("formWorkshop_题目").value = title;
+  $("formWorkshop_学生思路").value = "";
+  updateAskButton();
+  state.readingRow = row;
+  state.readingTitle = title;
+  state.readingThought = thought;
+  state.readingCoach = coach;
+  if (String(coach).trim()) state.coachPhase = "ready";
+  else if (state.polling && state.pollRow === row) state.coachPhase = "wait";
+  else if (state.timeoutRow === row) state.coachPhase = "timeout";
+  else state.coachPhase = "missing";
+  renderExcerpt();
+  renderCoach();
+  renderPastRounds();
+  updateBrowseButtons();
+  setTimeout(function () { $("formWorkshop_学生思路").focus(); }, 60);
+}
+
+function setEditReady(ready) {
+  state.editReady = ready;
+  $("btnSaveEdit").disabled = !ready || state.saving;
+  $("btnEditContinue").disabled = !ready;
+  $("btnEditViewGuide").disabled = !ready;
+}
+
+async function openEdit(row) {
+  state.editingRow = row;
+  const token = ++state.editToken;
+  setEditReady(false);
+  $("formEdit_题目").value = "";
+  $("formEdit_学生思路").value = "";
+  $("editGuideWrap").hidden = true;
+  $("editGuideBody").innerHTML = "";
+  openPopup("edit");
+  try {
+    const title = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "题目/" + String(row) });
+    if (token !== state.editToken) return;
+    const thought = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "学生思路/" + String(row) });
+    if (token !== state.editToken) return;
+    $("formEdit_题目").value = title || "";
+    $("formEdit_学生思路").value = thought || "";
+    setEditReady(true);
+    $("formEdit_题目").focus();
+  } catch (error) {
+    if (token !== state.editToken) return;
+    showToast(t("loadFail"));
+  }
+}
+
+async function saveEdit() {
+  if (state.saving || !state.editReady) return;
+  const row = state.editingRow;
+  const title = $("formEdit_题目").value;
+  const thought = $("formEdit_学生思路").value;
+  state.saving = true;
+  setEditReady(true);
+  try {
+    await callAppBridge({ type: "SetCellValue", data: "建模训练/默认表格", payload: "题目/" + String(row) + "/" + title });
+    await callAppBridge({ type: "SetCellValue", data: "建模训练/默认表格", payload: "学生思路/" + String(row) + "/" + thought });
+    if (state.readingRow === row) {
+      state.readingTitle = title;
+      state.readingThought = thought;
+      renderExcerpt();
+      renderPastRounds();
+    }
+    closePopup("edit");
+    try { await refreshAll(); } catch (refreshError) {}
+    showToast(t("saved"));
+  } catch (error) {
+    showToast(t("saveFail"));
+    setEditReady(true);
+  } finally {
+    state.saving = false;
+    if (popupOpen("edit")) setEditReady(state.editReady);
+  }
+}
+
+function continueFromEdit() {
+  if (!state.editReady) return;
+  const title = $("formEdit_题目").value;
+  closePopup("edit");
+  switchPage("workshop");
+  $("formWorkshop_题目").value = title;
+  const thought = $("formWorkshop_学生思路");
+  thought.value = "";
+  updateAskButton();
+  setTimeout(function () { thought.focus(); }, 60);
+}
+
+async function viewEditGuide() {
+  if (!state.editReady) return;
+  const row = state.editingRow;
+  const token = ++state.editGuideToken;
+  $("editGuideWrap").hidden = false;
+  $("editGuideBody").textContent = t("loading");
+  try {
+    const coach = await callAppBridge({ type: "GetCellValue", data: "建模训练/默认表格", payload: "教练引导/" + String(row) });
+    if (token !== state.editGuideToken) return;
+    if (coach && String(coach).trim()) $("editGuideBody").innerHTML = renderMarkdown(String(coach));
+    else $("editGuideBody").textContent = t("missing");
+  } catch (error) {
+    if (token !== state.editGuideToken) return;
+    $("editGuideBody").textContent = t("peekFail");
+  }
+}
+
+function askConfirm() {
+  return new Promise(function (resolve) {
+    state.confirmResolve = resolve;
+    openPopup("confirm");
+  });
+}
+
+function resolveConfirm(ok) {
+  const fn = state.confirmResolve;
+  state.confirmResolve = null;
+  closePopup("confirm");
+  if (fn) fn(!!ok);
+}
+
+async function deleteRecord(row) {
+  const ok = await askConfirm();
+  if (!ok) return;
+  try {
+    await callAppBridge({ type: "DeleteRecord", data: "建模训练/默认表格", payload: row.toString() });
+  } catch (error) {
+    showToast(t("deleteFail"));
+    return;
+  }
+  if (state.detailRow === row) closePopup("detail");
+  if (state.editingRow === row) closePopup("edit");
+  if (state.readingRow === row) {
+    state.readingRow = 0;
+    state.readingTitle = "";
+    state.readingThought = "";
+    state.readingCoach = "";
+    state.coachPhase = "idle";
+    renderCoach();
+    renderExcerpt();
+    renderPastRounds();
+    updateBrowseButtons();
+  }
+  if (state.polling && state.pollRow === row) {
+    state.pollToken += 1;
+    state.polling = false;
+    state.pollRow = 0;
+    updateAskButton();
+  }
+  if (state.timeoutRow === row) state.timeoutRow = 0;
+  try { await refreshAll(); } catch (error) { showToast(t("loadFail")); }
+}
+
+function clearFilters() {
+  state.search = "";
+  state.filter = "all";
+  state.sort = "new";
+  $("archiveSearch").value = "";
+  renderArchive();
+}
+
+function popupOpen(name) { return state.popups.indexOf(name) !== -1; }
+
+function openPopup(name) {
+  const el = $("popup-" + name);
+  if (!el) return;
+  el.hidden = false;
+  const next = [];
+  for (let i = 0; i < state.popups.length; i++) if (state.popups[i] !== name) next.push(state.popups[i]);
+  next.push(name);
+  state.popups = next;
+  document.body.classList.add("popup-open");
+}
+
+function closePopup(name) {
+  const el = $("popup-" + name);
+  if (el) el.hidden = true;
+  const next = [];
+  for (let i = 0; i < state.popups.length; i++) if (state.popups[i] !== name) next.push(state.popups[i]);
+  state.popups = next;
+  if (!state.popups.length) document.body.classList.remove("popup-open");
+  if (name === "detail") state.detailToken += 1;
+  if (name === "edit") state.editToken += 1;
+}
+
+function closeMobileMenu() {
+  const menu = $("mobileMenu");
+  if (menu) menu.hidden = true;
+  const btn = $("btnHamburger");
+  if (!btn) return;
+  btn.setAttribute("aria-expanded", "false");
+  const icon = btn.querySelector("i");
+  if (icon) icon.className = "fa-solid fa-bars";
+}
+
+function openMobileMenu() {
+  $("mobileMenu").hidden = false;
+  $("btnHamburger").setAttribute("aria-expanded", "true");
+  const icon = $("btnHamburger").querySelector("i");
+  if (icon) icon.className = "fa-solid fa-xmark";
+}
+
+function updateNavFit() {
+  const nav = $("mainNav");
+  const row = $("navRow");
+  const tabs = $("navTabs");
+  const lang = $("btnLang");
+  const name = $("navBrand");
+  if (!nav || !row || !tabs || !lang || !name) return;
+  const was = nav.classList.contains("is-compact");
+  if (was) nav.classList.remove("is-compact");
+  const need = name.scrollWidth + tabs.scrollWidth + lang.scrollWidth + 120;
+  if (need > row.clientWidth) nav.classList.add("is-compact");
+  else if (was) closeMobileMenu();
+}
+
+function setTabActive(id, mobileId, on) {
+  $(id).classList.toggle("is-active", on);
+  $(mobileId).classList.toggle("is-active", on);
+  if (on) {
+    $(id).setAttribute("aria-current", "page");
+    $(mobileId).setAttribute("aria-current", "page");
+  } else {
+    $(id).removeAttribute("aria-current");
+    $(mobileId).removeAttribute("aria-current");
+  }
+}
+
+function switchPage(page, opts) {
+  opts = opts || {};
+  if (!$("pageHome")) return;
+  if (page !== "home" && page !== "workshop" && page !== "archive") page = "home";
+  if (state.page === page) {
+    closeMobileMenu();
+    return;
+  }
+  if (opts.record !== false) state.history.push({ page: state.page, scroll: window.scrollY || window.pageYOffset || 0 });
+  state.page = page;
+  $("pageHome").hidden = page !== "home";
+  $("pageWorkshop").hidden = page !== "workshop";
+  $("pageArchive").hidden = page !== "archive";
+  setTabActive("tabHome", "mobileTabHome", page === "home");
+  setTabActive("tabWorkshop", "mobileTabWorkshop", page === "workshop");
+  setTabActive("tabArchive", "mobileTabArchive", page === "archive");
+  closeMobileMenu();
+  if (opts.scroll != null) window.scrollTo(0, opts.scroll);
+  else window.scrollTo(0, 0);
+}
+
+function airBack() {
+  if (state.popups.length) {
+    const top = state.popups[state.popups.length - 1];
+    if (top === "confirm") resolveConfirm(false);
+    else closePopup(top);
+    return "false";
+  }
+  if (state.history.length) {
+    const prev = state.history.pop();
+    switchPage(prev.page, { record: false, scroll: prev.scroll });
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+function toDownloadUrl(href) {
+  const value = String(href || "").trim();
+  if (!value || /^\s*javascript:/i.test(value)) return "";
+  if (/^https?:\/\//i.test(value) || value.indexOf("data:") === 0 || value.indexOf("blob:") === 0) return value;
+  return "https://www.ithinkair.com:3031/download/" + encodeURIComponent(value);
+}
+
+function fallbackMarkdown(src) {
+  const lines = String(src || "").replace(/\r\n/g, "\n").split("\n");
+  let html = "";
+  let i = 0;
+  function inline(text) {
+    let s = escapeHtml(text);
+    s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;([^&]*)&quot;)?\)/g, function (all, alt, href) {
+      const url = toDownloadUrl(href);
+      return '<a class="md-image-link" href="' + escapeHtml(url) + '" download><img src="' + escapeHtml(url) + '" alt="' + alt + '"></a>';
+    });
+    s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (all, label, href) {
+      const url = /^\s*javascript:/i.test(href) ? "" : href;
+      return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' + label + "</a>";
+    });
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+    s = s.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+    s = s.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, "$1<em>$2</em>");
+    s = s.replace(/(^|[^_])_([^_]+)_(?!_)/g, "$1<em>$2</em>");
+    return s;
+  }
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^```/.test(line)) {
+      const buf = [];
+      i += 1;
+      while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i += 1; }
+      i += 1;
+      html += "<pre><code>" + escapeHtml(buf.join("\n")) + "</code></pre>";
+      continue;
+    }
+    if (/^\s*\|.*\|\s*$/.test(line) && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) {
+      const rows = [];
+      while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) { rows.push(lines[i]); i += 1; }
+      html += "<table>";
+      for (let r = 0; r < rows.length; r++) {
+        if (r === 1 && /^\s*\|?\s*:?-{3,}/.test(rows[r])) continue;
+        const cells = rows[r].replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|");
+        const tag = r === 0 ? "th" : "td";
+        html += "<tr>";
+        for (let c = 0; c < cells.length; c++) html += "<" + tag + ">" + inline(cells[c].trim()) + "</" + tag + ">";
+        html += "</tr>";
+      }
+      html += "</table>";
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) { html += "<hr>"; i += 1; continue; }
+    if (/^#{1,6}\s+/.test(line)) {
+      const level = line.match(/^#+/)[0].length;
+      html += "<h" + level + ">" + inline(line.replace(/^#{1,6}\s+/, "")) + "</h" + level + ">";
+      i += 1;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i += 1; }
+      html += "<blockquote><p>" + inline(buf.join(" ")) + "</p></blockquote>";
+      continue;
+    }
+    if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+      const ordered = /^\s*\d+\.\s+/.test(line);
+      html += ordered ? "<ol>" : "<ul>";
+      while (i < lines.length && /^\s*([-*+]|\d+\.)\s+/.test(lines[i])) {
+        const item = lines[i].replace(/^\s*([-*+]|\d+\.)\s+/, "");
+        const task = item.match(/^\[( |x|X)\]\s+(.*)$/);
+        if (task) html += "<li><input type=\"checkbox\" disabled " + (task[1].toLowerCase() === "x" ? "checked" : "") + "> " + inline(task[2]) + "</li>";
+        else html += "<li>" + inline(item) + "</li>";
+        i += 1;
+      }
+      html += ordered ? "</ol>" : "</ul>";
+      continue;
+    }
+    if (line.trim() === "") { i += 1; continue; }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() !== "" && !/^```|^#{1,6}\s+|^\s*\|.*\|\s*$|^>\s?|^\s*([-*+]|\d+\.)\s+|^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[i])) {
+      buf.push(lines[i]);
+      i += 1;
+    }
+    html += "<p>" + inline(buf.join("\n")).replace(/\n/g, "<br>") + "</p>";
+  }
+  return html;
+}
+
+function renderMarkdown(src) {
+  const raw = src == null ? "" : String(src);
+  let html = "";
+  if (window.marked && typeof window.marked.parse === "function") {
+    try {
+      const renderer = new window.marked.Renderer();
+      renderer.image = function (href, title, text) {
+        if (href && typeof href === "object") {
+          text = href.text;
+          title = href.title;
+          href = href.href;
+        }
+        const url = toDownloadUrl(href || "");
+        const alt = escapeHtml(text || "");
+        const titleAttr = title ? ' title="' + escapeHtml(title) + '"' : "";
+        return '<a class="md-image-link" href="' + escapeHtml(url) + '" download><img src="' + escapeHtml(url) + '" alt="' + alt + '"' + titleAttr + "></a>";
+      };
+      try { window.marked.setOptions({ gfm: true, breaks: true, headerIds: false, mangle: false }); } catch (optionError) {}
+      html = window.marked.parse(raw, { renderer: renderer });
+    } catch (parseError) {
+      html = fallbackMarkdown(raw);
+    }
+  } else html = fallbackMarkdown(raw);
+  if (window.DOMPurify && typeof window.DOMPurify.sanitize === "function") {
+    html = window.DOMPurify.sanitize(html, {
+      ADD_ATTR: ["download", "target"],
+      FORBID_TAGS: ["script", "iframe", "object", "embed"],
+      FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover"]
+    });
+  } else {
+    html = String(html).replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "");
+  }
+  html = html.replace(/<table\b/gi, '<div class="table-scroll"><table');
+  html = html.replace(/<\/table>/gi, "</table></div>");
+  return html;
+}
+
+function setupKeyboard() {
+  function bump(target) {
+    const vv = window.visualViewport;
+    let gap = 0;
+    if (vv) {
+      const overlap = window.innerHeight - vv.height - vv.offsetTop;
+      if (overlap > 80) gap = Math.round(overlap + 32);
+    }
+    document.documentElement.style.setProperty("--keyboard-gap", gap + "px");
+    if (target && target.scrollIntoView) {
+      setTimeout(function () { target.scrollIntoView({ block: "center", behavior: "smooth" }); }, 80);
+    }
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () {
+      const active = document.activeElement;
+      if (active && active.matches && active.matches("input, textarea, select")) bump(active);
+      else bump(null);
+    });
+  }
+  document.addEventListener("focusin", function (e) {
+    const target = e.target;
+    if (target && target.matches && target.matches("input, textarea, select")) bump(target);
+  });
+}
+
+function bindEvents() {
+  $("navLogoBtn").addEventListener("click", function () {
+    try { parent.closeFullHtml(false); } catch (e) {}
+  });
+  $("tabHome").addEventListener("click", function () { switchPage("home"); });
+  $("tabWorkshop").addEventListener("click", function () { switchPage("workshop"); });
+  $("tabArchive").addEventListener("click", function () { switchPage("archive"); });
+  $("mobileTabHome").addEventListener("click", function () { switchPage("home"); });
+  $("mobileTabWorkshop").addEventListener("click", function () { switchPage("workshop"); });
+  $("mobileTabArchive").addEventListener("click", function () { switchPage("archive"); });
+  $("btnLang").addEventListener("click", toggleLanguage);
+  $("mobileBtnLang").addEventListener("click", function () { toggleLanguage(); closeMobileMenu(); });
+  $("btnHamburger").addEventListener("click", function (e) {
+    e.stopPropagation();
+    if ($("mobileMenu").hidden) openMobileMenu();
+    else closeMobileMenu();
+  });
+  document.addEventListener("click", function (e) {
+    const nav = $("mainNav");
+    if (!nav.classList.contains("is-compact") || $("mobileMenu").hidden) return;
+    if (!nav.contains(e.target)) closeMobileMenu();
+  });
+  $("btnStartTraining").addEventListener("click", startFresh);
+  $("btnFirstProblem").addEventListener("click", startFresh);
+  $("btnRefreshHome").addEventListener("click", function () {
+    refreshAll().catch(function () { showToast(t("loadFail")); });
+  });
+  $("btnRefreshArchive").addEventListener("click", function () {
+    refreshAll().catch(function () { showToast(t("loadFail")); });
+  });
+  $("btnNewTraining").addEventListener("click", startFresh);
+  $("formWorkshop_题目").addEventListener("input", updateAskButton);
+  $("btnAskCoach").addEventListener("click", function () { askCoach(); });
+  $("btnClearDraft").addEventListener("click", clearDraft);
+  $("formWorkshop").addEventListener("submit", function (e) { e.preventDefault(); askCoach(); });
+  $("btnPrevRound").addEventListener("click", goPrev);
+  $("btnNextRound").addEventListener("click", goNext);
+  $("btnPeek").addEventListener("click", function () { if (state.readingRow > 0) peekOnce(state.readingRow); });
+  $("btnKeep").addEventListener("click", function () { if (state.readingRow > 0) startPolling(state.readingRow); });
+  $("btnContinueCoach").addEventListener("click", continueFromCoach);
+  $("pastList").addEventListener("click", function (e) {
+    const button = e.target.closest("[data-past-row]");
+    if (!button) return;
+    const row = parseInt(button.getAttribute("data-past-row"), 10);
+    if (row) togglePast(row, button);
+  });
+  $("recentList").addEventListener("click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    const row = parseInt(card.getAttribute("data-row"), 10);
+    if (row) openDetail(row);
+  });
+  $("archiveSearch").addEventListener("input", function () {
+    state.search = $("archiveSearch").value;
+    renderArchive();
+  });
+  $("filterAll").addEventListener("click", function () { state.filter = "all"; renderArchive(); });
+  $("filterHas").addEventListener("click", function () { state.filter = "has"; renderArchive(); });
+  $("filterNone").addEventListener("click", function () { state.filter = "none"; renderArchive(); });
+  $("sortNew").addEventListener("click", function () { state.sort = "new"; renderArchive(); });
+  $("sortOld").addEventListener("click", function () { state.sort = "old"; renderArchive(); });
+  $("btnClearFilter").addEventListener("click", clearFilters);
+  $("archiveList").addEventListener("click", function (e) {
+    const card = e.target.closest(".record-card");
+    if (!card) return;
+    const row = parseInt(card.getAttribute("data-row"), 10);
+    if (!row) return;
+    const button = e.target.closest("button");
+    if (button) {
+      const act = button.getAttribute("data-act");
+      if (act === "view") openDetail(row);
+      else if (act === "edit") openEdit(row);
+      else if (act === "delete") deleteRecord(row);
+      return;
+    }
+    openEdit(row);
+  });
+  $("popup-detail").addEventListener("click", function (e) {
+    if (e.target === $("popup-detail")) closePopup("detail");
+  });
+  $("btnDetailClose").addEventListener("click", function () { closePopup("detail"); });
+  $("btnDetailPeek").addEventListener("click", function () { if (state.detailRow) peekOnce(state.detailRow); });
+  $("btnDetailKeep").addEventListener("click", function () { if (state.detailRow) startPolling(state.detailRow); });
+  $("btnDetailContinue").addEventListener("click", continueFromDetail);
+  $("btnDetailEdit").addEventListener("click", function () {
+    const row = state.detailRow;
+    closePopup("detail");
+    if (row) openEdit(row);
+  });
+  $("btnDetailDelete").addEventListener("click", function () { if (state.detailRow) deleteRecord(state.detailRow); });
+  $("btnSaveEdit").addEventListener("click", function () { saveEdit(); });
+  $("btnCancelEdit").addEventListener("click", function () { closePopup("edit"); });
+  $("btnEditViewGuide").addEventListener("click", function () { viewEditGuide(); });
+  $("btnEditContinue").addEventListener("click", continueFromEdit);
+  $("formEdit").addEventListener("submit", function (e) { e.preventDefault(); saveEdit(); });
+  $("btnConfirmOk").addEventListener("click", function () { resolveConfirm(true); });
+  $("btnConfirmCancel").addEventListener("click", function () { resolveConfirm(false); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape" || !state.popups.length) return;
+    const top = state.popups[state.popups.length - 1];
+    if (top === "confirm") resolveConfirm(false);
+    else closePopup(top);
+  });
+  document.addEventListener("click", function (e) {
+    const image = e.target && e.target.closest ? e.target.closest(".md img") : null;
+    if (!image || image.closest("a")) return;
+    const src = image.getAttribute("src");
+    if (!src) return;
+    const link = document.createElement("a");
+    link.href = src;
+    link.setAttribute("download", "");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+  window.addEventListener("resize", updateNavFit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateNavFit);
+  setupKeyboard();
+}
+
+async function initialize() {
+  state.lang = detectLanguage();
+  bindEvents();
+  applyLanguage();
+  updateNavFit();
+  try {
+    const mode = await callAppBridge({ type: "模式" });
+    applyTheme(mode);
+  } catch (modeError) {
+    applyTheme("亮色");
+  }
+  try {
+    await refreshAll();
+  } catch (loadError) {
+    showToast(t("loadFail"));
+  }
+  switchPage("home", { record: false });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  (async () => { await initialize(); })();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,4254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>青笺课后档案</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #F3EDE2;
+  --card: #FFFBF5;
+  --ink: #1E3348;
+  --amber: #C17F3E;
+  --moss: #3E6B58;
+  --rust: #A65448;
+  --text: #241C16;
+  --muted: #6F655C;
+  --line: rgba(30, 51, 72, 0.12);
+  --nav: #1E3348;
+  --nav-text: #F6F1E8;
+  --shadow: 0 10px 28px rgba(72, 48, 24, 0.07);
+  --input: #FFFFFF;
+  --paper: #FFFBF5;
+  --leave: #7E7870;
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg: #14110E;
+  --card: #241C16;
+  --ink: #E6D3BC;
+  --amber: #D49A5C;
+  --moss: #8FBFAB;
+  --rust: #E39A90;
+  --text: #F3EDE2;
+  --muted: #C8BBA9;
+  --line: rgba(243, 237, 226, 0.14);
+  --nav: #1E3348;
+  --nav-text: #F6F1E8;
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  --input: #1A1612;
+  --paper: #2C241C;
+  --leave: #A39E96;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(1100px 480px at -10% -10%, rgba(193, 127, 62, 0.18), transparent 55%),
+    radial-gradient(800px 420px at 110% 0%, rgba(30, 51, 72, 0.06), transparent 46%);
+  min-height: 100vh;
+  line-height: 1.6;
+  padding-top: 76px;
+}
+html.booting body { visibility: hidden; }
+input, select, textarea { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.45; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+#navDock {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+#topNav {
+  background: var(--nav);
+  color: var(--nav-text);
+  box-shadow: 0 8px 24px rgba(20, 16, 12, 0.18);
+}
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 0 16px;
+  max-width: 1180px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 0;
+  color: var(--nav-text);
+  padding: 8px 4px;
+  flex: 0 0 auto;
+}
+.brand i { color: #E2B170; font-size: 20px; }
+.brand span {
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.nav-tabs {
+  display: flex;
+  flex: 1 0 auto;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: max-content;
+}
+.nav-tabs.is-collapsed { display: none !important; }
+.nav-tabs button, .mobile-menu button.nav-link {
+  background: transparent;
+  color: var(--nav-text);
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+.nav-tabs button.is-active, .mobile-menu button.nav-link.is-active {
+  background: rgba(193, 127, 62, 0.22);
+  box-shadow: inset 0 -2px 0 #C17F3E;
+}
+.nav-tools { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.lang-switch { display: inline-flex; border: 1px solid rgba(246, 241, 232, 0.28); border-radius: 999px; overflow: hidden; }
+.lang-switch button, .menu-lang button {
+  background: transparent;
+  color: var(--nav-text);
+  border: 0;
+  padding: 6px 10px;
+}
+.lang-switch button.is-on, .menu-lang button.is-on { background: #C17F3E; color: #1E3348; }
+#btnHamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(246, 241, 232, 0.28);
+  background: transparent;
+  color: var(--nav-text);
+}
+.mobile-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #1E3348;
+  border-top: 1px solid rgba(246, 241, 232, 0.12);
+  padding: 8px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.22);
+}
+.mobile-menu[hidden] { display: none !important; }
+.mobile-menu button.nav-link { text-align: left; width: 100%; }
+.menu-lang { display: flex; gap: 8px; padding: 8px 4px 2px; }
+.menu-lang button { border-radius: 999px; border: 1px solid rgba(246, 241, 232, 0.28); }
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 22px 18px 72px;
+}
+.page[hidden] { display: none !important; }
+.hero, .panel, .card, .stat-card, .paper, .modal-dialog {
+  background: var(--card);
+  border: 1px solid rgba(30, 51, 72, 0.08);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.hero { padding: 28px 26px 22px; margin-bottom: 16px; }
+.kicker {
+  margin: 0 0 6px;
+  color: var(--amber);
+  letter-spacing: 0.16em;
+  font-size: 13px;
+}
+h1, h2, h3 {
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0;
+  color: var(--ink);
+}
+.hero h1 { font-size: 40px; line-height: 1.25; }
+.page-head h1 { font-size: 32px; }
+.lede { margin: 10px 0 0; color: var(--muted); max-width: 46em; }
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.hero-actions, .card-actions, .review-tools, .form-actions, .empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.hero-actions { margin-top: 18px; }
+.btn {
+  border-radius: 999px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+}
+.btn.primary {
+  background: #1E3348;
+  color: #F6F1E8;
+  border-color: rgba(246, 241, 232, 0.35);
+}
+.btn.ghost { border-color: rgba(30, 51, 72, 0.22); background: transparent; }
+.btn.danger { border-color: var(--rust); color: var(--rust); background: transparent; }
+.btn.small { padding: 7px 12px; font-size: 14px; }
+.btn.is-on { background: rgba(193, 127, 62, 0.16); border-color: var(--amber); }
+.stat-grid, .split, .review-grid { display: grid; gap: 14px; }
+.stat-grid { grid-template-columns: repeat(4, 1fr); margin: 16px 0; }
+.split { grid-template-columns: 1.2fr 0.8fr; }
+.review-grid { grid-template-columns: 320px 1fr; align-items: start; }
+.stat-card {
+  text-align: left;
+  padding: 16px 16px 14px;
+  color: inherit;
+}
+button.stat-card { width: 100%; }
+.stat-num {
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 36px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.stat-label { color: var(--muted); margin-top: 6px; }
+.card, .panel, .stat-card, .t-card, .index-card {
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.card:hover, .panel:hover, .stat-card:hover, .t-card:hover, .index-card:hover {
+  transform: translateY(-3px);
+  border-color: #C17F3E;
+}
+.panel { padding: 16px 16px 12px; }
+.panel-head, .review-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.bar-row { display: grid; grid-template-columns: 92px 1fr 36px; gap: 8px; align-items: center; margin: 8px 0; }
+.bar-label, .bar-num { font-size: 13px; color: var(--muted); }
+.bar-track { height: 10px; border-radius: 999px; background: rgba(30, 51, 72, 0.08); overflow: hidden; }
+.bar-fill { height: 100%; width: 0; background: #1E3348; border-radius: inherit; }
+.bar-fill[data-type="正课"] { background: #1E3348; }
+.bar-fill[data-type="补课"] { background: #C17F3E; }
+.bar-fill[data-type="试听"] { background: #3E6B58; }
+.bar-fill[data-type="学员请假"] { background: #7E7870; }
+.bar-fill[data-type="教师取消"] { background: #A65448; }
+.timeline { position: relative; margin: 6px 0 0 8px; padding-left: 22px; border-left: 2px solid rgba(193, 127, 62, 0.5); }
+.t-card { position: relative; margin: 0 0 12px; padding: 14px; cursor: pointer; }
+.t-card::before {
+  content: "";
+  position: absolute;
+  left: -29px;
+  top: 18px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #1E3348;
+  box-shadow: 0 0 0 4px var(--bg);
+}
+.card-top, .facts, .auth-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.alias { font-family: "Noto Serif SC", "Songti SC", serif; font-size: 20px; color: var(--ink); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.summary { margin: 8px 0 0; }
+.ribbon {
+  display: inline-flex;
+  align-items: center;
+  color: #FFFBF5;
+  background: #1E3348;
+  padding: 2px 14px 2px 10px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%);
+}
+.ribbon[data-type="正课"] { background: #1E3348; }
+.ribbon[data-type="补课"] { background: #C17F3E; }
+.ribbon[data-type="试听"] { background: #3E6B58; }
+.ribbon[data-type="学员请假"] { background: #7E7870; }
+.ribbon[data-type="教师取消"] { background: #A65448; }
+.stamp {
+  display: inline-block;
+  border: 2px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  padding: 1px 6px;
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  transform: rotate(-8deg);
+  line-height: 1.4;
+}
+.stamp.yes { color: var(--moss); }
+.stamp.no { color: var(--rust); }
+.bullet-mark {
+  margin-left: 6px;
+  font-size: 12px;
+  color: var(--amber);
+}
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 160px; flex: 1; }
+.field span, .form-field label { font-size: 13px; color: var(--muted); }
+.field input, .field select, .form-field input, .form-field select, .form-field textarea {
+  width: 100%;
+  background: var(--input);
+  border: 1px solid rgba(30, 51, 72, 0.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.form-field textarea { min-height: 150px; resize: vertical; }
+.form-grid { display: grid; gap: 12px; }
+.field-error { min-height: 1.2em; margin: 0; color: var(--rust); font-size: 13px; }
+.list { display: grid; gap: 12px; }
+.record-card, .student-card, .index-card { padding: 14px; cursor: pointer; }
+.index-card.is-current, .record-card.is-current, .student-card.is-current { border-color: #C17F3E; }
+.card-actions { margin-top: 12px; }
+.empty { text-align: center; padding: 26px 12px; color: var(--muted); }
+.empty i { display: block; font-size: 28px; color: var(--amber); margin-bottom: 8px; }
+.error-banner {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(166, 84, 72, 0.1);
+  color: var(--rust);
+  margin-bottom: 12px;
+}
+.review-index { max-height: calc(100vh - 150px); overflow: auto; padding-right: 4px; }
+.review-detail { position: sticky; top: 86px; }
+.paper { padding: 18px 18px 12px; background: var(--paper); }
+.paper-kicker { color: var(--amber); letter-spacing: 0.14em; font-size: 13px; margin-bottom: 8px; }
+.facts { margin-bottom: 12px; }
+.review-toolbar { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 10px; }
+details.notes { margin-top: 12px; }
+details.notes summary { cursor: pointer; color: var(--ink); }
+pre.notes-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "Noto Sans SC", "PingFang SC", sans-serif;
+  background: rgba(30, 51, 72, 0.04);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 8px 0 0;
+}
+.checklist { margin-top: 14px; display: grid; gap: 8px; }
+.checklist label { display: flex; gap: 8px; align-items: flex-start; }
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal[hidden] { display: none !important; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(28, 22, 16, 0.48); }
+.modal-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 18px 18px 8px;
+  background: var(--card);
+  opacity: 1;
+}
+.modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+}
+.mode-tag { color: var(--amber); font-size: 13px; letter-spacing: 0.08em; }
+.switch {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--input);
+  padding: 8px 14px;
+  min-width: 72px;
+}
+.switch.is-on { border-color: var(--moss); color: var(--moss); }
+.hint-list p, .wait, .crisis-note {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.hint-list p { background: rgba(193, 127, 62, 0.1); border-left: 3px solid var(--amber); }
+.crisis-note { color: var(--rust); background: rgba(166, 84, 72, 0.08); }
+.wait { background: rgba(193, 127, 62, 0.14); color: var(--ink); }
+#pollBanner {
+  position: fixed;
+  z-index: 1002;
+  top: 74px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 28px));
+  box-shadow: var(--shadow);
+}
+.draft-box { min-height: 72px; }
+.draft-box.is-placeholder { color: var(--muted); }
+.detail-row { display: grid; grid-template-columns: 140px 1fr; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.detail-label { color: var(--muted); }
+#toast {
+  position: fixed;
+  z-index: 3600;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: min(520px, calc(100% - 24px));
+  background: #1E3348;
+  color: #F6F1E8;
+  padding: 12px 16px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.md-body { color: var(--text); overflow-wrap: anywhere; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4, .md-body h5, .md-body h6 { margin: 1em 0 0.4em; }
+.md-body p { margin: 0.6em 0; }
+.md-body a { color: var(--amber); }
+.md-body blockquote { margin: 0.8em 0; padding: 0.2em 0 0.2em 12px; border-left: 3px solid var(--amber); color: var(--muted); }
+.md-body code { font-family: Consolas, "Source Code Pro", monospace; background: rgba(30, 51, 72, 0.06); padding: 0 4px; border-radius: 4px; }
+.md-body pre { overflow: auto; padding: 12px; border-radius: 12px; background: rgba(30, 51, 72, 0.06); }
+.md-body pre code { background: transparent; padding: 0; }
+.md-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.md-body th, .md-body td { border: 1px solid var(--line); padding: 6px 8px; }
+.md-body img { max-width: 100%; height: auto; border-radius: 8px; }
+.md-body ul, .md-body ol { padding-left: 1.3em; }
+.md-body hr { border: 0; border-top: 1px solid var(--line); }
+.scroll-tail { height: 28px; }
+#htmlFrame { width: 100%; height: min(70vh, 640px); border: 0; background: #fff; }
+@media (max-width: 980px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .split, .review-grid { grid-template-columns: 1fr; }
+  .review-detail { position: static; }
+  .review-index { max-height: 42vh; }
+  .hero h1 { font-size: 32px; }
+}
+@media (max-width: 760px) {
+  body { padding-bottom: 128px; }
+  .page-head, .hero { display: block; }
+  .page-head .btn, .hero-actions .btn { width: 100%; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .detail-row { grid-template-columns: 1fr; gap: 2px; }
+  input, select, textarea { font-size: 16px; }
+  .scroll-tail { height: 168px; }
+  .brand span { max-width: 48vw; overflow: hidden; text-overflow: ellipsis; }
+}
+@media (max-width: 640px) {
+  #modalMarkdown, #modalHtml { padding: 0; }
+  #modalMarkdown .modal-dialog, #modalHtml .modal-dialog {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    margin: 0;
+  }
+  #htmlFrame { height: calc(100vh - 72px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="navDock">
+  <nav id="topNav" style="position: relative;z-index: 1001;">
+    <div class="nav-row" id="navRow">
+      <button type="button" id="btnBrand" class="brand">
+        <i class="fa-solid fa-scroll" aria-hidden="true"></i>
+        <span data-i18n="brand">青笺课后档案</span>
+      </button>
+      <div class="nav-tabs" id="navTabs">
+        <button type="button" id="navDesk" data-page="pageDesk"><span data-i18n="navDesk">灯下台</span></button>
+        <button type="button" id="navRoster" data-page="pageRoster"><span data-i18n="navRoster">学员名册</span></button>
+        <button type="button" id="navRecords" data-page="pageRecords"><span data-i18n="navRecords">课后记录</span></button>
+        <button type="button" id="navReview" data-page="pageReview"><span data-i18n="navReview">档案审阅</span></button>
+      </div>
+      <div class="nav-tools">
+        <div class="lang-switch" id="langSwitch">
+          <button type="button" id="btnLangZh" aria-pressed="true">中</button>
+          <button type="button" id="btnLangEn" aria-pressed="false">EN</button>
+        </div>
+        <button type="button" id="btnHamburger" hidden aria-expanded="false" data-i18n-aria="menuOpen" aria-label="打开菜单">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="mobile-menu" hidden>
+      <button type="button" class="nav-link" id="menuDesk" data-page="pageDesk"><span data-i18n="navDesk">灯下台</span></button>
+      <button type="button" class="nav-link" id="menuRoster" data-page="pageRoster"><span data-i18n="navRoster">学员名册</span></button>
+      <button type="button" class="nav-link" id="menuRecords" data-page="pageRecords"><span data-i18n="navRecords">课后记录</span></button>
+      <button type="button" class="nav-link" id="menuReview" data-page="pageReview"><span data-i18n="navReview">档案审阅</span></button>
+      <div class="menu-lang">
+        <button type="button" id="menuLangZh">中文</button>
+        <button type="button" id="menuLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<p id="pollBanner" class="wait" hidden></p>
+<main id="main">
+  <section id="pageDesk" class="page">
+    <div class="hero">
+      <p class="kicker" data-i18n="deskKicker">灯下整理</p>
+      <h1 data-i18n="deskTitle">青笺课后档案</h1>
+      <p class="lede" data-i18n="deskLede">记下课堂里看得见的事实，整理成可审阅的课后草稿</p>
+      <div class="hero-actions">
+        <button type="button" class="btn primary" id="btnGoCreateLesson" data-i18n="btnNewLesson">记一节课</button>
+        <button type="button" class="btn ghost" id="btnGoCreateStudent" data-i18n="btnNewStudent">新增学员</button>
+      </div>
+    </div>
+    <div id="deskError" class="error-banner" hidden>
+      <span data-i18n="loadFail">读取失败。请重试。</span>
+      <button type="button" class="btn small ghost" id="btnDeskRetry" data-i18n="btnRetry">重试</button>
+    </div>
+    <div class="stat-grid">
+      <article class="stat-card" id="statStudents">
+        <div class="stat-num" id="numStudents">—</div>
+        <div class="stat-label" data-i18n="statStudents">学员数</div>
+      </article>
+      <article class="stat-card" id="statLessons">
+        <div class="stat-num" id="numLessons">—</div>
+        <div class="stat-label" data-i18n="statLessons">课后记录数</div>
+      </article>
+      <article class="stat-card" id="statMonth">
+        <div class="stat-num" id="numMonth">—</div>
+        <div class="stat-label" data-i18n="statMonth">本月课次</div>
+      </article>
+      <button type="button" class="stat-card" id="btnStatAuth">
+        <div class="stat-num" id="numAuth">—</div>
+        <div class="stat-label" data-i18n="statAuth">授权提醒数</div>
+      </button>
+    </div>
+    <div class="split">
+      <section class="panel" id="panelTypes">
+        <h2 data-i18n="secTypes">课次构成</h2>
+        <div id="barTypes"></div>
+      </section>
+      <section class="panel" id="panelStages">
+        <h2 data-i18n="secStages">学段名册分布</h2>
+        <div id="barStages"></div>
+      </section>
+    </div>
+    <section class="panel" id="recentPanel" style="margin-top:14px;">
+      <div class="panel-head">
+        <h2 data-i18n="secRecent">最近课稿</h2>
+        <button type="button" class="btn small ghost" id="btnRecentAll" data-i18n="btnViewAll">查看全部</button>
+      </div>
+      <div id="recentList" class="timeline"></div>
+      <div id="recentEmpty" class="empty" hidden>
+        <i class="fa-solid fa-feather" aria-hidden="true"></i>
+        <p id="recentEmptyText"></p>
+        <button type="button" class="btn primary" id="btnRecentEmpty" data-i18n="btnNewLesson">记一节课</button>
+      </div>
+    </section>
+  </section>
+
+  <section id="pageRoster" class="page" hidden>
+    <header class="page-head">
+      <div>
+        <h1 data-i18n="rosterTitle">学员名册</h1>
+        <p class="lede" data-i18n="rosterLede">只维护化名、学段和两项授权；授权会决定课后草稿能否包含家长摘要和课堂状态</p>
+      </div>
+      <button type="button" class="btn primary" id="btnRosterCreate" data-i18n="btnAddStudent">+ 新增学员</button>
+    </header>
+    <div id="rosterError" class="error-banner" hidden>
+      <span data-i18n="loadFail">读取失败。请重试。</span>
+      <button type="button" class="btn small ghost" id="btnRosterRetry" data-i18n="btnRetry">重试</button>
+    </div>
+    <div class="filters">
+      <label class="field">
+        <span data-i18n="searchStudentLabel">搜索学员化名</span>
+        <input id="rosterSearch" type="search" data-i18n-placeholder="searchStudentPh" placeholder="搜索学员化名">
+      </label>
+      <label class="field">
+        <span data-i18n="fieldStage">学段</span>
+        <select id="rosterStageFilter">
+          <option value="" data-i18n="filterStageAll">全部学段</option>
+          <option value="小学中段" data-i18n="stage_mid">小学中段</option>
+          <option value="小学高段" data-i18n="stage_high">小学高段</option>
+          <option value="初中" data-i18n="stage_junior">初中</option>
+          <option value="高中" data-i18n="stage_senior">高中</option>
+        </select>
+      </label>
+      <label class="field">
+        <span data-i18n="authFilterLabel">授权</span>
+        <select id="rosterAuthFilter">
+          <option value="all" data-i18n="filterAuthAll">全部授权</option>
+          <option value="both" data-i18n="filterAuthBoth">两项都已授权</option>
+          <option value="partial" data-i18n="filterAuthPartial">未完全授权</option>
+        </select>
+      </label>
+    </div>
+    <div id="rosterList" class="list"></div>
+    <div id="rosterEmpty" class="empty" hidden>
+      <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+      <p id="rosterEmptyText"></p>
+      <button type="button" class="btn primary" id="btnRosterEmptyAction"></button>
+    </div>
+  </section>
+
+  <section id="pageRecords" class="page" hidden>
+    <header class="page-head">
+      <div>
+        <h1 data-i18n="recTitle">课后记录</h1>
+        <p class="lede" data-i18n="recLede">速记只写可观察事实；提交后由后台整理 Markdown 草稿，教师审阅前它只是预览</p>
+      </div>
+      <button type="button" class="btn primary" id="btnRecordCreate" data-i18n="btnNewRec">+ 整理新课次</button>
+    </header>
+    <div id="recordError" class="error-banner" hidden>
+      <span data-i18n="loadFail">读取失败。请重试。</span>
+      <button type="button" class="btn small ghost" id="btnRecordRetry" data-i18n="btnRetry">重试</button>
+    </div>
+    <div class="filters">
+      <label class="field">
+        <span data-i18n="searchRecLabel">搜索</span>
+        <input id="recordSearch" type="search" data-i18n-placeholder="searchRecPh" placeholder="搜索化名或课堂速记">
+      </label>
+      <label class="field">
+        <span data-i18n="fieldType">课次类型</span>
+        <select id="recordTypeFilter">
+          <option value="" data-i18n="filterTypeAll">全部课次</option>
+          <option value="正课" data-i18n="type_regular">正课</option>
+          <option value="补课" data-i18n="type_makeup">补课</option>
+          <option value="试听" data-i18n="type_trial">试听</option>
+          <option value="学员请假" data-i18n="type_absent">学员请假</option>
+          <option value="教师取消" data-i18n="type_cancel">教师取消</option>
+        </select>
+      </label>
+      <label class="field">
+        <span data-i18n="dateFrom">上课日期起</span>
+        <input id="recordDateFrom" type="date">
+      </label>
+      <label class="field">
+        <span data-i18n="dateTo">上课日期止</span>
+        <input id="recordDateTo" type="date">
+      </label>
+      <label class="field">
+        <span data-i18n="draftFilterLabel">草稿</span>
+        <button type="button" class="btn ghost" id="btnRecordDraftOnly" aria-pressed="false" data-i18n="draftOnly">只看草稿未生成</button>
+      </label>
+    </div>
+    <div id="recordList" class="list"></div>
+    <div id="recordEmpty" class="empty" hidden>
+      <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+      <p id="recordEmptyText"></p>
+      <button type="button" class="btn primary" id="btnRecordEmptyAction"></button>
+    </div>
+  </section>
+
+  <section id="pageReview" class="page" hidden>
+    <header class="page-head">
+      <div>
+        <h1 data-i18n="revTitle">档案审阅</h1>
+        <p class="lede" data-i18n="revLede">右侧是供教师预览的 Markdown 草稿，未经核对不把它当成正式档案</p>
+      </div>
+    </header>
+    <div id="reviewError" class="error-banner" hidden>
+      <span data-i18n="loadFail">读取失败。请重试。</span>
+      <button type="button" class="btn small ghost" id="btnReviewRetry" data-i18n="btnRetry">重试</button>
+    </div>
+    <div class="review-grid">
+      <section class="panel" id="reviewIndexPanel">
+        <div class="filters">
+          <label class="field">
+            <span data-i18n="fieldType">课次类型</span>
+            <select id="reviewTypeFilter">
+              <option value="" data-i18n="filterTypeAll">全部课次</option>
+              <option value="正课" data-i18n="type_regular">正课</option>
+              <option value="补课" data-i18n="type_makeup">补课</option>
+              <option value="试听" data-i18n="type_trial">试听</option>
+              <option value="学员请假" data-i18n="type_absent">学员请假</option>
+              <option value="教师取消" data-i18n="type_cancel">教师取消</option>
+            </select>
+          </label>
+          <label class="field">
+            <span data-i18n="draftFilterLabel">草稿</span>
+            <select id="reviewDraftFilter">
+              <option value="all" data-i18n="filterGenAll">全部草稿</option>
+              <option value="yes" data-i18n="filterGenYes">已生成</option>
+              <option value="no" data-i18n="filterGenNo">未生成</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>&nbsp;</span>
+            <button type="button" class="btn ghost" id="btnReviewRefresh" data-i18n="btnRefresh">刷新</button>
+          </label>
+        </div>
+        <div id="reviewIndex" class="review-index list"></div>
+        <div id="reviewIndexEmpty" class="empty" hidden>
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+          <p id="reviewIndexEmptyText"></p>
+          <button type="button" class="btn primary" id="btnReviewEmptyAction"></button>
+        </div>
+      </section>
+      <section class="panel review-detail" id="reviewDetail">
+        <div id="reviewUnselected" class="empty">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+          <p id="reviewUnselectedText" data-i18n="emptySelect">从左侧选择一份课稿。这里会显示事实条和预览草稿。</p>
+        </div>
+        <div id="reviewSelected" hidden>
+          <div class="review-toolbar">
+            <div class="review-tools">
+              <button type="button" class="btn small ghost" id="btnReviewPrev" data-i18n="btnPrev" disabled>上一条</button>
+              <button type="button" class="btn small ghost" id="btnReviewNext" data-i18n="btnNext" disabled>下一条</button>
+            </div>
+            <div class="review-tools">
+              <span id="reviewCheckedBadge" class="stamp yes" hidden data-i18n="checked">已核对</span>
+              <button type="button" class="btn small ghost" id="btnReviewEdit" data-i18n="btnGoEdit" disabled>前往修改</button>
+              <button type="button" class="btn small danger" id="btnReviewDelete" data-i18n="btnDelete" disabled>删除</button>
+            </div>
+          </div>
+          <div id="reviewFacts" class="facts"></div>
+          <div class="paper" id="reviewPaper">
+            <div class="paper-kicker" data-i18n="previewKicker">预览草稿</div>
+            <div id="reviewMarkdown" class="md-body"></div>
+            <div id="reviewDraftEmpty" hidden>
+              <p data-i18n="notGenerated">尚未生成</p>
+              <button type="button" class="btn small ghost" id="btnReviewReread" data-i18n="btnReread">重新读取</button>
+            </div>
+            <button type="button" class="btn small ghost" id="btnExpandDraft" data-i18n="btnExpand">展开阅读</button>
+          </div>
+          <details class="notes" id="reviewNotes">
+            <summary data-i18n="notesToggle">速记原文</summary>
+            <pre id="reviewNotesBody" class="notes-body"></pre>
+          </details>
+          <section class="checklist" id="reviewChecklist">
+            <h3 data-i18n="checklist">核对清单</h3>
+            <label><input type="checkbox" id="check0"><span data-i18n="check1">内容能在速记中找到依据</span></label>
+            <label><input type="checkbox" id="check1"><span data-i18n="check2">没有猜测特质或家庭情况</span></label>
+            <label><input type="checkbox" id="check2"><span data-i18n="check3">试听和教师取消没有扣减条目</span></label>
+            <label><input type="checkbox" id="check3"><span data-i18n="check4">未授权时没有家长摘要或课堂状态</span></label>
+          </section>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<div id="modalStudent" class="modal" hidden>
+  <div class="modal-backdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="formStudentTitle">
+    <div class="modal-head">
+      <div>
+        <div class="mode-tag" id="formStudentMode"></div>
+        <h2 id="formStudentTitle" data-i18n="formStudentTitle">学员信息</h2>
+      </div>
+      <button type="button" class="icon-btn" id="btnStudentClose" data-i18n-aria="btnClose" aria-label="关闭">×</button>
+    </div>
+    <form id="formStudent" autocomplete="off">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="formStudent_学员化名" data-i18n="fieldAlias">学员化名</label>
+          <input id="formStudent_学员化名" name="学员化名" type="text" aria-required="true">
+          <p class="field-error" id="formStudent_学员化名_error"></p>
+        </div>
+        <div class="form-field">
+          <label for="formStudent_学段" data-i18n="fieldStage">学段</label>
+          <select id="formStudent_学段" name="学段" aria-required="true">
+            <option value="" data-i18n="selectStage">请选择学段</option>
+            <option value="小学中段" data-i18n="stage_mid">小学中段</option>
+            <option value="小学高段" data-i18n="stage_high">小学高段</option>
+            <option value="初中" data-i18n="stage_junior">初中</option>
+            <option value="高中" data-i18n="stage_senior">高中</option>
+          </select>
+          <p class="field-error" id="formStudent_学段_error"></p>
+        </div>
+        <div class="form-field">
+          <label data-i18n="fieldParent">家长沟通授权</label>
+          <input id="formStudent_家长沟通授权" name="家长沟通授权" type="hidden" value="否">
+          <button type="button" class="switch" id="formStudent_家长沟通授权_switch" role="switch" aria-checked="false">否</button>
+        </div>
+        <div class="form-field">
+          <label data-i18n="fieldShare">课堂状态分享授权</label>
+          <input id="formStudent_课堂状态分享授权" name="课堂状态分享授权" type="hidden" value="否">
+          <button type="button" class="switch" id="formStudent_课堂状态分享授权_switch" role="switch" aria-checked="false">否</button>
+        </div>
+      </div>
+      <div class="form-actions" style="margin-top:14px;">
+        <button type="button" class="btn ghost" id="btnStudentCancel" data-i18n="btnCancel">取消</button>
+        <button type="submit" class="btn primary" id="btnStudentSave" data-i18n="btnSave">保存</button>
+      </div>
+      <div class="scroll-tail" aria-hidden="true"></div>
+    </form>
+  </div>
+</div>
+
+<div id="modalStudentDetail" class="modal" hidden>
+  <div class="modal-backdrop" data-dismiss="modalStudentDetail"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="studentDetailTitle">
+    <div class="modal-head">
+      <h2 id="studentDetailTitle" data-i18n="detailTitle">学员详情</h2>
+      <button type="button" class="icon-btn" id="btnDetailClose" data-i18n-aria="btnClose" aria-label="关闭">×</button>
+    </div>
+    <div id="studentDetailBody"></div>
+    <div class="form-actions" style="margin-top:14px;">
+      <button type="button" class="btn primary" id="btnDetailEdit" data-i18n="btnEdit">编辑</button>
+    </div>
+    <div class="scroll-tail" aria-hidden="true"></div>
+  </div>
+</div>
+
+<div id="modalLesson" class="modal" hidden>
+  <div class="modal-backdrop"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="formLessonTitle">
+    <div class="modal-head">
+      <div>
+        <div class="mode-tag" id="formLessonMode"></div>
+        <h2 id="formLessonTitle" data-i18n="formLessonTitle">课后记录</h2>
+      </div>
+      <button type="button" class="icon-btn" id="btnLessonClose" data-i18n-aria="btnClose" aria-label="关闭">×</button>
+    </div>
+    <form id="formLesson" autocomplete="off">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="formLesson_学员化名" data-i18n="fieldAlias">学员化名</label>
+          <select id="formLesson_学员化名" name="学员化名" aria-required="true"></select>
+          <p class="field-error" id="formLesson_学员化名_error"></p>
+        </div>
+        <div id="formLessonAuth" class="auth-row"></div>
+        <div id="formLessonHints" class="hint-list"></div>
+        <div class="form-field">
+          <label for="formLesson_上课日期" data-i18n="fieldDate">上课日期</label>
+          <input id="formLesson_上课日期" name="上课日期" type="date" aria-required="true">
+          <p class="field-error" id="formLesson_上课日期_error"></p>
+        </div>
+        <div class="form-field">
+          <label for="formLesson_课次类型" data-i18n="fieldType">课次类型</label>
+          <select id="formLesson_课次类型" name="课次类型" aria-required="true">
+            <option value="正课" data-i18n="type_regular">正课</option>
+            <option value="补课" data-i18n="type_makeup">补课</option>
+            <option value="试听" data-i18n="type_trial">试听</option>
+            <option value="学员请假" data-i18n="type_absent">学员请假</option>
+            <option value="教师取消" data-i18n="type_cancel">教师取消</option>
+          </select>
+          <p class="field-error" id="formLesson_课次类型_error"></p>
+        </div>
+        <div class="form-field">
+          <label for="formLesson_课堂速记" data-i18n="fieldNote">课堂速记</label>
+          <textarea id="formLesson_课堂速记" name="课堂速记" aria-required="true"></textarea>
+          <p class="crisis-note" id="formLessonCrisis">若速记出现危机信号，后台按技能的危机例外流程处理，教师应优先人工审阅。</p>
+          <p class="field-error" id="formLesson_课堂速记_error"></p>
+        </div>
+        <div class="form-field">
+          <div class="paper-kicker" data-i18n="fieldDraft">课后档案草稿</div>
+          <div id="formLesson_课后档案草稿" class="md-body draft-box is-placeholder"></div>
+          <button type="button" class="btn small ghost" id="btnLessonExpand" data-i18n="btnExpand">展开阅读</button>
+        </div>
+        <p id="formLessonWait" class="wait" hidden>正在依据速记整理课后档案，请稍候</p>
+      </div>
+      <div class="form-actions" style="margin-top:14px;">
+        <button type="button" class="btn ghost" id="btnLessonCancel" data-i18n="btnCancel">取消</button>
+        <button type="submit" class="btn primary" id="btnLessonSave" data-i18n="btnSave">保存</button>
+      </div>
+      <div class="scroll-tail" aria-hidden="true"></div>
+    </form>
+  </div>
+</div>
+
+<div id="modalConfirm" class="modal" hidden>
+  <div class="modal-backdrop" data-dismiss="modalConfirm"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmMessage">
+    <p id="confirmMessage"></p>
+    <div class="form-actions">
+      <button type="button" class="btn ghost" id="btnConfirmCancel">取消</button>
+      <button type="button" class="btn primary" id="btnConfirmOk">确定</button>
+    </div>
+    <div class="scroll-tail" aria-hidden="true"></div>
+  </div>
+</div>
+
+<div id="modalMarkdown" class="modal" hidden>
+  <div class="modal-backdrop" data-dismiss="modalMarkdown"></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="markdownTitle">
+    <div class="modal-head">
+      <h2 id="markdownTitle" data-i18n="previewKicker">预览草稿</h2>
+      <button type="button" class="icon-btn" id="btnMarkdownClose" data-i18n-aria="btnClose" aria-label="关闭">×</button>
+    </div>
+    <div id="markdownReader" class="md-body"></div>
+    <div class="scroll-tail" aria-hidden="true"></div>
+  </div>
+</div>
+
+<div id="modalHtml" class="modal" hidden>
+  <div class="modal-backdrop" data-dismiss="modalHtml"></div>
+  <div class="modal-dialog modal-html" role="dialog" aria-modal="true" aria-labelledby="modalHtmlTitle">
+    <div class="modal-head">
+      <h2 id="modalHtmlTitle"></h2>
+      <button type="button" class="icon-btn" id="btnHtmlClose" data-i18n-aria="btnClose" aria-label="关闭">×</button>
+    </div>
+    <iframe id="htmlFrame" title="HTML"></iframe>
+    <div class="scroll-tail" aria-hidden="true"></div>
+  </div>
+</div>
+
+<div id="toast" hidden role="status"></div>
+
+<script>
+/**
+ * marked v15.0.12 - a markdown parser
+ * Copyright (c) 2011-2025, Christopher Jeffrey. (MIT Licensed)
+ * https://github.com/markedjs/marked
+ */
+
+/**
+ * DO NOT EDIT THIS FILE
+ * The code in this file is generated from files in ./src/
+ */
+(function(g,f){if(typeof exports=="object"&&typeof module<"u"){module.exports=f()}else if("function"==typeof define && define.amd){define("marked",f)}else {g["marked"]=f()}}(typeof globalThis < "u" ? globalThis : typeof self < "u" ? self : this,function(){var exports={};var __exports=exports;var module={exports};
+"use strict";var H=Object.defineProperty;var be=Object.getOwnPropertyDescriptor;var Te=Object.getOwnPropertyNames;var we=Object.prototype.hasOwnProperty;var ye=(l,e)=>{for(var t in e)H(l,t,{get:e[t],enumerable:!0})},Re=(l,e,t,n)=>{if(e&&typeof e=="object"||typeof e=="function")for(let s of Te(e))!we.call(l,s)&&s!==t&&H(l,s,{get:()=>e[s],enumerable:!(n=be(e,s))||n.enumerable});return l};var Se=l=>Re(H({},"__esModule",{value:!0}),l);var kt={};ye(kt,{Hooks:()=>L,Lexer:()=>x,Marked:()=>E,Parser:()=>b,Renderer:()=>$,TextRenderer:()=>_,Tokenizer:()=>S,defaults:()=>w,getDefaults:()=>z,lexer:()=>ht,marked:()=>k,options:()=>it,parse:()=>pt,parseInline:()=>ct,parser:()=>ut,setOptions:()=>ot,use:()=>lt,walkTokens:()=>at});module.exports=Se(kt);function z(){return{async:!1,breaks:!1,extensions:null,gfm:!0,hooks:null,pedantic:!1,renderer:null,silent:!1,tokenizer:null,walkTokens:null}}var w=z();function N(l){w=l}var I={exec:()=>null};function h(l,e=""){let t=typeof l=="string"?l:l.source,n={replace:(s,i)=>{let r=typeof i=="string"?i:i.source;return r=r.replace(m.caret,"$1"),t=t.replace(s,r),n},getRegex:()=>new RegExp(t,e)};return n}var m={codeRemoveIndent:/^(?: {1,4}| {0,3}\t)/gm,outputLinkReplace:/\\([\[\]])/g,indentCodeCompensation:/^(\s+)(?:```)/,beginningSpace:/^\s+/,endingHash:/#$/,startingSpaceChar:/^ /,endingSpaceChar:/ $/,nonSpaceChar:/[^ ]/,newLineCharGlobal:/\n/g,tabCharGlobal:/\t/g,multipleSpaceGlobal:/\s+/g,blankLine:/^[ \t]*$/,doubleBlankLine:/\n[ \t]*\n[ \t]*$/,blockquoteStart:/^ {0,3}>/,blockquoteSetextReplace:/\n {0,3}((?:=+|-+) *)(?=\n|$)/g,blockquoteSetextReplace2:/^ {0,3}>[ \t]?/gm,listReplaceTabs:/^\t+/,listReplaceNesting:/^ {1,4}(?=( {4})*[^ ])/g,listIsTask:/^\[[ xX]\] /,listReplaceTask:/^\[[ xX]\] +/,anyLine:/\n.*\n/,hrefBrackets:/^<(.*)>$/,tableDelimiter:/[:|]/,tableAlignChars:/^\||\| *$/g,tableRowBlankLine:/\n[ \t]*$/,tableAlignRight:/^ *-+: *$/,tableAlignCenter:/^ *:-+: *$/,tableAlignLeft:/^ *:-+ *$/,startATag:/^<a /i,endATag:/^<\/a>/i,startPreScriptTag:/^<(pre|code|kbd|script)(\s|>)/i,endPreScriptTag:/^<\/(pre|code|kbd|script)(\s|>)/i,startAngleBracket:/^</,endAngleBracket:/>$/,pedanticHrefTitle:/^([^'"]*[^\s])\s+(['"])(.*)\2/,unicodeAlphaNumeric:/[\p{L}\p{N}]/u,escapeTest:/[&<>"']/,escapeReplace:/[&<>"']/g,escapeTestNoEncode:/[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/,escapeReplaceNoEncode:/[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/g,unescapeTest:/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig,caret:/(^|[^\[])\^/g,percentDecode:/%25/g,findPipe:/\|/g,splitPipe:/ \|/,slashPipe:/\\\|/g,carriageReturn:/\r\n|\r/g,spaceLine:/^ +$/gm,notSpaceStart:/^\S*/,endingNewline:/\n$/,listItemRegex:l=>new RegExp(`^( {0,3}${l})((?:[	 ][^\\n]*)?(?:\\n|$))`),nextBulletRegex:l=>new RegExp(`^ {0,${Math.min(3,l-1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ 	][^\\n]*)?(?:\\n|$))`),hrRegex:l=>new RegExp(`^ {0,${Math.min(3,l-1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`),fencesBeginRegex:l=>new RegExp(`^ {0,${Math.min(3,l-1)}}(?:\`\`\`|~~~)`),headingBeginRegex:l=>new RegExp(`^ {0,${Math.min(3,l-1)}}#`),htmlBeginRegex:l=>new RegExp(`^ {0,${Math.min(3,l-1)}}<(?:[a-z].*>|!--)`,"i")},$e=/^(?:[ \t]*(?:\n|$))+/,_e=/^((?: {4}| {0,3}\t)[^\n]+(?:\n(?:[ \t]*(?:\n|$))*)?)+/,Le=/^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/,O=/^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/,ze=/^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/,F=/(?:[*+-]|\d{1,9}[.)])/,ie=/^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |blockCode|fences|blockquote|heading|html|table))+?)\n {0,3}(=+|-+) *(?:\n+|$)/,oe=h(ie).replace(/bull/g,F).replace(/blockCode/g,/(?: {4}| {0,3}\t)/).replace(/fences/g,/ {0,3}(?:`{3,}|~{3,})/).replace(/blockquote/g,/ {0,3}>/).replace(/heading/g,/ {0,3}#{1,6}/).replace(/html/g,/ {0,3}<[^\n>]+>\n/).replace(/\|table/g,"").getRegex(),Me=h(ie).replace(/bull/g,F).replace(/blockCode/g,/(?: {4}| {0,3}\t)/).replace(/fences/g,/ {0,3}(?:`{3,}|~{3,})/).replace(/blockquote/g,/ {0,3}>/).replace(/heading/g,/ {0,3}#{1,6}/).replace(/html/g,/ {0,3}<[^\n>]+>\n/).replace(/table/g,/ {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/).getRegex(),Q=/^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/,Pe=/^[^\n]+/,U=/(?!\s*\])(?:\\.|[^\[\]\\])+/,Ae=h(/^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<.*?>)(?:(?: +(?:\n[ \t]*)?| *\n[ \t]*)(title))? *(?:\n+|$)/).replace("label",U).replace("title",/(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/).getRegex(),Ee=h(/^( {0,3}bull)([ \t][^\n]+?)?(?:\n|$)/).replace(/bull/g,F).getRegex(),v="address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul",K=/<!--(?:-?>|[\s\S]*?(?:-->|$))/,Ce=h("^ {0,3}(?:<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)|comment[^\\n]*(\\n+|$)|<\\?[\\s\\S]*?(?:\\?>\\n*|$)|<![A-Z][\\s\\S]*?(?:>\\n*|$)|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n[ 	]*)+\\n|$)|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ 	]*)+\\n|$)|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ 	]*)+\\n|$))","i").replace("comment",K).replace("tag",v).replace("attribute",/ +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/).getRegex(),le=h(Q).replace("hr",O).replace("heading"," {0,3}#{1,6}(?:\\s|$)").replace("|lheading","").replace("|table","").replace("blockquote"," {0,3}>").replace("fences"," {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n").replace("list"," {0,3}(?:[*+-]|1[.)]) ").replace("html","</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)").replace("tag",v).getRegex(),Ie=h(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/).replace("paragraph",le).getRegex(),X={blockquote:Ie,code:_e,def:Ae,fences:Le,heading:ze,hr:O,html:Ce,lheading:oe,list:Ee,newline:$e,paragraph:le,table:I,text:Pe},re=h("^ *([^\\n ].*)\\n {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)").replace("hr",O).replace("heading"," {0,3}#{1,6}(?:\\s|$)").replace("blockquote"," {0,3}>").replace("code","(?: {4}| {0,3}	)[^\\n]").replace("fences"," {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n").replace("list"," {0,3}(?:[*+-]|1[.)]) ").replace("html","</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)").replace("tag",v).getRegex(),Oe={...X,lheading:Me,table:re,paragraph:h(Q).replace("hr",O).replace("heading"," {0,3}#{1,6}(?:\\s|$)").replace("|lheading","").replace("table",re).replace("blockquote"," {0,3}>").replace("fences"," {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n").replace("list"," {0,3}(?:[*+-]|1[.)]) ").replace("html","</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)").replace("tag",v).getRegex()},Be={...X,html:h(`^ *(?:comment *(?:\\n|\\s*$)|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)|<tag(?:"[^"]*"|'[^']*'|\\s[^'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))`).replace("comment",K).replace(/tag/g,"(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\\b)\\w+(?!:|[^\\w\\s@]*@)\\b").getRegex(),def:/^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/,heading:/^(#{1,6})(.*)(?:\n+|$)/,fences:I,lheading:/^(.+?)\n {0,3}(=+|-+) *(?:\n+|$)/,paragraph:h(Q).replace("hr",O).replace("heading",` *#{1,6} *[^
+]`).replace("lheading",oe).replace("|table","").replace("blockquote"," {0,3}>").replace("|fences","").replace("|list","").replace("|html","").replace("|tag","").getRegex()},qe=/^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,ve=/^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,ae=/^( {2,}|\\)\n(?!\s*$)/,De=/^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/,D=/[\p{P}\p{S}]/u,W=/[\s\p{P}\p{S}]/u,ce=/[^\s\p{P}\p{S}]/u,Ze=h(/^((?![*_])punctSpace)/,"u").replace(/punctSpace/g,W).getRegex(),pe=/(?!~)[\p{P}\p{S}]/u,Ge=/(?!~)[\s\p{P}\p{S}]/u,He=/(?:[^\s\p{P}\p{S}]|~)/u,Ne=/\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g,ue=/^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/,je=h(ue,"u").replace(/punct/g,D).getRegex(),Fe=h(ue,"u").replace(/punct/g,pe).getRegex(),he="^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)|[^*]+(?=[^*])|(?!\\*)punct(\\*+)(?=[\\s]|$)|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)|[\\s](\\*+)(?!\\*)(?=punct)|(?!\\*)punct(\\*+)(?!\\*)(?=punct)|notPunctSpace(\\*+)(?=notPunctSpace)",Qe=h(he,"gu").replace(/notPunctSpace/g,ce).replace(/punctSpace/g,W).replace(/punct/g,D).getRegex(),Ue=h(he,"gu").replace(/notPunctSpace/g,He).replace(/punctSpace/g,Ge).replace(/punct/g,pe).getRegex(),Ke=h("^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)|[^_]+(?=[^_])|(?!_)punct(_+)(?=[\\s]|$)|notPunctSpace(_+)(?!_)(?=punctSpace|$)|(?!_)punctSpace(_+)(?=notPunctSpace)|[\\s](_+)(?!_)(?=punct)|(?!_)punct(_+)(?!_)(?=punct)","gu").replace(/notPunctSpace/g,ce).replace(/punctSpace/g,W).replace(/punct/g,D).getRegex(),Xe=h(/\\(punct)/,"gu").replace(/punct/g,D).getRegex(),We=h(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/).replace("scheme",/[a-zA-Z][a-zA-Z0-9+.-]{1,31}/).replace("email",/[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/).getRegex(),Je=h(K).replace("(?:-->|$)","-->").getRegex(),Ve=h("^comment|^</[a-zA-Z][\\w:-]*\\s*>|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>|^<\\?[\\s\\S]*?\\?>|^<![a-zA-Z]+\\s[\\s\\S]*?>|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>").replace("comment",Je).replace("attribute",/\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/).getRegex(),q=/(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/,Ye=h(/^!?\[(label)\]\(\s*(href)(?:(?:[ \t]*(?:\n[ \t]*)?)(title))?\s*\)/).replace("label",q).replace("href",/<(?:\\.|[^\n<>\\])+>|[^ \t\n\x00-\x1f]*/).replace("title",/"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/).getRegex(),ke=h(/^!?\[(label)\]\[(ref)\]/).replace("label",q).replace("ref",U).getRegex(),ge=h(/^!?\[(ref)\](?:\[\])?/).replace("ref",U).getRegex(),et=h("reflink|nolink(?!\\()","g").replace("reflink",ke).replace("nolink",ge).getRegex(),J={_backpedal:I,anyPunctuation:Xe,autolink:We,blockSkip:Ne,br:ae,code:ve,del:I,emStrongLDelim:je,emStrongRDelimAst:Qe,emStrongRDelimUnd:Ke,escape:qe,link:Ye,nolink:ge,punctuation:Ze,reflink:ke,reflinkSearch:et,tag:Ve,text:De,url:I},tt={...J,link:h(/^!?\[(label)\]\((.*?)\)/).replace("label",q).getRegex(),reflink:h(/^!?\[(label)\]\s*\[([^\]]*)\]/).replace("label",q).getRegex()},j={...J,emStrongRDelimAst:Ue,emStrongLDelim:Fe,url:h(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/,"i").replace("email",/[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/).getRegex(),_backpedal:/(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,del:/^(~~?)(?=[^\s~])((?:\\.|[^\\])*?(?:\\.|[^\s~\\]))\1(?=[^~]|$)/,text:/^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/},nt={...j,br:h(ae).replace("{2,}","*").getRegex(),text:h(j.text).replace("\\b_","\\b_| {2,}\\n").replace(/\{2,\}/g,"*").getRegex()},B={normal:X,gfm:Oe,pedantic:Be},P={normal:J,gfm:j,breaks:nt,pedantic:tt};var st={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"},fe=l=>st[l];function R(l,e){if(e){if(m.escapeTest.test(l))return l.replace(m.escapeReplace,fe)}else if(m.escapeTestNoEncode.test(l))return l.replace(m.escapeReplaceNoEncode,fe);return l}function V(l){try{l=encodeURI(l).replace(m.percentDecode,"%")}catch{return null}return l}function Y(l,e){let t=l.replace(m.findPipe,(i,r,o)=>{let a=!1,c=r;for(;--c>=0&&o[c]==="\\";)a=!a;return a?"|":" |"}),n=t.split(m.splitPipe),s=0;if(n[0].trim()||n.shift(),n.length>0&&!n.at(-1)?.trim()&&n.pop(),e)if(n.length>e)n.splice(e);else for(;n.length<e;)n.push("");for(;s<n.length;s++)n[s]=n[s].trim().replace(m.slashPipe,"|");return n}function A(l,e,t){let n=l.length;if(n===0)return"";let s=0;for(;s<n;){let i=l.charAt(n-s-1);if(i===e&&!t)s++;else if(i!==e&&t)s++;else break}return l.slice(0,n-s)}function de(l,e){if(l.indexOf(e[1])===-1)return-1;let t=0;for(let n=0;n<l.length;n++)if(l[n]==="\\")n++;else if(l[n]===e[0])t++;else if(l[n]===e[1]&&(t--,t<0))return n;return t>0?-2:-1}function me(l,e,t,n,s){let i=e.href,r=e.title||null,o=l[1].replace(s.other.outputLinkReplace,"$1");n.state.inLink=!0;let a={type:l[0].charAt(0)==="!"?"image":"link",raw:t,href:i,title:r,text:o,tokens:n.inlineTokens(o)};return n.state.inLink=!1,a}function rt(l,e,t){let n=l.match(t.other.indentCodeCompensation);if(n===null)return e;let s=n[1];return e.split(`
+`).map(i=>{let r=i.match(t.other.beginningSpace);if(r===null)return i;let[o]=r;return o.length>=s.length?i.slice(s.length):i}).join(`
+`)}var S=class{options;rules;lexer;constructor(e){this.options=e||w}space(e){let t=this.rules.block.newline.exec(e);if(t&&t[0].length>0)return{type:"space",raw:t[0]}}code(e){let t=this.rules.block.code.exec(e);if(t){let n=t[0].replace(this.rules.other.codeRemoveIndent,"");return{type:"code",raw:t[0],codeBlockStyle:"indented",text:this.options.pedantic?n:A(n,`
+`)}}}fences(e){let t=this.rules.block.fences.exec(e);if(t){let n=t[0],s=rt(n,t[3]||"",this.rules);return{type:"code",raw:n,lang:t[2]?t[2].trim().replace(this.rules.inline.anyPunctuation,"$1"):t[2],text:s}}}heading(e){let t=this.rules.block.heading.exec(e);if(t){let n=t[2].trim();if(this.rules.other.endingHash.test(n)){let s=A(n,"#");(this.options.pedantic||!s||this.rules.other.endingSpaceChar.test(s))&&(n=s.trim())}return{type:"heading",raw:t[0],depth:t[1].length,text:n,tokens:this.lexer.inline(n)}}}hr(e){let t=this.rules.block.hr.exec(e);if(t)return{type:"hr",raw:A(t[0],`
+`)}}blockquote(e){let t=this.rules.block.blockquote.exec(e);if(t){let n=A(t[0],`
+`).split(`
+`),s="",i="",r=[];for(;n.length>0;){let o=!1,a=[],c;for(c=0;c<n.length;c++)if(this.rules.other.blockquoteStart.test(n[c]))a.push(n[c]),o=!0;else if(!o)a.push(n[c]);else break;n=n.slice(c);let p=a.join(`
+`),u=p.replace(this.rules.other.blockquoteSetextReplace,`
+    $1`).replace(this.rules.other.blockquoteSetextReplace2,"");s=s?`${s}
+${p}`:p,i=i?`${i}
+${u}`:u;let d=this.lexer.state.top;if(this.lexer.state.top=!0,this.lexer.blockTokens(u,r,!0),this.lexer.state.top=d,n.length===0)break;let g=r.at(-1);if(g?.type==="code")break;if(g?.type==="blockquote"){let T=g,f=T.raw+`
+`+n.join(`
+`),y=this.blockquote(f);r[r.length-1]=y,s=s.substring(0,s.length-T.raw.length)+y.raw,i=i.substring(0,i.length-T.text.length)+y.text;break}else if(g?.type==="list"){let T=g,f=T.raw+`
+`+n.join(`
+`),y=this.list(f);r[r.length-1]=y,s=s.substring(0,s.length-g.raw.length)+y.raw,i=i.substring(0,i.length-T.raw.length)+y.raw,n=f.substring(r.at(-1).raw.length).split(`
+`);continue}}return{type:"blockquote",raw:s,tokens:r,text:i}}}list(e){let t=this.rules.block.list.exec(e);if(t){let n=t[1].trim(),s=n.length>1,i={type:"list",raw:"",ordered:s,start:s?+n.slice(0,-1):"",loose:!1,items:[]};n=s?`\\d{1,9}\\${n.slice(-1)}`:`\\${n}`,this.options.pedantic&&(n=s?n:"[*+-]");let r=this.rules.other.listItemRegex(n),o=!1;for(;e;){let c=!1,p="",u="";if(!(t=r.exec(e))||this.rules.block.hr.test(e))break;p=t[0],e=e.substring(p.length);let d=t[2].split(`
+`,1)[0].replace(this.rules.other.listReplaceTabs,Z=>" ".repeat(3*Z.length)),g=e.split(`
+`,1)[0],T=!d.trim(),f=0;if(this.options.pedantic?(f=2,u=d.trimStart()):T?f=t[1].length+1:(f=t[2].search(this.rules.other.nonSpaceChar),f=f>4?1:f,u=d.slice(f),f+=t[1].length),T&&this.rules.other.blankLine.test(g)&&(p+=g+`
+`,e=e.substring(g.length+1),c=!0),!c){let Z=this.rules.other.nextBulletRegex(f),te=this.rules.other.hrRegex(f),ne=this.rules.other.fencesBeginRegex(f),se=this.rules.other.headingBeginRegex(f),xe=this.rules.other.htmlBeginRegex(f);for(;e;){let G=e.split(`
+`,1)[0],C;if(g=G,this.options.pedantic?(g=g.replace(this.rules.other.listReplaceNesting,"  "),C=g):C=g.replace(this.rules.other.tabCharGlobal,"    "),ne.test(g)||se.test(g)||xe.test(g)||Z.test(g)||te.test(g))break;if(C.search(this.rules.other.nonSpaceChar)>=f||!g.trim())u+=`
+`+C.slice(f);else{if(T||d.replace(this.rules.other.tabCharGlobal,"    ").search(this.rules.other.nonSpaceChar)>=4||ne.test(d)||se.test(d)||te.test(d))break;u+=`
+`+g}!T&&!g.trim()&&(T=!0),p+=G+`
+`,e=e.substring(G.length+1),d=C.slice(f)}}i.loose||(o?i.loose=!0:this.rules.other.doubleBlankLine.test(p)&&(o=!0));let y=null,ee;this.options.gfm&&(y=this.rules.other.listIsTask.exec(u),y&&(ee=y[0]!=="[ ] ",u=u.replace(this.rules.other.listReplaceTask,""))),i.items.push({type:"list_item",raw:p,task:!!y,checked:ee,loose:!1,text:u,tokens:[]}),i.raw+=p}let a=i.items.at(-1);if(a)a.raw=a.raw.trimEnd(),a.text=a.text.trimEnd();else return;i.raw=i.raw.trimEnd();for(let c=0;c<i.items.length;c++)if(this.lexer.state.top=!1,i.items[c].tokens=this.lexer.blockTokens(i.items[c].text,[]),!i.loose){let p=i.items[c].tokens.filter(d=>d.type==="space"),u=p.length>0&&p.some(d=>this.rules.other.anyLine.test(d.raw));i.loose=u}if(i.loose)for(let c=0;c<i.items.length;c++)i.items[c].loose=!0;return i}}html(e){let t=this.rules.block.html.exec(e);if(t)return{type:"html",block:!0,raw:t[0],pre:t[1]==="pre"||t[1]==="script"||t[1]==="style",text:t[0]}}def(e){let t=this.rules.block.def.exec(e);if(t){let n=t[1].toLowerCase().replace(this.rules.other.multipleSpaceGlobal," "),s=t[2]?t[2].replace(this.rules.other.hrefBrackets,"$1").replace(this.rules.inline.anyPunctuation,"$1"):"",i=t[3]?t[3].substring(1,t[3].length-1).replace(this.rules.inline.anyPunctuation,"$1"):t[3];return{type:"def",tag:n,raw:t[0],href:s,title:i}}}table(e){let t=this.rules.block.table.exec(e);if(!t||!this.rules.other.tableDelimiter.test(t[2]))return;let n=Y(t[1]),s=t[2].replace(this.rules.other.tableAlignChars,"").split("|"),i=t[3]?.trim()?t[3].replace(this.rules.other.tableRowBlankLine,"").split(`
+`):[],r={type:"table",raw:t[0],header:[],align:[],rows:[]};if(n.length===s.length){for(let o of s)this.rules.other.tableAlignRight.test(o)?r.align.push("right"):this.rules.other.tableAlignCenter.test(o)?r.align.push("center"):this.rules.other.tableAlignLeft.test(o)?r.align.push("left"):r.align.push(null);for(let o=0;o<n.length;o++)r.header.push({text:n[o],tokens:this.lexer.inline(n[o]),header:!0,align:r.align[o]});for(let o of i)r.rows.push(Y(o,r.header.length).map((a,c)=>({text:a,tokens:this.lexer.inline(a),header:!1,align:r.align[c]})));return r}}lheading(e){let t=this.rules.block.lheading.exec(e);if(t)return{type:"heading",raw:t[0],depth:t[2].charAt(0)==="="?1:2,text:t[1],tokens:this.lexer.inline(t[1])}}paragraph(e){let t=this.rules.block.paragraph.exec(e);if(t){let n=t[1].charAt(t[1].length-1)===`
+`?t[1].slice(0,-1):t[1];return{type:"paragraph",raw:t[0],text:n,tokens:this.lexer.inline(n)}}}text(e){let t=this.rules.block.text.exec(e);if(t)return{type:"text",raw:t[0],text:t[0],tokens:this.lexer.inline(t[0])}}escape(e){let t=this.rules.inline.escape.exec(e);if(t)return{type:"escape",raw:t[0],text:t[1]}}tag(e){let t=this.rules.inline.tag.exec(e);if(t)return!this.lexer.state.inLink&&this.rules.other.startATag.test(t[0])?this.lexer.state.inLink=!0:this.lexer.state.inLink&&this.rules.other.endATag.test(t[0])&&(this.lexer.state.inLink=!1),!this.lexer.state.inRawBlock&&this.rules.other.startPreScriptTag.test(t[0])?this.lexer.state.inRawBlock=!0:this.lexer.state.inRawBlock&&this.rules.other.endPreScriptTag.test(t[0])&&(this.lexer.state.inRawBlock=!1),{type:"html",raw:t[0],inLink:this.lexer.state.inLink,inRawBlock:this.lexer.state.inRawBlock,block:!1,text:t[0]}}link(e){let t=this.rules.inline.link.exec(e);if(t){let n=t[2].trim();if(!this.options.pedantic&&this.rules.other.startAngleBracket.test(n)){if(!this.rules.other.endAngleBracket.test(n))return;let r=A(n.slice(0,-1),"\\");if((n.length-r.length)%2===0)return}else{let r=de(t[2],"()");if(r===-2)return;if(r>-1){let a=(t[0].indexOf("!")===0?5:4)+t[1].length+r;t[2]=t[2].substring(0,r),t[0]=t[0].substring(0,a).trim(),t[3]=""}}let s=t[2],i="";if(this.options.pedantic){let r=this.rules.other.pedanticHrefTitle.exec(s);r&&(s=r[1],i=r[3])}else i=t[3]?t[3].slice(1,-1):"";return s=s.trim(),this.rules.other.startAngleBracket.test(s)&&(this.options.pedantic&&!this.rules.other.endAngleBracket.test(n)?s=s.slice(1):s=s.slice(1,-1)),me(t,{href:s&&s.replace(this.rules.inline.anyPunctuation,"$1"),title:i&&i.replace(this.rules.inline.anyPunctuation,"$1")},t[0],this.lexer,this.rules)}}reflink(e,t){let n;if((n=this.rules.inline.reflink.exec(e))||(n=this.rules.inline.nolink.exec(e))){let s=(n[2]||n[1]).replace(this.rules.other.multipleSpaceGlobal," "),i=t[s.toLowerCase()];if(!i){let r=n[0].charAt(0);return{type:"text",raw:r,text:r}}return me(n,i,n[0],this.lexer,this.rules)}}emStrong(e,t,n=""){let s=this.rules.inline.emStrongLDelim.exec(e);if(!s||s[3]&&n.match(this.rules.other.unicodeAlphaNumeric))return;if(!(s[1]||s[2]||"")||!n||this.rules.inline.punctuation.exec(n)){let r=[...s[0]].length-1,o,a,c=r,p=0,u=s[0][0]==="*"?this.rules.inline.emStrongRDelimAst:this.rules.inline.emStrongRDelimUnd;for(u.lastIndex=0,t=t.slice(-1*e.length+r);(s=u.exec(t))!=null;){if(o=s[1]||s[2]||s[3]||s[4]||s[5]||s[6],!o)continue;if(a=[...o].length,s[3]||s[4]){c+=a;continue}else if((s[5]||s[6])&&r%3&&!((r+a)%3)){p+=a;continue}if(c-=a,c>0)continue;a=Math.min(a,a+c+p);let d=[...s[0]][0].length,g=e.slice(0,r+s.index+d+a);if(Math.min(r,a)%2){let f=g.slice(1,-1);return{type:"em",raw:g,text:f,tokens:this.lexer.inlineTokens(f)}}let T=g.slice(2,-2);return{type:"strong",raw:g,text:T,tokens:this.lexer.inlineTokens(T)}}}}codespan(e){let t=this.rules.inline.code.exec(e);if(t){let n=t[2].replace(this.rules.other.newLineCharGlobal," "),s=this.rules.other.nonSpaceChar.test(n),i=this.rules.other.startingSpaceChar.test(n)&&this.rules.other.endingSpaceChar.test(n);return s&&i&&(n=n.substring(1,n.length-1)),{type:"codespan",raw:t[0],text:n}}}br(e){let t=this.rules.inline.br.exec(e);if(t)return{type:"br",raw:t[0]}}del(e){let t=this.rules.inline.del.exec(e);if(t)return{type:"del",raw:t[0],text:t[2],tokens:this.lexer.inlineTokens(t[2])}}autolink(e){let t=this.rules.inline.autolink.exec(e);if(t){let n,s;return t[2]==="@"?(n=t[1],s="mailto:"+n):(n=t[1],s=n),{type:"link",raw:t[0],text:n,href:s,tokens:[{type:"text",raw:n,text:n}]}}}url(e){let t;if(t=this.rules.inline.url.exec(e)){let n,s;if(t[2]==="@")n=t[0],s="mailto:"+n;else{let i;do i=t[0],t[0]=this.rules.inline._backpedal.exec(t[0])?.[0]??"";while(i!==t[0]);n=t[0],t[1]==="www."?s="http://"+t[0]:s=t[0]}return{type:"link",raw:t[0],text:n,href:s,tokens:[{type:"text",raw:n,text:n}]}}}inlineText(e){let t=this.rules.inline.text.exec(e);if(t){let n=this.lexer.state.inRawBlock;return{type:"text",raw:t[0],text:t[0],escaped:n}}}};var x=class l{tokens;options;state;tokenizer;inlineQueue;constructor(e){this.tokens=[],this.tokens.links=Object.create(null),this.options=e||w,this.options.tokenizer=this.options.tokenizer||new S,this.tokenizer=this.options.tokenizer,this.tokenizer.options=this.options,this.tokenizer.lexer=this,this.inlineQueue=[],this.state={inLink:!1,inRawBlock:!1,top:!0};let t={other:m,block:B.normal,inline:P.normal};this.options.pedantic?(t.block=B.pedantic,t.inline=P.pedantic):this.options.gfm&&(t.block=B.gfm,this.options.breaks?t.inline=P.breaks:t.inline=P.gfm),this.tokenizer.rules=t}static get rules(){return{block:B,inline:P}}static lex(e,t){return new l(t).lex(e)}static lexInline(e,t){return new l(t).inlineTokens(e)}lex(e){e=e.replace(m.carriageReturn,`
+`),this.blockTokens(e,this.tokens);for(let t=0;t<this.inlineQueue.length;t++){let n=this.inlineQueue[t];this.inlineTokens(n.src,n.tokens)}return this.inlineQueue=[],this.tokens}blockTokens(e,t=[],n=!1){for(this.options.pedantic&&(e=e.replace(m.tabCharGlobal,"    ").replace(m.spaceLine,""));e;){let s;if(this.options.extensions?.block?.some(r=>(s=r.call({lexer:this},e,t))?(e=e.substring(s.raw.length),t.push(s),!0):!1))continue;if(s=this.tokenizer.space(e)){e=e.substring(s.raw.length);let r=t.at(-1);s.raw.length===1&&r!==void 0?r.raw+=`
+`:t.push(s);continue}if(s=this.tokenizer.code(e)){e=e.substring(s.raw.length);let r=t.at(-1);r?.type==="paragraph"||r?.type==="text"?(r.raw+=`
+`+s.raw,r.text+=`
+`+s.text,this.inlineQueue.at(-1).src=r.text):t.push(s);continue}if(s=this.tokenizer.fences(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.heading(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.hr(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.blockquote(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.list(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.html(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.def(e)){e=e.substring(s.raw.length);let r=t.at(-1);r?.type==="paragraph"||r?.type==="text"?(r.raw+=`
+`+s.raw,r.text+=`
+`+s.raw,this.inlineQueue.at(-1).src=r.text):this.tokens.links[s.tag]||(this.tokens.links[s.tag]={href:s.href,title:s.title});continue}if(s=this.tokenizer.table(e)){e=e.substring(s.raw.length),t.push(s);continue}if(s=this.tokenizer.lheading(e)){e=e.substring(s.raw.length),t.push(s);continue}let i=e;if(this.options.extensions?.startBlock){let r=1/0,o=e.slice(1),a;this.options.extensions.startBlock.forEach(c=>{a=c.call({lexer:this},o),typeof a=="number"&&a>=0&&(r=Math.min(r,a))}),r<1/0&&r>=0&&(i=e.substring(0,r+1))}if(this.state.top&&(s=this.tokenizer.paragraph(i))){let r=t.at(-1);n&&r?.type==="paragraph"?(r.raw+=`
+`+s.raw,r.text+=`
+`+s.text,this.inlineQueue.pop(),this.inlineQueue.at(-1).src=r.text):t.push(s),n=i.length!==e.length,e=e.substring(s.raw.length);continue}if(s=this.tokenizer.text(e)){e=e.substring(s.raw.length);let r=t.at(-1);r?.type==="text"?(r.raw+=`
+`+s.raw,r.text+=`
+`+s.text,this.inlineQueue.pop(),this.inlineQueue.at(-1).src=r.text):t.push(s);continue}if(e){let r="Infinite loop on byte: "+e.charCodeAt(0);if(this.options.silent){console.error(r);break}else throw new Error(r)}}return this.state.top=!0,t}inline(e,t=[]){return this.inlineQueue.push({src:e,tokens:t}),t}inlineTokens(e,t=[]){let n=e,s=null;if(this.tokens.links){let o=Object.keys(this.tokens.links);if(o.length>0)for(;(s=this.tokenizer.rules.inline.reflinkSearch.exec(n))!=null;)o.includes(s[0].slice(s[0].lastIndexOf("[")+1,-1))&&(n=n.slice(0,s.index)+"["+"a".repeat(s[0].length-2)+"]"+n.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex))}for(;(s=this.tokenizer.rules.inline.anyPunctuation.exec(n))!=null;)n=n.slice(0,s.index)+"++"+n.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);for(;(s=this.tokenizer.rules.inline.blockSkip.exec(n))!=null;)n=n.slice(0,s.index)+"["+"a".repeat(s[0].length-2)+"]"+n.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);let i=!1,r="";for(;e;){i||(r=""),i=!1;let o;if(this.options.extensions?.inline?.some(c=>(o=c.call({lexer:this},e,t))?(e=e.substring(o.raw.length),t.push(o),!0):!1))continue;if(o=this.tokenizer.escape(e)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.tag(e)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.link(e)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.reflink(e,this.tokens.links)){e=e.substring(o.raw.length);let c=t.at(-1);o.type==="text"&&c?.type==="text"?(c.raw+=o.raw,c.text+=o.text):t.push(o);continue}if(o=this.tokenizer.emStrong(e,n,r)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.codespan(e)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.br(e)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.del(e)){e=e.substring(o.raw.length),t.push(o);continue}if(o=this.tokenizer.autolink(e)){e=e.substring(o.raw.length),t.push(o);continue}if(!this.state.inLink&&(o=this.tokenizer.url(e))){e=e.substring(o.raw.length),t.push(o);continue}let a=e;if(this.options.extensions?.startInline){let c=1/0,p=e.slice(1),u;this.options.extensions.startInline.forEach(d=>{u=d.call({lexer:this},p),typeof u=="number"&&u>=0&&(c=Math.min(c,u))}),c<1/0&&c>=0&&(a=e.substring(0,c+1))}if(o=this.tokenizer.inlineText(a)){e=e.substring(o.raw.length),o.raw.slice(-1)!=="_"&&(r=o.raw.slice(-1)),i=!0;let c=t.at(-1);c?.type==="text"?(c.raw+=o.raw,c.text+=o.text):t.push(o);continue}if(e){let c="Infinite loop on byte: "+e.charCodeAt(0);if(this.options.silent){console.error(c);break}else throw new Error(c)}}return t}};var $=class{options;parser;constructor(e){this.options=e||w}space(e){return""}code({text:e,lang:t,escaped:n}){let s=(t||"").match(m.notSpaceStart)?.[0],i=e.replace(m.endingNewline,"")+`
+`;return s?'<pre><code class="language-'+R(s)+'">'+(n?i:R(i,!0))+`</code></pre>
+`:"<pre><code>"+(n?i:R(i,!0))+`</code></pre>
+`}blockquote({tokens:e}){return`<blockquote>
+${this.parser.parse(e)}</blockquote>
+`}html({text:e}){return e}heading({tokens:e,depth:t}){return`<h${t}>${this.parser.parseInline(e)}</h${t}>
+`}hr(e){return`<hr>
+`}list(e){let t=e.ordered,n=e.start,s="";for(let o=0;o<e.items.length;o++){let a=e.items[o];s+=this.listitem(a)}let i=t?"ol":"ul",r=t&&n!==1?' start="'+n+'"':"";return"<"+i+r+`>
+`+s+"</"+i+`>
+`}listitem(e){let t="";if(e.task){let n=this.checkbox({checked:!!e.checked});e.loose?e.tokens[0]?.type==="paragraph"?(e.tokens[0].text=n+" "+e.tokens[0].text,e.tokens[0].tokens&&e.tokens[0].tokens.length>0&&e.tokens[0].tokens[0].type==="text"&&(e.tokens[0].tokens[0].text=n+" "+R(e.tokens[0].tokens[0].text),e.tokens[0].tokens[0].escaped=!0)):e.tokens.unshift({type:"text",raw:n+" ",text:n+" ",escaped:!0}):t+=n+" "}return t+=this.parser.parse(e.tokens,!!e.loose),`<li>${t}</li>
+`}checkbox({checked:e}){return"<input "+(e?'checked="" ':"")+'disabled="" type="checkbox">'}paragraph({tokens:e}){return`<p>${this.parser.parseInline(e)}</p>
+`}table(e){let t="",n="";for(let i=0;i<e.header.length;i++)n+=this.tablecell(e.header[i]);t+=this.tablerow({text:n});let s="";for(let i=0;i<e.rows.length;i++){let r=e.rows[i];n="";for(let o=0;o<r.length;o++)n+=this.tablecell(r[o]);s+=this.tablerow({text:n})}return s&&(s=`<tbody>${s}</tbody>`),`<table>
+<thead>
+`+t+`</thead>
+`+s+`</table>
+`}tablerow({text:e}){return`<tr>
+${e}</tr>
+`}tablecell(e){let t=this.parser.parseInline(e.tokens),n=e.header?"th":"td";return(e.align?`<${n} align="${e.align}">`:`<${n}>`)+t+`</${n}>
+`}strong({tokens:e}){return`<strong>${this.parser.parseInline(e)}</strong>`}em({tokens:e}){return`<em>${this.parser.parseInline(e)}</em>`}codespan({text:e}){return`<code>${R(e,!0)}</code>`}br(e){return"<br>"}del({tokens:e}){return`<del>${this.parser.parseInline(e)}</del>`}link({href:e,title:t,tokens:n}){let s=this.parser.parseInline(n),i=V(e);if(i===null)return s;e=i;let r='<a href="'+e+'"';return t&&(r+=' title="'+R(t)+'"'),r+=">"+s+"</a>",r}image({href:e,title:t,text:n,tokens:s}){s&&(n=this.parser.parseInline(s,this.parser.textRenderer));let i=V(e);if(i===null)return R(n);e=i;let r=`<img src="${e}" alt="${n}"`;return t&&(r+=` title="${R(t)}"`),r+=">",r}text(e){return"tokens"in e&&e.tokens?this.parser.parseInline(e.tokens):"escaped"in e&&e.escaped?e.text:R(e.text)}};var _=class{strong({text:e}){return e}em({text:e}){return e}codespan({text:e}){return e}del({text:e}){return e}html({text:e}){return e}text({text:e}){return e}link({text:e}){return""+e}image({text:e}){return""+e}br(){return""}};var b=class l{options;renderer;textRenderer;constructor(e){this.options=e||w,this.options.renderer=this.options.renderer||new $,this.renderer=this.options.renderer,this.renderer.options=this.options,this.renderer.parser=this,this.textRenderer=new _}static parse(e,t){return new l(t).parse(e)}static parseInline(e,t){return new l(t).parseInline(e)}parse(e,t=!0){let n="";for(let s=0;s<e.length;s++){let i=e[s];if(this.options.extensions?.renderers?.[i.type]){let o=i,a=this.options.extensions.renderers[o.type].call({parser:this},o);if(a!==!1||!["space","hr","heading","code","table","blockquote","list","html","paragraph","text"].includes(o.type)){n+=a||"";continue}}let r=i;switch(r.type){case"space":{n+=this.renderer.space(r);continue}case"hr":{n+=this.renderer.hr(r);continue}case"heading":{n+=this.renderer.heading(r);continue}case"code":{n+=this.renderer.code(r);continue}case"table":{n+=this.renderer.table(r);continue}case"blockquote":{n+=this.renderer.blockquote(r);continue}case"list":{n+=this.renderer.list(r);continue}case"html":{n+=this.renderer.html(r);continue}case"paragraph":{n+=this.renderer.paragraph(r);continue}case"text":{let o=r,a=this.renderer.text(o);for(;s+1<e.length&&e[s+1].type==="text";)o=e[++s],a+=`
+`+this.renderer.text(o);t?n+=this.renderer.paragraph({type:"paragraph",raw:a,text:a,tokens:[{type:"text",raw:a,text:a,escaped:!0}]}):n+=a;continue}default:{let o='Token with "'+r.type+'" type was not found.';if(this.options.silent)return console.error(o),"";throw new Error(o)}}}return n}parseInline(e,t=this.renderer){let n="";for(let s=0;s<e.length;s++){let i=e[s];if(this.options.extensions?.renderers?.[i.type]){let o=this.options.extensions.renderers[i.type].call({parser:this},i);if(o!==!1||!["escape","html","link","image","strong","em","codespan","br","del","text"].includes(i.type)){n+=o||"";continue}}let r=i;switch(r.type){case"escape":{n+=t.text(r);break}case"html":{n+=t.html(r);break}case"link":{n+=t.link(r);break}case"image":{n+=t.image(r);break}case"strong":{n+=t.strong(r);break}case"em":{n+=t.em(r);break}case"codespan":{n+=t.codespan(r);break}case"br":{n+=t.br(r);break}case"del":{n+=t.del(r);break}case"text":{n+=t.text(r);break}default:{let o='Token with "'+r.type+'" type was not found.';if(this.options.silent)return console.error(o),"";throw new Error(o)}}}return n}};var L=class{options;block;constructor(e){this.options=e||w}static passThroughHooks=new Set(["preprocess","postprocess","processAllTokens"]);preprocess(e){return e}postprocess(e){return e}processAllTokens(e){return e}provideLexer(){return this.block?x.lex:x.lexInline}provideParser(){return this.block?b.parse:b.parseInline}};var E=class{defaults=z();options=this.setOptions;parse=this.parseMarkdown(!0);parseInline=this.parseMarkdown(!1);Parser=b;Renderer=$;TextRenderer=_;Lexer=x;Tokenizer=S;Hooks=L;constructor(...e){this.use(...e)}walkTokens(e,t){let n=[];for(let s of e)switch(n=n.concat(t.call(this,s)),s.type){case"table":{let i=s;for(let r of i.header)n=n.concat(this.walkTokens(r.tokens,t));for(let r of i.rows)for(let o of r)n=n.concat(this.walkTokens(o.tokens,t));break}case"list":{let i=s;n=n.concat(this.walkTokens(i.items,t));break}default:{let i=s;this.defaults.extensions?.childTokens?.[i.type]?this.defaults.extensions.childTokens[i.type].forEach(r=>{let o=i[r].flat(1/0);n=n.concat(this.walkTokens(o,t))}):i.tokens&&(n=n.concat(this.walkTokens(i.tokens,t)))}}return n}use(...e){let t=this.defaults.extensions||{renderers:{},childTokens:{}};return e.forEach(n=>{let s={...n};if(s.async=this.defaults.async||s.async||!1,n.extensions&&(n.extensions.forEach(i=>{if(!i.name)throw new Error("extension name required");if("renderer"in i){let r=t.renderers[i.name];r?t.renderers[i.name]=function(...o){let a=i.renderer.apply(this,o);return a===!1&&(a=r.apply(this,o)),a}:t.renderers[i.name]=i.renderer}if("tokenizer"in i){if(!i.level||i.level!=="block"&&i.level!=="inline")throw new Error("extension level must be 'block' or 'inline'");let r=t[i.level];r?r.unshift(i.tokenizer):t[i.level]=[i.tokenizer],i.start&&(i.level==="block"?t.startBlock?t.startBlock.push(i.start):t.startBlock=[i.start]:i.level==="inline"&&(t.startInline?t.startInline.push(i.start):t.startInline=[i.start]))}"childTokens"in i&&i.childTokens&&(t.childTokens[i.name]=i.childTokens)}),s.extensions=t),n.renderer){let i=this.defaults.renderer||new $(this.defaults);for(let r in n.renderer){if(!(r in i))throw new Error(`renderer '${r}' does not exist`);if(["options","parser"].includes(r))continue;let o=r,a=n.renderer[o],c=i[o];i[o]=(...p)=>{let u=a.apply(i,p);return u===!1&&(u=c.apply(i,p)),u||""}}s.renderer=i}if(n.tokenizer){let i=this.defaults.tokenizer||new S(this.defaults);for(let r in n.tokenizer){if(!(r in i))throw new Error(`tokenizer '${r}' does not exist`);if(["options","rules","lexer"].includes(r))continue;let o=r,a=n.tokenizer[o],c=i[o];i[o]=(...p)=>{let u=a.apply(i,p);return u===!1&&(u=c.apply(i,p)),u}}s.tokenizer=i}if(n.hooks){let i=this.defaults.hooks||new L;for(let r in n.hooks){if(!(r in i))throw new Error(`hook '${r}' does not exist`);if(["options","block"].includes(r))continue;let o=r,a=n.hooks[o],c=i[o];L.passThroughHooks.has(r)?i[o]=p=>{if(this.defaults.async)return Promise.resolve(a.call(i,p)).then(d=>c.call(i,d));let u=a.call(i,p);return c.call(i,u)}:i[o]=(...p)=>{let u=a.apply(i,p);return u===!1&&(u=c.apply(i,p)),u}}s.hooks=i}if(n.walkTokens){let i=this.defaults.walkTokens,r=n.walkTokens;s.walkTokens=function(o){let a=[];return a.push(r.call(this,o)),i&&(a=a.concat(i.call(this,o))),a}}this.defaults={...this.defaults,...s}}),this}setOptions(e){return this.defaults={...this.defaults,...e},this}lexer(e,t){return x.lex(e,t??this.defaults)}parser(e,t){return b.parse(e,t??this.defaults)}parseMarkdown(e){return(n,s)=>{let i={...s},r={...this.defaults,...i},o=this.onError(!!r.silent,!!r.async);if(this.defaults.async===!0&&i.async===!1)return o(new Error("marked(): The async option was set to true by an extension. Remove async: false from the parse options object to return a Promise."));if(typeof n>"u"||n===null)return o(new Error("marked(): input parameter is undefined or null"));if(typeof n!="string")return o(new Error("marked(): input parameter is of type "+Object.prototype.toString.call(n)+", string expected"));r.hooks&&(r.hooks.options=r,r.hooks.block=e);let a=r.hooks?r.hooks.provideLexer():e?x.lex:x.lexInline,c=r.hooks?r.hooks.provideParser():e?b.parse:b.parseInline;if(r.async)return Promise.resolve(r.hooks?r.hooks.preprocess(n):n).then(p=>a(p,r)).then(p=>r.hooks?r.hooks.processAllTokens(p):p).then(p=>r.walkTokens?Promise.all(this.walkTokens(p,r.walkTokens)).then(()=>p):p).then(p=>c(p,r)).then(p=>r.hooks?r.hooks.postprocess(p):p).catch(o);try{r.hooks&&(n=r.hooks.preprocess(n));let p=a(n,r);r.hooks&&(p=r.hooks.processAllTokens(p)),r.walkTokens&&this.walkTokens(p,r.walkTokens);let u=c(p,r);return r.hooks&&(u=r.hooks.postprocess(u)),u}catch(p){return o(p)}}}onError(e,t){return n=>{if(n.message+=`
+Please report this to https://github.com/markedjs/marked.`,e){let s="<p>An error occurred:</p><pre>"+R(n.message+"",!0)+"</pre>";return t?Promise.resolve(s):s}if(t)return Promise.reject(n);throw n}}};var M=new E;function k(l,e){return M.parse(l,e)}k.options=k.setOptions=function(l){return M.setOptions(l),k.defaults=M.defaults,N(k.defaults),k};k.getDefaults=z;k.defaults=w;k.use=function(...l){return M.use(...l),k.defaults=M.defaults,N(k.defaults),k};k.walkTokens=function(l,e){return M.walkTokens(l,e)};k.parseInline=M.parseInline;k.Parser=b;k.parser=b.parse;k.Renderer=$;k.TextRenderer=_;k.Lexer=x;k.lexer=x.lex;k.Tokenizer=S;k.Hooks=L;k.parse=k;var it=k.options,ot=k.setOptions,lt=k.use,at=k.walkTokens,ct=k.parseInline,pt=k,ut=b.parse,ht=x.lex;
+
+if(__exports != exports)module.exports = exports;return module.exports}));
+
+</script>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("9da694610136570f_课后教学档案")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+
+const STUDENT_FIELDS = ["学员化名", "学段", "家长沟通授权", "课堂状态分享授权"];
+const LESSON_FIELDS = ["学员化名", "上课日期", "课次类型", "课堂速记", "课后档案草稿"];
+const LESSON_EDIT_FIELDS = ["学员化名", "上课日期", "课次类型", "课堂速记"];
+const STAGE_VALUES = ["小学中段", "小学高段", "初中", "高中"];
+const TYPE_VALUES = ["正课", "补课", "试听", "学员请假", "教师取消"];
+const DS_STUDENT = "学员信息/默认表格";
+const DS_LESSON = "课后记录/默认表格";
+
+const I18N = {
+  zh: {
+    docTitle: "青笺课后档案",
+    brand: "青笺课后档案",
+    navDesk: "灯下台",
+    navRoster: "学员名册",
+    navRecords: "课后记录",
+    navReview: "档案审阅",
+    deskKicker: "灯下整理",
+    deskTitle: "青笺课后档案",
+    deskLede: "记下课堂里看得见的事实，整理成可审阅的课后草稿",
+    btnNewLesson: "记一节课",
+    btnNewStudent: "新增学员",
+    statStudents: "学员数",
+    statLessons: "课后记录数",
+    statMonth: "本月课次",
+    statAuth: "授权提醒数",
+    secTypes: "课次构成",
+    secStages: "学段名册分布",
+    secRecent: "最近课稿",
+    btnViewAll: "查看全部",
+    emptyRecent: "最近还没有课稿。记一节课后，这里会按上课日期排开。",
+    loadFail: "读取失败。请重试。",
+    btnRetry: "重试",
+    rosterTitle: "学员名册",
+    rosterLede: "只维护化名、学段和两项授权；授权会决定课后草稿能否包含家长摘要和课堂状态",
+    btnAddStudent: "+ 新增学员",
+    searchStudentLabel: "搜索学员化名",
+    searchStudentPh: "搜索学员化名",
+    fieldStage: "学段",
+    filterStageAll: "全部学段",
+    stage_mid: "小学中段",
+    stage_high: "小学高段",
+    stage_junior: "初中",
+    stage_senior: "高中",
+    authFilterLabel: "授权",
+    filterAuthAll: "全部授权",
+    filterAuthBoth: "两项都已授权",
+    filterAuthPartial: "未完全授权",
+    emptyRoster: "名册还是空白的。先添加一位学员化名，才能开始记课。",
+    emptyFilter: "没有符合当前条件的记录。可以清空筛选后再看。",
+    btnClearFilter: "清空筛选",
+    btnDetail: "查看详情",
+    btnLessonsOf: "该学员课稿",
+    btnEdit: "编辑",
+    btnDelete: "删除",
+    fieldAlias: "学员化名",
+    fieldParent: "家长沟通授权",
+    fieldShare: "课堂状态分享授权",
+    stampYes: "已授权",
+    stampNo: "未授权",
+    yes: "是",
+    no: "否",
+    recTitle: "课后记录",
+    recLede: "速记只写可观察事实；提交后由后台整理 Markdown 草稿，教师审阅前它只是预览",
+    btnNewRec: "+ 整理新课次",
+    searchRecLabel: "搜索",
+    searchRecPh: "搜索化名或课堂速记",
+    fieldType: "课次类型",
+    filterTypeAll: "全部课次",
+    type_regular: "正课",
+    type_makeup: "补课",
+    type_trial: "试听",
+    type_absent: "学员请假",
+    type_cancel: "教师取消",
+    dateFrom: "上课日期起",
+    dateTo: "上课日期止",
+    draftFilterLabel: "草稿",
+    draftOnly: "只看草稿未生成",
+    fieldDate: "上课日期",
+    fieldNote: "课堂速记",
+    fieldDraft: "课后档案草稿",
+    btnViewArchive: "查看档案",
+    btnOpenRoster: "在名册中打开",
+    emptyRec: "还没有课后记录。记一节可观察的课堂事实，提交后会整理成草稿。",
+    summaryFail: "摘要读取失败",
+    draftReady: "草稿已生成",
+    draftMissing: "草稿未生成",
+    revTitle: "档案审阅",
+    revLede: "右侧是供教师预览的 Markdown 草稿，未经核对不把它当成正式档案",
+    btnRefresh: "刷新",
+    filterGenAll: "全部草稿",
+    filterGenYes: "已生成",
+    filterGenNo: "未生成",
+    btnPrev: "上一条",
+    btnNext: "下一条",
+    btnGoEdit: "前往修改",
+    emptyIndex: "还没有可审阅的课稿。先去记一节课。",
+    emptySelect: "从左侧选择一份课稿。这里会显示事实条和预览草稿。",
+    pickAnother: "这份课稿已不在列表中。请选择其他课稿。",
+    previewKicker: "预览草稿",
+    notGenerated: "尚未生成",
+    btnReread: "重新读取",
+    notesToggle: "速记原文",
+    checked: "已核对",
+    checklist: "核对清单",
+    check1: "内容能在速记中找到依据",
+    check2: "没有猜测特质或家庭情况",
+    check3: "试听和教师取消没有扣减条目",
+    check4: "未授权时没有家长摘要或课堂状态",
+    stageUnknown: "名册中无此学员",
+    btnExpand: "展开阅读",
+    formStudentTitle: "学员信息",
+    formLessonTitle: "课后记录",
+    btnSave: "保存",
+    btnCancel: "取消",
+    btnClose: "关闭",
+    detailTitle: "学员详情",
+    aliasRequired: "请填写学员化名",
+    aliasDup: "已有相同学员化名",
+    stageRequired: "请选择学段",
+    selectStage: "请选择学段",
+    selectStudent: "请选择学员",
+    studentRequired: "请选择已有学员",
+    dateRequired: "请选择上课日期",
+    typeRequired: "请选择课次类型",
+    noteRequired: "请填写课堂速记",
+    draftPlaceholder: "提交后由后台整理生成",
+    crisis: "若速记出现危机信号，后台按技能的危机例外流程处理，教师应优先人工审阅。",
+    hintParent: "家长沟通授权不是“是”，家长事实摘要不应生成。",
+    hintStatus: "课堂状态分享授权不是“是”，只保留学习事实，不写课堂状态。",
+    hintDeduct: "课次为试听或教师取消，不应生成课时扣减条目。",
+    hintIncomplete: "关键信息不足时，草稿应标注待补充，不要猜测特质或家庭情况。",
+    aliasWarn: "已有课后记录不会自动改写关联值。",
+    editNoRerun: "修改速记不会自动重跑整理；需要新草稿时应新建一条课后记录。",
+    continueSave: "继续保存",
+    back: "返回",
+    ok: "确定",
+    confirmDeleteStudent: "确认删除这位学员？删除后无法恢复。",
+    confirmDeleteLesson: "确认删除这条课后记录？删除后无法恢复。",
+    deleteBlocked: "该学员已有课后记录，请先处理课后记录后再删除。",
+    studentMissing: "名册中还没有这位学员，请先新增学员。",
+    pollWait: "正在依据速记整理课后档案，请稍候",
+    pollTimeout: "整理超时，记录已保留。请稍后到档案审阅刷新。",
+    pollBusy: "正在整理课后档案，请稍候再提交。",
+    pollFail: "读取草稿失败",
+    saved: "已保存",
+    submitted: "已提交",
+    deleted: "已删除",
+    failSave: "保存失败",
+    failSubmit: "提交失败",
+    failDelete: "删除失败",
+    failRead: "读取失败",
+    failMode: "未能读取显示模式，已使用亮色",
+    failClose: "无法关闭页面",
+    draftGenerated: "课后档案草稿已生成",
+    modeNew: "新建",
+    modeEdit: "编辑",
+    loading: "正在读取…",
+    menuOpen: "打开菜单",
+    menuClose: "关闭菜单"
+  },
+  en: {
+    docTitle: "Qingjian Archive",
+    brand: "Qingjian Archive",
+    navDesk: "Lamp Desk",
+    navRoster: "Roster",
+    navRecords: "Lesson Notes",
+    navReview: "Review",
+    deskKicker: "By lamplight",
+    deskTitle: "Qingjian Archive",
+    deskLede: "Record the facts you can see in class, and shape them into a draft you can review.",
+    btnNewLesson: "Record a lesson",
+    btnNewStudent: "Add a pupil",
+    statStudents: "Pupils",
+    statLessons: "Lesson notes",
+    statMonth: "Lessons this month",
+    statAuth: "Authorization reminders",
+    secTypes: "Lesson mix",
+    secStages: "Roster by stage",
+    secRecent: "Recent drafts",
+    btnViewAll: "View all",
+    emptyRecent: "No drafts yet. Record a lesson and it will appear here by date.",
+    loadFail: "Could not load. Please try again.",
+    btnRetry: "Retry",
+    rosterTitle: "Roster",
+    rosterLede: "Keep only the alias, stage, and two permissions. Permissions decide whether a draft may include a parent summary or classroom status.",
+    btnAddStudent: "+ Add pupil",
+    searchStudentLabel: "Search alias",
+    searchStudentPh: "Search alias",
+    fieldStage: "Stage",
+    filterStageAll: "All stages",
+    stage_mid: "Middle elementary",
+    stage_high: "Upper elementary",
+    stage_junior: "Junior high",
+    stage_senior: "Senior high",
+    authFilterLabel: "Permission",
+    filterAuthAll: "All permissions",
+    filterAuthBoth: "Both authorized",
+    filterAuthPartial: "Not fully authorized",
+    emptyRoster: "The roster is empty. Add an alias before you record a lesson.",
+    emptyFilter: "Nothing matches. Clear the filters and look again.",
+    btnClearFilter: "Clear filters",
+    btnDetail: "View details",
+    btnLessonsOf: "This pupil's notes",
+    btnEdit: "Edit",
+    btnDelete: "Delete",
+    fieldAlias: "Alias",
+    fieldParent: "Parent communication",
+    fieldShare: "Classroom status sharing",
+    stampYes: "Authorized",
+    stampNo: "Not authorized",
+    yes: "Yes",
+    no: "No",
+    recTitle: "Lesson Notes",
+    recLede: "Notes should contain only observable facts. After you submit, the background prepares a Markdown draft. Until you review it, it is only a preview.",
+    btnNewRec: "+ New lesson",
+    searchRecLabel: "Search",
+    searchRecPh: "Search alias or notes",
+    fieldType: "Lesson type",
+    filterTypeAll: "All types",
+    type_regular: "Regular",
+    type_makeup: "Makeup",
+    type_trial: "Trial",
+    type_absent: "Pupil absent",
+    type_cancel: "Teacher cancelled",
+    dateFrom: "Date from",
+    dateTo: "Date to",
+    draftFilterLabel: "Draft",
+    draftOnly: "Only missing drafts",
+    fieldDate: "Lesson date",
+    fieldNote: "Class notes",
+    fieldDraft: "After-class draft",
+    btnViewArchive: "Open archive",
+    btnOpenRoster: "Open in roster",
+    emptyRec: "No lesson notes yet. Record observable facts; a draft will be prepared after you submit.",
+    summaryFail: "Summary unavailable",
+    draftReady: "Draft ready",
+    draftMissing: "Draft not ready",
+    revTitle: "Archive review",
+    revLede: "The right side is a Markdown draft for the teacher to preview. Do not treat it as a formal archive until it has been checked.",
+    btnRefresh: "Refresh",
+    filterGenAll: "All drafts",
+    filterGenYes: "Generated",
+    filterGenNo: "Not generated",
+    btnPrev: "Previous",
+    btnNext: "Next",
+    btnGoEdit: "Edit this note",
+    emptyIndex: "Nothing to review yet. Record a lesson first.",
+    emptySelect: "Choose a lesson on the left. The fact bar and preview draft will appear here.",
+    pickAnother: "This lesson is no longer listed. Choose another.",
+    previewKicker: "Preview draft",
+    notGenerated: "Not generated yet",
+    btnReread: "Read again",
+    notesToggle: "Original notes",
+    checked: "Checked",
+    checklist: "Checklist",
+    check1: "The content can be traced to the notes",
+    check2: "No guessed traits or family circumstances",
+    check3: "Trial and teacher-cancelled lessons have no deduction items",
+    check4: "Unauthorized drafts have no parent summary or classroom status",
+    stageUnknown: "Not on the roster",
+    btnExpand: "Read full screen",
+    formStudentTitle: "Pupil",
+    formLessonTitle: "Lesson note",
+    btnSave: "Save",
+    btnCancel: "Cancel",
+    btnClose: "Close",
+    detailTitle: "Pupil details",
+    aliasRequired: "Enter an alias",
+    aliasDup: "This alias is already used",
+    stageRequired: "Choose a stage",
+    selectStage: "Choose a stage",
+    selectStudent: "Choose a pupil",
+    studentRequired: "Choose a pupil already on the roster",
+    dateRequired: "Choose the lesson date",
+    typeRequired: "Choose the lesson type",
+    noteRequired: "Enter the class notes",
+    draftPlaceholder: "Generated after you submit",
+    crisis: "If the notes contain a crisis signal, the background follows the skill's crisis exception. The teacher should review it in person first.",
+    hintParent: "Parent communication is not authorized, so a parent fact summary should not be generated.",
+    hintStatus: "Classroom status is not authorized. Keep learning facts only, and do not write classroom status.",
+    hintDeduct: "This is a trial or a teacher cancellation, so no lesson-deduction item should be generated.",
+    hintIncomplete: "When key facts are missing, the draft should say they are still needed. Do not guess traits or family circumstances.",
+    aliasWarn: "Existing lesson notes will not automatically rewrite the linked alias.",
+    editNoRerun: "Editing the notes does not run the draft again. Create a new lesson note if you need a new draft.",
+    continueSave: "Save anyway",
+    back: "Go back",
+    ok: "OK",
+    confirmDeleteStudent: "Delete this pupil? This cannot be undone.",
+    confirmDeleteLesson: "Delete this lesson note? This cannot be undone.",
+    deleteBlocked: "This pupil already has lesson notes. Handle those notes before deleting.",
+    studentMissing: "This pupil is not on the roster yet. Add the pupil first.",
+    pollWait: "The after-class archive is being prepared from the notes. Please wait.",
+    pollTimeout: "Preparation timed out. The record is kept. Refresh it later in Archive Review.",
+    pollBusy: "A draft is still being prepared. Submit again after it finishes.",
+    pollFail: "Could not read the draft",
+    saved: "Saved",
+    submitted: "Submitted",
+    deleted: "Deleted",
+    failSave: "Save failed",
+    failSubmit: "Submit failed",
+    failDelete: "Delete failed",
+    failRead: "Read failed",
+    failMode: "Could not read the display mode. Using light mode.",
+    failClose: "The page could not be closed",
+    draftGenerated: "The after-class draft is ready",
+    modeNew: "New",
+    modeEdit: "Edit",
+    loading: "Loading…",
+    menuOpen: "Open menu",
+    menuClose: "Close menu"
+  }
+};
+
+const STAGE_LABEL = {
+  zh: { "小学中段": "小学中段", "小学高段": "小学高段", "初中": "初中", "高中": "高中" },
+  en: { "小学中段": "Middle elementary", "小学高段": "Upper elementary", "初中": "Junior high", "高中": "Senior high" }
+};
+const TYPE_LABEL = {
+  zh: { "正课": "正课", "补课": "补课", "试听": "试听", "学员请假": "学员请假", "教师取消": "教师取消" },
+  en: { "正课": "Regular", "补课": "Makeup", "试听": "Trial", "学员请假": "Pupil absent", "教师取消": "Teacher cancelled" }
+};
+
+let currentRow = 0;
+let currentTable = "";
+let reviewRow = 0;
+const state = {
+  lang: "zh",
+  page: "",
+  pageToken: 0,
+  students: [],
+  lessons: [],
+  desk: { students: null, lessons: null, month: null, auth: null, typeCounts: null, stageCounts: null },
+  rosterSearch: "",
+  rosterStage: "",
+  rosterAuth: "all",
+  rosterEmptyMode: "create",
+  recordSearch: "",
+  recordType: "",
+  recordFrom: "",
+  recordTo: "",
+  recordDraftOnly: false,
+  recordEmptyMode: "create",
+  reviewType: "",
+  reviewDraft: "all",
+  reviewEmptyMode: "create",
+  reviewCache: null,
+  reviewToken: 0,
+  summaries: {},
+  summaryPending: {},
+  stageBullets: {},
+  typeBullets: {},
+  studentMode: "create",
+  studentEditRow: 0,
+  studentOriginalAlias: "",
+  studentFormToken: 0,
+  studentSaving: false,
+  detailRow: 0,
+  lessonMode: "create",
+  lessonEditRow: 0,
+  lessonOriginalAlias: "",
+  lessonFormToken: 0,
+  lessonSaving: false,
+  lessonLocked: false,
+  pollToken: 0,
+  lessonDraftText: "",
+  lessonReturnReview: false
+};
+const pageHistory = [];
+const popupStack = [];
+const sessionChecked = {};
+let confirmResolve = null;
+let confirmAccepted = false;
+let toastTimer = 0;
+
+function el(id) { return document.getElementById(id); }
+function t(key) {
+  const pack = I18N[state.lang] || I18N.zh;
+  return pack[key] != null ? pack[key] : key;
+}
+function stageLabel(v) {
+  const pack = STAGE_LABEL[state.lang] || STAGE_LABEL.zh;
+  return v && pack[v] ? pack[v] : (v || "—");
+}
+function typeLabel(v) {
+  const pack = TYPE_LABEL[state.lang] || TYPE_LABEL.zh;
+  return v && pack[v] ? pack[v] : (v || "—");
+}
+function asText(value) {
+  if (value == null) return "";
+  return String(value);
+}
+function ce(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text != null) node.textContent = text;
+  return node;
+}
+function clearNode(node) {
+  while (node && node.firstChild) node.removeChild(node.firstChild);
+}
+function on(id, event, fn) {
+  const node = el(id);
+  if (node) node.addEventListener(event, fn);
+}
+function delay(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+function formatDate(d) {
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  return y + "-" + (m < 10 ? "0" + m : String(m)) + "-" + (day < 10 ? "0" + day : String(day));
+}
+function currentYearMonth() {
+  const d = new Date();
+  const m = d.getMonth() + 1;
+  return d.getFullYear() + "-" + (m < 10 ? "0" + m : String(m));
+}
+function dateOnly(value) {
+  const s = String(value || "");
+  const matched = s.match(/\d{4}-\d{2}-\d{2}/);
+  return matched ? matched[0] : s;
+}
+function clipText(text, n) {
+  const s = String(text || "").replace(/\s+/g, " ").trim();
+  if (!s) return "";
+  const chars = Array.from(s);
+  if (chars.length <= n) return s;
+  return chars.slice(0, n).join("") + "…";
+}
+function stripPlain(md) {
+  return String(md || "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/[*_~>#|-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function rowsFromCSV(csvText, fields) {
+  if (csvText == null) return [];
+  let text = String(csvText);
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  if (text.replace(/\s+/g, "") === "") return [];
+  const raw = parseCSV(text);
+  const list = [];
+  for (let i = 0; i < raw.length; i++) {
+    const cols = raw[i] || [];
+    const item = { _row: i + 1 };
+    let any = false;
+    for (let c = 0; c < fields.length; c++) {
+      const val = cols[c] == null ? "" : String(cols[c]);
+      item[fields[c]] = val;
+      if (val !== "") any = true;
+    }
+    if (any) list.push(item);
+  }
+  return list;
+}
+function parseCount(text) {
+  const n = parseInt(String(text == null ? "" : text).trim(), 10);
+  if (isNaN(n)) throw new Error("bad count");
+  return n;
+}
+function findByRow(list, row) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i]._row === row) return list[i];
+  }
+  return null;
+}
+function findStudentByAlias(alias) {
+  for (let i = 0; i < state.students.length; i++) {
+    if (state.students[i]["学员化名"] === alias) return state.students[i];
+  }
+  return null;
+}
+function sortByDateDesc(list) {
+  const copy = list.slice();
+  copy.sort(function (a, b) {
+    const da = dateOnly(a["上课日期"]);
+    const db = dateOnly(b["上课日期"]);
+    if (da !== db) return da < db ? 1 : -1;
+    return a._row - b._row;
+  });
+  return copy;
+}
+function countOptions(rows, field, options) {
+  const map = {};
+  for (let i = 0; i < options.length; i++) map[options[i]] = 0;
+  for (let i = 0; i < rows.length; i++) {
+    const v = rows[i][field];
+    if (Object.prototype.hasOwnProperty.call(map, v)) map[v] += 1;
+  }
+  return map;
+}
+function toast(msg) {
+  const node = el("toast");
+  node.textContent = msg;
+  node.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { node.hidden = true; }, 4200);
+}
+function fail(key, err) {
+  let extra = "";
+  if (err && err.message) extra = String(err.message);
+  if (extra.length > 80) extra = extra.slice(0, 80);
+  toast(extra ? t(key) + "：" + extra : t(key));
+}
+function detectLanguage() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("lang");
+    if (q === "en") return "en";
+    if (q === "cn") return "zh";
+  } catch (err) {}
+  try {
+    const stored = localStorage.getItem("iThinkAir_UiLanguage");
+    if (stored !== null && stored !== "") return stored === "en" ? "en" : "zh";
+  } catch (err) {}
+  try {
+    const list = navigator.languages;
+    if (!list || typeof list.length !== "number" || list.length === 0) return "zh";
+    for (let i = 0; i < list.length; i++) {
+      const tag = String(list[i] || "").toLowerCase();
+      if (tag === "zh" || tag.indexOf("zh-") === 0 || tag.indexOf("zh_") === 0) return "zh";
+    }
+    return "en";
+  } catch (err) {
+    return "zh";
+  }
+}
+function applyStaticI18n() {
+  const nodes = document.querySelectorAll("[data-i18n]");
+  for (let i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute("data-i18n"));
+  const ph = document.querySelectorAll("[data-i18n-placeholder]");
+  for (let i = 0; i < ph.length; i++) ph[i].setAttribute("placeholder", t(ph[i].getAttribute("data-i18n-placeholder")));
+  const aria = document.querySelectorAll("[data-i18n-aria]");
+  for (let i = 0; i < aria.length; i++) {
+    if (aria[i].id === "btnHamburger" && el("mobileMenu") && !el("mobileMenu").hidden) {
+      aria[i].setAttribute("aria-label", t("menuClose"));
+    } else {
+      aria[i].setAttribute("aria-label", t(aria[i].getAttribute("data-i18n-aria")));
+    }
+  }
+  document.title = t("docTitle");
+  document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+  updateLangButtons();
+  updateSwitchTexts();
+  const crisis = el("formLessonCrisis");
+  if (crisis) crisis.textContent = t("crisis");
+  const wait = el("formLessonWait");
+  if (wait) wait.textContent = t("pollWait");
+  const banner = el("pollBanner");
+  if (banner && !banner.hidden) banner.textContent = t("pollWait");
+}
+function updateLangButtons() {
+  const zhOn = state.lang !== "en";
+  const pairs = [["btnLangZh", zhOn], ["btnLangEn", !zhOn], ["menuLangZh", zhOn], ["menuLangEn", !zhOn]];
+  for (let i = 0; i < pairs.length; i++) {
+    const node = el(pairs[i][0]);
+    node.classList.toggle("is-on", pairs[i][1]);
+    node.setAttribute("aria-pressed", pairs[i][1] ? "true" : "false");
+  }
+}
+function setLanguage(lang) {
+  state.lang = lang === "en" ? "en" : "zh";
+  try { localStorage.setItem("iThinkAir_UiLanguage", state.lang === "en" ? "en" : "cn"); } catch (err) {}
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", state.lang === "en" ? "en" : "cn");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  } catch (err) {}
+  applyStaticI18n();
+  updateNavMode();
+  if (!el("modalLesson").hidden) {
+    rebuildStudentSelect(null);
+    updateLessonHints();
+    refreshDraftPlaceholderLanguage();
+  }
+  renderDesk();
+  renderRoster();
+  renderRecords();
+  renderReviewIndex();
+  if (state.reviewCache) paintReviewDetail();
+  updateReviewNav();
+}
+function initLanguage() {
+  state.lang = detectLanguage();
+  applyStaticI18n();
+}
+async function applyTheme() {
+  try {
+    const mode = await callAppBridge({type:"模式"});
+    const dark = String(mode).trim() === "暗色";
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  } catch (err) {
+    document.documentElement.setAttribute("data-theme", "light");
+    fail("failMode", err);
+  }
+}
+function updateNavMode() {
+  const tabs = el("navTabs");
+  const burger = el("btnHamburger");
+  const lang = el("langSwitch");
+  const row = el("navRow");
+  tabs.classList.remove("is-collapsed");
+  burger.hidden = true;
+  lang.hidden = false;
+  const overflow = row.scrollWidth > row.clientWidth + 1;
+  if (overflow) {
+    tabs.classList.add("is-collapsed");
+    burger.hidden = false;
+    lang.hidden = true;
+  } else {
+    closeMobileMenu();
+  }
+}
+function closeMobileMenu() {
+  const menu = el("mobileMenu");
+  if (!menu || menu.hidden) return;
+  menu.hidden = true;
+  el("btnHamburger").setAttribute("aria-expanded", "false");
+  el("btnHamburger").setAttribute("aria-label", t("menuOpen"));
+  el("btnHamburger").innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+}
+function openMobileMenu() {
+  const menu = el("mobileMenu");
+  menu.hidden = false;
+  el("btnHamburger").setAttribute("aria-expanded", "true");
+  el("btnHamburger").setAttribute("aria-label", t("menuClose"));
+  el("btnHamburger").innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+}
+function updateNavActive(pageId) {
+  const map = {
+    pageDesk: ["navDesk", "menuDesk"],
+    pageRoster: ["navRoster", "menuRoster"],
+    pageRecords: ["navRecords", "menuRecords"],
+    pageReview: ["navReview", "menuReview"]
+  };
+  const all = ["navDesk", "navRoster", "navRecords", "navReview", "menuDesk", "menuRoster", "menuRecords", "menuReview"];
+  for (let i = 0; i < all.length; i++) {
+    el(all[i]).classList.remove("is-active");
+    el(all[i]).removeAttribute("aria-current");
+  }
+  const ids = map[pageId] || [];
+  for (let i = 0; i < ids.length; i++) {
+    el(ids[i]).classList.add("is-active");
+    el(ids[i]).setAttribute("aria-current", "page");
+  }
+}
+function currentScroll() {
+  return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
+function openPopup(id) {
+  const node = el(id);
+  if (!node) return;
+  node.hidden = false;
+  if (popupStack.indexOf(id) === -1) popupStack.push(id);
+  node.style.zIndex = String(2000 + popupStack.length * 10);
+  document.body.classList.add("modal-open");
+  syncModalHeight();
+}
+function closePopup(id) {
+  if (id === "modalConfirm" && confirmResolve) {
+    const resolve = confirmResolve;
+    confirmResolve = null;
+    const accepted = confirmAccepted;
+    confirmAccepted = false;
+    resolve(accepted);
+  }
+  if (id === "modalHtml") {
+    const frame = el("htmlFrame");
+    if (frame) frame.setAttribute("src", "about:blank");
+  }
+  if (id === "modalStudent") state.studentFormToken += 1;
+  if (id === "modalLesson") state.lessonFormToken += 1;
+  const node = el(id);
+  if (node) node.hidden = true;
+  const idx = popupStack.lastIndexOf(id);
+  if (idx >= 0) popupStack.splice(idx, 1);
+  if (!popupStack.length) document.body.classList.remove("modal-open");
+}
+function closeTopPopup() {
+  if (!popupStack.length) return false;
+  closePopup(popupStack[popupStack.length - 1]);
+  return true;
+}
+function closeAllPopups() {
+  while (popupStack.length) closeTopPopup();
+}
+function confirmBox(message, okText, cancelText) {
+  return new Promise(function (resolve) {
+    if (confirmResolve) confirmResolve(false);
+    confirmAccepted = false;
+    confirmResolve = resolve;
+    el("confirmMessage").textContent = message;
+    el("btnConfirmOk").textContent = okText || t("ok");
+    el("btnConfirmCancel").textContent = cancelText || t("btnCancel");
+    openPopup("modalConfirm");
+  });
+}
+function syncModalHeight() {
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  const dialogs = document.querySelectorAll(".modal-dialog");
+  for (let i = 0; i < dialogs.length; i++) {
+    const modal = dialogs[i].closest(".modal");
+    const narrowReader = window.innerWidth <= 640 && modal && (modal.id === "modalMarkdown" || modal.id === "modalHtml");
+    dialogs[i].style.maxHeight = narrowReader ? h + "px" : Math.max(240, h - 48) + "px";
+  }
+}
+function bindKeyboard() {
+  document.addEventListener("focusin", function (ev) {
+    const target = ev.target;
+    if (!target || !target.matches || !target.matches("input, select, textarea")) return;
+    setTimeout(function () {
+      try { target.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (err) {}
+    }, 280);
+  });
+  function onViewport() {
+    syncModalHeight();
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const keyboard = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    const tails = document.querySelectorAll(".modal:not([hidden]) .scroll-tail");
+    for (let i = 0; i < tails.length; i++) {
+      tails[i].style.height = (keyboard > 80 ? keyboard + 72 : "") + "px";
+    }
+    const active = document.activeElement;
+    if (keyboard > 80 && active && active.matches && active.matches("input, select, textarea")) {
+      try { active.scrollIntoView({ block: "center" }); } catch (err) {}
+    }
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", onViewport);
+    window.visualViewport.addEventListener("scroll", onViewport);
+  }
+  window.addEventListener("resize", function () {
+    updateNavMode();
+    syncModalHeight();
+  });
+}
+function airBack() {
+  if (popupStack.length) {
+    closeTopPopup();
+    return "false";
+  }
+  const menu = el("mobileMenu");
+  if (menu && !menu.hidden) {
+    closeMobileMenu();
+    return "false";
+  }
+  if (pageHistory.length) {
+    const prev = pageHistory.pop();
+    showPage(prev.page, { skipHistory: true, restoreScroll: true, scroll: prev.scroll, reviewScroll: prev.reviewScroll });
+    return "false";
+  }
+  return "true";
+}
+window.airBack = airBack;
+
+function showCount(id, value) {
+  el(id).textContent = value == null ? "—" : String(value);
+}
+function showPageError(id, on) {
+  const node = el(id);
+  if (node) node.hidden = !on;
+}
+async function loadStudentsRaw() {
+  const csv = await callAppBridge({type:"GetTableCSV", data:"学员信息/默认表格", payload:"学员化名,学段,家长沟通授权,课堂状态分享授权"});
+  return rowsFromCSV(csv, STUDENT_FIELDS);
+}
+async function loadLessonsRaw() {
+  const csv = await callAppBridge({type:"GetTableCSV", data:"课后记录/默认表格", payload:"学员化名,上课日期,课次类型,课堂速记,课后档案草稿"});
+  return rowsFromCSV(csv, LESSON_FIELDS);
+}
+async function runPool(items, limit, fn) {
+  let cursor = 0;
+  const size = Math.min(limit, items.length);
+  if (!size) return;
+  const runners = [];
+  for (let r = 0; r < size; r++) {
+    runners.push((async function () {
+      while (true) {
+        const i = cursor;
+        cursor += 1;
+        if (i >= items.length) return;
+        await fn(items[i], i);
+      }
+    })());
+  }
+  await Promise.all(runners);
+}
+function summaryText(row, kind, clip) {
+  const info = state.summaries[row];
+  if (!info) return "…";
+  if (info.error) return t("summaryFail");
+  if (kind === "note") return clipText(info.note, clip) || "—";
+  if (kind === "draft") return String(info.draft || "").trim() ? t("draftReady") : t("draftMissing");
+  if (kind === "draftText") {
+    if (!String(info.draft || "").trim()) return t("notGenerated");
+    return clipText(stripPlain(info.draft), clip) || "—";
+  }
+  return "";
+}
+function paintSummary(row) {
+  const nodes = document.querySelectorAll('[data-summary-for="' + row + '"]');
+  for (let i = 0; i < nodes.length; i++) {
+    const kind = nodes[i].getAttribute("data-kind");
+    const clip = parseInt(nodes[i].getAttribute("data-clip") || "60", 10);
+    nodes[i].textContent = summaryText(row, kind, clip);
+    if (kind === "draft") {
+      const info = state.summaries[row];
+      const has = info && !info.error && String(info.draft || "").trim() !== "";
+      nodes[i].classList.toggle("is-ready", !!has);
+      nodes[i].classList.toggle("is-missing", !has);
+    }
+  }
+}
+async function ensureSummaries(rows) {
+  const todo = [];
+  let failed = false;
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]._row;
+    if (state.summaries[row] || state.summaryPending[row]) continue;
+    state.summaryPending[row] = true;
+    todo.push(row);
+  }
+  await runPool(todo, 4, async function (row) {
+    try {
+      const note = await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload:"课堂速记/" + row});
+      const draft = await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload:"课后档案草稿/" + row});
+      state.summaries[row] = { note: asText(note), draft: asText(draft) };
+    } catch (err) {
+      state.summaries[row] = { error: true };
+      failed = true;
+    }
+    delete state.summaryPending[row];
+    paintSummary(row);
+  });
+  if (failed) toast(t("summaryFail"));
+}
+async function ensureStageBullets(rows) {
+  const todo = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]._row;
+    if (state.stageBullets[row] != null) continue;
+    todo.push(row);
+  }
+  await runPool(todo, 4, async function (row) {
+    try {
+      state.stageBullets[row] = asText(await callAppBridge({type:"GetCellBullet", data:"学员信息/默认表格", payload:"学段/" + row}));
+    } catch (err) {
+      state.stageBullets[row] = "";
+    }
+    const slots = document.querySelectorAll('[data-stage-bullet="' + row + '"]');
+    for (let i = 0; i < slots.length; i++) {
+      const text = String(state.stageBullets[row] || "").trim();
+      slots[i].textContent = text;
+    }
+  });
+}
+async function ensureTypeBullets(rows) {
+  const todo = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]._row;
+    if (state.typeBullets[row] != null) continue;
+    todo.push(row);
+  }
+  await runPool(todo, 4, async function (row) {
+    try {
+      state.typeBullets[row] = asText(await callAppBridge({type:"GetCellBullet", data:"课后记录/默认表格", payload:"课次类型/" + row}));
+    } catch (err) {
+      state.typeBullets[row] = "";
+    }
+    const slots = document.querySelectorAll('[data-type-bullet="' + row + '"]');
+    for (let i = 0; i < slots.length; i++) slots[i].textContent = String(state.typeBullets[row] || "").trim();
+  });
+}
+function makeStamp(on) {
+  const node = ce("span", "stamp " + (on ? "yes" : "no"), on ? t("stampYes") : t("stampNo"));
+  return node;
+}
+function makeRibbon(type) {
+  const node = ce("span", "ribbon", typeLabel(type));
+  node.setAttribute("data-type", type || "");
+  return node;
+}
+function renderBars(container, counts, options, colorMode) {
+  clearNode(container);
+  if (!counts) {
+    container.appendChild(ce("p", "muted", t("loadFail")));
+    return;
+  }
+  let total = 0;
+  for (let i = 0; i < options.length; i++) total += counts[options[i]] || 0;
+  for (let i = 0; i < options.length; i++) {
+    const key = options[i];
+    const n = counts[key] || 0;
+    const pct = total ? (n * 100 / total) : 0;
+    const row = ce("div", "bar-row");
+    row.appendChild(ce("span", "bar-label", colorMode === "type" ? typeLabel(key) : stageLabel(key)));
+    const track = ce("div", "bar-track");
+    const fill = ce("div", "bar-fill");
+    fill.style.width = (n > 0 ? Math.max(pct, 3) : 0) + "%";
+    if (colorMode === "type") fill.setAttribute("data-type", key);
+    track.appendChild(fill);
+    row.appendChild(track);
+    row.appendChild(ce("span", "bar-num", String(n)));
+    container.appendChild(row);
+  }
+}
+function appendSummary(parent, row, kind, clip, cls) {
+  const node = ce("p", cls || "summary small", summaryText(row, kind, clip));
+  node.setAttribute("data-summary-for", String(row));
+  node.setAttribute("data-kind", kind);
+  node.setAttribute("data-clip", String(clip));
+  parent.appendChild(node);
+  return node;
+}
+function renderRecent() {
+  const list = el("recentList");
+  const empty = el("recentEmpty");
+  clearNode(list);
+  const recent = sortByDateDesc(state.lessons).slice(0, 5);
+  empty.hidden = recent.length > 0;
+  el("recentEmptyText").textContent = t("emptyRecent");
+  list.hidden = recent.length === 0;
+  for (let i = 0; i < recent.length; i++) {
+    const item = recent[i];
+    const card = ce("article", "card t-card");
+    card.setAttribute("data-row", String(item._row));
+    card.tabIndex = 0;
+    const top = ce("div", "card-top");
+    top.appendChild(makeRibbon(item["课次类型"]));
+    const bullet = ce("span", "bullet-mark");
+    bullet.setAttribute("data-type-bullet", String(item._row));
+    bullet.textContent = String(state.typeBullets[item._row] || "").trim();
+    top.appendChild(bullet);
+    top.appendChild(ce("span", "small muted", dateOnly(item["上课日期"])));
+    card.appendChild(top);
+    card.appendChild(ce("div", "alias", item["学员化名"] || "—"));
+    const stu = findStudentByAlias(item["学员化名"]);
+    const meta = ce("div", "card-top");
+    meta.appendChild(ce("span", "small", stu ? stageLabel(stu["学段"]) : t("stageUnknown")));
+    if (stu) {
+      meta.appendChild(makeStamp(stu["家长沟通授权"] === "是"));
+      meta.appendChild(makeStamp(stu["课堂状态分享授权"] === "是"));
+    }
+    card.appendChild(meta);
+    appendSummary(card, item._row, "note", 42, "summary");
+    appendSummary(card, item._row, "draft", 20, "summary small");
+    list.appendChild(card);
+  }
+  ensureSummaries(recent);
+  ensureTypeBullets(recent);
+}
+function renderDesk() {
+  showCount("numStudents", state.desk.students);
+  showCount("numLessons", state.desk.lessons);
+  showCount("numMonth", state.desk.month);
+  showCount("numAuth", state.desk.auth);
+  renderBars(el("barTypes"), state.desk.typeCounts, TYPE_VALUES, "type");
+  renderBars(el("barStages"), state.desk.stageCounts, STAGE_VALUES, "stage");
+  renderRecent();
+}
+function studentMatches(item) {
+  const q = state.rosterSearch.trim().toLowerCase();
+  if (q && String(item["学员化名"] || "").toLowerCase().indexOf(q) === -1) return false;
+  if (state.rosterStage && item["学段"] !== state.rosterStage) return false;
+  const both = item["家长沟通授权"] === "是" && item["课堂状态分享授权"] === "是";
+  if (state.rosterAuth === "both" && !both) return false;
+  if (state.rosterAuth === "partial" && both) return false;
+  return true;
+}
+function renderRoster() {
+  const list = el("rosterList");
+  const empty = el("rosterEmpty");
+  if (!list) return;
+  clearNode(list);
+  const rows = [];
+  for (let i = 0; i < state.students.length; i++) {
+    if (studentMatches(state.students[i])) rows.push(state.students[i]);
+  }
+  const filtering = !!(state.rosterSearch.trim() || state.rosterStage || (state.rosterAuth && state.rosterAuth !== "all"));
+  empty.hidden = rows.length > 0;
+  state.rosterEmptyMode = filtering ? "clear" : "create";
+  el("rosterEmptyText").textContent = filtering ? t("emptyFilter") : t("emptyRoster");
+  el("btnRosterEmptyAction").textContent = filtering ? t("btnClearFilter") : t("btnAddStudent");
+  for (let i = 0; i < rows.length; i++) {
+    const item = rows[i];
+    const card = ce("article", "card student-card" + (currentTable === "学员信息" && currentRow === item._row ? " is-current" : ""));
+    card.setAttribute("data-row", String(item._row));
+    card.tabIndex = 0;
+    card.appendChild(ce("div", "alias", item["学员化名"] || "—"));
+    const meta = ce("div", "card-top");
+    meta.appendChild(ce("span", "small", stageLabel(item["学段"])));
+    const bullet = ce("span", "bullet-mark");
+    bullet.setAttribute("data-stage-bullet", String(item._row));
+    bullet.textContent = String(state.stageBullets[item._row] || "").trim();
+    meta.appendChild(bullet);
+    card.appendChild(meta);
+    const stamps = ce("div", "card-top");
+    const parentWrap = ce("span", "small");
+    parentWrap.appendChild(document.createTextNode(t("fieldParent") + " "));
+    parentWrap.appendChild(makeStamp(item["家长沟通授权"] === "是"));
+    const shareWrap = ce("span", "small");
+    shareWrap.appendChild(document.createTextNode(t("fieldShare") + " "));
+    shareWrap.appendChild(makeStamp(item["课堂状态分享授权"] === "是"));
+    stamps.appendChild(parentWrap);
+    stamps.appendChild(shareWrap);
+    card.appendChild(stamps);
+    const actions = ce("div", "card-actions");
+    actions.appendChild(actionButton("detail", item._row, t("btnDetail"), ""));
+    actions.appendChild(actionButton("lessons", item._row, t("btnLessonsOf"), item["学员化名"]));
+    actions.appendChild(actionButton("edit", item._row, t("btnEdit"), ""));
+    actions.appendChild(actionButton("delete", item._row, t("btnDelete"), "", true));
+    card.appendChild(actions);
+    list.appendChild(card);
+  }
+  ensureStageBullets(rows);
+}
+function actionButton(action, row, label, alias, danger) {
+  const btn = ce("button", "btn small " + (danger ? "danger" : "ghost"), label);
+  btn.type = "button";
+  btn.setAttribute("data-action", action);
+  btn.setAttribute("data-row", String(row));
+  if (alias) btn.setAttribute("data-alias", alias);
+  return btn;
+}
+function lessonMatches(item, search, type, from, to, draftOnly) {
+  const q = String(search || "").trim().toLowerCase();
+  if (q) {
+    const alias = String(item["学员化名"] || "").toLowerCase();
+    const note = String(item["课堂速记"] || "").toLowerCase();
+    if (alias.indexOf(q) === -1 && note.indexOf(q) === -1) return false;
+  }
+  if (type && item["课次类型"] !== type) return false;
+  const date = dateOnly(item["上课日期"]);
+  if (from && date < from) return false;
+  if (to && date > to) return false;
+  if (draftOnly && String(item["课后档案草稿"] || "").trim() !== "") return false;
+  return true;
+}
+function renderRecords() {
+  const list = el("recordList");
+  if (!list) return;
+  clearNode(list);
+  const rows = [];
+  for (let i = 0; i < state.lessons.length; i++) {
+    const item = state.lessons[i];
+    if (lessonMatches(item, state.recordSearch, state.recordType, state.recordFrom, state.recordTo, state.recordDraftOnly)) rows.push(item);
+  }
+  const filtering = !!(state.recordSearch.trim() || state.recordType || state.recordFrom || state.recordTo || state.recordDraftOnly);
+  el("recordEmpty").hidden = rows.length > 0;
+  state.recordEmptyMode = filtering ? "clear" : "create";
+  el("recordEmptyText").textContent = filtering ? t("emptyFilter") : t("emptyRec");
+  el("btnRecordEmptyAction").textContent = filtering ? t("btnClearFilter") : t("btnNewRec");
+  for (let i = 0; i < rows.length; i++) {
+    const item = rows[i];
+    const card = ce("article", "card record-card" + (currentTable === "课后记录" && currentRow === item._row ? " is-current" : ""));
+    card.setAttribute("data-row", String(item._row));
+    card.tabIndex = 0;
+    const top = ce("div", "card-top");
+    top.appendChild(makeRibbon(item["课次类型"]));
+    const bullet = ce("span", "bullet-mark");
+    bullet.setAttribute("data-type-bullet", String(item._row));
+    bullet.textContent = String(state.typeBullets[item._row] || "").trim();
+    top.appendChild(bullet);
+    top.appendChild(ce("span", "small muted", dateOnly(item["上课日期"])));
+    card.appendChild(top);
+    card.appendChild(ce("div", "alias", item["学员化名"] || "—"));
+    const stu = findStudentByAlias(item["学员化名"]);
+    const meta = ce("div", "card-top");
+    meta.appendChild(ce("span", "small", stu ? stageLabel(stu["学段"]) : t("stageUnknown")));
+    if (stu) {
+      meta.appendChild(makeStamp(stu["家长沟通授权"] === "是"));
+      meta.appendChild(makeStamp(stu["课堂状态分享授权"] === "是"));
+    }
+    card.appendChild(meta);
+    const noteLabel = ce("div", "small muted", t("fieldNote"));
+    card.appendChild(noteLabel);
+    appendSummary(card, item._row, "note", 56, "summary");
+    const draftLabel = ce("div", "small muted", t("fieldDraft"));
+    card.appendChild(draftLabel);
+    appendSummary(card, item._row, "draftText", 56, "summary small");
+    const actions = ce("div", "card-actions");
+    actions.appendChild(actionButton("archive", item._row, t("btnViewArchive"), ""));
+    actions.appendChild(actionButton("edit", item._row, t("btnEdit"), ""));
+    actions.appendChild(actionButton("delete", item._row, t("btnDelete"), "", true));
+    actions.appendChild(actionButton("roster", item._row, t("btnOpenRoster"), item["学员化名"]));
+    card.appendChild(actions);
+    list.appendChild(card);
+  }
+  ensureSummaries(rows);
+  ensureTypeBullets(rows);
+}
+function reviewFiltered() {
+  const rows = [];
+  for (let i = 0; i < state.lessons.length; i++) {
+    const item = state.lessons[i];
+    if (state.reviewType && item["课次类型"] !== state.reviewType) continue;
+    const has = String(item["课后档案草稿"] || "").trim() !== "";
+    if (state.reviewDraft === "yes" && !has) continue;
+    if (state.reviewDraft === "no" && has) continue;
+    rows.push(item);
+  }
+  return sortByDateDesc(rows);
+}
+function renderReviewIndex() {
+  const list = el("reviewIndex");
+  if (!list) return;
+  clearNode(list);
+  const rows = reviewFiltered();
+  const filtering = !!(state.reviewType || state.reviewDraft !== "all");
+  el("reviewIndexEmpty").hidden = rows.length > 0;
+  state.reviewEmptyMode = filtering ? "clear" : "create";
+  el("reviewIndexEmptyText").textContent = filtering ? t("emptyFilter") : t("emptyIndex");
+  el("btnReviewEmptyAction").textContent = filtering ? t("btnClearFilter") : t("btnNewLesson");
+  for (let i = 0; i < rows.length; i++) {
+    const item = rows[i];
+    const card = ce("article", "card index-card" + (reviewRow === item._row ? " is-current" : ""));
+    card.setAttribute("data-row", String(item._row));
+    card.tabIndex = 0;
+    const top = ce("div", "card-top");
+    top.appendChild(makeRibbon(item["课次类型"]));
+    top.appendChild(ce("span", "small muted", dateOnly(item["上课日期"])));
+    card.appendChild(top);
+    card.appendChild(ce("div", "alias", item["学员化名"] || "—"));
+    appendSummary(card, item._row, "draft", 24, "summary small");
+    list.appendChild(card);
+  }
+  ensureSummaries(rows);
+  updateReviewNav();
+}
+function updateReviewNav() {
+  const rows = reviewFiltered();
+  let idx = -1;
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i]._row === reviewRow) idx = i;
+  }
+  const prev = el("btnReviewPrev");
+  const next = el("btnReviewNext");
+  const edit = el("btnReviewEdit");
+  const del = el("btnReviewDelete");
+  if (!prev) return;
+  prev.disabled = reviewRow === 0 || idx <= 0;
+  next.disabled = reviewRow === 0 || idx < 0 || idx >= rows.length - 1;
+  edit.disabled = reviewRow === 0;
+  del.disabled = reviewRow === 0;
+}
+function checksFor(row) {
+  const saved = sessionChecked[row];
+  if (!saved) return [false, false, false, false];
+  return saved;
+}
+function updateCheckedBadge() {
+  const badge = el("reviewCheckedBadge");
+  const cache = state.reviewCache;
+  if (!cache) { badge.hidden = true; return; }
+  const draft = String(cache.values["课后档案草稿"] || "").trim();
+  if (!draft) { badge.hidden = true; return; }
+  const flags = checksFor(cache.row);
+  let all = true;
+  for (let i = 0; i < 4; i++) if (!flags[i]) all = false;
+  badge.hidden = !all;
+}
+function highlightReviewIndex() {
+  const list = el("reviewIndex");
+  if (!list) return;
+  const cards = list.querySelectorAll("[data-row]");
+  for (let i = 0; i < cards.length; i++) {
+    const row = parseInt(cards[i].getAttribute("data-row"), 10);
+    cards[i].classList.toggle("is-current", row === reviewRow);
+  }
+}
+function clearSessionChecks() {
+  const keys = Object.keys(sessionChecked);
+  for (let i = 0; i < keys.length; i++) delete sessionChecked[keys[i]];
+}
+function clearReview(message) {
+  const previous = reviewRow;
+  state.reviewCache = null;
+  reviewRow = 0;
+  if (currentTable === "课后记录" && currentRow === previous && previous) {
+    currentRow = 0;
+    currentTable = "";
+  }
+  el("reviewSelected").hidden = true;
+  el("reviewUnselected").hidden = false;
+  el("reviewUnselectedText").textContent = message || t("emptySelect");
+  updateReviewNav();
+  renderReviewIndex();
+}
+function paintReviewDetail() {
+  const cache = state.reviewCache;
+  if (!cache) {
+    clearReview("");
+    return;
+  }
+  el("reviewUnselected").hidden = true;
+  el("reviewSelected").hidden = false;
+  const values = cache.values;
+  const facts = el("reviewFacts");
+  clearNode(facts);
+  facts.appendChild(ce("span", "alias", values["学员化名"] || "—"));
+  facts.appendChild(ce("span", "small", cache.student ? stageLabel(cache.student["学段"]) : t("stageUnknown")));
+  facts.appendChild(ce("span", "small muted", dateOnly(values["上课日期"])));
+  facts.appendChild(makeRibbon(values["课次类型"]));
+  if (cache.bullet && String(cache.bullet).trim() && String(cache.bullet).trim() !== String(values["课次类型"] || "")) {
+    facts.appendChild(ce("span", "bullet-mark", String(cache.bullet)));
+  }
+  if (cache.student) {
+    facts.appendChild(makeStamp(cache.student["家长沟通授权"] === "是"));
+    facts.appendChild(makeStamp(cache.student["课堂状态分享授权"] === "是"));
+  }
+  const draft = String(values["课后档案草稿"] || "");
+  const hasDraft = draft.trim() !== "";
+  el("reviewDraftEmpty").hidden = hasDraft;
+  el("btnExpandDraft").hidden = !hasDraft;
+  el("reviewChecklist").hidden = !hasDraft;
+  if (hasDraft) renderMarkdownInto(el("reviewMarkdown"), draft);
+  else clearNode(el("reviewMarkdown"));
+  el("reviewNotesBody").textContent = values["课堂速记"] || "";
+  const flags = checksFor(cache.row);
+  for (let i = 0; i < 4; i++) el("check" + i).checked = !!flags[i];
+  updateCheckedBadge();
+  updateReviewNav();
+  highlightReviewIndex();
+}
+async function loadReviewDetail(row) {
+  const token = ++state.reviewToken;
+  if (!row) {
+    clearReview("");
+    return;
+  }
+  let count = 0;
+  try {
+    count = parseCount(await callAppBridge({type:"GetRecordCount", data:"课后记录/默认表格"}));
+  } catch (err) {
+    fail("failRead", err);
+    return;
+  }
+  if (token !== state.reviewToken) return;
+  if (row < 1 || row > count) {
+    reviewRow = 0;
+    clearReview(t("pickAnother"));
+    toast(t("pickAnother"));
+    return;
+  }
+  const values = {};
+  try {
+    for (let i = 0; i < LESSON_FIELDS.length; i++) {
+      const field = LESSON_FIELDS[i];
+      values[field] = asText(await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload: field + "/" + row}));
+    }
+  } catch (err) {
+    fail("failRead", err);
+    return;
+  }
+  if (token !== state.reviewToken) return;
+  let bullet = "";
+  try {
+    bullet = asText(await callAppBridge({type:"GetCellBullet", data:"课后记录/默认表格", payload:"课次类型/" + row}));
+  } catch (err) {
+    bullet = "";
+  }
+  if (token !== state.reviewToken) return;
+  reviewRow = row;
+  currentRow = row;
+  currentTable = "课后记录";
+  state.reviewCache = {
+    row: row,
+    values: values,
+    bullet: bullet,
+    student: findStudentByAlias(values["学员化名"])
+  };
+  state.summaries[row] = { note: values["课堂速记"] || "", draft: values["课后档案草稿"] || "" };
+  paintReviewDetail();
+}
+async function renderDeskPage(token) {
+  showPageError("deskError", false);
+  const desk = { students: null, lessons: null, month: null, auth: null, typeCounts: null, stageCounts: null };
+  let students = state.students;
+  let lessons = state.lessons;
+  let failed = false;
+  try {
+    desk.students = parseCount(await callAppBridge({type:"GetRecordCount", data:"学员信息/默认表格"}));
+  } catch (err) { failed = true; }
+  if (token !== state.pageToken) return;
+  try {
+    desk.lessons = parseCount(await callAppBridge({type:"GetRecordCount", data:"课后记录/默认表格"}));
+  } catch (err) { failed = true; }
+  if (token !== state.pageToken) return;
+  try {
+    const csv = await callAppBridge({type:"GetTableCSV", data:"课后记录/默认表格", payload:"上课日期"});
+    const rows = rowsFromCSV(csv, ["上课日期"]);
+    const prefix = currentYearMonth();
+    let n = 0;
+    for (let i = 0; i < rows.length; i++) {
+      if (dateOnly(rows[i]["上课日期"]).indexOf(prefix) === 0) n += 1;
+    }
+    desk.month = n;
+  } catch (err) { failed = true; }
+  if (token !== state.pageToken) return;
+  try {
+    students = await loadStudentsRaw();
+    let auth = 0;
+    for (let i = 0; i < students.length; i++) {
+      if (students[i]["家长沟通授权"] !== "是" || students[i]["课堂状态分享授权"] !== "是") auth += 1;
+    }
+    desk.auth = auth;
+    desk.stageCounts = countOptions(students, "学段", STAGE_VALUES);
+  } catch (err) { failed = true; students = []; }
+  if (token !== state.pageToken) return;
+  try {
+    const csv = await callAppBridge({type:"GetTableCSV", data:"课后记录/默认表格", payload:"课次类型"});
+    desk.typeCounts = countOptions(rowsFromCSV(csv, ["课次类型"]), "课次类型", TYPE_VALUES);
+  } catch (err) { failed = true; }
+  if (token !== state.pageToken) return;
+  try {
+    lessons = await loadLessonsRaw();
+  } catch (err) { failed = true; lessons = []; }
+  if (token !== state.pageToken) return;
+  state.desk = desk;
+  state.students = students || [];
+  state.lessons = lessons || [];
+  state.summaries = {};
+  state.typeBullets = {};
+  showPageError("deskError", failed);
+  if (failed) toast(t("failRead"));
+  renderDesk();
+}
+async function renderRosterPage(token) {
+  showPageError("rosterError", false);
+  try {
+    const students = await loadStudentsRaw();
+    if (token !== state.pageToken) return;
+    state.students = students;
+    state.stageBullets = {};
+    renderRoster();
+  } catch (err) {
+    if (token !== state.pageToken) return;
+    showPageError("rosterError", true);
+    fail("failRead", err);
+  }
+}
+async function renderRecordsPage(token) {
+  showPageError("recordError", false);
+  try {
+    const students = await loadStudentsRaw();
+    if (token !== state.pageToken) return;
+    const lessons = await loadLessonsRaw();
+    if (token !== state.pageToken) return;
+    state.students = students;
+    state.lessons = lessons;
+    state.summaries = {};
+    state.typeBullets = {};
+    renderRecords();
+  } catch (err) {
+    if (token !== state.pageToken) return;
+    showPageError("recordError", true);
+    fail("failRead", err);
+  }
+}
+async function renderReviewPage(token) {
+  showPageError("reviewError", false);
+  try {
+    const students = await loadStudentsRaw();
+    if (token !== state.pageToken) return;
+    const lessons = await loadLessonsRaw();
+    if (token !== state.pageToken) return;
+    state.students = students;
+    state.lessons = lessons;
+    state.summaries = {};
+    state.typeBullets = {};
+    renderReviewIndex();
+    if (reviewRow) await loadReviewDetail(reviewRow);
+    else clearReview("");
+  } catch (err) {
+    if (token !== state.pageToken) return;
+    showPageError("reviewError", true);
+    fail("failRead", err);
+  }
+}
+async function showPage(pageId, options) {
+  const opts = options || {};
+  const prev = state.page;
+  if (!opts.skipHistory && prev && prev !== pageId) {
+    pageHistory.push({
+      page: prev,
+      scroll: currentScroll(),
+      reviewScroll: el("reviewIndex") ? el("reviewIndex").scrollTop : 0
+    });
+  }
+  state.studentFormToken += 1;
+  state.lessonFormToken += 1;
+  if (!opts.keepPopups) closeAllPopups();
+  closeMobileMenu();
+  state.page = pageId;
+  const pages = ["pageDesk", "pageRoster", "pageRecords", "pageReview"];
+  for (let i = 0; i < pages.length; i++) el(pages[i]).hidden = pages[i] !== pageId;
+  updateNavActive(pageId);
+  const token = ++state.pageToken;
+  if (pageId === "pageDesk") await renderDeskPage(token);
+  else if (pageId === "pageRoster") await renderRosterPage(token);
+  else if (pageId === "pageRecords") await renderRecordsPage(token);
+  else if (pageId === "pageReview") await renderReviewPage(token);
+  if (token !== state.pageToken) return;
+  if (opts.restoreScroll) {
+    window.scrollTo(0, opts.scroll || 0);
+    if (pageId === "pageReview" && el("reviewIndex")) el("reviewIndex").scrollTop = opts.reviewScroll || 0;
+  } else {
+    window.scrollTo(0, 0);
+  }
+}
+function syncFilterControls() {
+  el("rosterSearch").value = state.rosterSearch;
+  el("rosterStageFilter").value = state.rosterStage;
+  el("rosterAuthFilter").value = state.rosterAuth;
+  el("recordSearch").value = state.recordSearch;
+  el("recordTypeFilter").value = state.recordType;
+  el("recordDateFrom").value = state.recordFrom;
+  el("recordDateTo").value = state.recordTo;
+  updateDraftToggle();
+  el("reviewTypeFilter").value = state.reviewType;
+  el("reviewDraftFilter").value = state.reviewDraft;
+}
+function updateDraftToggle() {
+  const btn = el("btnRecordDraftOnly");
+  btn.setAttribute("aria-pressed", state.recordDraftOnly ? "true" : "false");
+  btn.classList.toggle("is-on", state.recordDraftOnly);
+}
+function clearRosterFilters() {
+  state.rosterSearch = "";
+  state.rosterStage = "";
+  state.rosterAuth = "all";
+  syncFilterControls();
+  renderRoster();
+}
+function clearRecordFilters() {
+  state.recordSearch = "";
+  state.recordType = "";
+  state.recordFrom = "";
+  state.recordTo = "";
+  state.recordDraftOnly = false;
+  syncFilterControls();
+  renderRecords();
+}
+function clearReviewFilters() {
+  state.reviewType = "";
+  state.reviewDraft = "all";
+  syncFilterControls();
+  renderReviewIndex();
+}
+function closeHost() {
+  try {
+    if (window.parent && typeof window.parent.closeFullHtml === "function") {
+      window.parent.closeFullHtml(false);
+      return;
+    }
+  } catch (err) {}
+  toast(t("failClose"));
+}
+function setFieldError(id, msg) {
+  const node = el(id + "_error");
+  if (node) node.textContent = msg || "";
+}
+function syncSwitch(id) {
+  const input = el(id);
+  const btn = el(id + "_switch");
+  if (!input || !btn) return;
+  const on = input.value === "是";
+  btn.setAttribute("aria-checked", on ? "true" : "false");
+  btn.textContent = on ? t("yes") : t("no");
+  btn.classList.toggle("is-on", on);
+}
+function updateSwitchTexts() {
+  syncSwitch("formStudent_家长沟通授权");
+  syncSwitch("formStudent_课堂状态分享授权");
+}
+function toggleSwitch(id) {
+  const input = el(id);
+  input.value = input.value === "是" ? "否" : "是";
+  syncSwitch(id);
+}
+async function openStudentForm(mode, row) {
+  const token = ++state.studentFormToken;
+  state.studentMode = mode;
+  state.studentEditRow = mode === "edit" ? row : 0;
+  setFieldError("formStudent_学员化名", "");
+  setFieldError("formStudent_学段", "");
+  el("formStudentMode").textContent = mode === "create" ? t("modeNew") : t("loading");
+  el("formStudent_学员化名").value = "";
+  el("formStudent_学段").value = "";
+  el("formStudent_家长沟通授权").value = "否";
+  el("formStudent_课堂状态分享授权").value = "否";
+  syncSwitch("formStudent_家长沟通授权");
+  syncSwitch("formStudent_课堂状态分享授权");
+  el("formStudent_学员化名").disabled = mode === "edit";
+  el("formStudent_学段").disabled = mode === "edit";
+  el("btnStudentSave").disabled = mode === "edit";
+  openPopup("modalStudent");
+  if (mode === "create") {
+    state.studentOriginalAlias = "";
+    el("formStudent_学员化名").disabled = false;
+    el("formStudent_学段").disabled = false;
+    el("btnStudentSave").disabled = false;
+    el("formStudent_学员化名").focus();
+    return;
+  }
+  const values = {};
+  try {
+    for (let i = 0; i < STUDENT_FIELDS.length; i++) {
+      const field = STUDENT_FIELDS[i];
+      values[field] = asText(await callAppBridge({type:"GetCellValue", data:"学员信息/默认表格", payload: field + "/" + row}));
+    }
+  } catch (err) {
+    if (token === state.studentFormToken) closePopup("modalStudent");
+    fail("failRead", err);
+    return;
+  }
+  if (token !== state.studentFormToken) return;
+  el("formStudent_学员化名").value = values["学员化名"] || "";
+  el("formStudent_学段").value = STAGE_VALUES.indexOf(values["学段"]) >= 0 ? values["学段"] : "";
+  el("formStudent_家长沟通授权").value = values["家长沟通授权"] === "是" ? "是" : "否";
+  el("formStudent_课堂状态分享授权").value = values["课堂状态分享授权"] === "是" ? "是" : "否";
+  syncSwitch("formStudent_家长沟通授权");
+  syncSwitch("formStudent_课堂状态分享授权");
+  state.studentOriginalAlias = values["学员化名"] || "";
+  currentRow = row;
+  currentTable = "学员信息";
+  el("formStudentMode").textContent = t("modeEdit");
+  el("formStudent_学员化名").disabled = false;
+  el("formStudent_学段").disabled = false;
+  el("btnStudentSave").disabled = false;
+}
+async function saveStudent() {
+  if (state.studentSaving) return;
+  state.studentSaving = true;
+  try {
+    const mode = state.studentMode;
+    const row = state.studentEditRow;
+    const alias = el("formStudent_学员化名").value.trim();
+    const stage = el("formStudent_学段").value;
+    const parent = el("formStudent_家长沟通授权").value === "是" ? "是" : "否";
+    const share = el("formStudent_课堂状态分享授权").value === "是" ? "是" : "否";
+    setFieldError("formStudent_学员化名", "");
+    setFieldError("formStudent_学段", "");
+    if (!alias) { setFieldError("formStudent_学员化名", t("aliasRequired")); return; }
+    if (STAGE_VALUES.indexOf(stage) < 0) { setFieldError("formStudent_学段", t("stageRequired")); return; }
+    let students = [];
+    try { students = await loadStudentsRaw(); }
+    catch (err) { fail("failRead", err); return; }
+    state.students = students;
+    for (let i = 0; i < students.length; i++) {
+      if (mode === "edit" && students[i]._row === row) continue;
+      if (String(students[i]["学员化名"] || "").trim() === alias) {
+        setFieldError("formStudent_学员化名", t("aliasDup"));
+        return;
+      }
+    }
+    if (mode === "edit" && alias !== state.studentOriginalAlias) {
+      const ok = await confirmBox(t("aliasWarn"), t("continueSave"), t("back"));
+      if (!ok) return;
+    }
+    const data = {};
+    data["学员化名"] = alias;
+    data["学段"] = stage;
+    data["家长沟通授权"] = parent;
+    data["课堂状态分享授权"] = share;
+    if (mode === "create") {
+      try {
+        await callAppBridge({type:"SubmitRecord", data:"学员信息", payload: JSON.stringify(data)});
+      } catch (err) {
+        fail("failSubmit", err);
+        return;
+      }
+      currentRow = 1;
+      currentTable = "学员信息";
+      closePopup("modalStudent");
+      toast(t("submitted"));
+      await renderRosterPage(++state.pageToken);
+      return;
+    }
+    try {
+      for (let i = 0; i < STUDENT_FIELDS.length; i++) {
+        const field = STUDENT_FIELDS[i];
+        await callAppBridge({type:"SetCellValue", data:"学员信息/默认表格", payload: field + "/" + row + "/" + data[field]});
+      }
+    } catch (err) {
+      fail("failSave", err);
+      return;
+    }
+    currentRow = row;
+    currentTable = "学员信息";
+    closePopup("modalStudent");
+    toast(t("saved"));
+    await renderRosterPage(++state.pageToken);
+    if (!el("modalStudentDetail").hidden && state.detailRow === row) await openStudentDetail(row);
+  } finally {
+    state.studentSaving = false;
+  }
+}
+async function openStudentDetail(row) {
+  const values = {};
+  try {
+    for (let i = 0; i < STUDENT_FIELDS.length; i++) {
+      const field = STUDENT_FIELDS[i];
+      values[field] = asText(await callAppBridge({type:"GetCellValue", data:"学员信息/默认表格", payload: field + "/" + row}));
+    }
+  } catch (err) {
+    fail("failRead", err);
+    return;
+  }
+  let bullet = "";
+  try {
+    bullet = asText(await callAppBridge({type:"GetCellBullet", data:"学员信息/默认表格", payload:"学段/" + row}));
+  } catch (err) { bullet = ""; }
+  if (state.page !== "pageRoster") return;
+  state.detailRow = row;
+  currentRow = row;
+  currentTable = "学员信息";
+  const body = el("studentDetailBody");
+  clearNode(body);
+  const spec = [
+    ["学员化名", "fieldAlias"],
+    ["学段", "fieldStage"],
+    ["家长沟通授权", "fieldParent"],
+    ["课堂状态分享授权", "fieldShare"]
+  ];
+  for (let i = 0; i < spec.length; i++) {
+    const wrap = ce("div", "detail-row");
+    wrap.appendChild(ce("div", "detail-label", t(spec[i][1])));
+    const val = ce("div", "detail-value");
+    const field = spec[i][0];
+    if (field === "学段") {
+      val.appendChild(document.createTextNode(stageLabel(values[field])));
+      if (bullet && String(bullet).trim() && String(bullet).trim() !== String(values[field] || "")) {
+        val.appendChild(ce("span", "bullet-mark", String(bullet)));
+      }
+    } else if (field === "家长沟通授权" || field === "课堂状态分享授权") {
+      val.appendChild(makeStamp(values[field] === "是"));
+    } else {
+      val.textContent = values[field] || "—";
+    }
+    wrap.appendChild(val);
+    body.appendChild(wrap);
+  }
+  openPopup("modalStudentDetail");
+}
+async function deleteStudent(row) {
+  const stu = findByRow(state.students, row);
+  const alias = stu ? stu["学员化名"] : "";
+  let lessons = [];
+  try { lessons = await loadLessonsRaw(); }
+  catch (err) { fail("failRead", err); return; }
+  for (let i = 0; i < lessons.length; i++) {
+    if (lessons[i]["学员化名"] === alias) {
+      toast(t("deleteBlocked"));
+      return;
+    }
+  }
+  const ok = await confirmBox(t("confirmDeleteStudent"), t("btnDelete"), t("btnCancel"));
+  if (!ok) return;
+  try {
+    await callAppBridge({type:"DeleteRecord", data:"学员信息/默认表格", payload: row.toString()});
+  } catch (err) {
+    fail("failDelete", err);
+    return;
+  }
+  if (currentTable === "学员信息" && currentRow === row) {
+    currentRow = 0;
+    currentTable = "";
+  }
+  if (state.detailRow === row) {
+    state.detailRow = 0;
+    closePopup("modalStudentDetail");
+  }
+  toast(t("deleted"));
+  await renderRosterPage(++state.pageToken);
+}
+async function openAliasInRoster(alias) {
+  let rowText = "";
+  try {
+    rowText = await callAppBridge({type:"GetRecordRow", data:"学员信息/默认表格", payload:"学员化名/" + alias});
+  } catch (err) {
+    fail("failRead", err);
+    return;
+  }
+  const row = parseInt(String(rowText).trim(), 10);
+  if (!row || row < 1) {
+    toast(t("studentMissing"));
+    return;
+  }
+  await showPage("pageRoster");
+  if (state.page !== "pageRoster") return;
+  await openStudentDetail(row);
+}
+async function goStudentLessons(alias) {
+  state.recordSearch = alias || "";
+  state.recordType = "";
+  state.recordFrom = "";
+  state.recordTo = "";
+  state.recordDraftOnly = false;
+  syncFilterControls();
+  await showPage("pageRecords");
+}
+function rebuildStudentSelect(selected) {
+  const sel = el("formLesson_学员化名");
+  const current = selected == null ? sel.value : selected;
+  clearNode(sel);
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = t("selectStudent");
+  sel.appendChild(placeholder);
+  let found = !current;
+  for (let i = 0; i < state.students.length; i++) {
+    const s = state.students[i];
+    const opt = document.createElement("option");
+    opt.value = s["学员化名"];
+    opt.textContent = s["学员化名"] + " · " + stageLabel(s["学段"]);
+    if (s["学员化名"] === current) found = true;
+    sel.appendChild(opt);
+  }
+  if (current && !found) {
+    const opt = document.createElement("option");
+    opt.value = current;
+    opt.textContent = current + " · " + t("stageUnknown");
+    sel.appendChild(opt);
+  }
+  sel.value = current || "";
+}
+function showDraftPlaceholder() {
+  const box = el("formLesson_课后档案草稿");
+  clearNode(box);
+  box.classList.add("is-placeholder");
+  box.textContent = state.lessonMode === "create" ? t("draftPlaceholder") : t("notGenerated");
+  state.lessonDraftText = "";
+}
+function refreshDraftPlaceholderLanguage() {
+  const box = el("formLesson_课后档案草稿");
+  if (box.classList.contains("is-placeholder")) showDraftPlaceholder();
+}
+function showDraftInForm(text) {
+  state.lessonDraftText = text || "";
+  if (el("modalLesson").hidden) return;
+  const box = el("formLesson_课后档案草稿");
+  if (!String(text || "").trim()) {
+    showDraftPlaceholder();
+    return;
+  }
+  box.classList.remove("is-placeholder");
+  renderMarkdownInto(box, text);
+}
+function updateLessonHints() {
+  const alias = el("formLesson_学员化名").value;
+  const date = el("formLesson_上课日期").value;
+  const type = el("formLesson_课次类型").value;
+  const note = el("formLesson_课堂速记").value;
+  const stu = findStudentByAlias(alias);
+  const auth = el("formLessonAuth");
+  const hints = el("formLessonHints");
+  clearNode(auth);
+  clearNode(hints);
+  if (stu) {
+    const parent = ce("span", "small");
+    parent.appendChild(document.createTextNode(t("fieldParent") + " "));
+    parent.appendChild(makeStamp(stu["家长沟通授权"] === "是"));
+    const share = ce("span", "small");
+    share.appendChild(document.createTextNode(t("fieldShare") + " "));
+    share.appendChild(makeStamp(stu["课堂状态分享授权"] === "是"));
+    auth.appendChild(parent);
+    auth.appendChild(share);
+    if (stu["家长沟通授权"] !== "是") hints.appendChild(ce("p", "", t("hintParent")));
+    if (stu["课堂状态分享授权"] !== "是") hints.appendChild(ce("p", "", t("hintStatus")));
+  }
+  if (type === "试听" || type === "教师取消") hints.appendChild(ce("p", "", t("hintDeduct")));
+  if (!alias || !date || !type || !String(note || "").trim()) hints.appendChild(ce("p", "", t("hintIncomplete")));
+}
+function setLessonLocked(locked) {
+  state.lessonLocked = locked;
+  const ids = ["formLesson_学员化名", "formLesson_上课日期", "formLesson_课次类型", "formLesson_课堂速记", "btnLessonSave"];
+  for (let i = 0; i < ids.length; i++) {
+    const node = el(ids[i]);
+    if (node) node.disabled = !!locked;
+  }
+  el("formLessonWait").hidden = !locked;
+  el("formLessonWait").textContent = t("pollWait");
+  el("pollBanner").hidden = !locked;
+  el("pollBanner").textContent = t("pollWait");
+}
+async function pollLoop(token) {
+  try {
+    for (let i = 0; i < 30; i++) {
+      await delay(2000);
+      if (token !== state.pollToken) return;
+      let text = "";
+      try {
+        text = asText(await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload:"课后档案草稿/1"}));
+      } catch (err) {
+        if (token !== state.pollToken) return;
+        setLessonLocked(false);
+        fail("pollFail", err);
+        return;
+      }
+      if (token !== state.pollToken) return;
+      if (String(text).trim() !== "") {
+        setLessonLocked(false);
+        showDraftInForm(text);
+        reviewRow = 1;
+        currentRow = 1;
+        currentTable = "课后记录";
+        state.summaries = {};
+        try {
+          if (state.page === "pageRecords") await renderRecordsPage(++state.pageToken);
+          else if (state.page === "pageDesk") await renderDeskPage(++state.pageToken);
+          else {
+            state.lessons = await loadLessonsRaw();
+            if (state.page === "pageReview") renderReviewIndex();
+          }
+        } catch (err) {}
+        await loadReviewDetail(1);
+        toast(t("draftGenerated"));
+        return;
+      }
+    }
+    if (token !== state.pollToken) return;
+    setLessonLocked(false);
+    toast(t("pollTimeout"));
+    try {
+      if (state.page === "pageRecords") await renderRecordsPage(++state.pageToken);
+    } catch (err) {}
+  } catch (err) {
+    if (token === state.pollToken) {
+      setLessonLocked(false);
+      fail("pollFail", err);
+    }
+  }
+}
+async function openLessonForm(mode, row) {
+  if (state.lessonLocked) {
+    toast(t("pollBusy"));
+    return;
+  }
+  const token = ++state.lessonFormToken;
+  state.lessonMode = mode;
+  state.lessonEditRow = mode === "edit" ? row : 0;
+  state.lessonReturnReview = state.page === "pageReview";
+  setFieldError("formLesson_学员化名", "");
+  setFieldError("formLesson_上课日期", "");
+  setFieldError("formLesson_课次类型", "");
+  setFieldError("formLesson_课堂速记", "");
+  try {
+    state.students = await loadStudentsRaw();
+  } catch (err) {
+    fail("failRead", err);
+    return;
+  }
+  if (token !== state.lessonFormToken) return;
+  el("formLessonMode").textContent = mode === "create" ? t("modeNew") : t("loading");
+  if (mode === "create") {
+    state.lessonOriginalAlias = "";
+    rebuildStudentSelect("");
+    el("formLesson_上课日期").value = formatDate(new Date());
+    el("formLesson_课次类型").value = "正课";
+    el("formLesson_课堂速记").value = "";
+    showDraftPlaceholder();
+    updateLessonHints();
+    setLessonLocked(false);
+    openPopup("modalLesson");
+    el("formLesson_学员化名").focus();
+    return;
+  }
+  const values = {};
+  try {
+    for (let i = 0; i < LESSON_FIELDS.length; i++) {
+      const field = LESSON_FIELDS[i];
+      values[field] = asText(await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload: field + "/" + row}));
+    }
+  } catch (err) {
+    fail("failRead", err);
+    return;
+  }
+  if (token !== state.lessonFormToken) return;
+  state.lessonOriginalAlias = values["学员化名"] || "";
+  rebuildStudentSelect(values["学员化名"] || "");
+  el("formLesson_上课日期").value = dateOnly(values["上课日期"]);
+  el("formLesson_课次类型").value = TYPE_VALUES.indexOf(values["课次类型"]) >= 0 ? values["课次类型"] : "正课";
+  el("formLesson_课堂速记").value = values["课堂速记"] || "";
+  if (String(values["课后档案草稿"] || "").trim()) showDraftInForm(values["课后档案草稿"]);
+  else showDraftPlaceholder();
+  el("formLessonMode").textContent = t("modeEdit");
+  updateLessonHints();
+  currentRow = row;
+  currentTable = "课后记录";
+  openPopup("modalLesson");
+}
+function readLessonValues() {
+  return {
+    "学员化名": el("formLesson_学员化名").value,
+    "上课日期": el("formLesson_上课日期").value,
+    "课次类型": el("formLesson_课次类型").value,
+    "课堂速记": el("formLesson_课堂速记").value
+  };
+}
+function validateLesson(values, mode) {
+  let ok = true;
+  setFieldError("formLesson_学员化名", "");
+  setFieldError("formLesson_上课日期", "");
+  setFieldError("formLesson_课次类型", "");
+  setFieldError("formLesson_课堂速记", "");
+  const alias = values["学员化名"];
+  const exists = !!findStudentByAlias(alias);
+  if (!alias || (mode === "create" && !exists) || (mode === "edit" && alias !== state.lessonOriginalAlias && !exists)) {
+    setFieldError("formLesson_学员化名", t("studentRequired"));
+    ok = false;
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(values["上课日期"] || "")) {
+    setFieldError("formLesson_上课日期", t("dateRequired"));
+    ok = false;
+  }
+  if (TYPE_VALUES.indexOf(values["课次类型"]) < 0) {
+    setFieldError("formLesson_课次类型", t("typeRequired"));
+    ok = false;
+  }
+  if (!String(values["课堂速记"] || "").trim()) {
+    setFieldError("formLesson_课堂速记", t("noteRequired"));
+    ok = false;
+  }
+  return ok;
+}
+async function saveLesson() {
+  if (state.lessonSaving || state.lessonLocked) {
+    if (state.lessonLocked) toast(t("pollBusy"));
+    return;
+  }
+  state.lessonSaving = true;
+  let startPoll = false;
+  try {
+    const mode = state.lessonMode;
+    const row = state.lessonEditRow;
+    const values = readLessonValues();
+    if (!validateLesson(values, mode)) return;
+    if (mode === "edit") {
+      const ok = await confirmBox(t("editNoRerun"), t("continueSave"), t("back"));
+      if (!ok) return;
+      try {
+        for (let i = 0; i < LESSON_EDIT_FIELDS.length; i++) {
+          const field = LESSON_EDIT_FIELDS[i];
+          await callAppBridge({type:"SetCellValue", data:"课后记录/默认表格", payload: field + "/" + row + "/" + values[field]});
+        }
+      } catch (err) {
+        fail("failSave", err);
+        return;
+      }
+      delete sessionChecked[row];
+      const fresh = {};
+      try {
+        for (let i = 0; i < LESSON_FIELDS.length; i++) {
+          const field = LESSON_FIELDS[i];
+          fresh[field] = asText(await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload: field + "/" + row}));
+        }
+      } catch (err) {
+        fail("failRead", err);
+      }
+      currentRow = row;
+      currentTable = "课后记录";
+      closePopup("modalLesson");
+      toast(t("saved"));
+      state.summaries = {};
+      if (state.page === "pageRecords") await renderRecordsPage(++state.pageToken);
+      else if (state.page === "pageReview" || state.lessonReturnReview || reviewRow === row) {
+        if (state.page !== "pageReview") {
+          try { state.lessons = await loadLessonsRaw(); } catch (err) {}
+        } else {
+          await renderReviewPage(++state.pageToken);
+        }
+        await loadReviewDetail(row);
+      }
+      if (fresh["课后档案草稿"]) state.lessonDraftText = fresh["课后档案草稿"];
+      return;
+    }
+    const payload = {};
+    payload["学员化名"] = values["学员化名"];
+    payload["上课日期"] = values["上课日期"];
+    payload["课次类型"] = values["课次类型"];
+    payload["课堂速记"] = values["课堂速记"];
+    try {
+      await callAppBridge({type:"SubmitRecord", data:"课后记录", payload: JSON.stringify(payload)});
+    } catch (err) {
+      fail("failSubmit", err);
+      return;
+    }
+    currentRow = 1;
+    currentTable = "课后记录";
+    reviewRow = 1;
+    clearSessionChecks();
+    toast(t("submitted"));
+    try {
+      state.lessons = await loadLessonsRaw();
+      if (state.page === "pageRecords") renderRecords();
+      else if (state.page === "pageDesk") renderRecent();
+    } catch (err) {
+      fail("failRead", err);
+    }
+    startPoll = true;
+  } finally {
+    state.lessonSaving = false;
+  }
+  if (startPoll) {
+    const token = ++state.pollToken;
+    setLessonLocked(true);
+    pollLoop(token);
+  }
+}
+async function deleteLesson(row) {
+  if (!row) return;
+  if (state.lessonLocked) {
+    toast(t("pollBusy"));
+    return;
+  }
+  const ok = await confirmBox(t("confirmDeleteLesson"), t("btnDelete"), t("btnCancel"));
+  if (!ok) return;
+  try {
+    await callAppBridge({type:"DeleteRecord", data:"课后记录/默认表格", payload: row.toString()});
+  } catch (err) {
+    fail("failDelete", err);
+    return;
+  }
+  clearSessionChecks();
+  const viewing = reviewRow === row;
+  if (currentTable === "课后记录" && currentRow === row) {
+    currentRow = 0;
+    currentTable = "";
+  }
+  if (viewing) reviewRow = 0;
+  toast(t("deleted"));
+  state.summaries = {};
+  try {
+    state.lessons = await loadLessonsRaw();
+  } catch (err) {
+    fail("failRead", err);
+  }
+  if (state.page === "pageRecords") renderRecords();
+  if (state.page === "pageDesk") renderRecent();
+  if (viewing) clearReview(t("pickAnother"));
+  else {
+    renderReviewIndex();
+    if (reviewRow) await loadReviewDetail(reviewRow);
+  }
+}
+async function moveReview(delta) {
+  if (!reviewRow) return;
+  const rows = reviewFiltered();
+  let idx = -1;
+  for (let i = 0; i < rows.length; i++) if (rows[i]._row === reviewRow) idx = i;
+  if (idx < 0) return;
+  const next = idx + delta;
+  if (next < 0 || next >= rows.length) return;
+  await loadReviewDetail(rows[next]._row);
+}
+async function rereadDraft() {
+  if (!reviewRow) return;
+  try {
+    const text = asText(await callAppBridge({type:"GetCellValue", data:"课后记录/默认表格", payload:"课后档案草稿/" + reviewRow}));
+    if (!state.reviewCache || state.reviewCache.row !== reviewRow) return;
+    state.reviewCache.values["课后档案草稿"] = text;
+    state.summaries[reviewRow] = state.summaries[reviewRow] || { note: state.reviewCache.values["课堂速记"] || "", draft: text };
+    state.summaries[reviewRow].draft = text;
+    if (!String(text).trim()) delete sessionChecked[reviewRow];
+    paintReviewDetail();
+  } catch (err) {
+    fail("failRead", err);
+  }
+}
+function toDownloadHref(src) {
+  if (!src) return "";
+  if (src.indexOf("data:") === 0) return src;
+  if (/^https?:\/\//i.test(src)) {
+    if (src.indexOf("/download/") !== -1) return src;
+    const name = src.split("/").pop().split("?")[0];
+    return "https://www.ithinkair.com:3031/download/" + name;
+  }
+  return "https://www.ithinkair.com:3031/download/" + src;
+}
+function toPrivateHref(href) {
+  if (/^https?:\/\//i.test(href)) {
+    if (href.indexOf("/private/") !== -1) return href;
+    const name = href.split("/").pop().split("?")[0].split("#")[0];
+    return "https://www.ithinkair.com:3031/private/" + name;
+  }
+  return "https://www.ithinkair.com:3031/private/" + href;
+}
+function parseMarkdown(src) {
+  try {
+    if (typeof marked === "function") return marked.parse ? marked.parse(src) : marked(src);
+    if (typeof marked !== "undefined" && marked && typeof marked.parse === "function") return marked.parse(src);
+  } catch (err) {
+    return null;
+  }
+  return null;
+}
+function renderMarkdownInto(node, markdown) {
+  const src = markdown == null ? "" : String(markdown);
+  const html = parseMarkdown(src);
+  if (html == null) {
+    node.textContent = src;
+    return;
+  }
+  setInnerHTMLWithScripts(node, html);
+  const imgs = node.querySelectorAll("img");
+  for (let i = 0; i < imgs.length; i++) {
+    const img = imgs[i];
+    const srcAttr = img.getAttribute("src") || "";
+    if (!srcAttr || srcAttr.indexOf("data:") === 0) continue;
+    const href = toDownloadHref(srcAttr);
+    if (!/^https?:/i.test(srcAttr)) img.setAttribute("src", href);
+    const parent = img.parentNode;
+    if (parent && parent.tagName === "A") {
+      parent.setAttribute("href", href);
+      parent.setAttribute("target", "_blank");
+      parent.classList.add("md-image-link");
+      continue;
+    }
+    const link = document.createElement("a");
+    link.setAttribute("href", href);
+    link.setAttribute("target", "_blank");
+    link.classList.add("md-image-link");
+    parent.insertBefore(link, img);
+    link.appendChild(img);
+  }
+  const links = node.querySelectorAll("a");
+  for (let i = 0; i < links.length; i++) {
+    const href = links[i].getAttribute("href") || "";
+    if (/^\s*javascript:/i.test(href)) links[i].removeAttribute("href");
+  }
+}
+function openReader(markdown) {
+  renderMarkdownInto(el("markdownReader"), markdown || "");
+  openPopup("modalMarkdown");
+}
+function openHtmlViewer(url, title) {
+  el("modalHtmlTitle").textContent = title || "HTML";
+  el("htmlFrame").setAttribute("src", url);
+  openPopup("modalHtml");
+}
+function handleCardKey(e, handler) {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const card = e.target.closest("[data-row]");
+  if (!card || e.target.closest("button")) return;
+  e.preventDefault();
+  handler(parseInt(card.getAttribute("data-row"), 10), card);
+}
+function bindEvents() {
+  on("btnBrand", "click", closeHost);
+  const pageButtons = ["navDesk", "navRoster", "navRecords", "navReview", "menuDesk", "menuRoster", "menuRecords", "menuReview"];
+  for (let i = 0; i < pageButtons.length; i++) {
+    on(pageButtons[i], "click", function () {
+      showPage(this.getAttribute("data-page"));
+    });
+  }
+  on("btnLangZh", "click", function () { setLanguage("zh"); });
+  on("btnLangEn", "click", function () { setLanguage("en"); });
+  on("menuLangZh", "click", function () { setLanguage("zh"); closeMobileMenu(); });
+  on("menuLangEn", "click", function () { setLanguage("en"); closeMobileMenu(); });
+  on("btnHamburger", "click", function (e) {
+    e.stopPropagation();
+    if (el("mobileMenu").hidden) openMobileMenu();
+    else closeMobileMenu();
+  });
+  document.addEventListener("click", function (e) {
+    const menu = el("mobileMenu");
+    if (menu && !menu.hidden) {
+      const burger = el("btnHamburger");
+      if (!menu.contains(e.target) && !burger.contains(e.target)) closeMobileMenu();
+    }
+    const dismiss = e.target.getAttribute && e.target.getAttribute("data-dismiss");
+    if (dismiss) {
+      if (dismiss === "modalConfirm") confirmAccepted = false;
+      closePopup(dismiss);
+    }
+    const link = e.target.closest && e.target.closest(".md-body a");
+    if (!link || link.classList.contains("md-image-link")) return;
+    const href = link.getAttribute("href") || "";
+    const clean = href.split("?")[0].split("#")[0];
+    if (/\.html?$/i.test(clean)) {
+      e.preventDefault();
+      const name = clean.split("/").pop();
+      openHtmlViewer(toPrivateHref(href), name);
+    }
+  });
+  on("btnGoCreateLesson", "click", async function () {
+    await showPage("pageRecords");
+    if (state.page === "pageRecords") await openLessonForm("create");
+  });
+  on("btnGoCreateStudent", "click", async function () {
+    await showPage("pageRoster");
+    if (state.page === "pageRoster") await openStudentForm("create");
+  });
+  on("btnRecentEmpty", "click", async function () {
+    await showPage("pageRecords");
+    if (state.page === "pageRecords") await openLessonForm("create");
+  });
+  on("btnStatAuth", "click", async function () {
+    state.rosterAuth = "partial";
+    state.rosterStage = "";
+    state.rosterSearch = "";
+    syncFilterControls();
+    await showPage("pageRoster");
+  });
+  on("btnRecentAll", "click", async function () {
+    clearRecordFilters();
+    await showPage("pageRecords");
+  });
+  on("btnDeskRetry", "click", function () { renderDeskPage(++state.pageToken); });
+  on("rosterSearch", "input", function () { state.rosterSearch = el("rosterSearch").value; renderRoster(); });
+  on("rosterStageFilter", "change", function () { state.rosterStage = el("rosterStageFilter").value; renderRoster(); });
+  on("rosterAuthFilter", "change", function () { state.rosterAuth = el("rosterAuthFilter").value; renderRoster(); });
+  on("btnRosterCreate", "click", function () { openStudentForm("create"); });
+  on("btnRosterEmptyAction", "click", function () {
+    if (state.rosterEmptyMode === "clear") clearRosterFilters();
+    else openStudentForm("create");
+  });
+  on("btnRosterRetry", "click", function () { renderRosterPage(++state.pageToken); });
+  on("rosterList", "click", function (e) {
+    const btn = e.target.closest("[data-action]");
+    if (btn && el("rosterList").contains(btn)) {
+      e.stopPropagation();
+      const row = parseInt(btn.getAttribute("data-row"), 10);
+      const action = btn.getAttribute("data-action");
+      if (action === "detail") openStudentDetail(row);
+      else if (action === "lessons") goStudentLessons(btn.getAttribute("data-alias") || "");
+      else if (action === "edit") openStudentForm("edit", row);
+      else if (action === "delete") deleteStudent(row);
+      return;
+    }
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    openStudentForm("edit", parseInt(card.getAttribute("data-row"), 10));
+  });
+  on("rosterList", "keydown", function (e) {
+    handleCardKey(e, function (row) { openStudentForm("edit", row); });
+  });
+  on("recordSearch", "input", function () { state.recordSearch = el("recordSearch").value; renderRecords(); });
+  on("recordTypeFilter", "change", function () { state.recordType = el("recordTypeFilter").value; renderRecords(); });
+  on("recordDateFrom", "change", function () { state.recordFrom = el("recordDateFrom").value; renderRecords(); });
+  on("recordDateTo", "change", function () { state.recordTo = el("recordDateTo").value; renderRecords(); });
+  on("btnRecordDraftOnly", "click", function () {
+    state.recordDraftOnly = !state.recordDraftOnly;
+    updateDraftToggle();
+    renderRecords();
+  });
+  on("btnRecordCreate", "click", function () { openLessonForm("create"); });
+  on("btnRecordEmptyAction", "click", function () {
+    if (state.recordEmptyMode === "clear") clearRecordFilters();
+    else openLessonForm("create");
+  });
+  on("btnRecordRetry", "click", function () { renderRecordsPage(++state.pageToken); });
+  on("recordList", "click", function (e) {
+    const btn = e.target.closest("[data-action]");
+    if (btn && el("recordList").contains(btn)) {
+      e.stopPropagation();
+      const row = parseInt(btn.getAttribute("data-row"), 10);
+      const action = btn.getAttribute("data-action");
+      if (action === "archive") {
+        reviewRow = row;
+        currentRow = row;
+        currentTable = "课后记录";
+        showPage("pageReview");
+      } else if (action === "edit") openLessonForm("edit", row);
+      else if (action === "delete") deleteLesson(row);
+      else if (action === "roster") openAliasInRoster(btn.getAttribute("data-alias") || "");
+      return;
+    }
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    openLessonForm("edit", parseInt(card.getAttribute("data-row"), 10));
+  });
+  on("recordList", "keydown", function (e) {
+    handleCardKey(e, function (row) { openLessonForm("edit", row); });
+  });
+  on("recentList", "click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    const row = parseInt(card.getAttribute("data-row"), 10);
+    reviewRow = row;
+    currentRow = row;
+    currentTable = "课后记录";
+    showPage("pageReview");
+  });
+  on("recentList", "keydown", function (e) {
+    handleCardKey(e, function (row) {
+      reviewRow = row;
+      currentRow = row;
+      currentTable = "课后记录";
+      showPage("pageReview");
+    });
+  });
+  on("reviewTypeFilter", "change", function () { state.reviewType = el("reviewTypeFilter").value; renderReviewIndex(); });
+  on("reviewDraftFilter", "change", function () { state.reviewDraft = el("reviewDraftFilter").value; renderReviewIndex(); });
+  on("btnReviewRefresh", "click", function () { renderReviewPage(++state.pageToken); });
+  on("btnReviewRetry", "click", function () { renderReviewPage(++state.pageToken); });
+  on("btnReviewEmptyAction", "click", async function () {
+    if (state.reviewEmptyMode === "clear") clearReviewFilters();
+    else {
+      await showPage("pageRecords");
+      if (state.page === "pageRecords") await openLessonForm("create");
+    }
+  });
+  on("reviewIndex", "click", function (e) {
+    const card = e.target.closest("[data-row]");
+    if (!card) return;
+    loadReviewDetail(parseInt(card.getAttribute("data-row"), 10));
+  });
+  on("reviewIndex", "keydown", function (e) {
+    handleCardKey(e, function (row) { loadReviewDetail(row); });
+  });
+  on("btnReviewPrev", "click", function () { moveReview(-1); });
+  on("btnReviewNext", "click", function () { moveReview(1); });
+  on("btnReviewEdit", "click", function () { if (reviewRow) openLessonForm("edit", reviewRow); });
+  on("btnReviewDelete", "click", function () { if (reviewRow) deleteLesson(reviewRow); });
+  on("btnReviewReread", "click", rereadDraft);
+  on("btnExpandDraft", "click", function () {
+    if (!state.reviewCache) return;
+    const draft = state.reviewCache.values["课后档案草稿"];
+    if (!String(draft || "").trim()) return;
+    openReader(draft);
+  });
+  for (let i = 0; i < 4; i++) {
+    on("check" + i, "change", function () {
+      if (!reviewRow || !state.reviewCache) return;
+      const flags = [];
+      for (let c = 0; c < 4; c++) flags.push(!!el("check" + c).checked);
+      sessionChecked[reviewRow] = flags;
+      updateCheckedBadge();
+    });
+  }
+  on("formStudent", "submit", function (e) { e.preventDefault(); saveStudent(); });
+  on("btnStudentCancel", "click", function () { closePopup("modalStudent"); });
+  on("btnStudentClose", "click", function () { closePopup("modalStudent"); });
+  on("formStudent_家长沟通授权_switch", "click", function () { toggleSwitch("formStudent_家长沟通授权"); });
+  on("formStudent_课堂状态分享授权_switch", "click", function () { toggleSwitch("formStudent_课堂状态分享授权"); });
+  on("btnDetailClose", "click", function () { closePopup("modalStudentDetail"); });
+  on("btnDetailEdit", "click", function () { if (state.detailRow) openStudentForm("edit", state.detailRow); });
+  on("formLesson", "submit", function (e) {
+    e.preventDefault();
+    if (state.lessonLocked) { toast(t("pollBusy")); return; }
+    saveLesson();
+  });
+  on("btnLessonCancel", "click", function () { closePopup("modalLesson"); });
+  on("btnLessonClose", "click", function () { closePopup("modalLesson"); });
+  on("formLesson_学员化名", "change", updateLessonHints);
+  on("formLesson_上课日期", "change", updateLessonHints);
+  on("formLesson_课次类型", "change", updateLessonHints);
+  on("formLesson_课堂速记", "input", updateLessonHints);
+  on("btnLessonExpand", "click", function () {
+    if (!String(state.lessonDraftText || "").trim()) return;
+    openReader(state.lessonDraftText);
+  });
+  on("btnConfirmOk", "click", function () { confirmAccepted = true; closePopup("modalConfirm"); });
+  on("btnConfirmCancel", "click", function () { confirmAccepted = false; closePopup("modalConfirm"); });
+  on("btnMarkdownClose", "click", function () { closePopup("modalMarkdown"); });
+  on("btnHtmlClose", "click", function () { closePopup("modalHtml"); });
+}
+async function initialize() {
+  if (typeof marked !== "undefined" && marked && typeof marked.setOptions === "function") {
+    marked.setOptions({ gfm: true, breaks: false });
+  }
+  initLanguage();
+  bindEvents();
+  updateNavMode();
+  bindKeyboard();
+  window.airBack = airBack;
+  document.documentElement.classList.remove("booting");
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { updateNavMode(); });
+  await applyTheme();
+  await showPage("pageDesk", { skipHistory: true });
+}
+
+(async () => {    await initialize();  })();
+</script>
+</body>
+</html>

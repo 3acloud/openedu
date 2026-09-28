@@ -1,0 +1,3231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学错题DNA</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root {
+    --paper: #F4EFE6;
+    --paper-deep: #E7DFD0;
+    --indigo: #1E2348;
+    --indigo-2: #2C335F;
+    --amber: #E08A3C;
+    --amber-deep: #C56F22;
+    --gold: #C6A15B;
+    --card: #FFFFFF;
+    --ink: #1E2348;
+    --muted: #5E5A70;
+    --line: rgba(30, 35, 72, 0.12);
+    --shadow: 0 12px 32px rgba(30, 35, 72, 0.08);
+    --danger: #A33B4A;
+    --nav-h: 64px;
+    --kb: 0px;
+    --c-concept: #5C6BFF;
+    --c-calc: #E08A3C;
+    --c-read: #2A9D8F;
+    --c-method: #C45C76;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    --paper: #12141C;
+    --paper-deep: #1B1E2C;
+    --indigo: #1E2348;
+    --indigo-2: #2A315C;
+    --card: #1C2033;
+    --ink: #F4EFE6;
+    --muted: #B7B3C8;
+    --line: rgba(244, 239, 230, 0.14);
+    --shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    --gold: #D4B36A;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea { box-sizing: border-box; font-size: 16px; scroll-margin-top: 88px; scroll-margin-bottom: calc(96px + var(--kb, 0px)); }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 320px at 0% -10%, rgba(224, 138, 60, 0.16), transparent 55%),
+      radial-gradient(700px 280px at 100% 0%, rgba(92, 107, 255, 0.08), transparent 50%),
+      var(--paper);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body.modal-open { overflow: hidden; }
+  button, input, select, textarea { font-family: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.55; }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  .watermark {
+    position: fixed; right: -40px; bottom: -30px; width: min(420px, 70vw); opacity: 0.09;
+    color: var(--indigo); pointer-events: none; z-index: 0;
+  }
+  html[data-theme="dark"] .watermark { opacity: 0.14; color: var(--gold); }
+  #navFixed {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+  }
+  #topNav {
+    background: var(--indigo);
+    color: #F7F3EA;
+    box-shadow: 0 8px 24px rgba(18, 16, 32, 0.22);
+  }
+  #navBar {
+    display: flex; align-items: center; gap: 12px;
+    min-height: var(--nav-h); padding: 0 14px 0 12px;
+    width: 100%; min-width: 0; overflow: hidden;
+  }
+  #brandBtn {
+    display: flex; align-items: center; gap: 10px;
+    background: transparent; border: 0; color: #F7F3EA;
+    padding: 8px 6px; min-width: 0; text-align: left;
+  }
+  .logo-helix { width: 28px; height: 40px; flex: 0 0 auto; color: var(--gold); }
+  .brand-name {
+    font-family: "Palatino Linotype", Palatino, "Songti SC", "STSong", "Noto Serif SC", serif;
+    font-size: 18px; font-weight: 700; letter-spacing: 0.03em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48vw;
+  }
+  #navLinks {
+    display: flex; flex-wrap: nowrap; align-items: stretch; gap: 2px;
+    margin-left: auto; white-space: nowrap;
+  }
+  body.nav-collapsed #navLinks { display: none; }
+  .nav-tab {
+    background: transparent; border: 0; color: rgba(247, 243, 234, 0.74);
+    padding: 0 14px; height: var(--nav-h); font-size: 15px; font-weight: 650;
+    border-bottom: 3px solid transparent; white-space: nowrap; flex: 0 0 auto;
+  }
+  .nav-tab.is-active { color: #fff; border-bottom-color: var(--amber); }
+  .lang-switch {
+    display: flex; align-items: center; gap: 0; margin-left: 8px; align-self: center;
+    border: 1px solid rgba(247, 243, 234, 0.28); border-radius: 999px; overflow: hidden;
+  }
+  .lang-switch button {
+    background: transparent; border: 0; color: rgba(247, 243, 234, 0.8);
+    padding: 6px 10px; font-size: 13px; font-weight: 700;
+  }
+  .lang-switch button.is-on { background: var(--amber); color: var(--indigo); }
+  #navHamburger {
+    margin-left: auto; width: 44px; height: 44px; border-radius: 12px;
+    border: 1px solid rgba(247, 243, 234, 0.28); background: transparent; color: #fff;
+    display: none; align-items: center; justify-content: center; gap: 0;
+  }
+  .ham-lines { display: flex; flex-direction: column; gap: 4px; }
+  .ham-lines span { display: block; width: 16px; height: 2px; background: currentColor; border-radius: 2px; }
+  body.nav-collapsed #navHamburger { display: inline-flex; }
+  #mobileMenu { display: none; flex-direction: column; background: var(--indigo); border-top: 1px solid rgba(247, 243, 234, 0.12); }
+  body.nav-collapsed #mobileMenu.open { display: flex; }
+  .mob-tab {
+    background: transparent; border: 0; color: rgba(247, 243, 234, 0.86);
+    text-align: left; padding: 14px 18px; font-size: 16px; font-weight: 650;
+    border-bottom: 1px solid rgba(247, 243, 234, 0.08);
+  }
+  .mob-tab.is-active { color: var(--amber); }
+  .mob-lang { display: flex; gap: 8px; padding: 12px 16px 16px; }
+  .mob-lang button {
+    flex: 1; border-radius: 999px; border: 1px solid rgba(247, 243, 234, 0.3);
+    background: transparent; color: #fff; padding: 10px 12px; font-weight: 700;
+  }
+  .mob-lang button.is-on { background: var(--amber); color: var(--indigo); border-color: var(--amber); }
+  #mainContent { position: relative; z-index: 1; padding: calc(var(--nav-h) + 22px) 18px 0; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  .page-title, .hero-title, .brand-name {
+    font-family: "Palatino Linotype", Palatino, "Songti SC", "STSong", "Noto Serif SC", serif;
+  }
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 8px 18px;
+    align-items: center; margin-bottom: 22px;
+  }
+  .hero-title { font-size: clamp(34px, 5vw, 52px); line-height: 1.15; margin: 0 0 10px; }
+  .lede { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 640px; }
+  .hero-helix { color: var(--gold); width: 150px; height: 210px; justify-self: end; }
+  .page-head {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 16px;
+  }
+  .page-title { font-size: clamp(28px, 4vw, 40px); margin: 0 0 8px; line-height: 1.2; }
+  .section-title { font-size: 20px; margin: 26px 0 12px; font-weight: 750; }
+  .stat-grid, .dim-grid { display: grid; gap: 14px; }
+  .stat-grid { grid-template-columns: repeat(3, 1fr); }
+  .dim-grid { grid-template-columns: repeat(4, 1fr); margin-top: 14px; }
+  .stat-card, .dim-card, .gene-card, .panel, .hl-card, .topic-row, .band {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .stat-card, .dim-card {
+    text-align: left; padding: 16px 16px 14px; transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+  .stat-num, .dim-num {
+    display: block; font-variant-numeric: tabular-nums;
+    font-family: "Palatino Linotype", Palatino, "Songti SC", serif;
+    font-size: clamp(32px, 4vw, 46px); line-height: 1; margin-bottom: 8px;
+  }
+  .stat-label, .dim-label { color: var(--muted); font-size: 14px; }
+  .dim-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-height: 112px; }
+  .dim-meta { display: inline-flex; align-items: center; gap: 8px; }
+  .dim-dot, .dim-pill i, .band-name i {
+    width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: 0 0 auto;
+  }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .gene-card { padding: 14px 14px 12px; transition: transform 0.18s ease, border-color 0.18s ease; }
+  .recent-card { cursor: pointer; }
+  .gene-main { cursor: pointer; }
+  .gene-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chip, .dim-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700;
+    background: var(--paper-deep); color: var(--ink);
+  }
+  .gene-topic { margin: 10px 0 6px; font-size: 18px; line-height: 1.35; overflow-wrap: anywhere; }
+  .gene-q { margin: 0 0 10px; color: var(--muted); line-height: 1.55; overflow-wrap: anywhere; }
+  .gene-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; clear: both; }
+  .gene-compare div {
+    background: var(--paper-deep); border-radius: 12px; padding: 8px 10px; min-width: 0;
+  }
+  .gene-compare span { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .gene-compare b { display: block; font-weight: 650; font-size: 13px; overflow-wrap: anywhere; }
+  .thumb {
+    float: right; width: 74px; height: 74px; margin: 0 0 8px 10px; border-radius: 14px;
+    overflow: hidden; background: var(--paper-deep); border: 1px dashed rgba(198, 161, 91, 0.7);
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gene-main::after, .recent-card::after { content: ""; display: block; clear: both; }
+  .gene-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .gene-actions .btn { flex: 1; }
+  .panel { padding: 16px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .search-wrap { flex: 1 1 280px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .search-wrap input { flex: 1 1 180px; min-width: 160px; }
+  .search-wrap i { color: var(--muted); }
+  .toolbar select { flex: 0 1 180px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+  .span-2 { grid-column: 1 / -1; }
+  .label { display: block; font-size: 13px; font-weight: 750; margin-bottom: 6px; }
+  .req::after { content: " *"; color: var(--amber-deep); }
+  input[type="text"], select, textarea {
+    width: 100%; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 12px; padding: 12px 12px; line-height: 1.5;
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  .field-error { min-height: 18px; margin: 4px 2px 0; color: var(--danger); font-size: 12px; }
+  .hint {
+    margin: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(198, 161, 91, 0.55);
+    background: rgba(224, 138, 60, 0.1); color: var(--ink); line-height: 1.6; font-size: 13px;
+  }
+  .image-box {
+    min-height: 140px; border-radius: 16px; border: 1.5px dashed rgba(198, 161, 91, 0.9);
+    display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.28);
+  }
+  .image-box.has-image { border-style: solid; }
+  html[data-theme="dark"] .image-box { background: rgba(255,255,255,0.03); }
+  .image-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); padding: 18px; }
+  .image-empty i { font-size: 28px; color: var(--gold); }
+  #imagePreviewImg { max-width: 100%; max-height: 260px; display: block; cursor: pointer; }
+  .image-actions, .action-row, .dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .image-actions { margin-top: 10px; }
+  .btn {
+    border-radius: 999px; padding: 11px 16px; font-weight: 750; font-size: 14px; border: 1px solid transparent;
+    white-space: nowrap; flex: 0 0 auto;
+  }
+  .btn-primary { background: var(--amber); color: #1E2348; border-color: var(--amber); }
+  .btn-primary:hover { background: var(--amber-deep); }
+  .btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+  .btn-line { background: transparent; border-color: var(--amber); color: var(--amber-deep); }
+  html[data-theme="dark"] .btn-line { color: #F0C08A; }
+  .btn-danger { background: transparent; border-color: rgba(163, 59, 74, 0.45); color: var(--danger); }
+  .mode-note {
+    margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: rgba(92, 107, 255, 0.1); color: var(--ink);
+  }
+  .analysis-card { margin-top: 16px; }
+  .wait-line {
+    padding: 14px 16px; border-radius: 12px; background: rgba(224, 138, 60, 0.14); line-height: 1.6;
+  }
+  .analysis-empty { color: var(--muted); line-height: 1.6; }
+  .empty-state, .fail-state, .loading-state {
+    text-align: center; padding: 28px 16px; color: var(--muted);
+  }
+  .empty-state p, .fail-state p { margin: 0 0 14px; line-height: 1.6; }
+  .sample-note {
+    margin: 0 0 12px; padding: 10px 12px; border-left: 3px solid var(--gold); background: rgba(198, 161, 91, 0.12);
+    border-radius: 0 12px 12px 0; line-height: 1.6;
+  }
+  .band {
+    width: 100%; display: grid; grid-template-columns: minmax(92px, 140px) 1fr auto;
+    gap: 10px; align-items: center; padding: 12px 14px; margin-bottom: 10px; text-align: left;
+  }
+  .band-name { display: inline-flex; align-items: center; gap: 8px; font-weight: 750; }
+  .band-track { height: 12px; border-radius: 999px; background: var(--paper-deep); overflow: hidden; }
+  .band-fill { display: block; height: 100%; border-radius: inherit; }
+  .band-count { font-variant-numeric: tabular-nums; font-weight: 800; min-width: 28px; text-align: right; }
+  .split { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 14px; margin-top: 14px; }
+  .stage-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stage-cell { background: var(--paper-deep); border-radius: 14px; padding: 12px; }
+  .stage-cell b { display: block; font-size: 28px; font-family: "Palatino Linotype", Palatino, "Songti SC", serif; margin-top: 4px; }
+  .stage-meter { height: 8px; border-radius: 999px; background: rgba(30, 35, 72, 0.08); margin-top: 8px; overflow: hidden; }
+  html[data-theme="dark"] .stage-meter { background: rgba(255,255,255,0.08); }
+  .stage-meter i { display: block; height: 100%; background: var(--amber); }
+  .topic-row {
+    width: 100%; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(60px, 1fr) auto;
+    gap: 8px; align-items: center; padding: 10px 12px; margin-bottom: 8px; text-align: left;
+  }
+  .topic-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+  .topic-bar { height: 8px; border-radius: 999px; background: var(--paper-deep); overflow: hidden; }
+  .topic-bar i { display: block; height: 100%; background: var(--indigo); }
+  html[data-theme="dark"] .topic-bar i { background: var(--gold); }
+  .topic-count { font-variant-numeric: tabular-nums; font-weight: 800; }
+  .hl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .hl-card { padding: 12px; }
+  .hl-k { font-size: 12px; font-weight: 800; color: var(--amber-deep); margin-bottom: 6px; }
+  html[data-theme="dark"] .hl-k { color: #F0C08A; }
+  .status-tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+  .st-wait { background: #E7E2D8; color: #5C5870; }
+  .st-early { background: rgba(196, 92, 118, 0.16); color: #C45C76; }
+  .st-hard { background: rgba(163, 59, 74, 0.16); color: #A33B4A; }
+  .st-break { background: rgba(92, 107, 255, 0.16); color: #5C6BFF; }
+  .st-done { background: rgba(42, 157, 143, 0.18); color: #1D7A70; }
+  .md-body { line-height: 1.75; overflow-wrap: anywhere; }
+  .md-body h1, .md-body h2, .md-body h3, .md-body h4, .md-body h5, .md-body h6 { line-height: 1.35; margin: 1em 0 0.4em; }
+  .md-body p { margin: 0.5em 0; }
+  .md-body a { color: var(--amber-deep); }
+  .md-body img { max-width: 100%; height: auto; border-radius: 12px; cursor: pointer; }
+  .md-body pre { overflow: auto; padding: 12px; border-radius: 12px; background: var(--paper-deep); }
+  .md-body code { font-family: Consolas, "Courier New", monospace; background: var(--paper-deep); padding: 0 4px; border-radius: 6px; }
+  .md-body pre code { background: transparent; padding: 0; }
+  .md-body blockquote { margin: 0.6em 0; padding: 4px 12px; border-left: 3px solid var(--gold); color: var(--muted); }
+  .md-body ul, .md-body ol { padding-left: 1.3em; }
+  .table-scroll { overflow-x: auto; max-width: 100%; }
+  .md-body table { border-collapse: collapse; min-width: 420px; }
+  .md-body th, .md-body td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; text-align: left; }
+  .md-body th { background: var(--paper-deep); }
+  .overlay {
+    position: fixed; inset: 0; z-index: 2000; background: rgba(18, 16, 28, 0.52);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  #confirmOverlay { z-index: 3200; }
+  .dialog {
+    background: var(--card); color: var(--ink); width: min(840px, 100%);
+    max-height: calc(100vh - 48px); overflow: auto; border-radius: 20px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32); -webkit-overflow-scrolling: touch;
+  }
+  #confirmDialog { width: min(440px, 100%); }
+  .dialog-head, .confirm-body { display: flex; justify-content: space-between; gap: 12px; padding: 16px 16px 8px; }
+  .confirm-body { flex-direction: column; padding: 18px 18px 8px; }
+  .dialog-head h2 { margin: 0; font-size: 24px; line-height: 1.3; overflow-wrap: anywhere; font-family: "Palatino Linotype", Palatino, "Songti SC", serif; }
+  .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .dialog-head-actions { display: flex; gap: 8px; align-items: flex-start; flex: 0 0 auto; }
+  .dialog-body { padding: 6px 16px 16px; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .block-label { margin: 14px 0 6px; font-size: 13px; color: var(--muted); font-weight: 800; }
+  .prose { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; background: var(--paper-deep); border-radius: 14px; padding: 12px; }
+  #detailImageLink { display: block; margin-top: 8px; }
+  #detailImage { width: 100%; max-height: 420px; object-fit: contain; border-radius: 16px; background: var(--paper-deep); cursor: pointer; }
+  #toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    z-index: 4000; background: var(--indigo); color: #F7F3EA; padding: 12px 16px;
+    border-radius: 999px; max-width: min(520px, calc(100% - 32px)); box-shadow: var(--shadow);
+    line-height: 1.5; text-align: center;
+  }
+  .page-end-space { height: 40px; }
+  .popup-end-space { height: 12px; }
+  @media (hover: hover) {
+    .stat-card:hover, .dim-card:hover, .gene-card:hover, .band:hover, .topic-row:hover {
+      transform: translateY(-4px); border-color: var(--gold);
+    }
+  }
+  @media (max-width: 900px) {
+    .dim-grid { grid-template-columns: 1fr 1fr; }
+    .hero { grid-template-columns: 1fr 120px; }
+    .hero-helix { width: 110px; height: 150px; }
+  }
+  @media (max-width: 760px) {
+    .stat-grid, .form-grid, .split, .compare-grid, .gene-compare { grid-template-columns: 1fr; }
+    .span-2 { grid-column: auto; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-helix { width: 88px; height: 112px; justify-self: start; }
+    .page-head { flex-direction: column; align-items: stretch; }
+    .page-end-space { height: 128px; }
+    .popup-end-space { height: 140px; }
+    #formWrong { padding-bottom: calc(120px + var(--kb, 0px)); }
+    .action-row .btn, .dialog-actions .btn, .image-actions .btn { width: 100%; }
+    #detailOverlay { padding: 0; align-items: stretch; }
+    #detailDialog { width: 100%; max-height: 100%; height: 100%; border-radius: 0; }
+    .band { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<svg class="watermark" viewBox="0 0 120 200" fill="none" aria-hidden="true">
+  <path d="M30 8C30 8 90 28 90 50C90 72 30 72 30 94C30 116 90 116 90 138C90 160 30 170 30 192" stroke="currentColor" stroke-width="1.4"/>
+  <path d="M90 8C90 8 30 28 30 50C30 72 90 72 90 94C90 116 30 116 30 138C30 160 90 170 90 192" stroke="currentColor" stroke-width="1.4"/>
+  <path d="M38 28h44M36 50h48M38 72h44M36 94h48M38 116h44M36 138h48M38 160h44" stroke="currentColor" stroke-width="1"/>
+</svg>
+<div id="navFixed">
+  <nav id="topNav" style="position: relative; z-index: 1001;">
+    <div id="navBar">
+      <button id="brandBtn" type="button">
+        <svg class="logo-helix" viewBox="0 0 64 96" fill="none" aria-hidden="true">
+          <path d="M16 4C16 4 48 16 48 28C48 40 16 40 16 52C16 64 48 64 48 76C48 88 16 92 16 92" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M48 4C48 4 16 16 16 28C16 40 48 40 48 52C48 64 16 64 16 76C16 88 48 92 48 92" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M20 18h24M18 32h28M20 46h24M18 60h28M20 74h24" stroke="currentColor" stroke-width="1.1"/>
+        </svg>
+        <span class="brand-name" data-i18n="appName">数学错题DNA</span>
+      </button>
+      <div id="navLinks">
+        <button type="button" class="nav-tab is-active" id="navHome" data-page="home"><span data-i18n="navHome">首页</span></button>
+        <button type="button" class="nav-tab" id="navRecord" data-page="record"><span data-i18n="navRecord">记下错题</span></button>
+        <button type="button" class="nav-tab" id="navArchive" data-page="archive"><span data-i18n="navArchive">错题档案</span></button>
+        <button type="button" class="nav-tab" id="navSpectrum" data-page="spectrum"><span data-i18n="navSpectrum">弱项光谱</span></button>
+        <div id="langSwitch" class="lang-switch">
+          <button type="button" id="langBtnCn">中</button>
+          <button type="button" id="langBtnEn">EN</button>
+        </div>
+      </div>
+      <button type="button" id="navHamburger" aria-expanded="false" data-i18n-aria="openMenu">
+        <span class="ham-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+    <div id="mobileMenu">
+      <button type="button" class="mob-tab is-active" id="mobHome" data-page="home"><span data-i18n="navHome">首页</span></button>
+      <button type="button" class="mob-tab" id="mobRecord" data-page="record"><span data-i18n="navRecord">记下错题</span></button>
+      <button type="button" class="mob-tab" id="mobArchive" data-page="archive"><span data-i18n="navArchive">错题档案</span></button>
+      <button type="button" class="mob-tab" id="mobSpectrum" data-page="spectrum"><span data-i18n="navSpectrum">弱项光谱</span></button>
+      <div class="mob-lang">
+        <button type="button" id="mobLangCn">中文</button>
+        <button type="button" id="mobLangEn">English</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<main id="mainContent">
+  <div class="wrap">
+    <section id="pageHome" class="page">
+      <header class="hero">
+        <div>
+          <h1 class="hero-title" data-i18n="appName">数学错题DNA</h1>
+          <p class="lede" data-i18n="homeLede">把每道错题拆成可追踪的根因基因，看清真正卡住的那一层</p>
+          <div style="margin-top:16px;">
+            <button type="button" class="btn btn-primary" id="homeNewBtn"><span data-i18n="logThis">+ 记下这道错题</span></button>
+          </div>
+        </div>
+        <svg class="hero-helix" viewBox="0 0 120 200" fill="none" aria-hidden="true">
+          <path d="M30 8C30 8 90 28 90 50C90 72 30 72 30 94C30 116 90 116 90 138C90 160 30 170 30 192" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M90 8C90 8 30 28 30 50C30 72 90 72 90 94C90 116 30 116 30 138C30 160 90 170 90 192" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M38 28h44M36 50h48M38 72h44M36 94h48M38 116h44M36 138h48M38 160h44" stroke="currentColor" stroke-width="1.1"/>
+        </svg>
+      </header>
+      <div class="stat-grid">
+        <button type="button" class="stat-card" id="statTotal">
+          <span class="stat-num" id="homeCountTotal">…</span>
+          <span class="stat-label" data-i18n="totalErrors">错题总数</span>
+        </button>
+        <button type="button" class="stat-card" id="statJunior">
+          <span class="stat-num" id="homeCountJunior">…</span>
+          <span class="stat-label" data-i18n="juniorErrors">初中错题</span>
+        </button>
+        <button type="button" class="stat-card" id="statSenior">
+          <span class="stat-num" id="homeCountSenior">…</span>
+          <span class="stat-label" data-i18n="seniorErrors">高中错题</span>
+        </button>
+      </div>
+      <div class="dim-grid" id="homeDims">
+        <button type="button" class="dim-card" data-dim="概念模糊" id="dimCard0">
+          <span class="dim-num" id="homeCountDim0">…</span>
+          <span class="dim-meta"><span class="dim-dot" style="background:#5C6BFF"></span><span class="dim-label" data-i18n="dimConcept">概念模糊</span></span>
+        </button>
+        <button type="button" class="dim-card" data-dim="计算失误" id="dimCard1">
+          <span class="dim-num" id="homeCountDim1">…</span>
+          <span class="dim-meta"><span class="dim-dot" style="background:#E08A3C"></span><span class="dim-label" data-i18n="dimCalc">计算失误</span></span>
+        </button>
+        <button type="button" class="dim-card" data-dim="读题失误" id="dimCard2">
+          <span class="dim-num" id="homeCountDim2">…</span>
+          <span class="dim-meta"><span class="dim-dot" style="background:#2A9D8F"></span><span class="dim-label" data-i18n="dimRead">读题失误</span></span>
+        </button>
+        <button type="button" class="dim-card" data-dim="方法用错" id="dimCard3">
+          <span class="dim-num" id="homeCountDim3">…</span>
+          <span class="dim-meta"><span class="dim-dot" style="background:#C45C76"></span><span class="dim-label" data-i18n="dimMethod">方法用错</span></span>
+        </button>
+      </div>
+      <h2 class="section-title" data-i18n="recent">最近错题</h2>
+      <div id="homeRecentLoading" class="loading-state" data-i18n="loading">读取中</div>
+      <div id="homeRecentFail" class="fail-state" hidden data-i18n="readFail">暂时无法读取，请稍后再试</div>
+      <div id="homeRecentEmpty" class="empty-state" hidden data-i18n="noRecent">还没有错题</div>
+      <div id="homeRecent" class="card-grid"></div>
+      <div class="page-end-space"></div>
+    </section>
+
+    <section id="pageRecord" class="page" hidden>
+      <div class="page-head">
+        <div>
+          <h1 class="page-title" data-i18n="navRecord">记下错题</h1>
+          <p class="lede" data-i18n="recordLede">先选通用维度，再写下题目和两种答案。分析会沿用你选的维度，不会改判</p>
+        </div>
+        <button type="button" class="btn btn-ghost" id="recordToArchive"><span data-i18n="toArchive">去错题档案</span></button>
+      </div>
+      <p id="recordModeNote" class="mode-note" hidden data-i18n="editingNote">正在修订已有记录</p>
+      <form id="formWrong" class="panel" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label class="label req" for="formWrong_学段" data-i18n="stage">学段</label>
+            <select id="formWrong_学段" name="学段">
+              <option value="" data-i18n="pleaseSelect">请选择</option>
+              <option value="初中" data-i18n="stageJunior">初中</option>
+              <option value="高中" data-i18n="stageSenior">高中</option>
+            </select>
+            <div class="field-error" id="formWrong_学段_error"></div>
+          </div>
+          <div class="field">
+            <label class="label req" for="formWrong_通用维度" data-i18n="dimension">通用维度</label>
+            <select id="formWrong_通用维度" name="通用维度">
+              <option value="" data-i18n="pleaseSelect">请选择</option>
+              <option value="概念模糊" data-i18n="dimConcept">概念模糊</option>
+              <option value="计算失误" data-i18n="dimCalc">计算失误</option>
+              <option value="读题失误" data-i18n="dimRead">读题失误</option>
+              <option value="方法用错" data-i18n="dimMethod">方法用错</option>
+            </select>
+            <div class="field-error" id="formWrong_通用维度_error"></div>
+          </div>
+          <div class="field span-2">
+            <p id="formWrong_stageHint" class="hint" hidden data-i18n="seniorHint">高中只覆盖高一衔接段的预备知识与函数；几何与代数、概率与统计仍可记录，分析只保留通用维度，不会编造未覆盖的子类型</p>
+          </div>
+          <div class="field span-2">
+            <label class="label req" for="formWrong_知识点" data-i18n="knowledge">知识点</label>
+            <input type="text" id="formWrong_知识点" name="知识点" autocomplete="off" data-i18n-placeholder="knowledgePh" placeholder="例如：一次函数">
+            <div class="field-error" id="formWrong_知识点_error"></div>
+          </div>
+          <div class="field span-2">
+            <label class="label req" for="formWrong_题目" data-i18n="question">题目</label>
+            <textarea id="formWrong_题目" name="题目" spellcheck="false"></textarea>
+            <div class="field-error" id="formWrong_题目_error"></div>
+          </div>
+          <div class="field">
+            <label class="label req" for="formWrong_学生答案" data-i18n="studentAnswer">学生答案</label>
+            <textarea id="formWrong_学生答案" name="学生答案" spellcheck="false"></textarea>
+            <div class="field-error" id="formWrong_学生答案_error"></div>
+          </div>
+          <div class="field">
+            <label class="label req" for="formWrong_正确答案" data-i18n="correctAnswer">正确答案</label>
+            <textarea id="formWrong_正确答案" name="正确答案" spellcheck="false"></textarea>
+            <div class="field-error" id="formWrong_正确答案_error"></div>
+          </div>
+          <div class="field span-2">
+            <span class="label" data-i18n="image">错题图片</span>
+            <div class="image-box" id="imageBox">
+              <div class="image-empty" id="imageEmpty">
+                <i class="fa-regular fa-image" aria-hidden="true"></i>
+                <span data-i18n="noImage">无图片</span>
+              </div>
+              <img id="imagePreviewImg" alt="" hidden>
+            </div>
+            <div class="image-actions">
+              <button type="button" class="btn btn-ghost" id="btnCapture"><i class="fa-solid fa-camera" aria-hidden="true"></i> <span data-i18n="capture">拍照</span></button>
+              <button type="button" class="btn btn-ghost" id="btnSelectImage"><i class="fa-regular fa-images" aria-hidden="true"></i> <span data-i18n="album">从相册选择</span></button>
+              <button type="button" class="btn btn-danger" id="btnRemoveImage" hidden><i class="fa-regular fa-trash-can" aria-hidden="true"></i> <span data-i18n="removeImage">移除图片</span></button>
+            </div>
+            <input type="hidden" id="formWrong_错题图片" name="错题图片" value="">
+          </div>
+        </div>
+        <div class="action-row" id="newActions" style="margin-top:16px;">
+          <button type="button" class="btn btn-ghost" id="btnClear"><span data-i18n="clear">清空</span></button>
+          <button type="button" class="btn btn-primary" id="btnSubmitDecode"><span data-i18n="submitDecode">提交解码</span></button>
+        </div>
+        <div class="action-row" id="editActions" style="margin-top:16px;" hidden>
+          <button type="button" class="btn btn-ghost" id="btnCancelEdit"><span data-i18n="cancelEdit">取消修订</span></button>
+          <button type="button" class="btn btn-primary" id="btnSaveEdit"><span data-i18n="saveEdit">保存修订</span></button>
+          <button type="button" class="btn btn-line" id="btnSaveAsNew"><span data-i18n="saveAsNew">另存并重新解码</span></button>
+        </div>
+      </form>
+      <section class="panel analysis-card" id="analysisPanel">
+        <h2 class="section-title" style="margin-top:0;" data-i18n="analysisTitle">错因分析</h2>
+        <div id="analysisWait" class="wait-line" hidden data-i18n="waiting">正在写入错因基因，请稍候</div>
+        <div id="analysisBody"></div>
+      </section>
+      <div class="page-end-space"></div>
+    </section>
+
+    <section id="pageArchive" class="page" hidden>
+      <div class="page-head">
+        <div>
+          <h1 class="page-title" data-i18n="navArchive">错题档案</h1>
+          <p class="lede" data-i18n="archiveLede">每张卡片是一条错题基因，点开就能修订</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="archiveNewBtn"><span data-i18n="logError">+ 记下错题</span></button>
+      </div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <label class="sr-only" for="archiveSearch" data-i18n="searchLabel">搜索</label>
+          <input type="text" id="archiveSearch" data-i18n-placeholder="searchPlaceholder" placeholder="按知识点或题目搜索">
+          <button type="button" class="btn btn-ghost" id="btnClearSearch"><span data-i18n="clearSearch">清空搜索</span></button>
+        </div>
+        <label class="sr-only" for="archiveFilterStage" data-i18n="stage">学段</label>
+        <select id="archiveFilterStage">
+          <option value="" data-i18n="allStages">全部学段</option>
+          <option value="初中" data-i18n="stageJunior">初中</option>
+          <option value="高中" data-i18n="stageSenior">高中</option>
+        </select>
+        <label class="sr-only" for="archiveFilterDim" data-i18n="dimension">通用维度</label>
+        <select id="archiveFilterDim">
+          <option value="" data-i18n="allDims">全部维度</option>
+          <option value="概念模糊" data-i18n="dimConcept">概念模糊</option>
+          <option value="计算失误" data-i18n="dimCalc">计算失误</option>
+          <option value="读题失误" data-i18n="dimRead">读题失误</option>
+          <option value="方法用错" data-i18n="dimMethod">方法用错</option>
+        </select>
+        <button type="button" class="btn btn-ghost" id="btnResetFilter"><span data-i18n="resetFilter">重置筛选</span></button>
+        <label class="sr-only" for="archiveSort" data-i18n="sortLabel">排序</label>
+        <select id="archiveSort">
+          <option value="default" data-i18n="sortDefault">默认顺序</option>
+          <option value="knowledge" data-i18n="sortKnowledge">按知识点</option>
+          <option value="dimension" data-i18n="sortDimension">按通用维度</option>
+        </select>
+      </div>
+      <div id="archiveLoading" class="loading-state" data-i18n="loading">读取中</div>
+      <div id="archiveFail" class="fail-state panel" hidden><p data-i18n="readFail">暂时无法读取，请稍后再试</p></div>
+      <div id="archiveEmpty" class="empty-state panel" hidden>
+        <p data-i18n="noRecords">还没有错题</p>
+        <button type="button" class="btn btn-primary" id="archiveFirstBtn"><span data-i18n="logFirst">记下第一道错题</span></button>
+      </div>
+      <div id="archiveNoMatch" class="empty-state panel" hidden>
+        <p data-i18n="noMatch">没有符合条件的错题</p>
+        <button type="button" class="btn btn-ghost" id="archiveNoMatchReset"><span data-i18n="resetFilter">重置筛选</span></button>
+      </div>
+      <div id="archiveList" class="card-grid"></div>
+      <div class="page-end-space"></div>
+    </section>
+
+    <section id="pageSpectrum" class="page" hidden>
+      <div class="page-head">
+        <div>
+          <h1 class="page-title" data-i18n="navSpectrum">弱项光谱</h1>
+          <p class="lede" data-i18n="spectrumLede">四条基因带只统计你已经记下的通用维度，不预测没写过的错法</p>
+        </div>
+      </div>
+      <div id="spectrumLoading" class="loading-state" data-i18n="loading">读取中</div>
+      <div id="spectrumFail" class="fail-state panel" hidden><p data-i18n="readFail">暂时无法读取，请稍后再试</p></div>
+      <div id="spectrumEmpty" class="empty-state panel" hidden>
+        <p data-i18n="spectrumEmptyText">还没有可统计的错题</p>
+        <button type="button" class="btn btn-primary" id="spectrumGoBtn"><span data-i18n="goLog">去记下错题</span></button>
+      </div>
+      <div id="spectrumMain" hidden>
+        <p id="spectrumNote" class="sample-note" hidden data-i18n="sampleNote">样本还少，这只是目前的分布，不是稳定结论</p>
+        <div id="spectrumBands"></div>
+        <div class="split">
+          <section class="panel">
+            <h2 class="section-title" style="margin-top:0;" data-i18n="stageCompare">学段对照</h2>
+            <div class="stage-pair">
+              <div class="stage-cell">
+                <span data-i18n="stageJunior">初中</span>
+                <b id="spectrumJunior">0</b>
+                <div class="stage-meter"><i id="spectrumJuniorBar" style="width:0%"></i></div>
+              </div>
+              <div class="stage-cell">
+                <span data-i18n="stageSenior">高中</span>
+                <b id="spectrumSenior">0</b>
+                <div class="stage-meter"><i id="spectrumSeniorBar" style="width:0%"></i></div>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <h2 class="section-title" style="margin-top:0;" data-i18n="topicCluster">知识点聚集</h2>
+            <div id="spectrumTopics"></div>
+          </section>
+        </div>
+      </div>
+      <div class="page-end-space"></div>
+    </section>
+  </div>
+</main>
+
+<div id="detailOverlay" class="overlay" hidden>
+  <div id="detailDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="dialog-head">
+      <div>
+        <h2 id="detailTitle"></h2>
+        <div class="detail-meta">
+          <span class="chip" id="detailStage"></span>
+          <span class="dim-pill" id="detailDim"></span>
+        </div>
+      </div>
+      <div class="dialog-head-actions">
+        <button type="button" class="btn btn-ghost" id="btnDetailPrev"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i> <span data-i18n="prev">上一条</span></button>
+        <button type="button" class="btn btn-ghost" id="btnDetailNext"><span data-i18n="next">下一条</span> <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-ghost" id="btnDetailClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i> <span data-i18n="close">关闭</span></button>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div class="block-label" data-i18n="question">题目</div>
+      <div id="detailQuestion" class="prose"></div>
+      <div class="compare-grid">
+        <div>
+          <div class="block-label" data-i18n="studentAnswer">学生答案</div>
+          <div id="detailStudent" class="prose"></div>
+        </div>
+        <div>
+          <div class="block-label" data-i18n="correctAnswer">正确答案</div>
+          <div id="detailCorrect" class="prose"></div>
+        </div>
+      </div>
+      <div id="detailImageWrap" hidden>
+        <div class="block-label" data-i18n="image">错题图片</div>
+        <a id="detailImageLink" target="_blank" rel="noopener">
+          <img id="detailImage" alt="">
+        </a>
+      </div>
+      <div class="block-label" data-i18n="analysisTitle">错因分析</div>
+      <div id="detailAnalysis"></div>
+      <div style="margin-top:10px;">
+        <button type="button" class="btn btn-ghost" id="btnDetailReread" hidden><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> <span data-i18n="reread">再读一次</span></button>
+      </div>
+      <div class="dialog-actions" style="margin-top:16px;">
+        <button type="button" class="btn btn-primary" id="btnDetailEdit"><span data-i18n="goEdit">去修订</span></button>
+        <button type="button" class="btn btn-danger" id="btnDetailDelete"><span data-i18n="deleteThis">删除这条</span></button>
+      </div>
+      <div class="popup-end-space"></div>
+    </div>
+  </div>
+</div>
+
+<div id="confirmOverlay" class="overlay" hidden>
+  <div id="confirmDialog" class="dialog" role="alertdialog" aria-modal="true" aria-describedby="confirmText">
+    <div class="confirm-body">
+      <p id="confirmText" style="margin:0; line-height:1.6;"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="btnConfirmCancel"><span data-i18n="confirmCancel">取消</span></button>
+        <button type="button" class="btn btn-danger" id="btnConfirmOk"><span data-i18n="confirmOk">删除</span></button>
+      </div>
+      <div class="popup-end-space"></div>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<noscript>需要启用脚本才能使用数学错题DNA。</noscript>
+<script>
+        // 统一通信接口medium
+
+        function unescapeString(str) {
+          return str.replace(/\\x[0-9A-Fa-f]{2}|\\[nrt'"\\]/g, function(match) {
+            if (match.startsWith('\\x')) {
+              // 处理十六进制序列（例如 \x0A）
+              const hex = match.substring(2);
+              const charCode = parseInt(hex, 16);
+              return String.fromCharCode(charCode);
+            } else {
+              // 处理其他转义序列
+              switch (match) {
+                case '\\n': return '\n';
+                case '\\r': return '\r';
+                case '\\t': return '\t';
+                case '\\\'': return '\'';
+                case '\\"': return '"';
+                case '\\\\': return '\\';
+                default: return match; // 理论上不会发生，但保留以容错
+              }
+            }
+          });
+        }
+
+        function localAppBridge(request) {
+            // request是json文本如 {type:"表格", data:"数据源", payload:""} 或者 {type:"提交", data:"表", payload:"表单数据"}
+            // 确保全局回调存储对象存在
+            if (!window.__appBridgeCallbacks) window.__appBridgeCallbacks = {};
+            
+            // 注册全局响应接收函数（仅注册一次）
+            if (!window.__receiveAppResponse) {
+                window.__receiveAppResponse = function(eventId, response) {
+                    response = unescapeString(response);
+                    if (window.__appBridgeCallbacks[eventId]) {
+                        const { resolve, timeoutId } = window.__appBridgeCallbacks[eventId];
+                        clearTimeout(timeoutId);  // 清除超时计时器
+                        resolve(response);
+                        delete window.__appBridgeCallbacks[eventId];
+                    }
+                };
+            }
+
+            const requestStr = (typeof request === 'string') ? request : JSON.stringify(request);
+            
+            return new Promise((resolve, reject) => {
+                // 1. Android实现（同步）
+                if (window.AndroidBridge) {
+                    try {
+                        let response = window.AndroidBridge.processRequest(requestStr);
+                        response = unescapeString(response);
+                        resolve(response);
+                    } catch (e) {
+                        reject(`Android通信错误: ${e.message}`);
+                    }
+                }
+                // 2. iOS实现（异步回调）
+                else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) {
+                    try {
+          const eventId = "event_" + Date.now() + Math.random().toString(36).substr(2, 5);
+
+          // 存储resolve并设置超时
+          const timeoutId = setTimeout(() => {
+            if (window.__appBridgeCallbacks[eventId]) {
+              delete window.__appBridgeCallbacks[eventId];
+              reject("iOS响应超时");
+            }
+          }, 600000);
+
+          window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+
+          const message = {
+              eventId: eventId,
+              request: requestStr,
+          };
+          window.webkit.messageHandlers.iosBridge.postMessage(JSON.stringify(message));
+                    } catch (e) {
+                        reject(`iOS通信错误: ${e.message}`);
+                    }
+                }
+                // 3. Windows WebView2实现（异步回调）
+                else if (window.chrome && window.chrome.webview) {
+                    try {
+                        const eventId = 'event_' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                        // 存储resolve并设置超时
+                        const timeoutId = setTimeout(() => {
+                            if (window.__appBridgeCallbacks[eventId]) {
+                                delete window.__appBridgeCallbacks[eventId];
+                                reject('Windows响应超时');
+                            }
+                        }, 600000);
+                        
+                        window.__appBridgeCallbacks[eventId] = { resolve, timeoutId };
+                        
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            eventId: eventId,
+                            request: requestStr
+                        }));
+                    } catch (e) {
+                        reject(`Windows通信错误: ${e.message}`);
+                    }
+                }
+            });
+        }
+
+    function base64StringToFile(base64String, filename, mimeType = 'application/octet-stream') {
+      // 去掉可能存在的 base64 前缀（如 "data:image/png;base64,"）
+      const rawBase64 = base64String.includes(',') 
+        ? base64String.split(',')[1] 
+        : base64String;
+
+      // 解码 Base64 为二进制字符串
+      const binaryString = atob(rawBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      // 创建 Blob，再转为 File
+      const blob = new Blob([bytes], { type: mimeType });
+      return new File([blob], filename, { type: mimeType });
+    }
+
+
+
+    async function callAppBridge(request)
+    {
+        if (window.AndroidBridge || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosBridge) || (window.chrome && window.chrome.webview))
+        {
+          if (request['type'] === "CapturePhoto" || request['type'] === "FinishRecordVoice")
+          {
+            const filename = await localAppBridge(request);
+            if (filename != "")
+            {
+              const b64 = await localAppBridge({type:"FileToBase64", data:filename});
+              const file = base64StringToFile(b64, filename);
+
+              // 2. 上传文件到Flask服务端
+              const guidFileName = await uploadToFlaskA(file);
+    
+              // 3. 返回GUID文件名
+              return guidFileName;
+            }
+            return "";
+          }
+          if (request['type'] === "StartRecordVoice" || request['type'] === "PauseRecordVoice" || request['type'] === "ContinueRecordVoice" || request['type'] === "CancelRecordVoice")
+          {
+            await localAppBridge(request);
+            return "";
+          }
+        }
+
+        if (request['type'] === "ExportFile")
+        {
+          exportFileA(request['data'], 'http://' + window.location.hostname + ':3130/download/' + request['payload']);
+          return "";
+        }
+        if (request['type'] === "StartRecordVoice")
+        {
+          await StartRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "PauseRecordVoice")
+        {
+          await PauseRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "ContinueRecordVoice")
+        {
+          await ContinueRecordVoiceA();
+          return "";
+        }
+        if (request['type'] === "CancelRecordVoice")
+        {
+          await CancelRecordVoiceA();
+          return "";
+        }
+        // 定义类型到对应处理函数的映射
+        const HANDLERS = {
+          "SelectFile": selectFileA,
+          "SelectImage": selectImageA,
+          "CapturePhoto": capturePhotoA,
+          "FinishRecordVoice": FinishRecordVoiceA
+        };
+
+        // 检查请求类型是否在支持的映射中
+        if (request['type'] in HANDLERS) {
+          try {
+            // 1. 根据类型选择相应的处理函数获取文件
+            const file = await HANDLERS[request['type']]();
+    
+            // 2. 上传文件到Flask服务端
+            const guidFileName = await uploadToFlaskA(file);
+    
+            // 3. 返回GUID文件名
+            return guidFileName;
+          } catch (error) {
+            // 可以在这里添加错误处理逻辑，如日志记录
+            console.error(`处理${request['type']}时出错:`, error);
+          }
+  
+          // 所有失败情况返回空字符串
+          return "";
+        }
+
+
+
+        url = 'http://' + window.location.hostname + ':3130/request';
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'SessionID': localStorage.getItem('airthink_session_id'),
+            'BaseName': encodeURIComponent("5a57a5bad3cc64c5_数学错题DNA")
+        },
+        body: JSON.stringify(request)
+        });
+  
+        if (!response.ok) {
+            throw new Error(`请求失败: ${response.status}`);
+        }
+  
+        return await response.text();
+    }
+
+async function exportFileA(title, url) {
+  try {
+    // 1. 获取文件内容 (需要服务器支持跨域 CORS)
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+
+    // 2. 尝试使用 File System Access API (Chrome/Edge 等现代浏览器支持)
+    // 这允许程序明确请求“另存为”对话框
+    if ('showSaveFilePicker' in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: title,
+          types: [{
+            description: 'File',
+            accept: {
+              // 根据 blob 类型动态推断 MIME，或者直接使用通用流
+              [blob.type || 'application/octet-stream']: [] 
+            }
+          }]
+        });
+        
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+        return; // 保存成功，退出函数
+      } catch (err) {
+        // 如果用户在弹窗中点击了“取消”，或者API报错，则进入降级方案
+        if (err.name === 'AbortError') return; 
+        console.warn('File System Access API 失败，尝试降级方案:', err);
+      }
+    }
+
+    // 3. 降级方案：使用 <a> 标签下载
+    // 是否弹出选择框取决于用户的浏览器设置 ("下载前询问每个文件的保存位置")
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = title;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    
+    // 清理
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, 100);
+
+  } catch (error) {
+    console.error('导出文件出错:', error);
+    alert('导出失败: ' + error.message);
+  }
+}
+
+/**
+ * 全局录音状态管理
+ */
+const VoiceRecorderState = {
+  mediaRecorder: null,
+  stream: null,
+  audioChunks: [],
+  lamejsUrl: 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js', // lamejs CDN地址
+  audioContext: null
+};
+
+/**
+ * 动态加载 lamejs 库
+ */
+function loadLamejs() {
+  return new Promise((resolve, reject) => {
+    if (window.lamejs) {
+      resolve(window.lamejs);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = VoiceRecorderState.lamejsUrl;
+    script.onload = () => resolve(window.lamejs);
+    script.onerror = () => reject(new Error('无法加载 lamejs 库'));
+    document.body.appendChild(script);
+  });
+}
+
+/**
+ * 开始录音
+ */
+async function StartRecordVoiceA() {
+  // 1. 预加载 lamejs，确保结束时可用
+  await loadLamejs();
+
+  // 2. 清理旧状态
+  VoiceRecorderState.audioChunks = [];
+  
+  // 3. 获取麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    VoiceRecorderState.stream = stream;
+    
+    // 4. 初始化 MediaRecorder
+    // 即使浏览器默认录制为 WebM/Ogg，我们后续也会通过 AudioContext 转码
+    const recorder = new MediaRecorder(stream);
+    VoiceRecorderState.mediaRecorder = recorder;
+
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        VoiceRecorderState.audioChunks.push(event.data);
+      }
+    };
+
+    recorder.start();
+    console.log("录音开始");
+    
+  } catch (err) {
+    console.error("无法启动录音:", err);
+    throw new Error("无法访问麦克风或启动录音失败");
+  }
+}
+
+/**
+ * 暂停录音
+ */
+function PauseRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'recording') {
+    VoiceRecorderState.mediaRecorder.pause();
+    console.log("录音暂停");
+  }
+}
+
+/**
+ * 继续录音
+ */
+function ContinueRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder && VoiceRecorderState.mediaRecorder.state === 'paused') {
+    VoiceRecorderState.mediaRecorder.resume();
+    console.log("录音继续");
+  }
+}
+
+/**
+ * 取消录音 (清理资源，不返回文件)
+ */
+function CancelRecordVoiceA() {
+  if (VoiceRecorderState.mediaRecorder) {
+    // 停止录制
+    if (VoiceRecorderState.mediaRecorder.state !== 'inactive') {
+      VoiceRecorderState.mediaRecorder.stop();
+    }
+    VoiceRecorderState.mediaRecorder = null;
+  }
+  
+  // 关闭流（关闭麦克风图标）
+  if (VoiceRecorderState.stream) {
+    VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+    VoiceRecorderState.stream = null;
+  }
+  
+  // 清空数据
+  VoiceRecorderState.audioChunks = [];
+  console.log("录音已取消");
+}
+
+/**
+ * 完成录音并返回 MP3 文件
+ * @returns {Promise<File>} 返回一个 MP3 格式的 File 对象
+ */
+function FinishRecordVoiceA() {
+  return new Promise((resolve, reject) => {
+    const recorder = VoiceRecorderState.mediaRecorder;
+    
+    if (!recorder) {
+      reject(new Error("未找到正在进行的录音"));
+      return;
+    }
+
+    // 定义停止后的处理逻辑
+    recorder.onstop = async () => {
+      try {
+        // 1. 停止所有轨道 (关闭麦克风)
+        if (VoiceRecorderState.stream) {
+          VoiceRecorderState.stream.getTracks().forEach(track => track.stop());
+          VoiceRecorderState.stream = null;
+        }
+
+        // 2. 将录制的块组合成一个 Blob (通常是 webm 或 ogg 格式)
+        const originalBlob = new Blob(VoiceRecorderState.audioChunks, { type: recorder.mimeType });
+        
+        // 3. 转码为 MP3
+        const mp3File = await convertBlobToMp3(originalBlob);
+        
+        // 4. 清理
+        VoiceRecorderState.audioChunks = [];
+        VoiceRecorderState.mediaRecorder = null;
+        
+        resolve(mp3File);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    // 触发停止，进入 onstop 回调
+    if (recorder.state !== 'inactive') {
+      recorder.stop();
+    } else {
+      // 如果已经停止了（以此防守），手动触发 onstop 逻辑
+      recorder.onstop();
+    }
+  });
+}
+
+/**
+ * 内部辅助函数：将任意音频 Blob 转换为 MP3 File
+ */
+async function convertBlobToMp3(blob) {
+  // 1. 读取 Blob 为 ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer();
+  
+  // 2. 使用 AudioContext 解码音频 (将 WebM/Ogg 解码为 PCM 数据)
+  if (!VoiceRecorderState.audioContext) {
+    VoiceRecorderState.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const audioBuffer = await VoiceRecorderState.audioContext.decodeAudioData(arrayBuffer);
+  
+  // 3. 准备 lamejs 编码器
+  const channels = 1; // 强制转为单声道，适合语音，且减小体积
+  const sampleRate = audioBuffer.sampleRate;
+  const kbps = 128;
+  
+  const mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
+  
+  // 4. 获取 PCM 数据并转换 (Float32 -> Int16)
+  // 获取第一个声道的数据（如果是立体声，语音通常取单声道即可）
+  const samples = audioBuffer.getChannelData(0);
+  const sampleBlockSize = 1152; // lamejs 建议的块大小
+  const mp3Data = [];
+  
+  // 转换 Float32 (-1.0 到 1.0) 为 Int16 (-32768 到 32767)
+  const samplesInt16 = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    // 简单的线性转换和钳位
+    let s = Math.max(-1, Math.min(1, samples[i]));
+    samplesInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  
+  // 5. 编码循环
+  for (let i = 0; i < samplesInt16.length; i += sampleBlockSize) {
+    const chunk = samplesInt16.subarray(i, i + sampleBlockSize);
+    const mp3buf = mp3encoder.encodeBuffer(chunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(mp3buf);
+    }
+  }
+  
+  // 6. 结束编码
+  const mp3buf = mp3encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(mp3buf);
+  }
+  
+  // 7. 生成文件
+  const timestamp = new Date().getTime();
+  const filename = `voice_record_${timestamp}.mp3`;
+  const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+  
+  // 返回 File 对象
+  return new File([mp3Blob], filename, { type: 'audio/mp3', lastModified: new Date().getTime() });
+}
+
+/**
+ * 选择文件函数
+ * @returns {Promise<File>}
+ */
+function selectFileA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function selectImageA() {
+  return new Promise((resolve, reject) => {
+    // 创建隐藏的文件输入元素
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*'; // 限制只选择图片文件
+    fileInput.style.display = 'none';
+    
+    // 监听文件选择
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        // 可选：进一步验证文件确实是图片
+        if (!file.type.startsWith('image/')) {
+          reject(new Error('选择的文件不是图片'));
+          return;
+        }
+        resolve(file);
+      } else {
+        reject(new Error('没有选择文件'));
+      }
+      
+      // 清理DOM
+      document.body.removeChild(fileInput);
+    });
+    
+    // 监听取消选择（注意：cancel事件在某些浏览器中可能不支持）
+    fileInput.addEventListener('cancel', () => {
+      reject(new Error('用户取消了文件选择'));
+      document.body.removeChild(fileInput);
+    });
+    
+    // 添加到DOM并触发点击
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  });
+}
+
+function capturePhotoA() {
+  return new Promise((resolve, reject) => {
+    // 检查浏览器是否支持媒体设备API
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      reject(new Error('您的浏览器不支持拍照功能'));
+      return;
+    }
+    
+    // 创建一个隐藏的视频元素用于预览
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.setAttribute('autoplay', '');
+    video.setAttribute('playsinline', '');
+    
+    // 创建一个canvas元素用于捕获照片
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    const ctx = canvas.getContext('2d');
+    
+    // 创建拍照按钮和取消按钮的容器
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+    
+    // 创建视频预览容器
+    const videoContainer = document.createElement('div');
+    videoContainer.style.cssText = `
+      width: 100%;
+      max-width: 640px;
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    `;
+    
+    // 将视频放入容器中
+    video.style.cssText = `
+      width: 100%;
+      height: auto;
+      transform: scaleX(-1); /* 镜像翻转，让预览更自然 */
+    `;
+    
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+      display: flex;
+      gap: 20px;
+    `;
+    
+    // 创建拍照按钮
+    const captureBtn = document.createElement('button');
+    captureBtn.textContent = '拍照';
+    captureBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 创建取消按钮
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = '取消';
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      background: #FF3B30;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+    `;
+    
+    // 组装元素
+    videoContainer.appendChild(video);
+    buttonContainer.appendChild(captureBtn);
+    buttonContainer.appendChild(cancelBtn);
+    container.appendChild(videoContainer);
+    container.appendChild(buttonContainer);
+    document.body.appendChild(container);
+    document.body.appendChild(canvas);
+    
+    // 请求摄像头访问权限
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment', // 使用后置摄像头，如需前置摄像头改为'user'
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    })
+    .then(stream => {
+      // 将视频流连接到video元素
+      video.srcObject = stream;
+      
+      // 等待视频元数据加载
+      video.onloadedmetadata = () => {
+        // 设置canvas尺寸与视频一致
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // 开始播放视频
+        video.play().catch(e => {
+          reject(new Error('无法启动摄像头: ' + e.message));
+          cleanup();
+        });
+      };
+    })
+    .catch(error => {
+      reject(new Error('无法访问摄像头: ' + error.message));
+      cleanup();
+    });
+    
+    // 拍照功能
+    captureBtn.onclick = () => {
+      // 绘制当前视频帧到canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // 将canvas转换为Blob对象（图片文件）
+      canvas.toBlob(blob => {
+        if (blob) {
+          // 创建File对象，类似于文件上传的文件
+          const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+          });
+          
+          // 清理并返回文件
+          cleanup();
+          resolve(file);
+        } else {
+          reject(new Error('拍照失败'));
+          cleanup();
+        }
+      }, 'image/jpeg', 0.9); // 0.9是JPEG质量参数
+    };
+    
+    // 取消功能
+    cancelBtn.onclick = () => {
+      reject(new Error('用户取消了拍照'));
+      cleanup();
+    };
+    
+    // 清理函数
+    const cleanup = () => {
+      // 停止所有视频流
+      if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+      
+      // 移除DOM元素
+      if (container.parentNode) {
+        document.body.removeChild(container);
+      }
+      if (canvas.parentNode) {
+        document.body.removeChild(canvas);
+      }
+    };
+    
+    // 监听页面离开，确保清理资源
+    window.addEventListener('beforeunload', cleanup);
+  });
+}
+
+
+
+/**
+ * 上传文件到Flask服务端
+ * @param {File} file - 要上传的文件
+ * @returns {Promise<string>} - 返回GUID文件名
+ */
+async function uploadToFlaskA(file)
+{
+  // 创建FormData对象
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // 发送到Flask服务端
+    const response = await fetch('http://' + window.location.hostname + ':3130/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error(`上传失败: ${response.statusText}`);
+    }
+    
+    const result = await response.text();
+    return result;
+  }
+  catch (error)
+  {
+  }
+  return ""
+}    
+
+
+        // 更健壮的CSV解析器，能处理字段内逗号和换行符
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            let i = 0;
+
+            while (i < csvText.length) {
+                const char = csvText[i];
+                
+                if (inQuotes) {
+                    if (char === '"') {
+                        // 检查下一个字符是否是双引号（转义）
+                        if (i + 1 < csvText.length && csvText[i + 1] === '"') {
+                            currentField += '"';
+                            i += 2; // 跳过两个双引号
+                        } else {
+                            // 结束引号
+                            inQuotes = false;
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                        i++;
+                    } else if (char === ',') {
+                        // 字段结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        i++;
+                    } else if (char === '\r' || char === '\n') {
+                        // 处理换行符
+                        if (char === '\r' && i + 1 < csvText.length && csvText[i + 1] === '\n') {
+                            // 处理 \r\n
+                            i++;
+                        }
+                        
+                        // 行结束
+                        currentRow.push(currentField);
+                        currentField = '';
+                        rows.push(currentRow);
+                        currentRow = [];
+                        i++;
+                        
+                        // 跳过连续换行符
+                        while (i < csvText.length && (csvText[i] === '\r' || csvText[i] === '\n')) {
+                            i++;
+                        }
+                    } else {
+                        currentField += char;
+                        i++;
+                    }
+                }
+            }
+
+            // 处理最后一行
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        function setInnerHTMLWithScripts(element, html) {
+             element.innerHTML = html;
+             // 执行内联脚本
+             const scripts = element.querySelectorAll('script');
+             scripts.forEach(oldScript => {
+                 const newScript = document.createElement('script');
+                 newScript.text = oldScript.text;
+                 oldScript.parentNode.replaceChild(newScript, oldScript);
+             });
+         }
+
+        function base64DecodeUTF8(base64Str) {
+            // 使用atob解码Base64得到二进制字符串
+            const binaryStr = atob(base64Str);
+    
+            // 将二进制字符串转换为字节数组
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+    
+            // 使用TextDecoder将字节数组解码为UTF-8字符串
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        }
+
+
+var TABLE = '数学错题/默认表格';
+var FORM_TABLE = '数学错题';
+var FULL_FIELDS = '学段,知识点,通用维度,题目,学生答案,正确答案,错题图片,错因分析';
+var STAGES = ['初中', '高中'];
+var DIMS = ['概念模糊', '计算失误', '读题失误', '方法用错'];
+var DIM_COLOR = {'概念模糊':'#5C6BFF','计算失误':'#E08A3C','读题失误':'#2A9D8F','方法用错':'#C45C76'};
+var HL_KEYS = ['数学子类型','跨维度关联','一句话深度根因','建议弱项状态','置信度','下一步突破建议'];
+var STATUS_WORDS = ['待处理','初步弱项','顽固弱项','突破中','已攻克'];
+var STATUS_CLASS = {'待处理':'st-wait','初步弱项':'st-early','顽固弱项':'st-hard','突破中':'st-break','已攻克':'st-done'};
+var PAGE_IDS = {home:'pageHome', record:'pageRecord', archive:'pageArchive', spectrum:'pageSpectrum'};
+var FILLABLE = ['学段','知识点','通用维度','题目','学生答案','正确答案','错题图片'];
+var I18N = {
+  cn: {
+    appName:'数学错题DNA', navHome:'首页', navRecord:'记下错题', navArchive:'错题档案', navSpectrum:'弱项光谱',
+    homeLede:'把每道错题拆成可追踪的根因基因，看清真正卡住的那一层', logThis:'+ 记下这道错题',
+    totalErrors:'错题总数', juniorErrors:'初中错题', seniorErrors:'高中错题',
+    dimConcept:'概念模糊', dimCalc:'计算失误', dimRead:'读题失误', dimMethod:'方法用错',
+    recent:'最近错题', noRecent:'还没有错题', loading:'读取中', readFail:'暂时无法读取，请稍后再试',
+    recordLede:'先选通用维度，再写下题目和两种答案。分析会沿用你选的维度，不会改判', toArchive:'去错题档案',
+    seniorHint:'高中只覆盖高一衔接段的预备知识与函数；几何与代数、概率与统计仍可记录，分析只保留通用维度，不会编造未覆盖的子类型',
+    stage:'学段', knowledge:'知识点', dimension:'通用维度', question:'题目', studentAnswer:'学生答案', correctAnswer:'正确答案', image:'错题图片',
+    knowledgePh:'例如：一次函数', capture:'拍照', album:'从相册选择', removeImage:'移除图片', noImage:'无图片',
+    clear:'清空', submitDecode:'提交解码', fieldRequired:'请填写这一项', pleaseSelect:'请选择',
+    stageJunior:'初中', stageSenior:'高中', waiting:'正在写入错因基因，请稍候',
+    cancelEdit:'取消修订', saveEdit:'保存修订', saveAsNew:'另存并重新解码',
+    revisionKeepsAnalysis:'修订不会重写已生成的错因分析', originalRemains:'原记录仍在档案中',
+    pollTimeout:'分析尚未生成，可稍后在档案打开这条。', editingNote:'正在修订已有记录',
+    archiveLede:'每张卡片是一条错题基因，点开就能修订', logError:'+ 记下错题', searchLabel:'搜索', sortLabel:'排序',
+    searchPlaceholder:'按知识点或题目搜索', clearSearch:'清空搜索', allStages:'全部学段', allDims:'全部维度', resetFilter:'重置筛选',
+    sortDefault:'默认顺序', sortKnowledge:'按知识点', sortDimension:'按通用维度', viewRoot:'查看根因', delete:'删除',
+    logFirst:'记下第一道错题', noRecords:'还没有错题', noMatch:'没有符合条件的错题',
+    prev:'上一条', next:'下一条', close:'关闭', notGenerated:'尚未生成', reread:'再读一次', goEdit:'去修订', deleteThis:'删除这条',
+    spectrumLede:'四条基因带只统计你已经记下的通用维度，不预测没写过的错法',
+    spectrumEmptyText:'还没有可统计的错题', sampleNote:'样本还少，这只是目前的分布，不是稳定结论', goLog:'去记下错题',
+    stageCompare:'学段对照', topicCluster:'知识点聚集', blankKnowledge:'未填写知识点',
+    tryLater:'请稍后再试', confirmDelete:'确定删除这条错题？删除后不能恢复。', confirmOk:'删除', confirmCancel:'取消',
+    analysisTitle:'错因分析', analysisPlaceholder:'提交解码后，错因会写在这里。', openMenu:'打开菜单', closeMenu:'关闭菜单'
+  },
+  en: {
+    appName:'Math Error DNA', navHome:'Home', navRecord:'Log Error', navArchive:'Archive', navSpectrum:'Spectrum',
+    homeLede:'Split each missed problem into a root-cause gene you can track, and see the layer that actually stalls you.',
+    logThis:'+ Log this error', totalErrors:'Total errors', juniorErrors:'Junior-high errors', seniorErrors:'Senior-high errors',
+    dimConcept:'Fuzzy concept', dimCalc:'Calculation slip', dimRead:'Misread problem', dimMethod:'Wrong method',
+    recent:'Recent errors', noRecent:'No errors yet', loading:'Loading', readFail:'Could not read the data. Please try again later.',
+    recordLede:'Pick a general dimension first, then write the problem and both answers. Analysis keeps the dimension you chose and will not reclassify it.',
+    toArchive:'Open archive',
+    seniorHint:'Senior high covers only the grade-10 bridge: preliminary knowledge and functions. Geometry and algebra, probability and statistics can still be logged. Analysis keeps the general dimension and will not invent subtypes that are not covered.',
+    stage:'Stage', knowledge:'Topic', dimension:'General dimension', question:'Problem', studentAnswer:'Student answer', correctAnswer:'Correct answer', image:'Problem image',
+    knowledgePh:'For example: linear functions', capture:'Take photo', album:'Choose from album', removeImage:'Remove image', noImage:'No image',
+    clear:'Clear', submitDecode:'Submit for decoding', fieldRequired:'Please fill in this field', pleaseSelect:'Please choose',
+    stageJunior:'Junior high', stageSenior:'Senior high', waiting:'Writing the error-cause gene, please wait',
+    cancelEdit:'Cancel revision', saveEdit:'Save revision', saveAsNew:'Save as new and decode again',
+    revisionKeepsAnalysis:'A revision does not rewrite the error-cause analysis already generated',
+    originalRemains:'The original record is still in the archive',
+    pollTimeout:'The analysis is not ready yet. You can open this record later in the archive.',
+    editingNote:'Revising an existing record',
+    archiveLede:'Each card is an error gene. Open it to revise.', logError:'+ Log an error', searchLabel:'Search', sortLabel:'Sort',
+    searchPlaceholder:'Search by topic or problem', clearSearch:'Clear search', allStages:'All stages', allDims:'All dimensions', resetFilter:'Reset filters',
+    sortDefault:'Default order', sortKnowledge:'By topic', sortDimension:'By dimension', viewRoot:'View root cause', delete:'Delete',
+    logFirst:'Log the first error', noRecords:'No errors yet', noMatch:'No errors match the current search or filters',
+    prev:'Previous', next:'Next', close:'Close', notGenerated:'Not generated yet', reread:'Read again', goEdit:'Revise', deleteThis:'Delete this one',
+    spectrumLede:'The four gene bands only count general dimensions you have already logged. They do not predict mistakes you have not written down.',
+    spectrumEmptyText:'Nothing to chart yet', sampleNote:'The sample is still small. This is only the current distribution, not a stable conclusion.',
+    goLog:'Go log an error', stageCompare:'Stage comparison', topicCluster:'Topic clusters', blankKnowledge:'Unspecified topic',
+    tryLater:'Please try again later', confirmDelete:'Delete this error record? This cannot be undone.', confirmOk:'Delete', confirmCancel:'Cancel',
+    analysisTitle:'Error-cause analysis', analysisPlaceholder:'After you submit, the error-cause analysis will appear here.',
+    openMenu:'Open menu', closeMenu:'Close menu'
+  }
+};
+
+var uiLang = 'cn';
+var currentPage = 'home';
+var currentRow = 0;
+var editingRow = 0;
+var formMode = 'new';
+var navHistory = [];
+var popupStack = [];
+var polling = false;
+var pollToken = 0;
+var pollTimer = null;
+var pollBusy = false;
+var actionBusy = false;
+var loadToken = 0;
+var tryLaterAt = 0;
+var toastTimer = null;
+var confirmResolve = null;
+var detailRow = 0;
+var detailCount = 0;
+var detailValues = null;
+var detailLoading = false;
+var lastAnalysis = {mode:'placeholder', text:''};
+var searchQuery = '';
+var filterStage = '';
+var filterDim = '';
+var sortMode = 'default';
+var cache = {ready:false, count:null, stageRows:null, dimRows:null, full:null, spec:null};
+
+function t(key) {
+  var pack = I18N[uiLang] || I18N.cn;
+  if (pack[key] !== undefined) return pack[key];
+  return I18N.cn[key] || key;
+}
+
+function initLanguage() {
+  var lang = 'cn';
+  try {
+    var list = navigator.languages;
+    if (list && list.length) {
+      var hasZh = false;
+      for (var i = 0; i < list.length; i++) {
+        if (/^zh([\-_]|$)/i.test(String(list[i] || ''))) hasZh = true;
+      }
+      lang = hasZh ? 'cn' : 'en';
+    } else {
+      lang = 'cn';
+    }
+  } catch (e) {
+    lang = 'cn';
+  }
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var q = String(params.get('lang') || '').toLowerCase();
+    if (q === 'cn') lang = 'cn';
+    else if (q === 'en') lang = 'en';
+  } catch (e2) {}
+  try {
+    var stored = localStorage.getItem('iThinkAir_UiLanguage');
+    if (stored !== null && stored !== '') lang = stored === 'en' ? 'en' : 'cn';
+  } catch (e3) {}
+  uiLang = lang;
+}
+
+function applyI18n() {
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < nodes.length; i++) nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+  var ph = document.querySelectorAll('[data-i18n-placeholder]');
+  for (var j = 0; j < ph.length; j++) ph[j].setAttribute('placeholder', t(ph[j].getAttribute('data-i18n-placeholder')));
+  var aria = document.querySelectorAll('[data-i18n-aria]');
+  for (var k = 0; k < aria.length; k++) aria[k].setAttribute('aria-label', t(aria[k].getAttribute('data-i18n-aria')));
+  document.documentElement.lang = uiLang === 'en' ? 'en' : 'zh-CN';
+  document.title = t('appName');
+  document.getElementById('langBtnCn').classList.toggle('is-on', uiLang !== 'en');
+  document.getElementById('langBtnEn').classList.toggle('is-on', uiLang === 'en');
+  document.getElementById('mobLangCn').classList.toggle('is-on', uiLang !== 'en');
+  document.getElementById('mobLangEn').classList.toggle('is-on', uiLang === 'en');
+  var menuOpen = document.getElementById('mobileMenu').classList.contains('open');
+  document.getElementById('navHamburger').setAttribute('aria-label', t(menuOpen ? 'closeMenu' : 'openMenu'));
+}
+
+function setLanguage(next) {
+  uiLang = next === 'en' ? 'en' : 'cn';
+  try { localStorage.setItem('iThinkAir_UiLanguage', uiLang); } catch (e) {}
+  applyI18n();
+  paintAnalysis();
+  if (detailValues && !document.getElementById('detailOverlay').hidden) paintDetail();
+  renderAll();
+  checkNavOverflow();
+}
+
+function applyTheme(text) {
+  var s = unwrapBridge(text);
+  var dark = s.indexOf('暗色') >= 0;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+}
+
+function unwrapBridge(text) {
+  if (text == null) return '';
+  var s = String(text);
+  if (s.charCodeAt(0) === 0xFEFF) s = s.slice(1);
+  var trimmed = s.trim();
+  if (trimmed.length >= 2 && trimmed.charAt(0) === '"' && trimmed.charAt(trimmed.length - 1) === '"') {
+    try {
+      var v = JSON.parse(trimmed);
+      if (typeof v === 'string') return v;
+    } catch (e) {}
+  }
+  return trimmed;
+}
+
+function isBlank(s) {
+  if (s == null) return true;
+  var v = String(s).trim();
+  return v === '' || v === 'null' || v === 'undefined';
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function unescapeHtml(s) {
+  return String(s || '')
+    .replace(/&quot;/g, '"')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&');
+}
+
+function clipText(s, n) {
+  var clean = String(s || '').replace(/\s+/g, ' ').trim();
+  var chars = Array.from(clean);
+  if (chars.length <= n) return chars.join('');
+  return chars.slice(0, n).join('') + '…';
+}
+
+function fileHref(name, kind) {
+  var raw = String(name || '').trim();
+  if (!raw) return '#';
+  if (/^https?:\/\//i.test(raw)) return raw;
+  var base = kind === 'private' ? 'http://' + window.location.hostname + ':3130/private/' : 'http://' + window.location.hostname + ':3130/download/';
+  return base + encodeURIComponent(raw.replace(/^\.?\//, ''));
+}
+
+function dimLabel(dim) {
+  if (dim === '概念模糊') return t('dimConcept');
+  if (dim === '计算失误') return t('dimCalc');
+  if (dim === '读题失误') return t('dimRead');
+  if (dim === '方法用错') return t('dimMethod');
+  return dim || '';
+}
+
+function stageLabel(stage) {
+  if (stage === '初中') return t('stageJunior');
+  if (stage === '高中') return t('stageSenior');
+  return stage || '';
+}
+
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.hidden = false;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 3400);
+}
+
+function notifyTryLater() {
+  var now = Date.now();
+  if (now - tryLaterAt < 2500) return;
+  tryLaterAt = now;
+  toast(t('tryLater'));
+}
+
+async function safeCall(request) {
+  try {
+    var text = await callAppBridge(request);
+    return {ok:true, text: text == null ? '' : String(text)};
+  } catch (err) {
+    notifyTryLater();
+    return {ok:false, text:''};
+  }
+}
+
+function normalizeCsv(text) {
+  var s = text == null ? '' : String(text);
+  if (s.charCodeAt(0) === 0xFEFF) s = s.slice(1);
+  var trimmed = s.trim();
+  if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') return '';
+  return s;
+}
+
+function safeParseRows(res) {
+  if (!res || !res.ok) return null;
+  try {
+    var text = normalizeCsv(res.text);
+    if (!text.trim()) return [];
+    var rows = parseCSV(text);
+    return Array.isArray(rows) ? rows : [];
+  } catch (e) {
+    notifyTryLater();
+    return null;
+  }
+}
+
+function parseCountResult(res) {
+  if (!res || !res.ok) return null;
+  var s = res.text == null ? '' : String(res.text);
+  if (s.charCodeAt(0) === 0xFEFF) s = s.slice(1);
+  s = s.trim();
+  if (s === '' || s === 'null' || s === 'undefined') return 0;
+  if (s.length >= 2 && s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') {
+    try {
+      var v = JSON.parse(s);
+      if (typeof v === 'number' && isFinite(v)) return v < 0 ? null : v;
+      if (typeof v === 'string') s = v.trim();
+    } catch (e) {
+      s = s.slice(1, -1).trim();
+    }
+  }
+  var n = parseInt(s, 10);
+  if (!isFinite(n) || n < 0) return null;
+  return n;
+}
+
+function countValue(rows, col, value) {
+  if (!rows) return null;
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var cell = rows[i] && rows[i][col] != null ? String(rows[i][col]).trim() : '';
+    if (cell === value) n++;
+  }
+  return n;
+}
+
+function mapFull(rows) {
+  var out = [];
+  for (var i = 0; i < rows.length; i++) {
+    var c = rows[i] || [];
+    out.push({
+      row: i + 1,
+      stage: c[0] == null ? '' : String(c[0]).trim(),
+      knowledge: c[1] == null ? '' : String(c[1]).trim(),
+      dim: c[2] == null ? '' : String(c[2]).trim(),
+      question: c[3] == null ? '' : String(c[3]).trim(),
+      student: c[4] == null ? '' : String(c[4]).trim(),
+      correct: c[5] == null ? '' : String(c[5]).trim(),
+      image: c[6] == null ? '' : String(c[6]).trim()
+    });
+  }
+  return out;
+}
+
+function mapSpec(rows) {
+  var out = [];
+  for (var i = 0; i < rows.length; i++) {
+    var c = rows[i] || [];
+    out.push({
+      dim: c[0] == null ? '' : String(c[0]).trim(),
+      knowledge: c[1] == null ? '' : String(c[1]).trim(),
+      stage: c[2] == null ? '' : String(c[2]).trim()
+    });
+  }
+  return out;
+}
+
+function isRowEmpty(r) {
+  return !r.stage && !r.knowledge && !r.dim && !r.question && !r.student && !r.correct && !r.image;
+}
+
+async function loadData() {
+  var token = ++loadToken;
+  var results = await Promise.all([
+    safeCall({type:'GetRecordCount', data:TABLE}),
+    safeCall({type:'GetTableCSV', data:TABLE, payload:'学段'}),
+    safeCall({type:'GetTableCSV', data:TABLE, payload:'通用维度'}),
+    safeCall({type:'GetTableCSV', data:TABLE, payload:FULL_FIELDS}),
+    safeCall({type:'GetTableCSV', data:TABLE, payload:'通用维度,知识点,学段'})
+  ]);
+  if (token !== loadToken) return;
+  cache.ready = true;
+  cache.count = parseCountResult(results[0]);
+  cache.stageRows = safeParseRows(results[1]);
+  cache.dimRows = safeParseRows(results[2]);
+  var fullRows = safeParseRows(results[3]);
+  cache.full = fullRows ? mapFull(fullRows) : null;
+  var specRows = safeParseRows(results[4]);
+  cache.spec = specRows ? mapSpec(specRows) : null;
+  renderAll();
+}
+
+function showNum(id, value, readyFlag) {
+  var el = document.getElementById(id);
+  if (!cache.ready) el.textContent = '…';
+  else if (!readyFlag || value === null) el.textContent = '—';
+  else el.textContent = String(value);
+}
+
+function thumbHtml(image) {
+  if (!image) return '<div class="thumb thumb-empty" aria-hidden="true"></div>';
+  return '<div class="thumb"><img src="' + escapeHtml(fileHref(image, 'download')) + '" alt=""></div>';
+}
+
+function recentCardHtml(r) {
+  var color = DIM_COLOR[r.dim] || '#8A849C';
+  return '<article class="gene-card recent-card" data-row="' + r.row + '" tabindex="0">' +
+    thumbHtml(r.image) +
+    '<div class="gene-top"><span class="chip">' + escapeHtml(stageLabel(r.stage) || '—') + '</span>' +
+    '<span class="dim-pill"><i style="background:' + color + '"></i>' + escapeHtml(dimLabel(r.dim) || '—') + '</span></div>' +
+    '<h3 class="gene-topic">' + escapeHtml(r.knowledge || t('blankKnowledge')) + '</h3>' +
+    '<p class="gene-q">' + escapeHtml(clipText(r.question, 40)) + '</p>' +
+  '</article>';
+}
+
+function archiveCardHtml(r) {
+  var color = DIM_COLOR[r.dim] || '#8A849C';
+  return '<article class="gene-card" data-row="' + r.row + '" tabindex="0">' +
+    '<div class="gene-main" data-act="open">' +
+      thumbHtml(r.image) +
+      '<div class="gene-top"><span class="chip">' + escapeHtml(stageLabel(r.stage) || '—') + '</span>' +
+      '<span class="dim-pill"><i style="background:' + color + '"></i>' + escapeHtml(dimLabel(r.dim) || '—') + '</span></div>' +
+      '<h3 class="gene-topic">' + escapeHtml(r.knowledge || t('blankKnowledge')) + '</h3>' +
+      '<p class="gene-q">' + escapeHtml(clipText(r.question, 60)) + '</p>' +
+      '<div class="gene-compare">' +
+        '<div><span>' + escapeHtml(t('studentAnswer')) + '</span><b>' + escapeHtml(clipText(r.student, 42) || '—') + '</b></div>' +
+        '<div><span>' + escapeHtml(t('correctAnswer')) + '</span><b>' + escapeHtml(clipText(r.correct, 42) || '—') + '</b></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="gene-actions">' +
+      '<button type="button" class="btn btn-ghost" data-act="view">' + escapeHtml(t('viewRoot')) + '</button>' +
+      '<button type="button" class="btn btn-danger" data-act="delete">' + escapeHtml(t('delete')) + '</button>' +
+    '</div>' +
+  '</article>';
+}
+
+function rowMatches(r) {
+  if (filterStage && r.stage !== filterStage) return false;
+  if (filterDim && r.dim !== filterDim) return false;
+  var q = searchQuery.trim().toLowerCase();
+  if (!q) return true;
+  if (q === '未填写知识点' || q === 'unspecified topic') return !r.knowledge;
+  var blob = (r.knowledge + '\n' + r.question).toLowerCase();
+  return blob.indexOf(q) >= 0;
+}
+
+function sortRows(rows) {
+  var arr = rows.slice();
+  if (sortMode === 'knowledge') {
+    arr.sort(function (a, b) {
+      var ak = a.knowledge || '\uffff';
+      var bk = b.knowledge || '\uffff';
+      var c = ak.localeCompare(bk, 'zh');
+      if (c) return c;
+      return a.row - b.row;
+    });
+  } else if (sortMode === 'dimension') {
+    arr.sort(function (a, b) {
+      var ia = DIMS.indexOf(a.dim);
+      var ib = DIMS.indexOf(b.dim);
+      var sa = ia < 0 ? 99 : ia;
+      var sb = ib < 0 ? 99 : ib;
+      if (sa !== sb) return sa - sb;
+      return a.row - b.row;
+    });
+  }
+  return arr;
+}
+
+function renderHome() {
+  showNum('homeCountTotal', cache.count, cache.count !== null);
+  var junior = countValue(cache.stageRows, 0, '初中');
+  var senior = countValue(cache.stageRows, 0, '高中');
+  showNum('homeCountJunior', junior, cache.stageRows !== null);
+  showNum('homeCountSenior', senior, cache.stageRows !== null);
+  for (var d = 0; d < DIMS.length; d++) {
+    var n = countValue(cache.dimRows, 0, DIMS[d]);
+    showNum('homeCountDim' + d, n, cache.dimRows !== null);
+  }
+  var loading = document.getElementById('homeRecentLoading');
+  var fail = document.getElementById('homeRecentFail');
+  var empty = document.getElementById('homeRecentEmpty');
+  var list = document.getElementById('homeRecent');
+  loading.hidden = true; fail.hidden = true; empty.hidden = true; list.innerHTML = '';
+  if (!cache.ready) { loading.hidden = false; return; }
+  if (cache.full === null) { fail.hidden = false; return; }
+  var recents = [];
+  for (var i = 0; i < cache.full.length && recents.length < 5; i++) {
+    if (!isRowEmpty(cache.full[i])) recents.push(cache.full[i]);
+  }
+  if (!recents.length) { empty.hidden = false; return; }
+  var html = [];
+  for (var r = 0; r < recents.length; r++) html.push(recentCardHtml(recents[r]));
+  list.innerHTML = html.join('');
+  bindThumbErrors(list);
+}
+
+function bindThumbErrors(root) {
+  var imgs = root.querySelectorAll('.thumb img');
+  for (var i = 0; i < imgs.length; i++) {
+    imgs[i].addEventListener('error', function () {
+      this.style.display = 'none';
+    });
+  }
+}
+
+function renderArchive() {
+  var loading = document.getElementById('archiveLoading');
+  var fail = document.getElementById('archiveFail');
+  var empty = document.getElementById('archiveEmpty');
+  var noMatch = document.getElementById('archiveNoMatch');
+  var list = document.getElementById('archiveList');
+  loading.hidden = true; fail.hidden = true; empty.hidden = true; noMatch.hidden = true; list.innerHTML = '';
+  if (!cache.ready) { loading.hidden = false; return; }
+  if (cache.full === null) { fail.hidden = false; return; }
+  var real = [];
+  for (var i = 0; i < cache.full.length; i++) {
+    if (!isRowEmpty(cache.full[i])) real.push(cache.full[i]);
+  }
+  if (!real.length) { empty.hidden = false; return; }
+  var matched = [];
+  for (var j = 0; j < real.length; j++) {
+    if (rowMatches(real[j])) matched.push(real[j]);
+  }
+  var view = sortRows(matched);
+  if (!view.length) { noMatch.hidden = false; return; }
+  var html = [];
+  for (var k = 0; k < view.length; k++) html.push(archiveCardHtml(view[k]));
+  list.innerHTML = html.join('');
+  bindThumbErrors(list);
+}
+
+function renderSpectrum() {
+  var loading = document.getElementById('spectrumLoading');
+  var fail = document.getElementById('spectrumFail');
+  var empty = document.getElementById('spectrumEmpty');
+  var main = document.getElementById('spectrumMain');
+  var note = document.getElementById('spectrumNote');
+  loading.hidden = true; fail.hidden = true; empty.hidden = true; main.hidden = true; note.hidden = true;
+  if (!cache.ready) { loading.hidden = false; return; }
+  if (cache.count === null || cache.spec === null) { fail.hidden = false; return; }
+  if (cache.count === 0) { empty.hidden = false; return; }
+  main.hidden = false;
+  note.hidden = !(cache.count > 0 && cache.count < 3);
+  var dimCounts = {};
+  for (var d = 0; d < DIMS.length; d++) dimCounts[DIMS[d]] = 0;
+  var junior = 0;
+  var senior = 0;
+  var groups = Object.create(null);
+  for (var i = 0; i < cache.spec.length; i++) {
+    var item = cache.spec[i];
+    if (dimCounts[item.dim] !== undefined) dimCounts[item.dim] += 1;
+    if (item.stage === '初中') junior += 1;
+    else if (item.stage === '高中') senior += 1;
+    var key = item.knowledge;
+    if (!groups[key]) groups[key] = 0;
+    groups[key] += 1;
+  }
+  var denom = cache.count > 0 ? cache.count : 1;
+  var bands = document.getElementById('spectrumBands');
+  var bandHtml = [];
+  for (var b = 0; b < DIMS.length; b++) {
+    var name = DIMS[b];
+    var count = dimCounts[name];
+    var pct = count > 0 ? Math.max((count / denom) * 100, 1.5) : 0;
+    if (pct > 100) pct = 100;
+    bandHtml.push(
+      '<button type="button" class="band" data-dim="' + escapeHtml(name) + '">' +
+        '<span class="band-name"><i style="background:' + DIM_COLOR[name] + '"></i>' + escapeHtml(dimLabel(name)) + '</span>' +
+        '<span class="band-track"><span class="band-fill" style="width:' + pct.toFixed(2) + '%;background:' + DIM_COLOR[name] + '"></span></span>' +
+        '<span class="band-count">' + count + '</span>' +
+      '</button>'
+    );
+  }
+  bands.innerHTML = bandHtml.join('');
+  document.getElementById('spectrumJunior').textContent = String(junior);
+  document.getElementById('spectrumSenior').textContent = String(senior);
+  var maxStage = Math.max(junior, senior, 1);
+  document.getElementById('spectrumJuniorBar').style.width = ((junior / maxStage) * 100) + '%';
+  document.getElementById('spectrumSeniorBar').style.width = ((senior / maxStage) * 100) + '%';
+  var topicList = [];
+  for (var gk in groups) {
+    if (Object.prototype.hasOwnProperty.call(groups, gk)) topicList.push({key: gk, count: groups[gk]});
+  }
+  topicList.sort(function (a, b) {
+    if (b.count !== a.count) return b.count - a.count;
+    var al = a.key || t('blankKnowledge');
+    var bl = b.key || t('blankKnowledge');
+    return al.localeCompare(bl, 'zh');
+  });
+  if (topicList.length > 12) topicList = topicList.slice(0, 12);
+  var maxTopic = 1;
+  for (var tIndex = 0; tIndex < topicList.length; tIndex++) {
+    if (topicList[tIndex].count > maxTopic) maxTopic = topicList[tIndex].count;
+  }
+  var topicHtml = [];
+  for (var n = 0; n < topicList.length; n++) {
+    var topic = topicList[n];
+    var label = topic.key ? topic.key : t('blankKnowledge');
+    var search = topic.key ? topic.key : t('blankKnowledge');
+    var width = (topic.count / maxTopic) * 100;
+    topicHtml.push(
+      '<button type="button" class="topic-row" data-search="' + escapeHtml(search) + '">' +
+        '<span class="topic-name">' + escapeHtml(label) + '</span>' +
+        '<span class="topic-bar"><i style="width:' + width.toFixed(2) + '%"></i></span>' +
+        '<span class="topic-count">' + topic.count + '</span>' +
+      '</button>'
+    );
+  }
+  document.getElementById('spectrumTopics').innerHTML = topicHtml.join('');
+}
+
+function renderAll() {
+  renderHome();
+  renderArchive();
+  renderSpectrum();
+}
+
+function syncArchiveControls() {
+  document.getElementById('archiveSearch').value = searchQuery;
+  document.getElementById('archiveFilterStage').value = filterStage;
+  document.getElementById('archiveFilterDim').value = filterDim;
+  document.getElementById('archiveSort').value = sortMode;
+}
+
+function openArchiveFiltered(opts) {
+  filterStage = opts.stage ? opts.stage : '';
+  filterDim = opts.dim ? opts.dim : '';
+  if (opts.search === undefined) searchQuery = '';
+  else searchQuery = opts.search;
+  syncArchiveControls();
+  renderArchive();
+  if (currentPage !== 'archive') applyPage('archive', true);
+  else loadData();
+}
+
+function updateNavActive() {
+  var ids = [['navHome','mobHome','home'], ['navRecord','mobRecord','record'], ['navArchive','mobArchive','archive'], ['navSpectrum','mobSpectrum','spectrum']];
+  for (var i = 0; i < ids.length; i++) {
+    var on = ids[i][2] === currentPage;
+    document.getElementById(ids[i][0]).classList.toggle('is-active', on);
+    document.getElementById(ids[i][1]).classList.toggle('is-active', on);
+  }
+}
+
+function closeMobileMenu() {
+  var menu = document.getElementById('mobileMenu');
+  menu.classList.remove('open');
+  var ham = document.getElementById('navHamburger');
+  ham.setAttribute('aria-expanded', 'false');
+  ham.setAttribute('aria-label', t('openMenu'));
+}
+
+function checkNavOverflow() {
+  var bar = document.getElementById('navBar');
+  var links = document.getElementById('navLinks');
+  var brand = document.getElementById('brandBtn');
+  document.body.classList.remove('nav-collapsed');
+  var need = brand.offsetWidth + links.scrollWidth + 28 > bar.clientWidth;
+  if (need) document.body.classList.add('nav-collapsed');
+  else closeMobileMenu();
+}
+
+function applyPage(page, recordHistory) {
+  var leaving = page !== currentPage;
+  if (recordHistory && leaving) {
+    navHistory.push({page: currentPage, scroll: window.scrollY || document.documentElement.scrollTop || 0});
+  }
+  currentPage = page;
+  var keys = ['home','record','archive','spectrum'];
+  for (var i = 0; i < keys.length; i++) {
+    document.getElementById(PAGE_IDS[keys[i]]).hidden = keys[i] !== page;
+  }
+  updateNavActive();
+  closeMobileMenu();
+  if (leaving) window.scrollTo(0, 0);
+  if (page === 'home' || page === 'archive' || page === 'spectrum') loadData();
+}
+
+function startNewRecord() {
+  resetForm();
+  if (currentPage !== 'record') applyPage('record', true);
+}
+
+function collectPayload() {
+  return {
+    '学段': document.getElementById('formWrong_学段').value.trim(),
+    '知识点': document.getElementById('formWrong_知识点').value.trim(),
+    '通用维度': document.getElementById('formWrong_通用维度').value.trim(),
+    '题目': document.getElementById('formWrong_题目').value.trim(),
+    '学生答案': document.getElementById('formWrong_学生答案').value.trim(),
+    '正确答案': document.getElementById('formWrong_正确答案').value.trim(),
+    '错题图片': document.getElementById('formWrong_错题图片').value.trim()
+  };
+}
+
+function validateForm() {
+  var fields = ['学段','知识点','通用维度','题目','学生答案','正确答案'];
+  var ok = true;
+  var first = null;
+  for (var i = 0; i < fields.length; i++) {
+    var f = fields[i];
+    var el = document.getElementById('formWrong_' + f);
+    var err = document.getElementById('formWrong_' + f + '_error');
+    var val = (el.value || '').trim();
+    var bad = !val;
+    if (f === '学段' && val && STAGES.indexOf(val) < 0) bad = true;
+    if (f === '通用维度' && val && DIMS.indexOf(val) < 0) bad = true;
+    if (bad) {
+      err.textContent = t('fieldRequired');
+      ok = false;
+      if (!first) first = el;
+    } else err.textContent = '';
+  }
+  if (first) {
+    first.scrollIntoView({block:'center', behavior:'smooth'});
+    first.focus();
+  }
+  return ok;
+}
+
+function updateStageHint() {
+  document.getElementById('formWrong_stageHint').hidden = document.getElementById('formWrong_学段').value !== '高中';
+}
+
+function setFormMode(mode) {
+  formMode = mode;
+  document.getElementById('newActions').hidden = mode !== 'new';
+  document.getElementById('editActions').hidden = mode !== 'edit';
+  document.getElementById('recordModeNote').hidden = mode !== 'edit';
+}
+
+function clearExtraOptions() {
+  var ids = ['formWrong_学段', 'formWrong_通用维度'];
+  for (var i = 0; i < ids.length; i++) {
+    var extras = document.getElementById(ids[i]).querySelectorAll('option[data-extra]');
+    for (var j = extras.length - 1; j >= 0; j--) extras[j].remove();
+  }
+}
+
+function ensureOption(selectId, value) {
+  var v = (value || '').trim();
+  if (!v) return;
+  var sel = document.getElementById(selectId);
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === v) return;
+  }
+  var opt = document.createElement('option');
+  opt.value = v;
+  opt.textContent = v;
+  opt.setAttribute('data-extra', '1');
+  sel.appendChild(opt);
+}
+
+function setPollLock(on) {
+  var ids = ['btnClear','btnSubmitDecode','btnCancelEdit','btnSaveEdit','btnSaveAsNew','btnCapture','btnSelectImage','btnRemoveImage','formWrong_学段','formWrong_知识点','formWrong_通用维度','formWrong_题目','formWrong_学生答案','formWrong_正确答案'];
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (el) el.disabled = !!on;
+  }
+}
+
+function paintAnalysis() {
+  var wait = document.getElementById('analysisWait');
+  var body = document.getElementById('analysisBody');
+  if (lastAnalysis.mode === 'wait') {
+    wait.hidden = false;
+    body.innerHTML = '';
+    return;
+  }
+  wait.hidden = true;
+  if (lastAnalysis.mode === 'content') fillAnalysis(body, lastAnalysis.text);
+  else if (lastAnalysis.mode === 'timeout') body.innerHTML = '<div class="analysis-empty"><p>' + escapeHtml(t('pollTimeout')) + '</p></div>';
+  else if (lastAnalysis.mode === 'notGenerated') body.innerHTML = '<div class="analysis-empty"><p>' + escapeHtml(t('notGenerated')) + '</p></div>';
+  else body.innerHTML = '<div class="analysis-empty"><p>' + escapeHtml(t('analysisPlaceholder')) + '</p></div>';
+}
+
+function resetForm() {
+  stopPoll();
+  actionBusy = false;
+  clearExtraOptions();
+  for (var i = 0; i < FILLABLE.length; i++) {
+    var el = document.getElementById('formWrong_' + FILLABLE[i]);
+    if (el) el.value = '';
+    var err = document.getElementById('formWrong_' + FILLABLE[i] + '_error');
+    if (err) err.textContent = '';
+  }
+  currentRow = 0;
+  editingRow = 0;
+  setFormMode('new');
+  updateStageHint();
+  setPollLock(false);
+  lastAnalysis = {mode:'placeholder', text:''};
+  paintAnalysis();
+  refreshImagePreview();
+}
+
+async function refreshImagePreview() {
+  var name = document.getElementById('formWrong_错题图片').value.trim();
+  var empty = document.getElementById('imageEmpty');
+  var img = document.getElementById('imagePreviewImg');
+  var removeBtn = document.getElementById('btnRemoveImage');
+  var box = document.getElementById('imageBox');
+  if (!name) {
+    img.hidden = true;
+    img.removeAttribute('src');
+    empty.hidden = false;
+    removeBtn.hidden = true;
+    box.classList.remove('has-image');
+    return;
+  }
+  empty.hidden = true;
+  removeBtn.hidden = false;
+  box.classList.add('has-image');
+  var src = fileHref(name, 'download');
+  try {
+    var raw = await callAppBridge({type:'ImageUrl', data:name});
+    var url = unwrapBridge(raw).trim();
+    if (url && url !== 'null' && url !== 'undefined') src = url;
+  } catch (e) {}
+  img.src = src;
+  img.hidden = false;
+}
+
+async function pickImage(type) {
+  if (polling || actionBusy) return;
+  try {
+    var raw = await callAppBridge({type:type});
+    var name = unwrapBridge(raw).trim();
+    if (!name || name === 'null' || name === 'undefined') return;
+    document.getElementById('formWrong_错题图片').value = name;
+    await refreshImagePreview();
+  } catch (e) {
+    notifyTryLater();
+  }
+}
+
+function stopPoll() {
+  pollToken++;
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+  pollBusy = false;
+  if (polling) {
+    polling = false;
+    setPollLock(false);
+  }
+}
+
+function startAnalysisPoll(doneKey) {
+  stopPoll();
+  var token = pollToken;
+  var settled = false;
+  polling = true;
+  setPollLock(true);
+  lastAnalysis = {mode:'wait', text:''};
+  paintAnalysis();
+  var started = Date.now();
+  function settleTimeout() {
+    if (settled || token !== pollToken) return;
+    settled = true;
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+    polling = false;
+    setPollLock(false);
+    lastAnalysis = {mode:'timeout', text:''};
+    paintAnalysis();
+    if (doneKey) toast(t(doneKey));
+    loadData();
+  }
+  function settleSuccess(text) {
+    if (settled || token !== pollToken) return;
+    settled = true;
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+    polling = false;
+    setPollLock(false);
+    lastAnalysis = {mode:'content', text:text};
+    paintAnalysis();
+    if (doneKey) toast(t(doneKey));
+    loadData();
+  }
+  async function tick() {
+    if (settled || token !== pollToken || pollBusy) return;
+    if (Date.now() - started >= 60000) {
+      settleTimeout();
+      return;
+    }
+    pollBusy = true;
+    try {
+      var raw = await callAppBridge({type:'GetCellValue', data:TABLE, payload:'错因分析/1'});
+      if (settled || token !== pollToken) return;
+      if (Date.now() - started >= 60000) {
+        settleTimeout();
+        return;
+      }
+      var text = unwrapBridge(raw);
+      if (!isBlank(text)) settleSuccess(text);
+    } catch (e) {
+      if (token === pollToken && !settled) notifyTryLater();
+    } finally {
+      pollBusy = false;
+    }
+  }
+  tick();
+  pollTimer = setInterval(tick, 2000);
+}
+
+async function submitDecode() {
+  if (polling || actionBusy) return;
+  if (formMode !== 'new') return;
+  if (!validateForm()) return;
+  actionBusy = true;
+  setPollLock(true);
+  var data = collectPayload();
+  try {
+    await callAppBridge({type:'SubmitRecord', data:FORM_TABLE, payload:JSON.stringify(data)});
+  } catch (e) {
+    actionBusy = false;
+    setPollLock(false);
+    notifyTryLater();
+    return;
+  }
+  actionBusy = false;
+  currentRow = 1;
+  editingRow = 1;
+  startAnalysisPoll('');
+}
+
+async function saveRevision() {
+  if (polling || actionBusy) return;
+  if (formMode !== 'edit' || editingRow < 1) return;
+  if (!validateForm()) return;
+  actionBusy = true;
+  setPollLock(true);
+  var data = collectPayload();
+  try {
+    for (var i = 0; i < FILLABLE.length; i++) {
+      var key = FILLABLE[i];
+      await callAppBridge({type:'SetCellValue', data:TABLE, payload:key + '/' + editingRow + '/' + data[key]});
+    }
+  } catch (e) {
+    actionBusy = false;
+    setPollLock(false);
+    notifyTryLater();
+    return;
+  }
+  actionBusy = false;
+  setPollLock(false);
+  currentRow = editingRow;
+  toast(t('revisionKeepsAnalysis'));
+  await loadData();
+}
+
+async function saveAsNew() {
+  if (polling || actionBusy) return;
+  if (!validateForm()) return;
+  actionBusy = true;
+  setPollLock(true);
+  var data = collectPayload();
+  try {
+    await callAppBridge({type:'SubmitRecord', data:FORM_TABLE, payload:JSON.stringify(data)});
+  } catch (e) {
+    actionBusy = false;
+    setPollLock(false);
+    notifyTryLater();
+    return;
+  }
+  actionBusy = false;
+  currentRow = 1;
+  editingRow = 1;
+  setFormMode('edit');
+  startAnalysisPoll('originalRemains');
+}
+
+async function loadFormRow(row) {
+  stopPoll();
+  var fields = ['学段','知识点','通用维度','题目','学生答案','正确答案','错题图片','错因分析'];
+  var values = {};
+  try {
+    for (var i = 0; i < fields.length; i++) {
+      var raw = await callAppBridge({type:'GetCellValue', data:TABLE, payload:fields[i] + '/' + String(row)});
+      values[fields[i]] = unwrapBridge(raw);
+    }
+  } catch (e) {
+    notifyTryLater();
+    return;
+  }
+  clearExtraOptions();
+  ensureOption('formWrong_学段', values['学段']);
+  ensureOption('formWrong_通用维度', values['通用维度']);
+  var textFields = ['学段','知识点','通用维度','题目','学生答案','正确答案','错题图片'];
+  for (var j = 0; j < textFields.length; j++) {
+    var f = textFields[j];
+    document.getElementById('formWrong_' + f).value = (values[f] || '').trim();
+    var err = document.getElementById('formWrong_' + f + '_error');
+    if (err) err.textContent = '';
+  }
+  currentRow = row;
+  editingRow = row;
+  setFormMode('edit');
+  updateStageHint();
+  await refreshImagePreview();
+  if (isBlank(values['错因分析'])) lastAnalysis = {mode:'notGenerated', text:''};
+  else lastAnalysis = {mode:'content', text:values['错因分析']};
+  paintAnalysis();
+}
+
+async function startEdit(row) {
+  closeDetail();
+  if (currentPage !== 'record') applyPage('record', true);
+  await loadFormRow(row);
+}
+
+function askConfirm(message) {
+  return new Promise(function (resolve) {
+    confirmResolve = resolve;
+    document.getElementById('confirmText').textContent = message;
+    document.getElementById('confirmOverlay').hidden = false;
+    if (popupStack[popupStack.length - 1] !== 'confirm') popupStack.push('confirm');
+    document.body.classList.add('modal-open');
+  });
+}
+
+function dismissConfirm(ok) {
+  document.getElementById('confirmOverlay').hidden = true;
+  var next = [];
+  for (var i = 0; i < popupStack.length; i++) if (popupStack[i] !== 'confirm') next.push(popupStack[i]);
+  popupStack = next;
+  if (!popupStack.length) document.body.classList.remove('modal-open');
+  var fn = confirmResolve;
+  confirmResolve = null;
+  if (fn) fn(!!ok);
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').hidden = true;
+  var next = [];
+  for (var i = 0; i < popupStack.length; i++) if (popupStack[i] !== 'detail') next.push(popupStack[i]);
+  popupStack = next;
+  if (!popupStack.length) document.body.classList.remove('modal-open');
+}
+
+function openDetailLayer() {
+  document.getElementById('detailOverlay').hidden = false;
+  if (popupStack.indexOf('detail') < 0) popupStack.push('detail');
+  document.body.classList.add('modal-open');
+}
+
+function paintDetail() {
+  if (!detailValues) return;
+  var knowledge = (detailValues['知识点'] || '').trim();
+  document.getElementById('detailTitle').textContent = knowledge || t('blankKnowledge');
+  document.getElementById('detailStage').textContent = stageLabel((detailValues['学段'] || '').trim()) || '—';
+  var dim = (detailValues['通用维度'] || '').trim();
+  var dimEl = document.getElementById('detailDim');
+  dimEl.textContent = '';
+  var dot = document.createElement('i');
+  dot.style.background = DIM_COLOR[dim] || '#8A849C';
+  dimEl.appendChild(dot);
+  dimEl.appendChild(document.createTextNode(dimLabel(dim) || '—'));
+  document.getElementById('detailQuestion').textContent = detailValues['题目'] || '';
+  document.getElementById('detailStudent').textContent = detailValues['学生答案'] || '';
+  document.getElementById('detailCorrect').textContent = detailValues['正确答案'] || '';
+  var image = (detailValues['错题图片'] || '').trim();
+  var wrap = document.getElementById('detailImageWrap');
+  if (image && image !== 'null') {
+    wrap.hidden = false;
+    document.getElementById('detailImage').src = fileHref(image, 'download');
+    document.getElementById('detailImageLink').href = fileHref(image, 'private');
+  } else {
+    wrap.hidden = true;
+    document.getElementById('detailImage').removeAttribute('src');
+    document.getElementById('detailImageLink').href = '#';
+  }
+  var analysis = detailValues['错因分析'];
+  var box = document.getElementById('detailAnalysis');
+  var reread = document.getElementById('btnDetailReread');
+  if (isBlank(analysis)) {
+    fillAnalysis(box, '');
+    box.innerHTML = '<div class="analysis-empty"><p>' + escapeHtml(t('notGenerated')) + '</p></div>';
+    reread.hidden = false;
+  } else {
+    fillAnalysis(box, analysis);
+    reread.hidden = true;
+  }
+  document.getElementById('btnDetailPrev').disabled = detailRow <= 1;
+  document.getElementById('btnDetailNext').disabled = !detailCount || detailRow >= detailCount;
+}
+
+async function loadDetail(row) {
+  if (detailLoading || !row || row < 1) return;
+  detailLoading = true;
+  var fields = ['学段','知识点','通用维度','题目','学生答案','正确答案','错题图片','错因分析'];
+  var values = {};
+  try {
+    for (var i = 0; i < fields.length; i++) {
+      var raw = await callAppBridge({type:'GetCellValue', data:TABLE, payload:fields[i] + '/' + String(row)});
+      values[fields[i]] = unwrapBridge(raw);
+    }
+    var countRaw = await callAppBridge({type:'GetRecordCount', data:TABLE});
+    var count = parseCountResult({ok:true, text:countRaw});
+    detailCount = count === null ? 0 : count;
+  } catch (e) {
+    detailLoading = false;
+    notifyTryLater();
+    return;
+  }
+  currentRow = row;
+  detailRow = row;
+  detailValues = values;
+  paintDetail();
+  openDetailLayer();
+  detailLoading = false;
+}
+
+async function rereadDetail() {
+  if (detailRow < 1) return;
+  try {
+    var raw = await callAppBridge({type:'GetCellValue', data:TABLE, payload:'错因分析/' + String(detailRow)});
+    var text = unwrapBridge(raw);
+    if (!detailValues) detailValues = {};
+    detailValues['错因分析'] = text;
+    paintDetail();
+  } catch (e) {
+    notifyTryLater();
+  }
+}
+
+async function deleteRecord(row) {
+  if (!row || row < 1) return;
+  var ok = await askConfirm(t('confirmDelete'));
+  if (!ok) return;
+  try {
+    await callAppBridge({type:'DeleteRecord', data:TABLE, payload:String(row)});
+  } catch (e) {
+    notifyTryLater();
+    return;
+  }
+  var detailOpen = !document.getElementById('detailOverlay').hidden;
+  if (detailOpen && detailRow === row) closeDetail();
+  else if (detailOpen && detailRow > row) {
+    detailRow -= 1;
+    currentRow = detailRow;
+    await loadDetail(detailRow);
+  }
+  if (formMode === 'edit') {
+    if (editingRow === row) resetForm();
+    else if (editingRow > row) {
+      editingRow -= 1;
+      currentRow = editingRow;
+    }
+  }
+  await loadData();
+}
+
+function renderInline(src, refs) {
+  var text = escapeHtml(src);
+  text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;[^&]*&quot;)?\)/g, function (m, alt, url) {
+    var raw = unescapeHtml(url);
+    var href = fileHref(raw, 'download');
+    return '<a class="md-img-link" href="' + escapeHtml(href) + '" download><img src="' + escapeHtml(href) + '" alt="' + alt + '"></a>';
+  });
+  text = text.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;[^&]*&quot;)?\)/g, function (m, label, url) {
+    var raw = unescapeHtml(url);
+    var href = /^https?:\/\//i.test(raw) ? raw : fileHref(raw, 'download');
+    return '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' + label + '</a>';
+  });
+  text = text.replace(/\[([^\]]+)\]\[([^\]]*)\]/g, function (m, label, id) {
+    var key = (id || label).toLowerCase();
+    var href = refs[key];
+    if (!href) return m;
+    return '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener">' + label + '</a>';
+  });
+  text = text.replace(/`([^`]+)`/g, function (m, code) { return '<code>' + code + '</code>'; });
+  text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  text = text.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  text = text.replace(/(^|[^_])_([^_\n]+)_/g, '$1<em>$2</em>');
+  text = text.replace(/&lt;(https?:\/\/[^&\s]+)&gt;/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  text = text.replace(/(^|[\s(])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  return text;
+}
+
+function extractRefs(text) {
+  var refs = {};
+  var lines = text.split('\n');
+  var kept = [];
+  for (var i = 0; i < lines.length; i++) {
+    var m = lines[i].match(/^\s*\[([^\]]+)\]:\s+(\S+)/);
+    if (m) refs[m[1].toLowerCase()] = m[2];
+    else kept.push(lines[i]);
+  }
+  return {text: kept.join('\n'), refs: refs};
+}
+
+function isTableSep(line) {
+  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line || '');
+}
+
+function isSpecialBlock(line, next) {
+  if (!line) return false;
+  if (/^(#{1,6})\s+/.test(line)) return true;
+  if (/^(```+|~~~+)/.test(line)) return true;
+  if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(String(line).trim())) return true;
+  if (/^>\s?/.test(line)) return true;
+  if (/^\s*([-*+]|\d+\.)\s+/.test(line)) return true;
+  if (line.indexOf('|') >= 0 && isTableSep(next)) return true;
+  return false;
+}
+
+function mdToHtml(src, inheritedRefs) {
+  var extracted = extractRefs(String(src || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n'));
+  var refs = inheritedRefs || extracted.refs;
+  if (inheritedRefs) {
+    for (var rk in extracted.refs) {
+      if (Object.prototype.hasOwnProperty.call(extracted.refs, rk)) refs[rk] = extracted.refs[rk];
+    }
+  }
+  var lines = extracted.text.split('\n');
+  var html = [];
+  var i = 0;
+  function parseRow(row) {
+    var r = row.trim();
+    if (r.charAt(0) === '|') r = r.slice(1);
+    if (r.charAt(r.length - 1) === '|') r = r.slice(0, -1);
+    var cells = r.split('|');
+    for (var c = 0; c < cells.length; c++) cells[c] = cells[c].trim();
+    return cells;
+  }
+  while (i < lines.length) {
+    var line = lines[i];
+    if (line.trim() === '') { i++; continue; }
+    var fence = line.match(/^(```+|~~~+)(.*)$/);
+    if (fence) {
+      var marker = fence[1].charAt(0);
+      var marks = fence[1].length;
+      i++;
+      var buf = [];
+      var endRe = new RegExp('^' + marker + '{' + marks + ',}\\s*$');
+      while (i < lines.length && !endRe.test(lines[i])) { buf.push(lines[i]); i++; }
+      if (i < lines.length) i++;
+      html.push('<pre><code>' + escapeHtml(buf.join('\n')) + '</code></pre>');
+      continue;
+    }
+    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) { html.push('<hr>'); i++; continue; }
+    var heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      var level = heading[1].length;
+      html.push('<h' + level + '>' + renderInline(heading[2].trim(), refs) + '</h' + level + '>');
+      i++;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      var quote = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        quote.push(lines[i].replace(/^>\s?/, ''));
+        i++;
+      }
+      html.push('<blockquote>' + mdToHtml(quote.join('\n'), refs) + '</blockquote>');
+      continue;
+    }
+    if (line.indexOf('|') >= 0 && isTableSep(lines[i + 1])) {
+      var header = parseRow(line);
+      i += 2;
+      var body = [];
+      while (i < lines.length && lines[i].indexOf('|') >= 0 && lines[i].trim() !== '') {
+        body.push(parseRow(lines[i]));
+        i++;
+      }
+      var table = '<div class="table-scroll"><table><thead><tr>';
+      for (var h = 0; h < header.length; h++) table += '<th>' + renderInline(header[h], refs) + '</th>';
+      table += '</tr></thead><tbody>';
+      for (var r = 0; r < body.length; r++) {
+        table += '<tr>';
+        for (var c = 0; c < header.length; c++) table += '<td>' + renderInline(body[r][c] || '', refs) + '</td>';
+        table += '</tr>';
+      }
+      table += '</tbody></table></div>';
+      html.push(table);
+      continue;
+    }
+    if (/^\s*([-*+]|\d+\.)\s+/.test(line)) {
+      var ordered = /^\s*\d+\.\s+/.test(line);
+      var tag = ordered ? 'ol' : 'ul';
+      html.push('<' + tag + '>');
+      while (i < lines.length && /^\s*([-*+]|\d+\.)\s+/.test(lines[i])) {
+        var itemMatch = lines[i].match(/^\s*([-*+]|\d+\.)\s+(.*)$/);
+        var content = itemMatch ? itemMatch[2] : '';
+        var task = content.match(/^\[( |x|X)\]\s+(.*)$/);
+        i++;
+        var nested = [];
+        while (i < lines.length && /^\s{2,}([-*+]|\d+\.)\s+/.test(lines[i])) {
+          nested.push(lines[i].replace(/^\s{2}/, ''));
+          i++;
+        }
+        var extra = '';
+        if (nested.length) extra = mdToHtml(nested.join('\n'), refs);
+        if (task) {
+          var checked = /x/i.test(task[1]) ? ' checked disabled' : ' disabled';
+          html.push('<li class="task"><label><input type="checkbox"' + checked + '> ' + renderInline(task[2], refs) + '</label>' + extra + '</li>');
+        } else {
+          html.push('<li>' + renderInline(content, refs) + extra + '</li>');
+        }
+      }
+      html.push('</' + tag + '>');
+      continue;
+    }
+    var para = [line];
+    i++;
+    while (i < lines.length && lines[i].trim() !== '' && !isSpecialBlock(lines[i], lines[i + 1])) {
+      para.push(lines[i]);
+      i++;
+    }
+    var parts = [];
+    for (var p = 0; p < para.length; p++) parts.push(renderInline(para[p], refs));
+    html.push('<p>' + parts.join('<br>') + '</p>');
+  }
+  return html.join('\n');
+}
+
+function highlightStatus(root) {
+  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+  var nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  var re = /(待处理|初步弱项|顽固弱项|突破中|已攻克)/g;
+  for (var i = 0; i < nodes.length; i++) {
+    var node = nodes[i];
+    if (!node.nodeValue || !re.test(node.nodeValue)) { re.lastIndex = 0; continue; }
+    re.lastIndex = 0;
+    var text = node.nodeValue;
+    var frag = document.createDocumentFragment();
+    var last = 0;
+    var m;
+    while ((m = re.exec(text))) {
+      frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var span = document.createElement('span');
+      span.className = 'status-tag ' + (STATUS_CLASS[m[1]] || '');
+      span.textContent = m[1];
+      frag.appendChild(span);
+      last = m.index + m[1].length;
+    }
+    frag.appendChild(document.createTextNode(text.slice(last)));
+    if (node.parentNode) node.parentNode.replaceChild(frag, node);
+  }
+}
+
+function splitHighlights(md) {
+  var text = String(md || '').replace(/\r\n/g, '\n');
+  var hits = [];
+  for (var i = 0; i < HL_KEYS.length; i++) {
+    var idx = text.indexOf(HL_KEYS[i]);
+    if (idx >= 0) hits.push({key: HL_KEYS[i], idx: idx});
+  }
+  if (!hits.length) return {cards: [], rest: text};
+  hits.sort(function (a, b) { return a.idx - b.idx; });
+  var cards = [];
+  for (var h = 0; h < hits.length; h++) {
+    var start = hits[h].idx + hits[h].key.length;
+    var end = h + 1 < hits.length ? hits[h + 1].idx : text.length;
+    var body = text.slice(start, end).replace(/^[\s:：\-—#>*|]+/, '').replace(/\n[-*_]{3,}\s*$/g, '').trim();
+    cards.push({key: hits[h].key, body: body});
+  }
+  var rest = text.slice(0, hits[0].idx).trim();
+  if (/^[#>*\-\s|：:]+$/.test(rest)) rest = '';
+  return {cards: cards, rest: rest};
+}
+
+function mountMarkdown(el, markdown) {
+  el.classList.add('md-body');
+  el.innerHTML = mdToHtml(markdown);
+  highlightStatus(el);
+}
+
+function fillAnalysis(container, markdown) {
+  container.innerHTML = '';
+  if (isBlank(markdown)) {
+    container.innerHTML = '<div class="analysis-empty"><p>' + escapeHtml(t('notGenerated')) + '</p></div>';
+    return;
+  }
+  var parts = splitHighlights(markdown);
+  if (!parts.cards.length) {
+    var only = document.createElement('div');
+    mountMarkdown(only, markdown);
+    container.appendChild(only);
+    return;
+  }
+  if (parts.rest) {
+    var rest = document.createElement('div');
+    mountMarkdown(rest, parts.rest);
+    container.appendChild(rest);
+  }
+  var grid = document.createElement('div');
+  grid.className = 'hl-grid';
+  for (var i = 0; i < parts.cards.length; i++) {
+    var card = document.createElement('article');
+    card.className = 'hl-card';
+    var k = document.createElement('div');
+    k.className = 'hl-k';
+    k.textContent = parts.cards[i].key;
+    var v = document.createElement('div');
+    v.className = 'hl-v';
+    if (parts.cards[i].body) mountMarkdown(v, parts.cards[i].body);
+    card.appendChild(k);
+    card.appendChild(v);
+    grid.appendChild(card);
+  }
+  container.appendChild(grid);
+}
+
+function bindViewportKeyboard() {
+  function syncKb() {
+    var kb = 0;
+    var vv = window.visualViewport;
+    if (vv) kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty('--kb', kb + 'px');
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      syncKb();
+      var active = document.activeElement;
+      if (active && active.matches && active.matches('input, textarea, select')) {
+        active.scrollIntoView({block:'center', behavior:'smooth'});
+      }
+    });
+    window.visualViewport.addEventListener('scroll', syncKb);
+  }
+  document.addEventListener('focusin', function (e) {
+    var el = e.target;
+    if (!el || !el.matches || !el.matches('input, textarea, select')) return;
+    setTimeout(function () {
+      syncKb();
+      el.scrollIntoView({block:'center', behavior:'smooth'});
+    }, 280);
+  });
+}
+
+function bindStaticEvents() {
+  document.getElementById('brandBtn').addEventListener('click', function () {
+    try {
+      if (window.parent && window.parent !== window && typeof window.parent.closeFullHtml === 'function') {
+        window.parent.closeFullHtml(false);
+      }
+    } catch (e) {}
+  });
+  var pageButtons = document.querySelectorAll('[data-page]');
+  for (var i = 0; i < pageButtons.length; i++) {
+    pageButtons[i].addEventListener('click', function (e) {
+      var page = e.currentTarget.getAttribute('data-page');
+      applyPage(page, true);
+    });
+  }
+  document.getElementById('navHamburger').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var menu = document.getElementById('mobileMenu');
+    var open = !menu.classList.contains('open');
+    menu.classList.toggle('open', open);
+    var ham = document.getElementById('navHamburger');
+    ham.setAttribute('aria-expanded', open ? 'true' : 'false');
+    ham.setAttribute('aria-label', t(open ? 'closeMenu' : 'openMenu'));
+  });
+  document.addEventListener('click', function (e) {
+    var menu = document.getElementById('mobileMenu');
+    if (!menu.classList.contains('open')) return;
+    if (menu.contains(e.target)) return;
+    if (document.getElementById('navHamburger').contains(e.target)) return;
+    closeMobileMenu();
+  });
+  document.getElementById('langBtnCn').addEventListener('click', function () { setLanguage('cn'); });
+  document.getElementById('langBtnEn').addEventListener('click', function () { setLanguage('en'); });
+  document.getElementById('mobLangCn').addEventListener('click', function () { setLanguage('cn'); closeMobileMenu(); });
+  document.getElementById('mobLangEn').addEventListener('click', function () { setLanguage('en'); closeMobileMenu(); });
+  document.getElementById('homeNewBtn').addEventListener('click', startNewRecord);
+  document.getElementById('archiveNewBtn').addEventListener('click', startNewRecord);
+  document.getElementById('archiveFirstBtn').addEventListener('click', startNewRecord);
+  document.getElementById('spectrumGoBtn').addEventListener('click', startNewRecord);
+  document.getElementById('recordToArchive').addEventListener('click', function () { applyPage('archive', true); });
+  document.getElementById('statTotal').addEventListener('click', function () { openArchiveFiltered({}); });
+  document.getElementById('statJunior').addEventListener('click', function () { openArchiveFiltered({stage:'初中'}); });
+  document.getElementById('statSenior').addEventListener('click', function () { openArchiveFiltered({stage:'高中'}); });
+  document.getElementById('homeDims').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-dim]');
+    if (!btn) return;
+    openArchiveFiltered({dim: btn.getAttribute('data-dim')});
+  });
+  document.getElementById('homeRecent').addEventListener('click', function (e) {
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    loadDetail(parseInt(card.getAttribute('data-row'), 10));
+  });
+  document.getElementById('homeRecent').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    e.preventDefault();
+    loadDetail(parseInt(card.getAttribute('data-row'), 10));
+  });
+  document.getElementById('archiveList').addEventListener('click', function (e) {
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    var row = parseInt(card.getAttribute('data-row'), 10);
+    if (e.target.closest('[data-act="delete"]')) { deleteRecord(row); return; }
+    if (e.target.closest('[data-act="view"]')) { loadDetail(row); return; }
+    startEdit(row);
+  });
+  document.getElementById('archiveList').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (e.target.closest('button')) return;
+    var card = e.target.closest('[data-row]');
+    if (!card) return;
+    e.preventDefault();
+    startEdit(parseInt(card.getAttribute('data-row'), 10));
+  });
+  document.getElementById('archiveSearch').addEventListener('input', function (e) {
+    searchQuery = e.target.value;
+    renderArchive();
+  });
+  document.getElementById('btnClearSearch').addEventListener('click', function () {
+    searchQuery = '';
+    document.getElementById('archiveSearch').value = '';
+    renderArchive();
+  });
+  document.getElementById('archiveFilterStage').addEventListener('change', function (e) {
+    filterStage = e.target.value;
+    renderArchive();
+  });
+  document.getElementById('archiveFilterDim').addEventListener('change', function (e) {
+    filterDim = e.target.value;
+    renderArchive();
+  });
+  function resetFilters() {
+    filterStage = '';
+    filterDim = '';
+    document.getElementById('archiveFilterStage').value = '';
+    document.getElementById('archiveFilterDim').value = '';
+    renderArchive();
+  }
+  document.getElementById('btnResetFilter').addEventListener('click', resetFilters);
+  document.getElementById('archiveNoMatchReset').addEventListener('click', resetFilters);
+  document.getElementById('archiveSort').addEventListener('change', function (e) {
+    sortMode = e.target.value;
+    renderArchive();
+  });
+  document.getElementById('spectrumBands').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-dim]');
+    if (!btn) return;
+    openArchiveFiltered({dim: btn.getAttribute('data-dim')});
+  });
+  document.getElementById('spectrumTopics').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-search]');
+    if (!btn) return;
+    openArchiveFiltered({search: btn.getAttribute('data-search')});
+  });
+  var watchFields = ['学段','知识点','通用维度','题目','学生答案','正确答案'];
+  for (var f = 0; f < watchFields.length; f++) {
+    (function (name) {
+      var el = document.getElementById('formWrong_' + name);
+      function clearErr() {
+        var err = document.getElementById('formWrong_' + name + '_error');
+        if (err) err.textContent = '';
+        if (name === '学段') updateStageHint();
+      }
+      el.addEventListener('input', clearErr);
+      el.addEventListener('change', clearErr);
+    })(watchFields[f]);
+  }
+  document.getElementById('btnCapture').addEventListener('click', function () { pickImage('CapturePhoto'); });
+  document.getElementById('btnSelectImage').addEventListener('click', function () { pickImage('SelectImage'); });
+  document.getElementById('btnRemoveImage').addEventListener('click', function () {
+    if (polling || actionBusy) return;
+    document.getElementById('formWrong_错题图片').value = '';
+    refreshImagePreview();
+  });
+  document.getElementById('imagePreviewImg').addEventListener('click', function () {
+    var name = document.getElementById('formWrong_错题图片').value.trim();
+    if (!name) return;
+    var a = document.createElement('a');
+    a.href = fileHref(name, 'private');
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+  document.getElementById('btnClear').addEventListener('click', function () { if (!polling && !actionBusy) resetForm(); });
+  document.getElementById('btnSubmitDecode').addEventListener('click', submitDecode);
+  document.getElementById('btnCancelEdit').addEventListener('click', function () {
+    if (polling || actionBusy) return;
+    if (navHistory.length && navHistory[navHistory.length - 1].page === 'archive') {
+      var prev = navHistory.pop();
+      applyPage('archive', false);
+      var y = prev.scroll || 0;
+      if (window.requestAnimationFrame) requestAnimationFrame(function () { window.scrollTo(0, y); });
+      else window.scrollTo(0, y);
+      return;
+    }
+    applyPage('archive', false);
+  });
+  document.getElementById('btnSaveEdit').addEventListener('click', saveRevision);
+  document.getElementById('btnSaveAsNew').addEventListener('click', saveAsNew);
+  document.getElementById('formWrong').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (polling || actionBusy) return;
+    if (formMode === 'edit') saveRevision();
+    else submitDecode();
+  });
+  document.getElementById('btnDetailPrev').addEventListener('click', function () {
+    if (detailRow > 1) loadDetail(detailRow - 1);
+  });
+  document.getElementById('btnDetailNext').addEventListener('click', function () {
+    if (detailCount && detailRow < detailCount) loadDetail(detailRow + 1);
+  });
+  document.getElementById('btnDetailClose').addEventListener('click', closeDetail);
+  document.getElementById('btnDetailReread').addEventListener('click', rereadDetail);
+  document.getElementById('btnDetailEdit').addEventListener('click', function () { startEdit(detailRow || currentRow); });
+  document.getElementById('btnDetailDelete').addEventListener('click', function () { deleteRecord(detailRow || currentRow); });
+  document.getElementById('detailOverlay').addEventListener('click', function (e) {
+    if (e.target.id === 'detailOverlay') closeDetail();
+  });
+  document.getElementById('btnConfirmOk').addEventListener('click', function () { dismissConfirm(true); });
+  document.getElementById('btnConfirmCancel').addEventListener('click', function () { dismissConfirm(false); });
+  document.getElementById('confirmOverlay').addEventListener('click', function (e) {
+    if (e.target.id === 'confirmOverlay') dismissConfirm(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && popupStack.length) {
+      e.preventDefault();
+      airBack();
+    }
+  });
+  window.addEventListener('resize', checkNavOverflow);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(checkNavOverflow).catch(function () {});
+}
+
+function airBack() {
+  if (popupStack.length) {
+    var top = popupStack[popupStack.length - 1];
+    if (top === 'confirm') dismissConfirm(false);
+    else if (top === 'detail') closeDetail();
+    else popupStack.pop();
+    return 'false';
+  }
+  if (navHistory.length) {
+    var prev = navHistory.pop();
+    applyPage(prev.page, false);
+    var y = prev.scroll || 0;
+    if (window.requestAnimationFrame) requestAnimationFrame(function () { window.scrollTo(0, y); });
+    else window.scrollTo(0, y);
+    return 'false';
+  }
+  return 'true';
+}
+
+async function initialize() {
+  initLanguage();
+  bindStaticEvents();
+  bindViewportKeyboard();
+  resetForm();
+  applyI18n();
+  checkNavOverflow();
+  try {
+    var modeText = await callAppBridge({type:'模式'});
+    applyTheme(modeText);
+  } catch (e) {
+    applyTheme('');
+  }
+  applyPage('home', false);
+}
+
+(async () => { await initialize(); })();
+</script>
+</body>
+</html>
