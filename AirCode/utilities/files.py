@@ -14,7 +14,7 @@ from pptx import Presentation
 import xmindparser
 from lxml import etree
 import pytesseract
-from pyzbar.pyzbar import decode
+#from pyzbar.pyzbar import decode
 from PIL import Image
 
 
@@ -275,15 +275,15 @@ def get_file_content(file):
                     pass
             else:
                 result = ""
-        elif file.lower().endswith((".jpg",".jpeg",".png",".gif",".bmp",".tif")):
-            image = Image.open(file)
-            txt_contents = ""
-            data = decode(image)
-            for obj in data:
-                txt_contents += obj.data.decode("utf-8")
-            if txt_contents == "":
-                txt_contents = pytesseract.image_to_string(image, lang='eng+chi_sim+chi_tra')
-            result = txt_contents
+        #elif file.lower().endswith((".jpg",".jpeg",".png",".gif",".bmp",".tif")):
+        #    image = Image.open(file)
+        #    txt_contents = ""
+        #    data = decode(image)
+        #    for obj in data:
+        #        txt_contents += obj.data.decode("utf-8")
+        #    if txt_contents == "":
+        #        txt_contents = pytesseract.image_to_string(image, lang='eng+chi_sim+chi_tra')
+        #    result = txt_contents
         elif file.lower().endswith(".zip"):
             txt_contents = read_zip_contents(file)
             result = txt_contents
