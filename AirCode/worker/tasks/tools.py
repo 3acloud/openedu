@@ -332,7 +332,7 @@ def task_agent(
     result = ""
     try:
         prompt = f'''"""{taskdesc}"""
-根据上面三重引号内的要求{filedesc}，得出结果。'''
+根据上面三重引号内的要求{filedesc}，得出结果（过程中不需要人工确认）。'''
         if outtype == "文本":
             prompt = prompt + "如果结果是Markdown格式文本并且其中包含图片或文件，那么图片或文件链接是http://127.0.0.1:3130/download/图片或文件名，图片或文件名为以花括号包裹的UUID4字符串加扩展名，图片或文件链接要按Markdown链接语法。"
         if skills != "":
